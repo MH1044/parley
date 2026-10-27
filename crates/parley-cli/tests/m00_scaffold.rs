@@ -296,8 +296,9 @@ fn t11_failing_net_returns_disabled() {
     assert_eq!(FailingNet.send(req), Err(NetError::Disabled));
 }
 
-// Bullet 12: twelve ADRs, indexed, each with a Status line; 0003, 0009 and 0010 Proposed, the rest
-// Accepted; every document the Scope names exists.
+// Bullet 12: twelve ADRs, indexed, each with a Status line; 0009 and 0010 Proposed, the rest
+// Accepted (0003 was Proposed at module 00 and was accepted with CC BY-SA 4.0 before module 01);
+// every document the Scope names exists.
 #[test]
 fn t12_adrs_and_documents_exist() {
     let root = repo_root();
@@ -330,7 +331,7 @@ fn t12_adrs_and_documents_exist() {
             .lines()
             .find(|line| line.contains("Status:"))
             .unwrap_or_else(|| panic!("{name} has no Status: line"));
-        let expected = if [3, 9, 10].contains(&number) {
+        let expected = if [9, 10].contains(&number) {
             "Proposed"
         } else {
             "Accepted"

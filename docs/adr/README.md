@@ -7,7 +7,7 @@ reverse, each with what was rejected and why. `docs/ARCHITECTURE.md` §9 summari
 |---|---|---|
 | [0001](0001-stack.md) | Stack: Tauri 2, Rust core, React and TypeScript interface | Accepted |
 | [0002](0002-code-licence.md) | Code licence: MIT OR Apache-2.0 | Accepted |
-| [0003](0003-content-licence.md) | Course content licence | Proposed (maintainer decides before module 01) |
+| [0003](0003-content-licence.md) | Course content licence: CC BY-SA 4.0 | Accepted |
 | [0004](0004-scheduler.md) | Scheduler: FSRS with two cards per item | Accepted |
 | [0005](0005-grading-order.md) | Grading order: exact, accent, typo, cached judgement, then the AI judge | Accepted |
 | [0006](0006-storage.md) | Storage: one SQLite file plus derived caches, JSON backup | Accepted |

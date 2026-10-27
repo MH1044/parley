@@ -351,7 +351,7 @@ with `PUBLIK_SELF_TEST` set, and then exits.
 |---|---|---|---|
 | 0001 Stack | Accepted | Tauri 2, Rust core, React/TS UI, Android through Tauri mobile | Electron (size; no shared Rust core on Android); Flutter (a second language for the core); a web app (key custody, offline) |
 | 0002 Code licence | Accepted | MIT OR Apache-2.0 | GPL (would bar permissive reuse of the core) |
-| 0003 Content licence | Proposed: **maintainer decides** before module 01 | CC BY-SA 4.0 recommended | CC0: forbids CC BY-SA sources (Wiktionary forms, FrequencyWords), so forms would need hand-written rules |
+| 0003 Content licence | Accepted | CC BY-SA 4.0 for everything under `content/`; the code stays MIT OR Apache-2.0 | CC0: forbids CC BY-SA sources (Wiktionary forms, FrequencyWords), so forms would need hand-written rules; CC BY 4.0 for the same reason |
 | 0004 Scheduler | Accepted | FSRS, two cards per item (receptive, productive) | SM-2 (weaker), Leitner boxes, half-life regression (no maintained open implementation) |
 | 0005 Grading order | Accepted | exact, accent, typo, cached judgement, then AI judge only for free translations | AI first (cost, latency, offline) |
 | 0006 Storage | Accepted | one SQLite file plus derived caches; JSON backup | a server; many JSON files (no transactions) |
