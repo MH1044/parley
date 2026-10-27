@@ -1,0 +1,9 @@
+{
+  "files": {
+    "audio/tone_gaps_a.wav": {
+      "bytes": 80044,
+      "sha256": "15c79acb507a0cb94c19435600744e1752778acc2aa9306322e2561d0623a616"
+    }
+  },
+  "schema": "parley.fixtures/1"
+}

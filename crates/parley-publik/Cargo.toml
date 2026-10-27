@@ -1,0 +1,11 @@
+[package]
+name = "parley-publik"
+description = "Parley's AI client: the publik API reference module, the own-key and local providers, status and errors"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]

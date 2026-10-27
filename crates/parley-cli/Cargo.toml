@@ -1,0 +1,37 @@
+[package]
+name = "parley-cli"
+description = "Parley's command-line tool (the `parley` binary) and the fixture generator (`parley-fixtures`)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lib]
+name = "parley_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "parley"
+path = "src/main.rs"
+
+[[bin]]
+name = "parley-fixtures"
+path = "src/bin/parley-fixtures.rs"
+
+# The golden harness builds its own list of tests, one per case directory, so it runs without
+# the default harness (docs/TESTING.md §1).
+[[test]]
+name = "golden"
+harness = false
+
+[dependencies]
+parley-core = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+
+[dev-dependencies]
+libtest-mimic = { workspace = true }
+tempfile = { workspace = true }
+toml = { workspace = true }

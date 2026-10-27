@@ -1,0 +1,22 @@
+#!/bin/sh
+# Refuses a release that has no notes: docs/releases/<version>.md must exist (RELEASING.md).
+# The release workflow runs it first; a leading "v" on the version is accepted.
+#
+#   scripts/check-release-notes 0.1.0
+
+set -eu
+
+version="${1:-}"
+if [ -z "$version" ]; then
+  echo "usage: scripts/check-release-notes <version>" >&2
+  exit 2
+fi
+version="${version#v}"
+notes="docs/releases/$version.md"
+
+if [ ! -f "$notes" ]; then
+  echo "$notes is missing; write the release notes first." >&2
+  exit 1
+fi
+
+echo "release notes found: $notes"

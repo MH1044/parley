@@ -1,0 +1,47 @@
+#!/bin/sh
+# The one full check (docs/TESTING.md §2): exactly what CI runs, minus the end-to-end launch smoke.
+# Green before every commit. Stops at the first failure.
+#
+# The front end is built first because the Tauri crate embeds app/dist at compile time, so every
+# cargo step needs it to exist.
+
+set -eu
+cd "$(dirname "$0")/.."
+
+step() {
+  printf '\n== %s\n' "$*"
+}
+
+if [ ! -d app/node_modules ]; then
+  step "npm ci"
+  npm ci --prefix app
+fi
+
+step "front-end build"
+npm --prefix app run build
+
+step "cargo fmt --check"
+cargo fmt --all -- --check
+
+step "lint"
+npm --prefix app run lint
+
+step "typecheck"
+npm --prefix app run typecheck
+
+step "clippy"
+cargo clippy --workspace --all-targets -- -D warnings
+
+step "licence gate: cargo deny"
+cargo deny check licenses
+
+step "licence gate: npm"
+node scripts/check-npm-licences.mjs app/package-lock.json
+
+step "cargo test"
+cargo test --workspace
+
+step "vitest"
+npm --prefix app test -- --run
+
+printf '\nverify: all green\n'

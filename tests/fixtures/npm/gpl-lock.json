@@ -1,0 +1,26 @@
+{
+  "name": "licence-gate-fixture",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "licence-gate-fixture",
+      "version": "1.0.0",
+      "dependencies": {
+        "left-pad-gpl": "1.0.0",
+        "tiny-permissive": "2.0.0"
+      }
+    },
+    "node_modules/left-pad-gpl": {
+      "version": "1.0.0",
+      "resolved": "https://registry.example/left-pad-gpl/-/left-pad-gpl-1.0.0.tgz",
+      "license": "GPL-3.0"
+    },
+    "node_modules/tiny-permissive": {
+      "version": "2.0.0",
+      "resolved": "https://registry.example/tiny-permissive/-/tiny-permissive-2.0.0.tgz",
+      "license": "(MIT OR Apache-2.0)"
+    }
+  }
+}

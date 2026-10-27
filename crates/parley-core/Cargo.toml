@@ -1,0 +1,17 @@
+[package]
+name = "parley-core"
+description = "Parley's learning logic: content, scheduling, grading, exercises, storage and AI features"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+ignore = { workspace = true }
+regex = { workspace = true }
