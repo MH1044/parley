@@ -1,0 +1,36 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish for English speakers
+variety: Spain Spanish; usted and tú both taught
+version: 1
+function_words: [el, la, los, las, un, una, y, o, pero, de, a, en, con, sin, por, para, no, sí,
+  yo, tú, él, ella, usted, nosotros, ellos, ellas, ustedes, me, te, se, lo, le, que, qué]
+names: [Ana, Luis, Carmen, Pablo, Madrid, Sevilla]
+units:
+  - id: es.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function            # grammar | vocab | function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye and ask how someone is.
+        requires: []
+        grammar_note: >-
+          Questions and exclamations open with an upside-down mark: ¿Qué tal? ¡Hola!
+          Say buenos días until lunch, buenas tardes until dark, then buenas noches.
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: null}
+          - {lemma: adiós, pos: intj, en: [goodbye, bye], rank: null}
+          - {lemma: bueno, pos: adj, en: [good], rank: null}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: null}
+          - {lemma: noche, pos: noun, gender: f, en: [night], rank: null}
+          - {lemma: tal, pos: adv, en: [such], rank: null}
+          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}
+        examples:
+          - {id: 1, target: "Hola, ¿qué tal?", en: ["Hi, how are you?", "Hello, how are you?"]}
+          - {id: 2, target: "Buenos días.", en: ["Good morning."]}
+          - {id: 3, target: "Buenas noches, Ana.", en: ["Good night, Ana.", "Good evening, Ana."]}
+          - {id: 4, target: "Adiós, gracias.", en: ["Goodbye, thank you.", "Bye, thanks."]}
+          - {id: 5, target: "Buenas tardes.", en: ["Good afternoon."]}

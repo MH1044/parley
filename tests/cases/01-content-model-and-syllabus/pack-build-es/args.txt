@@ -1,0 +1,14 @@
+pack
+build
+--lang
+es
+--tatoeba-dir
+tests/fixtures/tatoeba-mini
+--wiktextract
+tests/fixtures/forms-mini.jsonl
+--syllabus
+tests/fixtures/syllabus/valid-es.yaml
+--built-at
+2026-10-01
+--out
+{tmp}/es.sqlite3

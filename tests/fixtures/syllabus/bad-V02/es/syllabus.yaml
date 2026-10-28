@@ -1,0 +1,29 @@
+schema: parley.syllabus/1
+lang: fr
+name: French for English speakers
+variety: France French; vous and tu both taught
+version: 1
+function_words: [le, la, les, un, une, et, ou, mais, de, à, en, avec, sans, pour, ne, pas, oui,
+  non, je, tu, il, elle, nous, vous, ils, elles, me, te, se, que, qui, ça, va, comment]
+names: [Marie, Paul, Paris, Lyon]
+units:
+  - id: fr.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: fr.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye.
+        requires: []
+        lemmas:
+          - {lemma: bonjour, pos: intj, en: [hello, good morning], rank: null}
+          - {lemma: salut, pos: intj, en: [hi, bye], rank: null}
+          - {lemma: bonsoir, pos: intj, en: [good evening], rank: null}
+          - {lemma: merci, pos: intj, en: [thank you, thanks], rank: null}
+        examples:
+          - {id: 1, target: "Bonjour, Marie.", en: ["Hello, Marie."]}
+          - {id: 2, target: "Salut, ça va ?", en: ["Hi, how are you?"]}
+          - {id: 3, target: "Bonsoir, Paul.", en: ["Good evening, Paul."]}
+          - {id: 4, target: "Merci, Marie.", en: ["Thank you, Marie."]}

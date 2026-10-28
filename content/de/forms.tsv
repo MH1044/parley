@@ -1,0 +1,92 @@
+# source: hand-written; sha256: -; date: 2026-10-27
+Abend	Abend	noun	m	canonical
+Abende	Abend	noun	m	plural
+Abenden	Abend	noun	m	dative plural
+Deutsch	Deutsch	noun	n	canonical
+Englisch	Englisch	noun	n	canonical
+Entschuldigung	Entschuldigung	intj		canonical
+Französisch	Französisch	noun	n	canonical
+Frau	Frau	noun	f	canonical
+Frauen	Frau	noun	f	plural
+Herr	Herr	noun	m	canonical
+Herren	Herr	noun	m	plural
+Herrn	Herr	noun	m	oblique singular
+Jahr	Jahr	noun	n	canonical
+Jahre	Jahr	noun	n	plural
+Jahren	Jahr	noun	n	dative plural
+Jahres	Jahr	noun	n	genitive singular
+Morgen	Morgen	noun	m	canonical
+Nacht	Nacht	noun	f	canonical
+Name	Name	noun	m	canonical
+Namen	Name	noun	m	plural oblique singular
+Nummer	Nummer	noun	f	canonical
+Nummern	Nummer	noun	f	plural
+Nächte	Nacht	noun	f	plural
+Nächten	Nacht	noun	f	dative plural
+Spanisch	Spanisch	noun	n	canonical
+Tag	Tag	noun	m	canonical
+Tage	Tag	noun	m	plural
+Tagen	Tag	noun	m	dative plural
+Telefonnummer	Telefonnummer	noun	f	canonical
+Telefonnummern	Telefonnummer	noun	f	plural
+acht	acht	num		canonical
+alt	alt	adj		canonical
+alte	alt	adj		nominative feminine singular
+alten	alt	adj		accusative masculine singular
+alter	alt	adj		nominative masculine singular
+altes	alt	adj		nominative neuter singular
+auch	auch	adv		canonical
+auf Wiedersehen	auf Wiedersehen	expr		canonical
+bin	sein	verb		first-person singular present
+bist	sein	verb		second-person singular present
+bitte	bitte	intj		canonical
+danke	danke	intj		canonical
+drei	drei	num		canonical
+ein bisschen	ein bisschen	expr		canonical
+eins	eins	num		canonical
+freut mich	freut mich	expr		canonical
+fünf	fünf	num		canonical
+gehe	gehen	verb		first-person singular present
+gehen	gehen	verb		canonical
+gehst	gehen	verb		second-person singular present
+geht	gehen	verb		third-person singular second-person plural present
+gut	gut	adj		canonical
+gute	gut	adj		nominative feminine singular
+gutem	gut	adj		dative singular
+guten	gut	adj		accusative masculine singular
+guter	gut	adj		nominative masculine singular
+gutes	gut	adj		nominative neuter singular
+habe	haben	verb		first-person singular present
+haben	haben	verb		canonical
+habt	haben	verb		second-person plural present
+hallo	hallo	intj		canonical
+hast	haben	verb		second-person singular present
+hat	haben	verb		third-person singular present
+heiße	heißen	verb		first-person singular present
+heißen	heißen	verb		canonical
+heißt	heißen	verb		second-person third-person singular present
+ist	sein	verb		third-person singular present
+komme	kommen	verb		first-person singular present
+kommen	kommen	verb		canonical
+kommst	kommen	verb		second-person singular present
+kommt	kommen	verb		third-person singular second-person plural present
+neun	neun	num		canonical
+sechs	sechs	num		canonical
+seid	sein	verb		second-person plural present
+sein	sein	verb		canonical
+sieben	sieben	num		canonical
+sind	sein	verb		first-person third-person plural present
+spreche	sprechen	verb		first-person singular present
+sprechen	sprechen	verb		canonical
+sprecht	sprechen	verb		second-person plural present
+sprichst	sprechen	verb		second-person singular present
+spricht	sprechen	verb		third-person singular present
+tschüss	tschüss	intj		canonical
+vier	vier	num		canonical
+wohne	wohnen	verb		first-person singular present
+wohnen	wohnen	verb		canonical
+wohnst	wohnen	verb		second-person singular present
+wohnt	wohnen	verb		third-person singular second-person plural present
+zehn	zehn	num		canonical
+zwei	zwei	num		canonical
+älter	alt	adj		comparative

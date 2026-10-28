@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/syllabus/bad-V02/es/syllabus.yaml: lang is \"fr\" but the folder is \"es\""
+  ],
+  "warnings": []
+}

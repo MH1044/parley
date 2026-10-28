@@ -44,4 +44,7 @@ cargo test --workspace
 step "vitest"
 npm --prefix app test -- --run
 
+step "content validate"
+cargo run -q -p parley-cli -- content validate content
+
 printf '\nverify: all green\n'

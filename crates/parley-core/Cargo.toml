@@ -9,9 +9,17 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+jsonschema = { workspace = true }
+rusqlite = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+sha2 = { workspace = true }
+toml = { workspace = true }
+unicode-normalization = { workspace = true }
+unicode-segmentation = { workspace = true }
 
 [dev-dependencies]
 ignore = { workspace = true }
 regex = { workspace = true }
+tempfile = { workspace = true }

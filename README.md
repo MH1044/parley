@@ -5,8 +5,10 @@ conversations, with spaced repetition underneath. Free and open source, for Wind
 macOS, with Android to follow.
 
 **Status: pre-alpha.** Nothing teaches yet. The repository, the build, the tests and continuous
-integration exist, and the desktop window opens and shows the version. `docs/ROADMAP.md` lists
-what comes next, in order; `docs/PRODUCT.md` describes the finished app.
+integration exist, the desktop window opens and shows the version, and the course exists as
+validated open data: a syllabus format with a validator, word-form tables, and sentence packs
+built from Tatoeba. `docs/ROADMAP.md` lists what comes next, in order; `docs/PRODUCT.md`
+describes the finished app.
 
 ## What it replaces
 
@@ -58,6 +60,57 @@ cargo run -q -p parley-cli -- --version --json
 
 prints `{"name":"parley","version":"0.1.0"}`.
 
+## Course content
+
+The course is open data under `content/`, licensed CC BY-SA 4.0 (`content/LICENSE`,
+ADR-0003), one folder per language:
+
+| File | What |
+|---|---|
+| `content/<lang>/syllabus.yaml` | Units, skills, lemmas and example sentences with English translations |
+| `content/<lang>/ids.lock` | Every item id ever published, active or retired, so an id is never renumbered or reused |
+| `content/<lang>/forms.tsv` | Inflected form to lemma (`buenas` to `bueno`), derived from Wiktionary |
+| `content/<lang>/numbers.yaml` | The words for 0 to 100 |
+| `content/<lang>/exclude.txt` | Lemmas never taught or shown |
+| `content/packs.lock.toml` | The published sentence packs: URL, SHA-256, size per language |
+
+`parley content validate` checks a syllabus file, or every `<dir>/<lang>/syllabus.yaml`, and
+prints an exact message for every problem: the schema (types, required fields, enumerations),
+then the shape rules of `docs/modules/01-content-model-and-syllabus.md`: id shapes, ordering,
+sizes (3 to 20 lemmas and 4 to 15 examples per skill), genders on nouns, every example word
+taught by this or an earlier skill, no repeated sentence, Unicode NFC, and the id lock.
+
+```sh
+cargo run -q -p parley-cli -- content validate content
+cargo run -q -p parley-cli -- content validate content/es/syllabus.yaml --json
+```
+
+The first prints `ok`; the second `{"ok":true,"errors":[],"warnings":[]}`. Any error exits 1
+with its line, for example `es.a1.u01.s01: example 5 uses "tardes", which no earlier skill
+teaches`.
+
+After adding or removing lemmas or examples, record the item ids:
+
+```sh
+cargo run -q -p parley-cli -- content lock --lang es
+```
+
+prints what changed, `{"added":[...],"retired":[...]}`, and rewrites `content/es/ids.lock`.
+
+Word-form tables come from a wiktextract extract of Wiktionary, and sentence packs from
+Tatoeba's per-language exports (both downloaded into `data-cache/`, never committed):
+
+```sh
+cargo run -q -p parley-cli -- forms extract --lang es --wiktextract data-cache/es.jsonl \
+    --syllabus content/es/syllabus.yaml --out content/es/forms.tsv
+cargo run -q -p parley-cli -- pack build --lang es --tatoeba-dir data-cache/tatoeba \
+    --wiktextract data-cache/es.jsonl --syllabus content/es/syllabus.yaml --out es.sqlite3
+cargo run -q -p parley-cli -- pack info es.sqlite3
+```
+
+A pack keeps every sentence's author (CC BY 2.0 FR) and reports why each dropped sentence was
+dropped; `docs/HANDBOOK.md` shows each command's output.
+
 ## Repository
 
 | Path | What |
@@ -67,8 +120,10 @@ prints `{"name":"parley","version":"0.1.0"}`.
 | `crates/parley-audio` | Microphone, playback, OS voices, local transcription, media decoding |
 | `crates/parley-cli` | The `parley` command-line tool and the `parley-fixtures` generator |
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
+| `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
+| `schemas/` | JSON Schemas for the content formats |
 | `scripts/` | `verify`, the licence gates, the release-notes check |
-| `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated fixtures |
+| `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated and hand-written fixtures |
 | `docs/` | Product, architecture, Publik integration and contract, testing, roadmap, one spec per module, decision records, the handbook |
 
 ## Documentation
@@ -86,6 +141,7 @@ prints `{"name":"parley","version":"0.1.0"}`.
 ## Licence
 
 The code is licensed under either the MIT licence (`LICENSE-MIT`) or the Apache License, Version
-2.0 (`LICENSE-APACHE`), at your option (ADR-0002). The course content carries its own licence
-(ADR-0003, decided before the first content is written); sentence packs built from Tatoeba are
-CC BY 2.0 FR. `THIRD_PARTY.md` lists every dependency with its licence.
+2.0 (`LICENSE-APACHE`), at your option (ADR-0002). The course content under `content/` is
+CC BY-SA 4.0 (`content/LICENSE`, ADR-0003), which lets its forms tables be derived from
+Wiktionary; sentence packs built from Tatoeba are CC BY 2.0 FR with every author kept.
+`THIRD_PARTY.md` lists every dependency with its licence.

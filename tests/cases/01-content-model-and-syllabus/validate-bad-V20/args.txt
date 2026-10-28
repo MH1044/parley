@@ -1,0 +1,6 @@
+content
+validate
+tests/fixtures/syllabus/bad-V20
+--forms
+tests/fixtures/syllabus/forms.tsv
+--json

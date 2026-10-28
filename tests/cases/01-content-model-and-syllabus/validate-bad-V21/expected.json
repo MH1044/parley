@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "es.a1.u01.s01#e:4 is not in ids.lock; run parley content lock --lang es"
+  ],
+  "warnings": []
+}

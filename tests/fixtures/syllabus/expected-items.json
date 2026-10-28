@@ -1,0 +1,260 @@
+[
+  {
+    "id": "es.a1.u01.s01#l:hola",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "hola",
+    "en": [
+      "hello",
+      "hi"
+    ],
+    "accepted": {
+      "to_target": [
+        "hola"
+      ],
+      "to_en": [
+        "hello",
+        "hi"
+      ]
+    },
+    "lemmas": [
+      "hola"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:adiós",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "adiós",
+    "en": [
+      "goodbye",
+      "bye"
+    ],
+    "accepted": {
+      "to_target": [
+        "adiós"
+      ],
+      "to_en": [
+        "goodbye",
+        "bye"
+      ]
+    },
+    "lemmas": [
+      "adiós"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:bueno",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "bueno",
+    "en": [
+      "good"
+    ],
+    "accepted": {
+      "to_target": [
+        "bueno"
+      ],
+      "to_en": [
+        "good"
+      ]
+    },
+    "lemmas": [
+      "bueno"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:día",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "el día",
+    "en": [
+      "day"
+    ],
+    "accepted": {
+      "to_target": [
+        "el día"
+      ],
+      "to_en": [
+        "day"
+      ]
+    },
+    "lemmas": [
+      "día"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:noche",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "la noche",
+    "en": [
+      "night"
+    ],
+    "accepted": {
+      "to_target": [
+        "la noche"
+      ],
+      "to_en": [
+        "night"
+      ]
+    },
+    "lemmas": [
+      "noche"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:tal",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "tal",
+    "en": [
+      "such"
+    ],
+    "accepted": {
+      "to_target": [
+        "tal"
+      ],
+      "to_en": [
+        "such"
+      ]
+    },
+    "lemmas": [
+      "tal"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#l:gracias",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "vocab",
+    "target": "gracias",
+    "en": [
+      "thank you",
+      "thanks"
+    ],
+    "accepted": {
+      "to_target": [
+        "gracias"
+      ],
+      "to_en": [
+        "thank you",
+        "thanks"
+      ]
+    },
+    "lemmas": [
+      "gracias"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#e:1",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "phrase",
+    "target": "Hola, ¿qué tal?",
+    "en": [
+      "Hi, how are you?",
+      "Hello, how are you?"
+    ],
+    "accepted": {
+      "to_target": [
+        "Hola, ¿qué tal?"
+      ],
+      "to_en": [
+        "Hi, how are you?",
+        "Hello, how are you?"
+      ]
+    },
+    "lemmas": [
+      "hola",
+      "tal"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#e:2",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "phrase",
+    "target": "Buenos días.",
+    "en": [
+      "Good morning."
+    ],
+    "accepted": {
+      "to_target": [
+        "Buenos días."
+      ],
+      "to_en": [
+        "Good morning."
+      ]
+    },
+    "lemmas": [
+      "bueno",
+      "día"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#e:3",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "phrase",
+    "target": "Buenas noches, Ana.",
+    "en": [
+      "Good night, Ana.",
+      "Good evening, Ana."
+    ],
+    "accepted": {
+      "to_target": [
+        "Buenas noches, Ana."
+      ],
+      "to_en": [
+        "Good night, Ana.",
+        "Good evening, Ana."
+      ]
+    },
+    "lemmas": [
+      "bueno",
+      "noche"
+    ],
+    "cefr": "A1"
+  },
+  {
+    "id": "es.a1.u01.s01#e:4",
+    "lang": "es",
+    "skill": "es.a1.u01.s01",
+    "kind": "phrase",
+    "target": "Adiós, gracias.",
+    "en": [
+      "Goodbye, thank you.",
+      "Bye, thanks."
+    ],
+    "accepted": {
+      "to_target": [
+        "Adiós, gracias."
+      ],
+      "to_en": [
+        "Goodbye, thank you.",
+        "Bye, thanks."
+      ]
+    },
+    "lemmas": [
+      "adiós",
+      "gracias"
+    ],
+    "cefr": "A1"
+  }
+]

@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "es.a1.u01.s01: requires es.a1.u01.s02, which is not an earlier skill"
+  ],
+  "warnings": []
+}

@@ -1,0 +1,4 @@
+# Sentence packs pinned by checksum. One table per language ([es], [fr], [de]) with
+# version, url, sha256, bytes and content_sha256 is filled in when the packs are built
+# and published as release assets.
+schema = "parley.packs/1"

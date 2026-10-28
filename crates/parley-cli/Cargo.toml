@@ -7,6 +7,8 @@ license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 publish = false
+# The crate ships two binaries; `cargo run -q -p parley-cli -- <command>` means the tool.
+default-run = "parley"
 
 [lib]
 name = "parley_cli"
@@ -28,10 +30,12 @@ harness = false
 
 [dependencies]
 parley-core = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = { workspace = true }
 
 [dev-dependencies]
 libtest-mimic = { workspace = true }
+rusqlite = { workspace = true }
 tempfile = { workspace = true }
 toml = { workspace = true }

@@ -1,0 +1,4 @@
+# Lemmas never taught or shown. fumar is the one the fixtures use.
+fumar
+matar
+odiar

@@ -39,8 +39,10 @@ fn run(program: &str, args: &[&str], cwd: &Path) -> Output {
         .unwrap_or_else(|e| panic!("could not run {program}: {e}"))
 }
 
-/// A POSIX shell for the scripts: `sh` where it exists, else `bash` (Git for Windows ships both).
-fn shell() -> &'static str {
+/// A POSIX shell for the scripts: `sh` where it exists, else `bash`, else Git for Windows'
+/// `usr\bin\sh.exe`, found through the `git` on the PATH (a plain PowerShell has `git` but
+/// neither `sh` nor `bash`).
+fn shell() -> String {
     for candidate in ["sh", "bash"] {
         if Command::new(candidate)
             .arg("-c")
@@ -48,7 +50,30 @@ fn shell() -> &'static str {
             .output()
             .is_ok()
         {
-            return candidate;
+            return candidate.to_string();
+        }
+    }
+    if Command::new("git").arg("--version").output().is_ok() {
+        let finder = if cfg!(windows) { "where" } else { "which" };
+        if let Ok(found) = Command::new(finder).arg("git").output()
+            && found.status.success()
+        {
+            for line in String::from_utf8_lossy(&found.stdout).lines() {
+                let exe = PathBuf::from(line.trim());
+                // `Git\cmd\git.exe` is one level below the installation, `Git\mingw64\bin\git.exe`
+                // two; `usr\bin\sh.exe` lives in the installation.
+                let mut dir = exe.parent();
+                for _ in 0..2 {
+                    let Some(ancestor) = dir.and_then(Path::parent) else {
+                        break;
+                    };
+                    let sh = ancestor.join("usr").join("bin").join("sh.exe");
+                    if sh.is_file() {
+                        return sh.to_string_lossy().into_owned();
+                    }
+                    dir = Some(ancestor);
+                }
+            }
         }
     }
     panic!("neither sh nor bash is available to run the scripts");
@@ -261,7 +286,7 @@ fn t08_check_release_notes() {
     let dir = tempfile::tempdir().unwrap();
     let sh = shell();
 
-    let missing = run(sh, &[&script, "0.1.0"], dir.path());
+    let missing = run(&sh, &[&script, "0.1.0"], dir.path());
     assert_eq!(missing.status.code(), Some(1));
     assert_eq!(
         text(&missing.stderr),
@@ -271,7 +296,7 @@ fn t08_check_release_notes() {
     let notes = dir.path().join("docs").join("releases");
     fs::create_dir_all(&notes).unwrap();
     fs::write(notes.join("0.1.0.md"), "# 0.1.0\n").unwrap();
-    let present = run(sh, &[&script, "0.1.0"], dir.path());
+    let present = run(&sh, &[&script, "0.1.0"], dir.path());
     assert_eq!(present.status.code(), Some(0), "{}", text(&present.stderr));
 }
 

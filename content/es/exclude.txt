@@ -1,0 +1,8 @@
+# Lemmas never taught or shown: offensive words and slurs. One lemma per line.
+cabrón
+coño
+gilipollas
+joder
+mierda
+polla
+puta

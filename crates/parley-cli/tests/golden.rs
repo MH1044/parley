@@ -4,15 +4,19 @@
 //!
 //! A case directory holds:
 //! - `args.txt`: one command-line argument per line. The token `{input}` is replaced by the path
-//!   of the case's `input.json`, for commands that read a file.
+//!   of the case's `input.json`, for commands that read a file; `{tmp}` by a fresh temporary
+//!   directory (forward slashes), for commands that write a file.
 //! - `stdin.txt` (optional): written to the command's standard input.
+//! - `exit.txt` (optional): the expected exit code, default 0, so a case that must exit 1 by
+//!   design (a syllabus with errors) can be a golden case.
 //! - `expected.json`: the expected output. Integers and strings compare exactly; floats compare
 //!   within the tolerance of `tolerance.json` (optional, `{"path.to.field": 1e-4}`, array indexes
 //!   as numbers), default 1e-9.
 //!
-//! The command must exit 0. Setting `PARLEY_BLESS=NN-slug` rewrites the expected files of that one
-//! module instead of comparing, for a new case or a change the spec and commit body describe; the
-//! diff is then read line by line, because a golden file is the specification, not a cache.
+//! The command runs from the repository root, so paths in `args.txt` are relative to it. Setting
+//! `PARLEY_BLESS=NN-slug` rewrites the expected files of that one module instead of comparing,
+//! for a new case or a change the spec and commit body describe; the diff is then read line by
+//! line, because a golden file is the specification, not a cache.
 //!
 //! Run one module's cases with `cargo test -p parley-cli --test golden -- NN-slug`.
 
@@ -88,12 +92,25 @@ fn run_case(root: &Path, module: &str, case: &Path) -> Result<(), Failed> {
     let args_text = fs::read_to_string(case.join("args.txt"))
         .map_err(|e| format!("args.txt could not be read: {e}"))?;
     let input_path = case.join("input.json").to_string_lossy().into_owned();
+    // Lives until the end of the case, so a file the command writes can be read back.
+    let tmp = tempfile::tempdir().map_err(|e| format!("no temporary directory: {e}"))?;
+    let tmp_path = tmp.path().to_string_lossy().replace('\\', "/");
     let args: Vec<String> = args_text
         .lines()
         .map(|line| line.trim_end_matches('\r'))
         .filter(|line| !line.is_empty())
-        .map(|line| line.replace("{input}", &input_path))
+        .map(|line| {
+            line.replace("{input}", &input_path)
+                .replace("{tmp}", &tmp_path)
+        })
         .collect();
+    let expected_exit: i32 = match fs::read_to_string(case.join("exit.txt")) {
+        Ok(text) => text
+            .trim()
+            .parse()
+            .map_err(|e| format!("exit.txt is not an integer: {e}"))?,
+        Err(_) => 0,
+    };
 
     let mut child = Command::new(env!("CARGO_BIN_EXE_parley"))
         .args(&args)
@@ -116,9 +133,9 @@ fn run_case(root: &Path, module: &str, case: &Path) -> Result<(), Failed> {
         .map_err(|e| format!("the parley binary did not finish: {e}"))?;
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
-    if !output.status.success() {
+    if output.status.code() != Some(expected_exit) {
         return Err(format!(
-            "parley {} exited with {:?}\nstdout:\n{stdout}\nstderr:\n{stderr}",
+            "parley {} exited with {:?}, expected {expected_exit}\nstdout:\n{stdout}\nstderr:\n{stderr}",
             args.join(" "),
             output.status.code()
         )

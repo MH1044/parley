@@ -3,7 +3,7 @@
 | NN | Module | Goal | Tier | Depends on | Status |
 |---|---|---|---|---|---|
 | 00 | scaffold | Workspace, `verify`, licence gate, hygiene test, golden harness, fixture generator, CI, ADRs, a window that opens | process | – | Done (2026-10-27) |
-| 01 | content-model-and-syllabus | Syllabus format and validator, items, tokeniser, forms table, Tatoeba pack builder, seed content | load-bearing (content formats) | 00, ADR-0003 decided | Planned |
+| 01 | content-model-and-syllabus | Syllabus format and validator, items, tokeniser, forms table, Tatoeba pack builder, seed content | load-bearing (content formats) | 00, ADR-0003 decided | Done (2026-10-28) |
 | 02 | srs-and-learner-model | FSRS cards and review log, mastery, skill states, adaptive placement, CEFR estimate | load-bearing (learner data) | 01 | Planned |
 | 03 | exercise-engine-and-grading | Exercise types, normaliser, accent and typo grading, template lessons, composer, XP, streaks and freezes | load-bearing (grading) | 01, 02 | Planned |
 | 04 | app-shell-and-offline-course | The whole offline app: onboarding, path, lesson player, reviews, stats, settings, backup | interface (backup is load-bearing) | 03 | Planned |

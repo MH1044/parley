@@ -1,0 +1,16 @@
+# source: forms-mini.jsonl; sha256: bdd2092585e56451edb8e59e844bfca7a0659c3cc5cf51c3716430dea3b33919; date: 2026-10-01
+buena	bueno	adj		feminine singular
+buenas	bueno	adj		feminine plural
+bueno	bueno	adj		canonical
+buenos	bueno	adj		masculine plural
+fue	ir	verb		third-person singular preterite indicative
+fueron	ir	verb		third-person plural preterite indicative
+fui	ir	verb		first-person singular preterite indicative
+ir	ir	verb		canonical
+noche	noche	noun	f	canonical
+noches	noche	noun	f	plural
+va	ir	verb		third-person singular present indicative
+vamos	ir	verb		first-person plural present indicative
+van	ir	verb		third-person plural present indicative
+vas	ir	verb		second-person singular present indicative
+voy	ir	verb		first-person singular present indicative

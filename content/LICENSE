@@ -1,0 +1,20 @@
+Parley course content licence
+
+The course content in this directory (content/): the syllabi, can-do statements, grammar
+notes, example sentences, word-form tables, number words and exclusion lists for every
+language, is licensed under the Creative Commons Attribution-ShareAlike 4.0 International
+licence (CC BY-SA 4.0).
+
+    Licence:     https://creativecommons.org/licenses/by-sa/4.0/
+    Legal code:  https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+You may share and adapt this content, including commercially, as long as you credit Parley
+and the sources named in ATTRIBUTION.md, link to the licence, say what you changed, and
+distribute your adaptations under the same licence.
+
+The code of Parley is a separate work, licensed under MIT OR Apache-2.0; see LICENSE-MIT
+and LICENSE-APACHE in the repository root.
+
+Sentence packs built from Tatoeba are separate works distributed under the Creative
+Commons Attribution 2.0 France licence (CC BY 2.0 FR) with their own attribution, kept in
+each pack; see ATTRIBUTION.md.

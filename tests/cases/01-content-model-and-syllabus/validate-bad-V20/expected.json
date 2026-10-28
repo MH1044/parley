@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "es.a1.u01.s01#e:2 was retired; give the example a new id"
+  ],
+  "warnings": []
+}

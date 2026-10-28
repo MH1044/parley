@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley syllabus",
+  "description": "A course syllabus (content/<lang>/syllabus.yaml). The schema checks types, required fields, enumerations and the schema constant only; every count, shape and wording rule is one of the validator's rules V03 to V21, so each has its own message.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "lang", "name", "variety", "version", "function_words", "names", "units"],
+  "properties": {
+    "schema": { "const": "parley.syllabus/1" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "name": { "type": "string" },
+    "variety": { "type": "string" },
+    "version": { "type": "integer" },
+    "function_words": { "type": "array", "items": { "type": "string" } },
+    "names": { "type": "array", "items": { "type": "string" } },
+    "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } }
+  },
+  "$defs": {
+    "cefr": { "enum": ["A1", "A2"] },
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "cefr", "skills"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "cefr": { "$ref": "#/$defs/cefr" },
+        "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "cefr", "can_do", "requires", "lemmas", "examples"],
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "enum": ["grammar", "vocab", "function"] },
+        "title": { "type": "string" },
+        "cefr": { "$ref": "#/$defs/cefr" },
+        "can_do": { "type": "string" },
+        "requires": { "type": "array", "items": { "type": "string" } },
+        "grammar_note": { "type": "string" },
+        "lemmas": { "type": "array", "items": { "$ref": "#/$defs/lemma" } },
+        "examples": { "type": "array", "items": { "$ref": "#/$defs/example" } }
+      }
+    },
+    "lemma": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lemma", "pos", "en", "rank"],
+      "properties": {
+        "lemma": { "type": "string" },
+        "pos": { "enum": ["noun", "verb", "adj", "adv", "intj", "pron", "prep", "conj", "det", "num", "expr"] },
+        "gender": { "enum": ["m", "f", "n"] },
+        "en": { "type": "array", "items": { "type": "string" } },
+        "rank": { "type": ["integer", "null"] },
+        "separable": { "type": "string" },
+        "article": { "type": "string" }
+      }
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "target", "en"],
+      "properties": {
+        "id": { "type": "integer" },
+        "target": { "type": "string" },
+        "en": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

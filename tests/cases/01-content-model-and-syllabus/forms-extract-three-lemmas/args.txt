@@ -1,0 +1,16 @@
+forms
+extract
+--lang
+es
+--wiktextract
+tests/fixtures/forms-mini.jsonl
+--lemma
+bueno
+--lemma
+noche
+--lemma
+ir
+--date
+2026-10-01
+--out
+{tmp}/forms.tsv

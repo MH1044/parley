@@ -11,12 +11,17 @@ get a row here when a module adds them.
 | tauri | Apache-2.0 OR MIT | The desktop shell |
 | tauri-build | Apache-2.0 OR MIT | Build-time setup of the Tauri crate |
 | serde | MIT OR Apache-2.0 | Serialisation of command results and errors |
-| serde_json | MIT OR Apache-2.0 | JSON output of the command-line tool and the fixture manifest |
-| sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures (later: cache keys, pack checksums) |
+| serde_json | MIT OR Apache-2.0 | JSON output of the command-line tool, the fixture manifest, and the untyped pass of a syllabus before its schema check |
+| serde_yaml_ng | MIT | Reading `syllabus.yaml` and `numbers.yaml` (YAML 1.2: `no` and `yes` stay strings) |
+| jsonschema | MIT | JSON Schema checks of content (later: backups and every AI response); built without its network resolver |
+| rusqlite, with bundled SQLite | MIT; SQLite is public domain | Sentence packs (later: the learner's store) |
+| unicode-segmentation | MIT OR Apache-2.0 | UAX #29 word boundaries in the tokeniser |
+| unicode-normalization | MIT OR Apache-2.0 | Unicode NFC for every comparison of words |
+| toml | MIT OR Apache-2.0 | Reading `content/packs.lock.toml` (and `deny.toml`, `Cargo.toml` in tests) |
+| sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures, pack checksums, the content hash and forms-table headers (later: cache keys) |
 | regex (tests only) | MIT OR Apache-2.0 | The source-hygiene test's patterns |
 | ignore (tests only) | Unlicense OR MIT | The source-hygiene test's fallback walk, honouring `.gitignore` |
 | libtest-mimic (tests only) | MIT OR Apache-2.0 | One test per golden case directory |
-| toml (tests only) | MIT OR Apache-2.0 | Reading `deny.toml` and `Cargo.toml` in tests |
 | tempfile (tests only) | MIT OR Apache-2.0 | Temporary directories in tests |
 
 ## npm packages (registry.npmjs.org)
@@ -48,9 +53,16 @@ in `models/registry.toml`, never committed.
 
 ## Datasets
 
-None yet. Sentence packs are built from Tatoeba exports (CC BY 2.0 FR) and word forms from
-Wiktionary through wiktextract (CC BY-SA 4.0 and GFDL) from module 01, with attribution in
-`content/ATTRIBUTION.md`; nothing downloaded is committed.
+| Dataset | Licence | Used for |
+|---|---|---|
+| Tatoeba per-language exports (sentences, links) | CC BY 2.0 FR | Read by `parley pack build`; the pack keeps every author for attribution |
+| Wiktionary through wiktextract (kaikki.org) extracts | CC BY-SA 4.0 and GFDL | Read by `parley forms extract` and `parley pack build` for inflected form to lemma |
+
+Both are downloaded by checksum into the git-ignored `data-cache/` and never committed. What
+ships is derived from them: sentence packs as release assets pinned by SHA-256 in
+`content/packs.lock.toml`, and `content/<lang>/forms.tsv` under the content licence (CC BY-SA
+4.0, ADR-0003), with the credits in `content/ATTRIBUTION.md`. The small fixtures under
+`tests/fixtures/` are written for this project (CC0) and only imitate the file formats.
 
 ## Other
 

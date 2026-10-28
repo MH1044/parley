@@ -1,0 +1,12 @@
+{
+  "lang": "es",
+  "kept": 22,
+  "dropped": {
+    "no_translation": 5,
+    "too_short": 1,
+    "too_long": 3,
+    "excluded_lemma": 2,
+    "unknown_word": 5,
+    "duplicate": 2
+  }
+}

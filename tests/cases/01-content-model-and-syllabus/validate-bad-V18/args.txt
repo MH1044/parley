@@ -1,0 +1,4 @@
+content
+validate
+tests/fixtures/syllabus/bad-V18.yaml
+--json

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley item",
+  "description": "A learnable item derived from a syllabus: a vocabulary item from a lemma, or a phrase or pattern item from an example.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "lang", "skill", "kind", "target", "en", "accepted", "lemmas", "cefr"],
+  "properties": {
+    "id": { "type": "string" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "skill": { "type": "string" },
+    "kind": { "enum": ["vocab", "phrase", "pattern"] },
+    "target": { "type": "string" },
+    "en": { "type": "array", "items": { "type": "string" } },
+    "accepted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["to_target", "to_en"],
+      "properties": {
+        "to_target": { "type": "array", "items": { "type": "string" } },
+        "to_en": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "lemmas": { "type": "array", "items": { "type": "string" } },
+    "cefr": { "enum": ["A1", "A2"] }
+  }
+}
