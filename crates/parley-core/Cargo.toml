@@ -9,6 +9,7 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+fsrs = { workspace = true }
 jsonschema = { workspace = true }
 rusqlite = { workspace = true }
 serde = { workspace = true }

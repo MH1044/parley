@@ -1,0 +1,7 @@
+placement
+simulate
+--syllabus
+tests/fixtures/generated/syllabus-mini/xx/syllabus.yaml
+--boundary
+23
+--json

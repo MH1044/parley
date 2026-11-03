@@ -1,0 +1,477 @@
+{
+  "schema": "parley.fsrs-reference/1",
+  "generated_by": "scripts/reference/fsrs_reference.py",
+  "py_fsrs_version": "6.3.2",
+  "fsrs_rs_version": "6.6.2",
+  "parameters": [
+    0.212,
+    1.2931,
+    2.3065,
+    8.2956,
+    6.4133,
+    0.8334,
+    3.0194,
+    0.001,
+    1.8722,
+    0.1666,
+    0.796,
+    1.4835,
+    0.0614,
+    0.2629,
+    1.6483,
+    0.6014,
+    1.8729,
+    0.5425,
+    0.0912,
+    0.0658,
+    0.1542
+  ],
+  "scheduler": {
+    "desired_retention": 0.9,
+    "learning_steps": [],
+    "relearning_steps": [],
+    "maximum_interval": 365,
+    "enable_fuzzing": false
+  },
+  "time_unit": "UTC milliseconds since the Unix epoch",
+  "scenarios": [
+    {
+      "name": "new-card-each-rating",
+      "description": "Four new cards, each reviewed once, rated Again, Hard, Good and Easy.",
+      "cards": [
+        {
+          "item_id": "ref.s1.again",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767603600000,
+              "rating": 1,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 0.212,
+              "difficulty": 6.4133,
+              "due": 1767690000000,
+              "interval_days": 1
+            }
+          ]
+        },
+        {
+          "item_id": "ref.s1.hard",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767603600000,
+              "rating": 2,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 1.2931,
+              "difficulty": 5.112170705601056,
+              "due": 1767690000000,
+              "interval_days": 1
+            }
+          ]
+        },
+        {
+          "item_id": "ref.s1.good",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767603600000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 2.3065,
+              "difficulty": 2.118103970459016,
+              "due": 1767776400000,
+              "interval_days": 2
+            }
+          ]
+        },
+        {
+          "item_id": "ref.s1.easy",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767603600000,
+              "rating": 4,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 8.2956,
+              "difficulty": 1.0,
+              "due": 1768294800000,
+              "interval_days": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "good-streak",
+      "description": "Good eight times: on time, five hours late, three days late, then on time.",
+      "cards": [
+        {
+          "item_id": "ref.s2.good-streak",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767607200000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 2.3065,
+              "difficulty": 2.118103970459016,
+              "due": 1767780000000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767780000000,
+              "rating": 3,
+              "elapsed_days": 2,
+              "retrievability_before": 0.9094932559773545,
+              "stability": 10.964332335820698,
+              "difficulty": 2.111214235785395,
+              "due": 1768730400000,
+              "interval_days": 11
+            },
+            {
+              "reviewed_at": 1768748400000,
+              "rating": 3,
+              "elapsed_days": 11,
+              "retrievability_before": 0.8997767176252718,
+              "stability": 46.28021728755693,
+              "difficulty": 2.1043313908464483,
+              "due": 1772722800000,
+              "interval_days": 46
+            },
+            {
+              "reviewed_at": 1772982000000,
+              "rating": 3,
+              "elapsed_days": 49,
+              "retrievability_before": 0.8960289787420237,
+              "stability": 168.21451029231065,
+              "difficulty": 2.0974554287524403,
+              "due": 1787497200000,
+              "interval_days": 168
+            },
+            {
+              "reviewed_at": 1787497200000,
+              "rating": 3,
+              "elapsed_days": 168,
+              "retrievability_before": 0.9000876411848661,
+              "stability": 511.4177596709298,
+              "difficulty": 2.0905863426205262,
+              "due": 1819033200000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1819033200000,
+              "rating": 3,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9214622778194637,
+              "stability": 1187.6039240984144,
+              "difficulty": 2.083724125574744,
+              "due": 1850569200000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1850569200000,
+              "rating": 3,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9602027364323087,
+              "stability": 1868.9446070754584,
+              "difficulty": 2.0768687707460076,
+              "due": 1882105200000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1882105200000,
+              "rating": 3,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9733490207367036,
+              "stability": 2531.760413949861,
+              "difficulty": 2.0700202712721,
+              "due": 1913641200000,
+              "interval_days": 365
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lapse-and-recovery",
+      "description": "Good three times, Again a day late on a reviewed card (a lapse), Again again on the relearning card (no second lapse), then Good, Good, Hard and Good on time.",
+      "cards": [
+        {
+          "item_id": "ref.s3.lapse",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767610800000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 2.3065,
+              "difficulty": 2.118103970459016,
+              "due": 1767783600000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767783600000,
+              "rating": 3,
+              "elapsed_days": 2,
+              "retrievability_before": 0.9094932559773545,
+              "stability": 10.964332335820698,
+              "difficulty": 2.111214235785395,
+              "due": 1768734000000,
+              "interval_days": 11
+            },
+            {
+              "reviewed_at": 1768734000000,
+              "rating": 3,
+              "elapsed_days": 11,
+              "retrievability_before": 0.8997767176252718,
+              "stability": 46.28021728755693,
+              "difficulty": 2.1043313908464483,
+              "due": 1772708400000,
+              "interval_days": 46
+            },
+            {
+              "reviewed_at": 1772794800000,
+              "rating": 1,
+              "elapsed_days": 47,
+              "retrievability_before": 0.8989362293164751,
+              "stability": 2.9397454210478644,
+              "difficulty": 7.389975788014609,
+              "due": 1773054000000,
+              "interval_days": 3
+            },
+            {
+              "reviewed_at": 1773054000000,
+              "rating": 1,
+              "elapsed_days": 3,
+              "retrievability_before": 0.898600046528199,
+              "stability": 0.6730194589211248,
+              "difficulty": 9.12733115898188,
+              "due": 1773140400000,
+              "interval_days": 1
+            },
+            {
+              "reviewed_at": 1773140400000,
+              "rating": 3,
+              "elapsed_days": 1,
+              "retrievability_before": 0.8705813532398369,
+              "stability": 1.6229616753229807,
+              "difficulty": 9.113432197119735,
+              "due": 1773313200000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1773313200000,
+              "rating": 3,
+              "elapsed_days": 2,
+              "retrievability_before": 0.8850186886668051,
+              "stability": 3.383298530662857,
+              "difficulty": 9.099547134219453,
+              "due": 1773572400000,
+              "interval_days": 3
+            },
+            {
+              "reviewed_at": 1773572400000,
+              "rating": 2,
+              "elapsed_days": 3,
+              "retrievability_before": 0.9080457979776011,
+              "stability": 4.941898564065393,
+              "difficulty": 9.387465795888165,
+              "due": 1774004400000,
+              "interval_days": 5
+            },
+            {
+              "reviewed_at": 1774004400000,
+              "rating": 3,
+              "elapsed_days": 5,
+              "retrievability_before": 0.8991949863045133,
+              "stability": 8.259482738497866,
+              "difficulty": 9.373306699389115,
+              "due": 1774695600000,
+              "interval_days": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "same-day-reviews",
+      "description": "Same-day reviews take the short-term formula: Good, then Hard, Good, Again and Good within hours; Good on time; Easy an hour later; Hard ten hours late; Good on time.",
+      "cards": [
+        {
+          "item_id": "ref.s4.same-day",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767614400000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 2.3065,
+              "difficulty": 2.118103970459016,
+              "due": 1767787200000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767621600000,
+              "rating": 2,
+              "elapsed_days": 0,
+              "retrievability_before": 1.0,
+              "stability": 2.3065,
+              "difficulty": 4.752858488532557,
+              "due": 1767794400000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767632400000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 1.0,
+              "stability": 2.3065,
+              "difficulty": 4.743333999340863,
+              "due": 1767805200000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767639600000,
+              "rating": 1,
+              "elapsed_days": 0,
+              "retrievability_before": 1.0,
+              "stability": 0.7750839828558984,
+              "difficulty": 8.257398000208983,
+              "due": 1767726000000,
+              "interval_days": 1
+            },
+            {
+              "reviewed_at": 1767643200000,
+              "rating": 3,
+              "elapsed_days": 0,
+              "retrievability_before": 1.0,
+              "stability": 0.8281648000472626,
+              "difficulty": 8.244368971505612,
+              "due": 1767729600000,
+              "interval_days": 1
+            },
+            {
+              "reviewed_at": 1767729600000,
+              "rating": 3,
+              "elapsed_days": 1,
+              "retrievability_before": 0.8865325230109102,
+              "stability": 2.2756380523559794,
+              "difficulty": 8.231352971830944,
+              "due": 1767902400000,
+              "interval_days": 2
+            },
+            {
+              "reviewed_at": 1767733200000,
+              "rating": 4,
+              "elapsed_days": 0,
+              "retrievability_before": 1.0,
+              "stability": 3.8967066059151296,
+              "difficulty": 7.625581923265196,
+              "due": 1768078800000,
+              "interval_days": 4
+            },
+            {
+              "reviewed_at": 1768114800000,
+              "rating": 2,
+              "elapsed_days": 4,
+              "retrievability_before": 0.8981925360474374,
+              "stability": 7.357253746642251,
+              "difficulty": 8.4089790020779,
+              "due": 1768719600000,
+              "interval_days": 7
+            },
+            {
+              "reviewed_at": 1768719600000,
+              "rating": 3,
+              "elapsed_days": 7,
+              "retrievability_before": 0.9033830949210659,
+              "stability": 14.463681156565587,
+              "difficulty": 8.395798392372658,
+              "due": 1769929200000,
+              "interval_days": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "easy-run-to-cap",
+      "description": "Easy six times on time: the interval reaches the 365-day cap and stays there.",
+      "cards": [
+        {
+          "item_id": "ref.s5.easy-cap",
+          "facet": "receptive",
+          "reviews": [
+            {
+              "reviewed_at": 1767618000000,
+              "rating": 4,
+              "elapsed_days": 0,
+              "retrievability_before": 0.0,
+              "stability": 8.2956,
+              "difficulty": 1.0,
+              "due": 1768309200000,
+              "interval_days": 8
+            },
+            {
+              "reviewed_at": 1768309200000,
+              "rating": 4,
+              "elapsed_days": 8,
+              "retrievability_before": 0.9024733005284542,
+              "stability": 65.62422616189994,
+              "difficulty": 1.0,
+              "due": 1774011600000,
+              "interval_days": 66
+            },
+            {
+              "reviewed_at": 1774011600000,
+              "rating": 4,
+              "elapsed_days": 66,
+              "retrievability_before": 0.899607248317662,
+              "stability": 396.7750233497581,
+              "difficulty": 1.0,
+              "due": 1805547600000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1805547600000,
+              "rating": 4,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9056313996815197,
+              "stability": 1787.9500743399976,
+              "difficulty": 1.0,
+              "due": 1837083600000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1837083600000,
+              "rating": 4,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9722610144471974,
+              "stability": 3184.063889483914,
+              "difficulty": 1.0,
+              "due": 1868619600000,
+              "interval_days": 365
+            },
+            {
+              "reviewed_at": 1868619600000,
+              "rating": 4,
+              "elapsed_days": 365,
+              "retrievability_before": 0.9837114693740819,
+              "stability": 4504.140714418339,
+              "difficulty": 1.0,
+              "due": 1900155600000,
+              "interval_days": 365
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

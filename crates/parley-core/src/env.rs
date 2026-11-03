@@ -21,6 +21,75 @@ pub trait Rng {
     fn next_u64(&mut self) -> u64;
 }
 
+/// SplitMix64 (Steele, Lea and Flood 2014, "Fast splittable pseudorandom number generators"):
+/// the seeded source for simulations. Integer arithmetic only, so a seed gives the same sequence
+/// on every platform.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SplitMix64 {
+    state: u64,
+}
+
+impl SplitMix64 {
+    pub fn new(seed: u64) -> Self {
+        SplitMix64 { state: seed }
+    }
+}
+
+impl Rng for SplitMix64 {
+    fn next_u64(&mut self) -> u64 {
+        self.state = self.state.wrapping_add(0x9E37_79B9_7F4A_7C15);
+        let mut z = self.state;
+        z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+        z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+        z ^ (z >> 31)
+    }
+}
+
+/// A civil date in the learner's time zone. Displays as `YYYY-MM-DD`; orders chronologically.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct LocalDate {
+    pub year: i32,
+    pub month: u32,
+    pub day: u32,
+}
+
+impl fmt::Display for LocalDate {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:04}-{:02}-{:02}", self.year, self.month, self.day)
+    }
+}
+
+const MS_PER_DAY: i64 = 86_400_000;
+
+/// The civil date of a day count since 1970-01-01 (Howard Hinnant's `civil_from_days`), in
+/// integer arithmetic so no date library is needed.
+fn civil_from_days(days: i64) -> LocalDate {
+    let z = days + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z.rem_euclid(146_097);
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let year = yoe + era * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let day = (doy - (153 * mp + 2) / 5 + 1) as u32;
+    let month = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
+    let year = if month <= 2 { year + 1 } else { year };
+    LocalDate {
+        year: year as i32,
+        month,
+        day,
+    }
+}
+
+/// Today's date where the learner is: the clock's milliseconds shifted by its UTC offset, floored
+/// to whole days, as a civil date. Streaks and daily goals count these dates.
+pub fn local_date(clock: &dyn Clock) -> LocalDate {
+    let local_ms = clock
+        .now_ms()
+        .saturating_add(i64::from(clock.utc_offset_minutes()) * 60_000);
+    civil_from_days(local_ms.div_euclid(MS_PER_DAY))
+}
+
 /// A filesystem error, kept free of absolute paths so it can be logged (docs/ARCHITECTURE.md §8).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FsError {
@@ -139,6 +208,55 @@ mod tests {
             body: vec![],
         };
         assert_eq!(FailingNet.send(req), Err(NetError::Disabled));
+    }
+
+    struct FixedClock {
+        ms: i64,
+        offset: i32,
+    }
+
+    impl Clock for FixedClock {
+        fn now_ms(&self) -> i64 {
+            self.ms
+        }
+        fn utc_offset_minutes(&self) -> i32 {
+            self.offset
+        }
+    }
+
+    #[test]
+    fn splitmix64_matches_the_reference_output() {
+        let mut rng = SplitMix64::new(0);
+        assert_eq!(rng.next_u64(), 0xE220_A839_7B1D_CDAF);
+        assert_eq!(rng.next_u64(), 0x6E78_9E6A_A1B9_65F4);
+        assert_eq!(rng.next_u64(), 0x06C4_5D18_8009_454F);
+        let mut a = SplitMix64::new(42);
+        let mut b = a.clone();
+        assert_eq!(a.next_u64(), b.next_u64());
+    }
+
+    #[test]
+    fn local_date_applies_the_offset_before_flooring() {
+        // 2026-03-29T00:30Z is 20,541 days and 1,800 seconds after the epoch.
+        let ms = 20_541 * MS_PER_DAY + 30 * 60_000;
+        let east = FixedClock { ms, offset: 60 };
+        let west = FixedClock { ms, offset: -300 };
+        assert_eq!(local_date(&east).to_string(), "2026-03-29");
+        assert_eq!(local_date(&west).to_string(), "2026-03-28");
+        assert_eq!(
+            local_date(&FixedClock { ms: 0, offset: 0 }),
+            LocalDate {
+                year: 1970,
+                month: 1,
+                day: 1
+            }
+        );
+        assert_eq!(
+            local_date(&FixedClock { ms: -1, offset: 0 }).to_string(),
+            "1969-12-31"
+        );
+        assert_eq!(civil_from_days(11_016).to_string(), "2000-02-29");
+        assert_eq!(civil_from_days(11_017).to_string(), "2000-03-01");
     }
 
     #[test]

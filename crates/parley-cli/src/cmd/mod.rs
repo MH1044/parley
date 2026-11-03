@@ -1,4 +1,5 @@
-//! The subcommands of `parley` (docs/modules/01-content-model-and-syllabus.md, Interfaces).
+//! The subcommands of `parley` (docs/modules/01-content-model-and-syllabus.md and
+//! docs/modules/02-srs-and-learner-model.md, Interfaces).
 //!
 //! Arguments are parsed by hand. Every command prints one JSON object on standard output and
 //! exits 0 on success, 1 on content errors (the JSON report is still printed) or 2 on usage
@@ -10,6 +11,8 @@
 pub mod content;
 pub mod forms;
 pub mod pack;
+pub mod placement;
+pub mod srs;
 
 use std::io::Write;
 use std::path::Path;

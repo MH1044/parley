@@ -59,8 +59,8 @@ describe; the diff is read line by line.
 | `audio/tone_gaps_*.wav` | `parley-fixtures`: integer square and triangle waves at 16 kHz with silence at known sample indices, and a noise floor from a seeded LCG | trim points and chunk boundaries are known exactly |
 | `audio/media_23min` (generated at test time into a temp dir, 44 MB, never committed) | tones with 300 ms gaps every 106 s | 13 chunks, each under 4 MB |
 | `images/exif_4000x3000.jpg` | a gradient with EXIF (orientation 6, GPS, camera), XMP, IPTC and ICC segments written by the generator | resize to 1568 px on the long side, rotation applied, all four blocks removed |
-| `learners/*.json` | seeded simulated learners: a boundary ability and slip and guess rates | placement estimate tolerances |
-| `syllabus-mini/xx/syllabus.yaml` | 80 synthetic skills in a pseudo-language `xx` with generated lemmas | ordering, unlocking and placement without real content |
+| simulated learners (in code, `parley placement simulate` and the module 02 tests) | a boundary skill index and a slip rate, drawn from a seeded SplitMix64 | placement estimate tolerances |
+| `syllabus-mini/xx/syllabus.yaml` | 80 synthetic skills (`lang: es` in a folder `xx`) with generated pseudo-word lemmas | ordering, unlocking and placement without real content |
 | `tatoeba-mini/` (hand-written, CC0, committed) | 40 Spanish and 40 English project-authored sentences in Tatoeba's TSV formats with links | pack builder keeps and drops known sentences for known reasons |
 | `forms-mini.jsonl` (hand-written, CC0) | 30 lemmas in wiktextract's line shape | forms table build and lookups |
 | `ai/<row>/*.json` (hand-written) | one valid response per AI row and one failing response per validation rule | each rule rejects exactly what it should |

@@ -3,6 +3,10 @@
     "audio/tone_gaps_a.wav": {
       "bytes": 80044,
       "sha256": "15c79acb507a0cb94c19435600744e1752778acc2aa9306322e2561d0623a616"
+    },
+    "syllabus-mini/xx/syllabus.yaml": {
+      "bytes": 55759,
+      "sha256": "8cbca1ff1d580a25d7fb4ee877a2ca81c22783dc21c4b33f9c6f2425105b73c6"
     }
   },
   "schema": "parley.fixtures/1"

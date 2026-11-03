@@ -1,7 +1,8 @@
 //! Parley's command-line tool.
 //!
 //! `parley` is the way to use the core without the desktop app: the content commands of module
-//! 01 (`content validate`, `content lock`, `forms extract`, `pack build`, `pack info`) and, from
+//! 01 (`content validate`, `content lock`, `forms extract`, `pack build`, `pack info`), the
+//! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`) and, from
 //! later modules, `grade`, `lesson template` and the others (docs/ARCHITECTURE.md §2). Every
 //! command prints one JSON object on standard output, exits 0 on success, 1 on a content error
 //! and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
@@ -43,10 +44,21 @@ Parley's command-line tool. Every command prints one JSON object on standard out
       count per drop reason. --built-at defaults to today.
   pack info <file.sqlite3>
       Describe a pack: its meta rows, row counts, size and hashes.
+  srs replay <log.json> [--retention <r>] [--json]
+      Rebuild the FSRS cards of a review log (schema parley.review-log/1) by scheduling its
+      entries in order; prints {\"cards\":[...]}. --retention is the desired retention from
+      0.80 to 0.95 (default 0.90); it changes due dates only. Exit 1 on a file that is not a
+      review log.
+  placement simulate --syllabus <file> --boundary <n> [--slip <p>] [--seed <s>] [--json]
+      Run the placement test against a simulated learner who answers correctly exactly below
+      skill index <n>, each answer flipped with probability <p> (default 0) from a SplitMix64
+      generator seeded with <s> (default 0); prints the questions, answers, reversals, estimate,
+      CEFR label and tested-out skills. Exit 1 with the validate report on a syllabus that
+      does not load.
   --version, -V   print the version (with --json: {\"name\":\"parley\",\"version\":\"...\"})
   --help, -h      print this help
 
-Exit codes: 0 success, 1 content error, 2 usage error.
+Exit codes: 0 success, 1 content or input error, 2 usage error.
 ";
 
 /// Runs the tool over `args` (the arguments after the program name), writing to `out` and `err`.
@@ -56,6 +68,8 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
         Some("content") => return cmd::content::run(&args[1..], out, err),
         Some("forms") => return cmd::forms::run(&args[1..], out, err),
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
+        Some("placement") => return cmd::placement::run(&args[1..], out, err),
+        Some("srs") => return cmd::srs::run(&args[1..], out, err),
         _ => {}
     }
 
@@ -145,6 +159,8 @@ mod tests {
             assert!(out.starts_with("Usage: parley"));
             assert!(out.contains("content validate"));
             assert!(out.contains("pack info"));
+            assert!(out.contains("srs replay <log.json>"));
+            assert!(out.contains("placement simulate --syllabus <file>"));
         }
     }
 
@@ -241,6 +257,8 @@ mod tests {
             (&["content"][..], "content validate or content lock"),
             (&["forms"][..], "forms extract"),
             (&["pack"][..], "pack build or pack info"),
+            (&["srs"][..], "srs replay"),
+            (&["placement"][..], "placement simulate"),
         ] {
             let (code, out, err) = run_capture(args);
             assert_eq!(code, 2, "{args:?}");

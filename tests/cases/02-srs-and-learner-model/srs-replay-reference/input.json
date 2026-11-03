@@ -1,0 +1,351 @@
+{
+  "schema": "parley.review-log/1",
+  "entries": [
+    {
+      "item_id": "ref.s1.again",
+      "facet": "receptive",
+      "reviewed_at": 1767603600000,
+      "rating": 1,
+      "exercise_type": "translate_to_en",
+      "verdict": "wrong",
+      "session_id": "reference-1"
+    },
+    {
+      "item_id": "ref.s1.easy",
+      "facet": "receptive",
+      "reviewed_at": 1767603600000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-1"
+    },
+    {
+      "item_id": "ref.s1.good",
+      "facet": "receptive",
+      "reviewed_at": 1767603600000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-1"
+    },
+    {
+      "item_id": "ref.s1.hard",
+      "facet": "receptive",
+      "reviewed_at": 1767603600000,
+      "rating": 2,
+      "exercise_type": "translate_to_en",
+      "verdict": "almost",
+      "session_id": "reference-1"
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1767607200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2"
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1767610800000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3"
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767614400000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4"
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1767618000000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5"
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767621600000,
+      "rating": 2,
+      "exercise_type": "translate_to_en",
+      "verdict": "almost",
+      "session_id": "reference-4",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767632400000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4",
+      "response_ms": 3200
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767639600000,
+      "rating": 1,
+      "exercise_type": "translate_to_en",
+      "verdict": "wrong",
+      "session_id": "reference-4",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767643200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4"
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767729600000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1767733200000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4",
+      "response_ms": 3600
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1767780000000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1767783600000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1768114800000,
+      "rating": 2,
+      "exercise_type": "translate_to_en",
+      "verdict": "almost",
+      "session_id": "reference-4",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1768309200000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "reviewed_at": 1768719600000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-4"
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1768734000000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3",
+      "response_ms": 3200
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1768748400000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": 3200
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1772794800000,
+      "rating": 1,
+      "exercise_type": "translate_to_en",
+      "verdict": "wrong",
+      "session_id": "reference-3",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1772982000000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1773054000000,
+      "rating": 1,
+      "exercise_type": "translate_to_en",
+      "verdict": "wrong",
+      "session_id": "reference-3"
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1773140400000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1773313200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3",
+      "response_ms": 3600
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1773572400000,
+      "rating": 2,
+      "exercise_type": "translate_to_en",
+      "verdict": "almost",
+      "session_id": "reference-3",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "reviewed_at": 1774004400000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-3"
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1774011600000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5",
+      "response_ms": 3200
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1787497200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2"
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1805547600000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1819033200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1837083600000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5"
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1850569200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": 3600
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "reviewed_at": 1868619600000,
+      "rating": 4,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-5",
+      "response_ms": null
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "reviewed_at": 1882105200000,
+      "rating": 3,
+      "exercise_type": "translate_to_en",
+      "verdict": "correct",
+      "session_id": "reference-2",
+      "response_ms": null
+    }
+  ]
+}

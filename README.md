@@ -7,8 +7,9 @@ macOS, with Android to follow.
 **Status: pre-alpha.** Nothing teaches yet. The repository, the build, the tests and continuous
 integration exist, the desktop window opens and shows the version, and the course exists as
 validated open data: a syllabus format with a validator, word-form tables, and sentence packs
-built from Tatoeba. `docs/ROADMAP.md` lists what comes next, in order; `docs/PRODUCT.md`
-describes the finished app.
+built from Tatoeba. Underneath, the learner model exists: FSRS cards, an append-only review log,
+skill mastery and states, and an adaptive placement test, all usable from the command line.
+`docs/ROADMAP.md` lists what comes next, in order; `docs/PRODUCT.md` describes the finished app.
 
 ## What it replaces
 
@@ -110,6 +111,37 @@ cargo run -q -p parley-cli -- pack info es.sqlite3
 
 A pack keeps every sentence's author (CC BY 2.0 FR) and reports why each dropped sentence was
 dropped; `docs/HANDBOOK.md` shows each command's output.
+
+## Scheduling and placement
+
+Every item of the course becomes two FSRS cards, one for recognising it and one for producing
+it, scheduled by the `fsrs` crate with its default FSRS-6 parameters, a desired retention from
+0.80 to 0.95 (default 0.90), no fuzz and intervals of at most 365 days. Every review is appended
+to a log in the learner's `parley.sqlite3` that is never edited, and the cards can always be
+rebuilt from it:
+
+```sh
+cargo run -q -p parley-cli -- srs replay review-log.json
+```
+
+prints `{"cards":[...]}`, one card per item and facet the log mentions (`--retention <r>`
+changes the due dates only). `docs/HANDBOOK.md` shows a complete log and its output.
+
+The placement test is a staircase over the course's skills that asks 12 to 20 questions (fewer
+for a beginner), estimates where to start and gives a CEFR label. Against a simulated learner
+who knows exactly the skills below a boundary:
+
+```sh
+cargo run -q -p parley-cli -- placement simulate --syllabus content/es/syllabus.yaml --boundary 5
+```
+
+prints
+
+```
+{"skills":8,"questions":[2,4,6,5,4,5,4,5,4,5,4,5],"answers":[true,true,false,false,true,false,true,false,true,false,true,false],"reversals":[6,4,5,4,5,4,5,4,5],"estimate":5,"label":"around A1","tested_out":["es.a1.u01.s01","es.a1.u01.s02","es.a1.u01.s03","es.a1.u01.s04","es.a1.u02.s01"]}
+```
+
+`--slip <p>` flips each answer with probability `p` and `--seed <s>` seeds the generator.
 
 ## Repository
 

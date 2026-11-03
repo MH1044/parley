@@ -1,0 +1,92 @@
+{
+  "cards": [
+    {
+      "item_id": "ref.s1.again",
+      "facet": "receptive",
+      "state": "relearning",
+      "stability": 0.212,
+      "difficulty": 6.4133,
+      "due": 1767690000000,
+      "last_review": 1767603600000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "ref.s1.easy",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 8.2956,
+      "difficulty": 1.0,
+      "due": 1768294800000,
+      "last_review": 1767603600000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "ref.s1.good",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 2.3065,
+      "difficulty": 2.118103970459016,
+      "due": 1767776400000,
+      "last_review": 1767603600000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "ref.s1.hard",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 1.2931,
+      "difficulty": 5.112170705601056,
+      "due": 1767690000000,
+      "last_review": 1767603600000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "ref.s2.good-streak",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 2531.760413949861,
+      "difficulty": 2.0700202712721,
+      "due": 1913641200000,
+      "last_review": 1882105200000,
+      "reps": 8,
+      "lapses": 0
+    },
+    {
+      "item_id": "ref.s3.lapse",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 8.259482738497866,
+      "difficulty": 9.373306699389115,
+      "due": 1774695600000,
+      "last_review": 1774004400000,
+      "reps": 9,
+      "lapses": 1
+    },
+    {
+      "item_id": "ref.s4.same-day",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 14.463681156565587,
+      "difficulty": 8.395798392372658,
+      "due": 1769929200000,
+      "last_review": 1768719600000,
+      "reps": 9,
+      "lapses": 1
+    },
+    {
+      "item_id": "ref.s5.easy-cap",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 4504.140714418339,
+      "difficulty": 1.0,
+      "due": 1900155600000,
+      "last_review": 1868619600000,
+      "reps": 6,
+      "lapses": 0
+    }
+  ]
+}

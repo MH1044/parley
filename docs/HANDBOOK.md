@@ -11,7 +11,8 @@ Nothing teaches yet. Building from source (see `README.md`) gives:
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
-- the course content tools below.
+- the course content tools below;
+- the scheduler and the placement test, which the command line can already show.
 
 Every command prints one JSON object on standard output and exits 0 on success, 1 on a content
 error (the JSON report is still printed) or 2 on a usage error, which prints one line on standard
@@ -147,8 +148,99 @@ parley pack info es-2026-10-01.sqlite3
 sentences.) The app downloads a published pack from the URL in `content/packs.lock.toml` and
 refuses one whose SHA-256 differs with "The download was damaged. Try again."
 
+### Reviews and the scheduler: `parley srs replay`
+
+Every item becomes two cards: a receptive one (you see Spanish and recognise it) and a
+productive one (you produce it). A card is scheduled by FSRS (the `fsrs` crate's default FSRS-6
+parameters, no fuzz): its stability is the number of days after which you would recall it 90%
+of the time, its difficulty runs from 1 to 10, and the next review is due after the rounded
+interval at your desired retention (0.80 to 0.95, default 0.90; at 0.90 the interval is the
+stability), at least 1 day and at most 365. A graded answer becomes a rating: "I was right" is
+Good (3); wrong is Again (1); almost (an accent, a typo, an article) is Hard (2); correct with a
+hint is Hard; correct without a hint in a pick-the-meaning or match-the-pairs exercise within
+2.5 seconds is Easy (4); any other correct answer is Good. Again on a card you knew is a lapse.
+
+Every review is appended to the review log in your data file and never changed, and every card
+is exactly what replaying its log gives. `parley srs replay` shows it for a log file. This one,
+`review-log.json`, holds four reviews of `hola` on two days:
+
+```
+{"schema": "parley.review-log/1", "entries": [
+  {"item_id": "es.a1.u01.s01#l:hola", "facet": "receptive", "reviewed_at": 1793610000000, "rating": 3,
+   "exercise_type": "pick_meaning", "verdict": "correct", "response_ms": 3100, "session_id": "lesson-1"},
+  {"item_id": "es.a1.u01.s01#l:hola", "facet": "productive", "reviewed_at": 1793610060000, "rating": 2,
+   "exercise_type": "translate", "verdict": "almost", "response_ms": 5200, "session_id": "lesson-1"},
+  {"item_id": "es.a1.u01.s01#l:hola", "facet": "receptive", "reviewed_at": 1793782800000, "rating": 4,
+   "exercise_type": "pick_meaning", "verdict": "correct", "response_ms": 1400, "session_id": "review-1"},
+  {"item_id": "es.a1.u01.s01#l:hola", "facet": "productive", "reviewed_at": 1793782860000, "rating": 1,
+   "exercise_type": "translate", "verdict": "wrong", "response_ms": null, "session_id": "review-1"}
+]}
+```
+
+```
+parley srs replay review-log.json
+{"cards":[{"item_id":"es.a1.u01.s01#l:hola","facet":"receptive","state":"review","stability":18.521770477294922,"difficulty":1.0,"due":1795424400000,"last_review":1793782800000,"reps":2,"lapses":0},{"item_id":"es.a1.u01.s01#l:hola","facet":"productive","state":"relearning","stability":0.40717509388923645,"difficulty":8.378631591796875,"due":1793869260000,"last_review":1793782860000,"reps":2,"lapses":1}]}
+```
+
+Times are milliseconds since 1970 (UTC): the receptive card, Good and then Easy two days later,
+is due in 19 days; the productive card, Hard and then Again, has lapsed and is due the next day.
+In an entry, `response_ms` may be `null` or left out, and `elapsed_days`, `stability_after` and
+`difficulty_after` (which your data file records) may be left out: they are recomputed. A lower
+desired retention leaves stability and difficulty as they are and spaces reviews further apart:
+
+```
+parley srs replay review-log.json --retention 0.8
+{"cards":[{"item_id":"es.a1.u01.s01#l:hola","facet":"receptive","state":"review","stability":18.521770477294922,"difficulty":1.0,"due":1799053200000,"last_review":1793782800000,"reps":2,"lapses":0},{"item_id":"es.a1.u01.s01#l:hola","facet":"productive","state":"relearning","stability":0.40717509388923645,"difficulty":8.378631591796875,"due":1793869260000,"last_review":1793782860000,"reps":2,"lapses":1}]}
+```
+
+A retention outside the range is a usage error,
+`error: --retention must be a number from 0.80 to 0.95. Run parley --help.`; a file that is not
+a review log exits 1 with what is wrong, for example
+`error: settings.json: schema must be parley.review-log/1`.
+
+The app uses the same cards for the review queue (the due cards you are most likely to have
+forgotten first), for each skill's mastery (the average chance of recall over both cards of all
+its items) and for the learning path: a skill is available once the skills it builds on are
+practised or tested out, learning once you have started it, practised once every item has been
+reviewed, and mastered when it is practised and its mastery is at least 85%.
+
+### The placement test: `parley placement simulate`
+
+The placement test walks up and down the course's skills: a right answer moves it up, a wrong
+one down, and every change of direction halves the step. It stops after 20 questions, after 12
+or more once the direction has changed 8 times, or early after 4 wrong answers in a row at the
+first skill. The estimate is the average of the turning points after the first two (or of the
+last four questions when there are fewer than three); the skills below it are tested out, and
+the label is "Pre-A1" below the fourth skill, otherwise "around" and the estimate's CEFR level.
+
+`parley placement simulate` runs it against a simulated learner who answers correctly exactly
+below skill index `--boundary`. On the Spanish course, a learner who knows its first five skills:
+
+```
+parley placement simulate --syllabus content/es/syllabus.yaml --boundary 5
+{"skills":8,"questions":[2,4,6,5,4,5,4,5,4,5,4,5],"answers":[true,true,false,false,true,false,true,false,true,false,true,false],"reversals":[6,4,5,4,5,4,5,4,5],"estimate":5,"label":"around A1","tested_out":["es.a1.u01.s01","es.a1.u01.s02","es.a1.u01.s03","es.a1.u01.s04","es.a1.u02.s01"]}
+```
+
+A beginner stops early:
+
+```
+parley placement simulate --syllabus content/es/syllabus.yaml --boundary 0
+{"skills":8,"questions":[2,0,0,0,0],"answers":[false,false,false,false,false],"reversals":[],"estimate":0,"label":"Pre-A1","tested_out":[]}
+```
+
+`--slip <p>` flips each answer with probability `p` (default 0), drawn from a SplitMix64
+generator seeded with `--seed <s>` (default 0), so a run is the same on every machine:
+
+```
+parley placement simulate --syllabus content/es/syllabus.yaml --boundary 5 --slip 0.2 --seed 7
+{"skills":8,"questions":[2,4,3,4,5,4,5,4,5,6,5,6],"answers":[true,false,true,true,false,true,false,true,true,false,true,false],"reversals":[4,3,5,4,5,4,6,5,6],"estimate":5,"label":"around A1","tested_out":["es.a1.u01.s01","es.a1.u01.s02","es.a1.u01.s03","es.a1.u01.s04","es.a1.u02.s01"]}
+```
+
+`--boundary` and `--seed` must be whole numbers and `--slip` a number from 0 to 1
+(`error: --boundary must be a whole number. Run parley --help.`); a syllabus that does not load
+exits 1 with the report `parley content validate --json` prints.
+
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: the scheduler and the placement test, lessons and grading,
-then the full offline app with onboarding, the learning path, reviews, stats, settings and
-backup.
+In the order of `docs/ROADMAP.md`: lessons and grading, then the full offline app with
+onboarding, the learning path, reviews, stats, settings and backup.

@@ -1,0 +1,7 @@
+placement
+simulate
+--syllabus
+tests/fixtures/syllabus/bad-V01.yaml
+--boundary
+5
+--json

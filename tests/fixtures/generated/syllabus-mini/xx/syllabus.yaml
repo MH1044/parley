@@ -1,0 +1,1240 @@
+schema: parley.syllabus/1
+lang: es
+name: Mini syllabus for tests
+variety: pseudo-words in 80 skills; not a real course
+version: 1
+function_words: []
+names: []
+units:
+  - id: es.a1.u01
+    title: Unit 1
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: vocab
+        title: Skill 1.1
+        cefr: A1
+        can_do: I can use the words of skill 1.1.
+        requires: []
+        lemmas:
+          - {lemma: wabak, pos: verb, en: [word 0], rank: null}
+          - {lemma: wabek, pos: verb, en: [word 1], rank: null}
+          - {lemma: wabik, pos: verb, en: [word 2], rank: null}
+        examples:
+          - {id: 1, target: "Wabak wabek.", en: ["Word 0 word 1."]}
+          - {id: 2, target: "Wabek wabik.", en: ["Word 1 word 2."]}
+          - {id: 3, target: "Wabik wabak wabek.", en: ["Word 2 word 0 word 1."]}
+          - {id: 4, target: "Wabik wabek wabak.", en: ["Word 2 word 1 word 0."]}
+      - id: es.a1.u01.s02
+        kind: vocab
+        title: Skill 1.2
+        cefr: A1
+        can_do: I can use the words of skill 1.2.
+        requires: []
+        lemmas:
+          - {lemma: wabok, pos: verb, en: [word 3], rank: null}
+          - {lemma: wabuk, pos: verb, en: [word 4], rank: null}
+          - {lemma: wadak, pos: verb, en: [word 5], rank: null}
+        examples:
+          - {id: 1, target: "Wabok wabuk.", en: ["Word 3 word 4."]}
+          - {id: 2, target: "Wabuk wadak.", en: ["Word 4 word 5."]}
+          - {id: 3, target: "Wadak wabok wabuk.", en: ["Word 5 word 3 word 4."]}
+          - {id: 4, target: "Wabok wabak.", en: ["Word 3 word 0."]}
+      - id: es.a1.u01.s03
+        kind: vocab
+        title: Skill 1.3
+        cefr: A1
+        can_do: I can use the words of skill 1.3.
+        requires: []
+        lemmas:
+          - {lemma: wadek, pos: verb, en: [word 6], rank: null}
+          - {lemma: wadik, pos: verb, en: [word 7], rank: null}
+          - {lemma: wadok, pos: verb, en: [word 8], rank: null}
+        examples:
+          - {id: 1, target: "Wadek wadik.", en: ["Word 6 word 7."]}
+          - {id: 2, target: "Wadik wadok.", en: ["Word 7 word 8."]}
+          - {id: 3, target: "Wadok wadek wadik.", en: ["Word 8 word 6 word 7."]}
+          - {id: 4, target: "Wadek wabok.", en: ["Word 6 word 3."]}
+      - id: es.a1.u01.s04
+        kind: vocab
+        title: Skill 1.4
+        cefr: A1
+        can_do: I can use the words of skill 1.4.
+        requires: []
+        lemmas:
+          - {lemma: waduk, pos: verb, en: [word 9], rank: null}
+          - {lemma: wafak, pos: verb, en: [word 10], rank: null}
+          - {lemma: wafek, pos: verb, en: [word 11], rank: null}
+        examples:
+          - {id: 1, target: "Waduk wafak.", en: ["Word 9 word 10."]}
+          - {id: 2, target: "Wafak wafek.", en: ["Word 10 word 11."]}
+          - {id: 3, target: "Wafek waduk wafak.", en: ["Word 11 word 9 word 10."]}
+          - {id: 4, target: "Waduk wadek.", en: ["Word 9 word 6."]}
+      - id: es.a1.u01.s05
+        kind: vocab
+        title: Skill 1.5
+        cefr: A1
+        can_do: I can use the words of skill 1.5.
+        requires: []
+        lemmas:
+          - {lemma: wafik, pos: verb, en: [word 12], rank: null}
+          - {lemma: wafok, pos: verb, en: [word 13], rank: null}
+          - {lemma: wafuk, pos: verb, en: [word 14], rank: null}
+        examples:
+          - {id: 1, target: "Wafik wafok.", en: ["Word 12 word 13."]}
+          - {id: 2, target: "Wafok wafuk.", en: ["Word 13 word 14."]}
+          - {id: 3, target: "Wafuk wafik wafok.", en: ["Word 14 word 12 word 13."]}
+          - {id: 4, target: "Wafik waduk.", en: ["Word 12 word 9."]}
+      - id: es.a1.u01.s06
+        kind: vocab
+        title: Skill 1.6
+        cefr: A1
+        can_do: I can use the words of skill 1.6.
+        requires: []
+        lemmas:
+          - {lemma: wagak, pos: verb, en: [word 15], rank: null}
+          - {lemma: wagek, pos: verb, en: [word 16], rank: null}
+          - {lemma: wagik, pos: verb, en: [word 17], rank: null}
+        examples:
+          - {id: 1, target: "Wagak wagek.", en: ["Word 15 word 16."]}
+          - {id: 2, target: "Wagek wagik.", en: ["Word 16 word 17."]}
+          - {id: 3, target: "Wagik wagak wagek.", en: ["Word 17 word 15 word 16."]}
+          - {id: 4, target: "Wagak wafik.", en: ["Word 15 word 12."]}
+      - id: es.a1.u01.s07
+        kind: vocab
+        title: Skill 1.7
+        cefr: A1
+        can_do: I can use the words of skill 1.7.
+        requires: []
+        lemmas:
+          - {lemma: wagok, pos: verb, en: [word 18], rank: null}
+          - {lemma: waguk, pos: verb, en: [word 19], rank: null}
+          - {lemma: walak, pos: verb, en: [word 20], rank: null}
+        examples:
+          - {id: 1, target: "Wagok waguk.", en: ["Word 18 word 19."]}
+          - {id: 2, target: "Waguk walak.", en: ["Word 19 word 20."]}
+          - {id: 3, target: "Walak wagok waguk.", en: ["Word 20 word 18 word 19."]}
+          - {id: 4, target: "Wagok wagak.", en: ["Word 18 word 15."]}
+      - id: es.a1.u01.s08
+        kind: vocab
+        title: Skill 1.8
+        cefr: A1
+        can_do: I can use the words of skill 1.8.
+        requires: []
+        lemmas:
+          - {lemma: walek, pos: verb, en: [word 21], rank: null}
+          - {lemma: walik, pos: verb, en: [word 22], rank: null}
+          - {lemma: walok, pos: verb, en: [word 23], rank: null}
+        examples:
+          - {id: 1, target: "Walek walik.", en: ["Word 21 word 22."]}
+          - {id: 2, target: "Walik walok.", en: ["Word 22 word 23."]}
+          - {id: 3, target: "Walok walek walik.", en: ["Word 23 word 21 word 22."]}
+          - {id: 4, target: "Walek wagok.", en: ["Word 21 word 18."]}
+      - id: es.a1.u01.s09
+        kind: vocab
+        title: Skill 1.9
+        cefr: A1
+        can_do: I can use the words of skill 1.9.
+        requires: []
+        lemmas:
+          - {lemma: waluk, pos: verb, en: [word 24], rank: null}
+          - {lemma: wamak, pos: verb, en: [word 25], rank: null}
+          - {lemma: wamek, pos: verb, en: [word 26], rank: null}
+        examples:
+          - {id: 1, target: "Waluk wamak.", en: ["Word 24 word 25."]}
+          - {id: 2, target: "Wamak wamek.", en: ["Word 25 word 26."]}
+          - {id: 3, target: "Wamek waluk wamak.", en: ["Word 26 word 24 word 25."]}
+          - {id: 4, target: "Waluk walek.", en: ["Word 24 word 21."]}
+      - id: es.a1.u01.s10
+        kind: vocab
+        title: Skill 1.10
+        cefr: A1
+        can_do: I can use the words of skill 1.10.
+        requires: []
+        lemmas:
+          - {lemma: wamik, pos: verb, en: [word 27], rank: null}
+          - {lemma: wamok, pos: verb, en: [word 28], rank: null}
+          - {lemma: wamuk, pos: verb, en: [word 29], rank: null}
+        examples:
+          - {id: 1, target: "Wamik wamok.", en: ["Word 27 word 28."]}
+          - {id: 2, target: "Wamok wamuk.", en: ["Word 28 word 29."]}
+          - {id: 3, target: "Wamuk wamik wamok.", en: ["Word 29 word 27 word 28."]}
+          - {id: 4, target: "Wamik waluk.", en: ["Word 27 word 24."]}
+  - id: es.a1.u02
+    title: Unit 2
+    cefr: A1
+    skills:
+      - id: es.a1.u02.s01
+        kind: vocab
+        title: Skill 2.1
+        cefr: A1
+        can_do: I can use the words of skill 2.1.
+        requires: []
+        lemmas:
+          - {lemma: wanak, pos: verb, en: [word 30], rank: null}
+          - {lemma: wanek, pos: verb, en: [word 31], rank: null}
+          - {lemma: wanik, pos: verb, en: [word 32], rank: null}
+        examples:
+          - {id: 1, target: "Wanak wanek.", en: ["Word 30 word 31."]}
+          - {id: 2, target: "Wanek wanik.", en: ["Word 31 word 32."]}
+          - {id: 3, target: "Wanik wanak wanek.", en: ["Word 32 word 30 word 31."]}
+          - {id: 4, target: "Wanak wamik.", en: ["Word 30 word 27."]}
+      - id: es.a1.u02.s02
+        kind: vocab
+        title: Skill 2.2
+        cefr: A1
+        can_do: I can use the words of skill 2.2.
+        requires: []
+        lemmas:
+          - {lemma: wanok, pos: verb, en: [word 33], rank: null}
+          - {lemma: wanuk, pos: verb, en: [word 34], rank: null}
+          - {lemma: wapak, pos: verb, en: [word 35], rank: null}
+        examples:
+          - {id: 1, target: "Wanok wanuk.", en: ["Word 33 word 34."]}
+          - {id: 2, target: "Wanuk wapak.", en: ["Word 34 word 35."]}
+          - {id: 3, target: "Wapak wanok wanuk.", en: ["Word 35 word 33 word 34."]}
+          - {id: 4, target: "Wanok wanak.", en: ["Word 33 word 30."]}
+      - id: es.a1.u02.s03
+        kind: vocab
+        title: Skill 2.3
+        cefr: A1
+        can_do: I can use the words of skill 2.3.
+        requires: []
+        lemmas:
+          - {lemma: wapek, pos: verb, en: [word 36], rank: null}
+          - {lemma: wapik, pos: verb, en: [word 37], rank: null}
+          - {lemma: wapok, pos: verb, en: [word 38], rank: null}
+        examples:
+          - {id: 1, target: "Wapek wapik.", en: ["Word 36 word 37."]}
+          - {id: 2, target: "Wapik wapok.", en: ["Word 37 word 38."]}
+          - {id: 3, target: "Wapok wapek wapik.", en: ["Word 38 word 36 word 37."]}
+          - {id: 4, target: "Wapek wanok.", en: ["Word 36 word 33."]}
+      - id: es.a1.u02.s04
+        kind: vocab
+        title: Skill 2.4
+        cefr: A1
+        can_do: I can use the words of skill 2.4.
+        requires: []
+        lemmas:
+          - {lemma: wapuk, pos: verb, en: [word 39], rank: null}
+          - {lemma: warak, pos: verb, en: [word 40], rank: null}
+          - {lemma: warek, pos: verb, en: [word 41], rank: null}
+        examples:
+          - {id: 1, target: "Wapuk warak.", en: ["Word 39 word 40."]}
+          - {id: 2, target: "Warak warek.", en: ["Word 40 word 41."]}
+          - {id: 3, target: "Warek wapuk warak.", en: ["Word 41 word 39 word 40."]}
+          - {id: 4, target: "Wapuk wapek.", en: ["Word 39 word 36."]}
+      - id: es.a1.u02.s05
+        kind: vocab
+        title: Skill 2.5
+        cefr: A1
+        can_do: I can use the words of skill 2.5.
+        requires: []
+        lemmas:
+          - {lemma: warik, pos: verb, en: [word 42], rank: null}
+          - {lemma: warok, pos: verb, en: [word 43], rank: null}
+          - {lemma: waruk, pos: verb, en: [word 44], rank: null}
+        examples:
+          - {id: 1, target: "Warik warok.", en: ["Word 42 word 43."]}
+          - {id: 2, target: "Warok waruk.", en: ["Word 43 word 44."]}
+          - {id: 3, target: "Waruk warik warok.", en: ["Word 44 word 42 word 43."]}
+          - {id: 4, target: "Warik wapuk.", en: ["Word 42 word 39."]}
+      - id: es.a1.u02.s06
+        kind: vocab
+        title: Skill 2.6
+        cefr: A1
+        can_do: I can use the words of skill 2.6.
+        requires: []
+        lemmas:
+          - {lemma: watak, pos: verb, en: [word 45], rank: null}
+          - {lemma: watek, pos: verb, en: [word 46], rank: null}
+          - {lemma: watik, pos: verb, en: [word 47], rank: null}
+        examples:
+          - {id: 1, target: "Watak watek.", en: ["Word 45 word 46."]}
+          - {id: 2, target: "Watek watik.", en: ["Word 46 word 47."]}
+          - {id: 3, target: "Watik watak watek.", en: ["Word 47 word 45 word 46."]}
+          - {id: 4, target: "Watak warik.", en: ["Word 45 word 42."]}
+      - id: es.a1.u02.s07
+        kind: vocab
+        title: Skill 2.7
+        cefr: A1
+        can_do: I can use the words of skill 2.7.
+        requires: []
+        lemmas:
+          - {lemma: watok, pos: verb, en: [word 48], rank: null}
+          - {lemma: watuk, pos: verb, en: [word 49], rank: null}
+          - {lemma: webak, pos: verb, en: [word 50], rank: null}
+        examples:
+          - {id: 1, target: "Watok watuk.", en: ["Word 48 word 49."]}
+          - {id: 2, target: "Watuk webak.", en: ["Word 49 word 50."]}
+          - {id: 3, target: "Webak watok watuk.", en: ["Word 50 word 48 word 49."]}
+          - {id: 4, target: "Watok watak.", en: ["Word 48 word 45."]}
+      - id: es.a1.u02.s08
+        kind: vocab
+        title: Skill 2.8
+        cefr: A1
+        can_do: I can use the words of skill 2.8.
+        requires: []
+        lemmas:
+          - {lemma: webek, pos: verb, en: [word 51], rank: null}
+          - {lemma: webik, pos: verb, en: [word 52], rank: null}
+          - {lemma: webok, pos: verb, en: [word 53], rank: null}
+        examples:
+          - {id: 1, target: "Webek webik.", en: ["Word 51 word 52."]}
+          - {id: 2, target: "Webik webok.", en: ["Word 52 word 53."]}
+          - {id: 3, target: "Webok webek webik.", en: ["Word 53 word 51 word 52."]}
+          - {id: 4, target: "Webek watok.", en: ["Word 51 word 48."]}
+      - id: es.a1.u02.s09
+        kind: vocab
+        title: Skill 2.9
+        cefr: A1
+        can_do: I can use the words of skill 2.9.
+        requires: []
+        lemmas:
+          - {lemma: webuk, pos: verb, en: [word 54], rank: null}
+          - {lemma: wedak, pos: verb, en: [word 55], rank: null}
+          - {lemma: wedek, pos: verb, en: [word 56], rank: null}
+        examples:
+          - {id: 1, target: "Webuk wedak.", en: ["Word 54 word 55."]}
+          - {id: 2, target: "Wedak wedek.", en: ["Word 55 word 56."]}
+          - {id: 3, target: "Wedek webuk wedak.", en: ["Word 56 word 54 word 55."]}
+          - {id: 4, target: "Webuk webek.", en: ["Word 54 word 51."]}
+      - id: es.a1.u02.s10
+        kind: vocab
+        title: Skill 2.10
+        cefr: A1
+        can_do: I can use the words of skill 2.10.
+        requires: []
+        lemmas:
+          - {lemma: wedik, pos: verb, en: [word 57], rank: null}
+          - {lemma: wedok, pos: verb, en: [word 58], rank: null}
+          - {lemma: weduk, pos: verb, en: [word 59], rank: null}
+        examples:
+          - {id: 1, target: "Wedik wedok.", en: ["Word 57 word 58."]}
+          - {id: 2, target: "Wedok weduk.", en: ["Word 58 word 59."]}
+          - {id: 3, target: "Weduk wedik wedok.", en: ["Word 59 word 57 word 58."]}
+          - {id: 4, target: "Wedik webuk.", en: ["Word 57 word 54."]}
+  - id: es.a1.u03
+    title: Unit 3
+    cefr: A1
+    skills:
+      - id: es.a1.u03.s01
+        kind: vocab
+        title: Skill 3.1
+        cefr: A1
+        can_do: I can use the words of skill 3.1.
+        requires: []
+        lemmas:
+          - {lemma: wefak, pos: verb, en: [word 60], rank: null}
+          - {lemma: wefek, pos: verb, en: [word 61], rank: null}
+          - {lemma: wefik, pos: verb, en: [word 62], rank: null}
+        examples:
+          - {id: 1, target: "Wefak wefek.", en: ["Word 60 word 61."]}
+          - {id: 2, target: "Wefek wefik.", en: ["Word 61 word 62."]}
+          - {id: 3, target: "Wefik wefak wefek.", en: ["Word 62 word 60 word 61."]}
+          - {id: 4, target: "Wefak wedik.", en: ["Word 60 word 57."]}
+      - id: es.a1.u03.s02
+        kind: vocab
+        title: Skill 3.2
+        cefr: A1
+        can_do: I can use the words of skill 3.2.
+        requires: []
+        lemmas:
+          - {lemma: wefok, pos: verb, en: [word 63], rank: null}
+          - {lemma: wefuk, pos: verb, en: [word 64], rank: null}
+          - {lemma: wegak, pos: verb, en: [word 65], rank: null}
+        examples:
+          - {id: 1, target: "Wefok wefuk.", en: ["Word 63 word 64."]}
+          - {id: 2, target: "Wefuk wegak.", en: ["Word 64 word 65."]}
+          - {id: 3, target: "Wegak wefok wefuk.", en: ["Word 65 word 63 word 64."]}
+          - {id: 4, target: "Wefok wefak.", en: ["Word 63 word 60."]}
+      - id: es.a1.u03.s03
+        kind: vocab
+        title: Skill 3.3
+        cefr: A1
+        can_do: I can use the words of skill 3.3.
+        requires: []
+        lemmas:
+          - {lemma: wegek, pos: verb, en: [word 66], rank: null}
+          - {lemma: wegik, pos: verb, en: [word 67], rank: null}
+          - {lemma: wegok, pos: verb, en: [word 68], rank: null}
+        examples:
+          - {id: 1, target: "Wegek wegik.", en: ["Word 66 word 67."]}
+          - {id: 2, target: "Wegik wegok.", en: ["Word 67 word 68."]}
+          - {id: 3, target: "Wegok wegek wegik.", en: ["Word 68 word 66 word 67."]}
+          - {id: 4, target: "Wegek wefok.", en: ["Word 66 word 63."]}
+      - id: es.a1.u03.s04
+        kind: vocab
+        title: Skill 3.4
+        cefr: A1
+        can_do: I can use the words of skill 3.4.
+        requires: []
+        lemmas:
+          - {lemma: weguk, pos: verb, en: [word 69], rank: null}
+          - {lemma: welak, pos: verb, en: [word 70], rank: null}
+          - {lemma: welek, pos: verb, en: [word 71], rank: null}
+        examples:
+          - {id: 1, target: "Weguk welak.", en: ["Word 69 word 70."]}
+          - {id: 2, target: "Welak welek.", en: ["Word 70 word 71."]}
+          - {id: 3, target: "Welek weguk welak.", en: ["Word 71 word 69 word 70."]}
+          - {id: 4, target: "Weguk wegek.", en: ["Word 69 word 66."]}
+      - id: es.a1.u03.s05
+        kind: vocab
+        title: Skill 3.5
+        cefr: A1
+        can_do: I can use the words of skill 3.5.
+        requires: []
+        lemmas:
+          - {lemma: welik, pos: verb, en: [word 72], rank: null}
+          - {lemma: welok, pos: verb, en: [word 73], rank: null}
+          - {lemma: weluk, pos: verb, en: [word 74], rank: null}
+        examples:
+          - {id: 1, target: "Welik welok.", en: ["Word 72 word 73."]}
+          - {id: 2, target: "Welok weluk.", en: ["Word 73 word 74."]}
+          - {id: 3, target: "Weluk welik welok.", en: ["Word 74 word 72 word 73."]}
+          - {id: 4, target: "Welik weguk.", en: ["Word 72 word 69."]}
+      - id: es.a1.u03.s06
+        kind: vocab
+        title: Skill 3.6
+        cefr: A1
+        can_do: I can use the words of skill 3.6.
+        requires: []
+        lemmas:
+          - {lemma: wemak, pos: verb, en: [word 75], rank: null}
+          - {lemma: wemek, pos: verb, en: [word 76], rank: null}
+          - {lemma: wemik, pos: verb, en: [word 77], rank: null}
+        examples:
+          - {id: 1, target: "Wemak wemek.", en: ["Word 75 word 76."]}
+          - {id: 2, target: "Wemek wemik.", en: ["Word 76 word 77."]}
+          - {id: 3, target: "Wemik wemak wemek.", en: ["Word 77 word 75 word 76."]}
+          - {id: 4, target: "Wemak welik.", en: ["Word 75 word 72."]}
+      - id: es.a1.u03.s07
+        kind: vocab
+        title: Skill 3.7
+        cefr: A1
+        can_do: I can use the words of skill 3.7.
+        requires: []
+        lemmas:
+          - {lemma: wemok, pos: verb, en: [word 78], rank: null}
+          - {lemma: wemuk, pos: verb, en: [word 79], rank: null}
+          - {lemma: wenak, pos: verb, en: [word 80], rank: null}
+        examples:
+          - {id: 1, target: "Wemok wemuk.", en: ["Word 78 word 79."]}
+          - {id: 2, target: "Wemuk wenak.", en: ["Word 79 word 80."]}
+          - {id: 3, target: "Wenak wemok wemuk.", en: ["Word 80 word 78 word 79."]}
+          - {id: 4, target: "Wemok wemak.", en: ["Word 78 word 75."]}
+      - id: es.a1.u03.s08
+        kind: vocab
+        title: Skill 3.8
+        cefr: A1
+        can_do: I can use the words of skill 3.8.
+        requires: []
+        lemmas:
+          - {lemma: wenek, pos: verb, en: [word 81], rank: null}
+          - {lemma: wenik, pos: verb, en: [word 82], rank: null}
+          - {lemma: wenok, pos: verb, en: [word 83], rank: null}
+        examples:
+          - {id: 1, target: "Wenek wenik.", en: ["Word 81 word 82."]}
+          - {id: 2, target: "Wenik wenok.", en: ["Word 82 word 83."]}
+          - {id: 3, target: "Wenok wenek wenik.", en: ["Word 83 word 81 word 82."]}
+          - {id: 4, target: "Wenek wemok.", en: ["Word 81 word 78."]}
+      - id: es.a1.u03.s09
+        kind: vocab
+        title: Skill 3.9
+        cefr: A1
+        can_do: I can use the words of skill 3.9.
+        requires: []
+        lemmas:
+          - {lemma: wenuk, pos: verb, en: [word 84], rank: null}
+          - {lemma: wepak, pos: verb, en: [word 85], rank: null}
+          - {lemma: wepek, pos: verb, en: [word 86], rank: null}
+        examples:
+          - {id: 1, target: "Wenuk wepak.", en: ["Word 84 word 85."]}
+          - {id: 2, target: "Wepak wepek.", en: ["Word 85 word 86."]}
+          - {id: 3, target: "Wepek wenuk wepak.", en: ["Word 86 word 84 word 85."]}
+          - {id: 4, target: "Wenuk wenek.", en: ["Word 84 word 81."]}
+      - id: es.a1.u03.s10
+        kind: vocab
+        title: Skill 3.10
+        cefr: A1
+        can_do: I can use the words of skill 3.10.
+        requires: []
+        lemmas:
+          - {lemma: wepik, pos: verb, en: [word 87], rank: null}
+          - {lemma: wepok, pos: verb, en: [word 88], rank: null}
+          - {lemma: wepuk, pos: verb, en: [word 89], rank: null}
+        examples:
+          - {id: 1, target: "Wepik wepok.", en: ["Word 87 word 88."]}
+          - {id: 2, target: "Wepok wepuk.", en: ["Word 88 word 89."]}
+          - {id: 3, target: "Wepuk wepik wepok.", en: ["Word 89 word 87 word 88."]}
+          - {id: 4, target: "Wepik wenuk.", en: ["Word 87 word 84."]}
+  - id: es.a1.u04
+    title: Unit 4
+    cefr: A1
+    skills:
+      - id: es.a1.u04.s01
+        kind: vocab
+        title: Skill 4.1
+        cefr: A1
+        can_do: I can use the words of skill 4.1.
+        requires: []
+        lemmas:
+          - {lemma: werak, pos: verb, en: [word 90], rank: null}
+          - {lemma: werek, pos: verb, en: [word 91], rank: null}
+          - {lemma: werik, pos: verb, en: [word 92], rank: null}
+        examples:
+          - {id: 1, target: "Werak werek.", en: ["Word 90 word 91."]}
+          - {id: 2, target: "Werek werik.", en: ["Word 91 word 92."]}
+          - {id: 3, target: "Werik werak werek.", en: ["Word 92 word 90 word 91."]}
+          - {id: 4, target: "Werak wepik.", en: ["Word 90 word 87."]}
+      - id: es.a1.u04.s02
+        kind: vocab
+        title: Skill 4.2
+        cefr: A1
+        can_do: I can use the words of skill 4.2.
+        requires: []
+        lemmas:
+          - {lemma: werok, pos: verb, en: [word 93], rank: null}
+          - {lemma: weruk, pos: verb, en: [word 94], rank: null}
+          - {lemma: wetak, pos: verb, en: [word 95], rank: null}
+        examples:
+          - {id: 1, target: "Werok weruk.", en: ["Word 93 word 94."]}
+          - {id: 2, target: "Weruk wetak.", en: ["Word 94 word 95."]}
+          - {id: 3, target: "Wetak werok weruk.", en: ["Word 95 word 93 word 94."]}
+          - {id: 4, target: "Werok werak.", en: ["Word 93 word 90."]}
+      - id: es.a1.u04.s03
+        kind: vocab
+        title: Skill 4.3
+        cefr: A1
+        can_do: I can use the words of skill 4.3.
+        requires: []
+        lemmas:
+          - {lemma: wetek, pos: verb, en: [word 96], rank: null}
+          - {lemma: wetik, pos: verb, en: [word 97], rank: null}
+          - {lemma: wetok, pos: verb, en: [word 98], rank: null}
+        examples:
+          - {id: 1, target: "Wetek wetik.", en: ["Word 96 word 97."]}
+          - {id: 2, target: "Wetik wetok.", en: ["Word 97 word 98."]}
+          - {id: 3, target: "Wetok wetek wetik.", en: ["Word 98 word 96 word 97."]}
+          - {id: 4, target: "Wetek werok.", en: ["Word 96 word 93."]}
+      - id: es.a1.u04.s04
+        kind: vocab
+        title: Skill 4.4
+        cefr: A1
+        can_do: I can use the words of skill 4.4.
+        requires: []
+        lemmas:
+          - {lemma: wetuk, pos: verb, en: [word 99], rank: null}
+          - {lemma: wibak, pos: verb, en: [word 100], rank: null}
+          - {lemma: wibek, pos: verb, en: [word 101], rank: null}
+        examples:
+          - {id: 1, target: "Wetuk wibak.", en: ["Word 99 word 100."]}
+          - {id: 2, target: "Wibak wibek.", en: ["Word 100 word 101."]}
+          - {id: 3, target: "Wibek wetuk wibak.", en: ["Word 101 word 99 word 100."]}
+          - {id: 4, target: "Wetuk wetek.", en: ["Word 99 word 96."]}
+      - id: es.a1.u04.s05
+        kind: vocab
+        title: Skill 4.5
+        cefr: A1
+        can_do: I can use the words of skill 4.5.
+        requires: []
+        lemmas:
+          - {lemma: wibik, pos: verb, en: [word 102], rank: null}
+          - {lemma: wibok, pos: verb, en: [word 103], rank: null}
+          - {lemma: wibuk, pos: verb, en: [word 104], rank: null}
+        examples:
+          - {id: 1, target: "Wibik wibok.", en: ["Word 102 word 103."]}
+          - {id: 2, target: "Wibok wibuk.", en: ["Word 103 word 104."]}
+          - {id: 3, target: "Wibuk wibik wibok.", en: ["Word 104 word 102 word 103."]}
+          - {id: 4, target: "Wibik wetuk.", en: ["Word 102 word 99."]}
+      - id: es.a1.u04.s06
+        kind: vocab
+        title: Skill 4.6
+        cefr: A1
+        can_do: I can use the words of skill 4.6.
+        requires: []
+        lemmas:
+          - {lemma: widak, pos: verb, en: [word 105], rank: null}
+          - {lemma: widek, pos: verb, en: [word 106], rank: null}
+          - {lemma: widik, pos: verb, en: [word 107], rank: null}
+        examples:
+          - {id: 1, target: "Widak widek.", en: ["Word 105 word 106."]}
+          - {id: 2, target: "Widek widik.", en: ["Word 106 word 107."]}
+          - {id: 3, target: "Widik widak widek.", en: ["Word 107 word 105 word 106."]}
+          - {id: 4, target: "Widak wibik.", en: ["Word 105 word 102."]}
+      - id: es.a1.u04.s07
+        kind: vocab
+        title: Skill 4.7
+        cefr: A1
+        can_do: I can use the words of skill 4.7.
+        requires: []
+        lemmas:
+          - {lemma: widok, pos: verb, en: [word 108], rank: null}
+          - {lemma: widuk, pos: verb, en: [word 109], rank: null}
+          - {lemma: wifak, pos: verb, en: [word 110], rank: null}
+        examples:
+          - {id: 1, target: "Widok widuk.", en: ["Word 108 word 109."]}
+          - {id: 2, target: "Widuk wifak.", en: ["Word 109 word 110."]}
+          - {id: 3, target: "Wifak widok widuk.", en: ["Word 110 word 108 word 109."]}
+          - {id: 4, target: "Widok widak.", en: ["Word 108 word 105."]}
+      - id: es.a1.u04.s08
+        kind: vocab
+        title: Skill 4.8
+        cefr: A1
+        can_do: I can use the words of skill 4.8.
+        requires: []
+        lemmas:
+          - {lemma: wifek, pos: verb, en: [word 111], rank: null}
+          - {lemma: wifik, pos: verb, en: [word 112], rank: null}
+          - {lemma: wifok, pos: verb, en: [word 113], rank: null}
+        examples:
+          - {id: 1, target: "Wifek wifik.", en: ["Word 111 word 112."]}
+          - {id: 2, target: "Wifik wifok.", en: ["Word 112 word 113."]}
+          - {id: 3, target: "Wifok wifek wifik.", en: ["Word 113 word 111 word 112."]}
+          - {id: 4, target: "Wifek widok.", en: ["Word 111 word 108."]}
+      - id: es.a1.u04.s09
+        kind: vocab
+        title: Skill 4.9
+        cefr: A1
+        can_do: I can use the words of skill 4.9.
+        requires: []
+        lemmas:
+          - {lemma: wifuk, pos: verb, en: [word 114], rank: null}
+          - {lemma: wigak, pos: verb, en: [word 115], rank: null}
+          - {lemma: wigek, pos: verb, en: [word 116], rank: null}
+        examples:
+          - {id: 1, target: "Wifuk wigak.", en: ["Word 114 word 115."]}
+          - {id: 2, target: "Wigak wigek.", en: ["Word 115 word 116."]}
+          - {id: 3, target: "Wigek wifuk wigak.", en: ["Word 116 word 114 word 115."]}
+          - {id: 4, target: "Wifuk wifek.", en: ["Word 114 word 111."]}
+      - id: es.a1.u04.s10
+        kind: vocab
+        title: Skill 4.10
+        cefr: A1
+        can_do: I can use the words of skill 4.10.
+        requires: []
+        lemmas:
+          - {lemma: wigik, pos: verb, en: [word 117], rank: null}
+          - {lemma: wigok, pos: verb, en: [word 118], rank: null}
+          - {lemma: wiguk, pos: verb, en: [word 119], rank: null}
+        examples:
+          - {id: 1, target: "Wigik wigok.", en: ["Word 117 word 118."]}
+          - {id: 2, target: "Wigok wiguk.", en: ["Word 118 word 119."]}
+          - {id: 3, target: "Wiguk wigik wigok.", en: ["Word 119 word 117 word 118."]}
+          - {id: 4, target: "Wigik wifuk.", en: ["Word 117 word 114."]}
+  - id: es.a2.u05
+    title: Unit 5
+    cefr: A2
+    skills:
+      - id: es.a2.u05.s01
+        kind: vocab
+        title: Skill 5.1
+        cefr: A2
+        can_do: I can use the words of skill 5.1.
+        requires: []
+        lemmas:
+          - {lemma: wilak, pos: verb, en: [word 120], rank: null}
+          - {lemma: wilek, pos: verb, en: [word 121], rank: null}
+          - {lemma: wilik, pos: verb, en: [word 122], rank: null}
+        examples:
+          - {id: 1, target: "Wilak wilek.", en: ["Word 120 word 121."]}
+          - {id: 2, target: "Wilek wilik.", en: ["Word 121 word 122."]}
+          - {id: 3, target: "Wilik wilak wilek.", en: ["Word 122 word 120 word 121."]}
+          - {id: 4, target: "Wilak wigik.", en: ["Word 120 word 117."]}
+      - id: es.a2.u05.s02
+        kind: vocab
+        title: Skill 5.2
+        cefr: A2
+        can_do: I can use the words of skill 5.2.
+        requires: []
+        lemmas:
+          - {lemma: wilok, pos: verb, en: [word 123], rank: null}
+          - {lemma: wiluk, pos: verb, en: [word 124], rank: null}
+          - {lemma: wimak, pos: verb, en: [word 125], rank: null}
+        examples:
+          - {id: 1, target: "Wilok wiluk.", en: ["Word 123 word 124."]}
+          - {id: 2, target: "Wiluk wimak.", en: ["Word 124 word 125."]}
+          - {id: 3, target: "Wimak wilok wiluk.", en: ["Word 125 word 123 word 124."]}
+          - {id: 4, target: "Wilok wilak.", en: ["Word 123 word 120."]}
+      - id: es.a2.u05.s03
+        kind: vocab
+        title: Skill 5.3
+        cefr: A2
+        can_do: I can use the words of skill 5.3.
+        requires: []
+        lemmas:
+          - {lemma: wimek, pos: verb, en: [word 126], rank: null}
+          - {lemma: wimik, pos: verb, en: [word 127], rank: null}
+          - {lemma: wimok, pos: verb, en: [word 128], rank: null}
+        examples:
+          - {id: 1, target: "Wimek wimik.", en: ["Word 126 word 127."]}
+          - {id: 2, target: "Wimik wimok.", en: ["Word 127 word 128."]}
+          - {id: 3, target: "Wimok wimek wimik.", en: ["Word 128 word 126 word 127."]}
+          - {id: 4, target: "Wimek wilok.", en: ["Word 126 word 123."]}
+      - id: es.a2.u05.s04
+        kind: vocab
+        title: Skill 5.4
+        cefr: A2
+        can_do: I can use the words of skill 5.4.
+        requires: []
+        lemmas:
+          - {lemma: wimuk, pos: verb, en: [word 129], rank: null}
+          - {lemma: winak, pos: verb, en: [word 130], rank: null}
+          - {lemma: winek, pos: verb, en: [word 131], rank: null}
+        examples:
+          - {id: 1, target: "Wimuk winak.", en: ["Word 129 word 130."]}
+          - {id: 2, target: "Winak winek.", en: ["Word 130 word 131."]}
+          - {id: 3, target: "Winek wimuk winak.", en: ["Word 131 word 129 word 130."]}
+          - {id: 4, target: "Wimuk wimek.", en: ["Word 129 word 126."]}
+      - id: es.a2.u05.s05
+        kind: vocab
+        title: Skill 5.5
+        cefr: A2
+        can_do: I can use the words of skill 5.5.
+        requires: []
+        lemmas:
+          - {lemma: winik, pos: verb, en: [word 132], rank: null}
+          - {lemma: winok, pos: verb, en: [word 133], rank: null}
+          - {lemma: winuk, pos: verb, en: [word 134], rank: null}
+        examples:
+          - {id: 1, target: "Winik winok.", en: ["Word 132 word 133."]}
+          - {id: 2, target: "Winok winuk.", en: ["Word 133 word 134."]}
+          - {id: 3, target: "Winuk winik winok.", en: ["Word 134 word 132 word 133."]}
+          - {id: 4, target: "Winik wimuk.", en: ["Word 132 word 129."]}
+      - id: es.a2.u05.s06
+        kind: vocab
+        title: Skill 5.6
+        cefr: A2
+        can_do: I can use the words of skill 5.6.
+        requires: []
+        lemmas:
+          - {lemma: wipak, pos: verb, en: [word 135], rank: null}
+          - {lemma: wipek, pos: verb, en: [word 136], rank: null}
+          - {lemma: wipik, pos: verb, en: [word 137], rank: null}
+        examples:
+          - {id: 1, target: "Wipak wipek.", en: ["Word 135 word 136."]}
+          - {id: 2, target: "Wipek wipik.", en: ["Word 136 word 137."]}
+          - {id: 3, target: "Wipik wipak wipek.", en: ["Word 137 word 135 word 136."]}
+          - {id: 4, target: "Wipak winik.", en: ["Word 135 word 132."]}
+      - id: es.a2.u05.s07
+        kind: vocab
+        title: Skill 5.7
+        cefr: A2
+        can_do: I can use the words of skill 5.7.
+        requires: []
+        lemmas:
+          - {lemma: wipok, pos: verb, en: [word 138], rank: null}
+          - {lemma: wipuk, pos: verb, en: [word 139], rank: null}
+          - {lemma: wirak, pos: verb, en: [word 140], rank: null}
+        examples:
+          - {id: 1, target: "Wipok wipuk.", en: ["Word 138 word 139."]}
+          - {id: 2, target: "Wipuk wirak.", en: ["Word 139 word 140."]}
+          - {id: 3, target: "Wirak wipok wipuk.", en: ["Word 140 word 138 word 139."]}
+          - {id: 4, target: "Wipok wipak.", en: ["Word 138 word 135."]}
+      - id: es.a2.u05.s08
+        kind: vocab
+        title: Skill 5.8
+        cefr: A2
+        can_do: I can use the words of skill 5.8.
+        requires: []
+        lemmas:
+          - {lemma: wirek, pos: verb, en: [word 141], rank: null}
+          - {lemma: wirik, pos: verb, en: [word 142], rank: null}
+          - {lemma: wirok, pos: verb, en: [word 143], rank: null}
+        examples:
+          - {id: 1, target: "Wirek wirik.", en: ["Word 141 word 142."]}
+          - {id: 2, target: "Wirik wirok.", en: ["Word 142 word 143."]}
+          - {id: 3, target: "Wirok wirek wirik.", en: ["Word 143 word 141 word 142."]}
+          - {id: 4, target: "Wirek wipok.", en: ["Word 141 word 138."]}
+      - id: es.a2.u05.s09
+        kind: vocab
+        title: Skill 5.9
+        cefr: A2
+        can_do: I can use the words of skill 5.9.
+        requires: []
+        lemmas:
+          - {lemma: wiruk, pos: verb, en: [word 144], rank: null}
+          - {lemma: witak, pos: verb, en: [word 145], rank: null}
+          - {lemma: witek, pos: verb, en: [word 146], rank: null}
+        examples:
+          - {id: 1, target: "Wiruk witak.", en: ["Word 144 word 145."]}
+          - {id: 2, target: "Witak witek.", en: ["Word 145 word 146."]}
+          - {id: 3, target: "Witek wiruk witak.", en: ["Word 146 word 144 word 145."]}
+          - {id: 4, target: "Wiruk wirek.", en: ["Word 144 word 141."]}
+      - id: es.a2.u05.s10
+        kind: vocab
+        title: Skill 5.10
+        cefr: A2
+        can_do: I can use the words of skill 5.10.
+        requires: []
+        lemmas:
+          - {lemma: witik, pos: verb, en: [word 147], rank: null}
+          - {lemma: witok, pos: verb, en: [word 148], rank: null}
+          - {lemma: wituk, pos: verb, en: [word 149], rank: null}
+        examples:
+          - {id: 1, target: "Witik witok.", en: ["Word 147 word 148."]}
+          - {id: 2, target: "Witok wituk.", en: ["Word 148 word 149."]}
+          - {id: 3, target: "Wituk witik witok.", en: ["Word 149 word 147 word 148."]}
+          - {id: 4, target: "Witik wiruk.", en: ["Word 147 word 144."]}
+  - id: es.a2.u06
+    title: Unit 6
+    cefr: A2
+    skills:
+      - id: es.a2.u06.s01
+        kind: vocab
+        title: Skill 6.1
+        cefr: A2
+        can_do: I can use the words of skill 6.1.
+        requires: []
+        lemmas:
+          - {lemma: wobak, pos: verb, en: [word 150], rank: null}
+          - {lemma: wobek, pos: verb, en: [word 151], rank: null}
+          - {lemma: wobik, pos: verb, en: [word 152], rank: null}
+        examples:
+          - {id: 1, target: "Wobak wobek.", en: ["Word 150 word 151."]}
+          - {id: 2, target: "Wobek wobik.", en: ["Word 151 word 152."]}
+          - {id: 3, target: "Wobik wobak wobek.", en: ["Word 152 word 150 word 151."]}
+          - {id: 4, target: "Wobak witik.", en: ["Word 150 word 147."]}
+      - id: es.a2.u06.s02
+        kind: vocab
+        title: Skill 6.2
+        cefr: A2
+        can_do: I can use the words of skill 6.2.
+        requires: []
+        lemmas:
+          - {lemma: wobok, pos: verb, en: [word 153], rank: null}
+          - {lemma: wobuk, pos: verb, en: [word 154], rank: null}
+          - {lemma: wodak, pos: verb, en: [word 155], rank: null}
+        examples:
+          - {id: 1, target: "Wobok wobuk.", en: ["Word 153 word 154."]}
+          - {id: 2, target: "Wobuk wodak.", en: ["Word 154 word 155."]}
+          - {id: 3, target: "Wodak wobok wobuk.", en: ["Word 155 word 153 word 154."]}
+          - {id: 4, target: "Wobok wobak.", en: ["Word 153 word 150."]}
+      - id: es.a2.u06.s03
+        kind: vocab
+        title: Skill 6.3
+        cefr: A2
+        can_do: I can use the words of skill 6.3.
+        requires: []
+        lemmas:
+          - {lemma: wodek, pos: verb, en: [word 156], rank: null}
+          - {lemma: wodik, pos: verb, en: [word 157], rank: null}
+          - {lemma: wodok, pos: verb, en: [word 158], rank: null}
+        examples:
+          - {id: 1, target: "Wodek wodik.", en: ["Word 156 word 157."]}
+          - {id: 2, target: "Wodik wodok.", en: ["Word 157 word 158."]}
+          - {id: 3, target: "Wodok wodek wodik.", en: ["Word 158 word 156 word 157."]}
+          - {id: 4, target: "Wodek wobok.", en: ["Word 156 word 153."]}
+      - id: es.a2.u06.s04
+        kind: vocab
+        title: Skill 6.4
+        cefr: A2
+        can_do: I can use the words of skill 6.4.
+        requires: []
+        lemmas:
+          - {lemma: woduk, pos: verb, en: [word 159], rank: null}
+          - {lemma: wofak, pos: verb, en: [word 160], rank: null}
+          - {lemma: wofek, pos: verb, en: [word 161], rank: null}
+        examples:
+          - {id: 1, target: "Woduk wofak.", en: ["Word 159 word 160."]}
+          - {id: 2, target: "Wofak wofek.", en: ["Word 160 word 161."]}
+          - {id: 3, target: "Wofek woduk wofak.", en: ["Word 161 word 159 word 160."]}
+          - {id: 4, target: "Woduk wodek.", en: ["Word 159 word 156."]}
+      - id: es.a2.u06.s05
+        kind: vocab
+        title: Skill 6.5
+        cefr: A2
+        can_do: I can use the words of skill 6.5.
+        requires: []
+        lemmas:
+          - {lemma: wofik, pos: verb, en: [word 162], rank: null}
+          - {lemma: wofok, pos: verb, en: [word 163], rank: null}
+          - {lemma: wofuk, pos: verb, en: [word 164], rank: null}
+        examples:
+          - {id: 1, target: "Wofik wofok.", en: ["Word 162 word 163."]}
+          - {id: 2, target: "Wofok wofuk.", en: ["Word 163 word 164."]}
+          - {id: 3, target: "Wofuk wofik wofok.", en: ["Word 164 word 162 word 163."]}
+          - {id: 4, target: "Wofik woduk.", en: ["Word 162 word 159."]}
+      - id: es.a2.u06.s06
+        kind: vocab
+        title: Skill 6.6
+        cefr: A2
+        can_do: I can use the words of skill 6.6.
+        requires: []
+        lemmas:
+          - {lemma: wogak, pos: verb, en: [word 165], rank: null}
+          - {lemma: wogek, pos: verb, en: [word 166], rank: null}
+          - {lemma: wogik, pos: verb, en: [word 167], rank: null}
+        examples:
+          - {id: 1, target: "Wogak wogek.", en: ["Word 165 word 166."]}
+          - {id: 2, target: "Wogek wogik.", en: ["Word 166 word 167."]}
+          - {id: 3, target: "Wogik wogak wogek.", en: ["Word 167 word 165 word 166."]}
+          - {id: 4, target: "Wogak wofik.", en: ["Word 165 word 162."]}
+      - id: es.a2.u06.s07
+        kind: vocab
+        title: Skill 6.7
+        cefr: A2
+        can_do: I can use the words of skill 6.7.
+        requires: []
+        lemmas:
+          - {lemma: wogok, pos: verb, en: [word 168], rank: null}
+          - {lemma: woguk, pos: verb, en: [word 169], rank: null}
+          - {lemma: wolak, pos: verb, en: [word 170], rank: null}
+        examples:
+          - {id: 1, target: "Wogok woguk.", en: ["Word 168 word 169."]}
+          - {id: 2, target: "Woguk wolak.", en: ["Word 169 word 170."]}
+          - {id: 3, target: "Wolak wogok woguk.", en: ["Word 170 word 168 word 169."]}
+          - {id: 4, target: "Wogok wogak.", en: ["Word 168 word 165."]}
+      - id: es.a2.u06.s08
+        kind: vocab
+        title: Skill 6.8
+        cefr: A2
+        can_do: I can use the words of skill 6.8.
+        requires: []
+        lemmas:
+          - {lemma: wolek, pos: verb, en: [word 171], rank: null}
+          - {lemma: wolik, pos: verb, en: [word 172], rank: null}
+          - {lemma: wolok, pos: verb, en: [word 173], rank: null}
+        examples:
+          - {id: 1, target: "Wolek wolik.", en: ["Word 171 word 172."]}
+          - {id: 2, target: "Wolik wolok.", en: ["Word 172 word 173."]}
+          - {id: 3, target: "Wolok wolek wolik.", en: ["Word 173 word 171 word 172."]}
+          - {id: 4, target: "Wolek wogok.", en: ["Word 171 word 168."]}
+      - id: es.a2.u06.s09
+        kind: vocab
+        title: Skill 6.9
+        cefr: A2
+        can_do: I can use the words of skill 6.9.
+        requires: []
+        lemmas:
+          - {lemma: woluk, pos: verb, en: [word 174], rank: null}
+          - {lemma: womak, pos: verb, en: [word 175], rank: null}
+          - {lemma: womek, pos: verb, en: [word 176], rank: null}
+        examples:
+          - {id: 1, target: "Woluk womak.", en: ["Word 174 word 175."]}
+          - {id: 2, target: "Womak womek.", en: ["Word 175 word 176."]}
+          - {id: 3, target: "Womek woluk womak.", en: ["Word 176 word 174 word 175."]}
+          - {id: 4, target: "Woluk wolek.", en: ["Word 174 word 171."]}
+      - id: es.a2.u06.s10
+        kind: vocab
+        title: Skill 6.10
+        cefr: A2
+        can_do: I can use the words of skill 6.10.
+        requires: []
+        lemmas:
+          - {lemma: womik, pos: verb, en: [word 177], rank: null}
+          - {lemma: womok, pos: verb, en: [word 178], rank: null}
+          - {lemma: womuk, pos: verb, en: [word 179], rank: null}
+        examples:
+          - {id: 1, target: "Womik womok.", en: ["Word 177 word 178."]}
+          - {id: 2, target: "Womok womuk.", en: ["Word 178 word 179."]}
+          - {id: 3, target: "Womuk womik womok.", en: ["Word 179 word 177 word 178."]}
+          - {id: 4, target: "Womik woluk.", en: ["Word 177 word 174."]}
+  - id: es.a2.u07
+    title: Unit 7
+    cefr: A2
+    skills:
+      - id: es.a2.u07.s01
+        kind: vocab
+        title: Skill 7.1
+        cefr: A2
+        can_do: I can use the words of skill 7.1.
+        requires: []
+        lemmas:
+          - {lemma: wonak, pos: verb, en: [word 180], rank: null}
+          - {lemma: wonek, pos: verb, en: [word 181], rank: null}
+          - {lemma: wonik, pos: verb, en: [word 182], rank: null}
+        examples:
+          - {id: 1, target: "Wonak wonek.", en: ["Word 180 word 181."]}
+          - {id: 2, target: "Wonek wonik.", en: ["Word 181 word 182."]}
+          - {id: 3, target: "Wonik wonak wonek.", en: ["Word 182 word 180 word 181."]}
+          - {id: 4, target: "Wonak womik.", en: ["Word 180 word 177."]}
+      - id: es.a2.u07.s02
+        kind: vocab
+        title: Skill 7.2
+        cefr: A2
+        can_do: I can use the words of skill 7.2.
+        requires: []
+        lemmas:
+          - {lemma: wonok, pos: verb, en: [word 183], rank: null}
+          - {lemma: wonuk, pos: verb, en: [word 184], rank: null}
+          - {lemma: wopak, pos: verb, en: [word 185], rank: null}
+        examples:
+          - {id: 1, target: "Wonok wonuk.", en: ["Word 183 word 184."]}
+          - {id: 2, target: "Wonuk wopak.", en: ["Word 184 word 185."]}
+          - {id: 3, target: "Wopak wonok wonuk.", en: ["Word 185 word 183 word 184."]}
+          - {id: 4, target: "Wonok wonak.", en: ["Word 183 word 180."]}
+      - id: es.a2.u07.s03
+        kind: vocab
+        title: Skill 7.3
+        cefr: A2
+        can_do: I can use the words of skill 7.3.
+        requires: []
+        lemmas:
+          - {lemma: wopek, pos: verb, en: [word 186], rank: null}
+          - {lemma: wopik, pos: verb, en: [word 187], rank: null}
+          - {lemma: wopok, pos: verb, en: [word 188], rank: null}
+        examples:
+          - {id: 1, target: "Wopek wopik.", en: ["Word 186 word 187."]}
+          - {id: 2, target: "Wopik wopok.", en: ["Word 187 word 188."]}
+          - {id: 3, target: "Wopok wopek wopik.", en: ["Word 188 word 186 word 187."]}
+          - {id: 4, target: "Wopek wonok.", en: ["Word 186 word 183."]}
+      - id: es.a2.u07.s04
+        kind: vocab
+        title: Skill 7.4
+        cefr: A2
+        can_do: I can use the words of skill 7.4.
+        requires: []
+        lemmas:
+          - {lemma: wopuk, pos: verb, en: [word 189], rank: null}
+          - {lemma: worak, pos: verb, en: [word 190], rank: null}
+          - {lemma: worek, pos: verb, en: [word 191], rank: null}
+        examples:
+          - {id: 1, target: "Wopuk worak.", en: ["Word 189 word 190."]}
+          - {id: 2, target: "Worak worek.", en: ["Word 190 word 191."]}
+          - {id: 3, target: "Worek wopuk worak.", en: ["Word 191 word 189 word 190."]}
+          - {id: 4, target: "Wopuk wopek.", en: ["Word 189 word 186."]}
+      - id: es.a2.u07.s05
+        kind: vocab
+        title: Skill 7.5
+        cefr: A2
+        can_do: I can use the words of skill 7.5.
+        requires: []
+        lemmas:
+          - {lemma: worik, pos: verb, en: [word 192], rank: null}
+          - {lemma: worok, pos: verb, en: [word 193], rank: null}
+          - {lemma: woruk, pos: verb, en: [word 194], rank: null}
+        examples:
+          - {id: 1, target: "Worik worok.", en: ["Word 192 word 193."]}
+          - {id: 2, target: "Worok woruk.", en: ["Word 193 word 194."]}
+          - {id: 3, target: "Woruk worik worok.", en: ["Word 194 word 192 word 193."]}
+          - {id: 4, target: "Worik wopuk.", en: ["Word 192 word 189."]}
+      - id: es.a2.u07.s06
+        kind: vocab
+        title: Skill 7.6
+        cefr: A2
+        can_do: I can use the words of skill 7.6.
+        requires: []
+        lemmas:
+          - {lemma: wotak, pos: verb, en: [word 195], rank: null}
+          - {lemma: wotek, pos: verb, en: [word 196], rank: null}
+          - {lemma: wotik, pos: verb, en: [word 197], rank: null}
+        examples:
+          - {id: 1, target: "Wotak wotek.", en: ["Word 195 word 196."]}
+          - {id: 2, target: "Wotek wotik.", en: ["Word 196 word 197."]}
+          - {id: 3, target: "Wotik wotak wotek.", en: ["Word 197 word 195 word 196."]}
+          - {id: 4, target: "Wotak worik.", en: ["Word 195 word 192."]}
+      - id: es.a2.u07.s07
+        kind: vocab
+        title: Skill 7.7
+        cefr: A2
+        can_do: I can use the words of skill 7.7.
+        requires: []
+        lemmas:
+          - {lemma: wotok, pos: verb, en: [word 198], rank: null}
+          - {lemma: wotuk, pos: verb, en: [word 199], rank: null}
+          - {lemma: wubak, pos: verb, en: [word 200], rank: null}
+        examples:
+          - {id: 1, target: "Wotok wotuk.", en: ["Word 198 word 199."]}
+          - {id: 2, target: "Wotuk wubak.", en: ["Word 199 word 200."]}
+          - {id: 3, target: "Wubak wotok wotuk.", en: ["Word 200 word 198 word 199."]}
+          - {id: 4, target: "Wotok wotak.", en: ["Word 198 word 195."]}
+      - id: es.a2.u07.s08
+        kind: vocab
+        title: Skill 7.8
+        cefr: A2
+        can_do: I can use the words of skill 7.8.
+        requires: []
+        lemmas:
+          - {lemma: wubek, pos: verb, en: [word 201], rank: null}
+          - {lemma: wubik, pos: verb, en: [word 202], rank: null}
+          - {lemma: wubok, pos: verb, en: [word 203], rank: null}
+        examples:
+          - {id: 1, target: "Wubek wubik.", en: ["Word 201 word 202."]}
+          - {id: 2, target: "Wubik wubok.", en: ["Word 202 word 203."]}
+          - {id: 3, target: "Wubok wubek wubik.", en: ["Word 203 word 201 word 202."]}
+          - {id: 4, target: "Wubek wotok.", en: ["Word 201 word 198."]}
+      - id: es.a2.u07.s09
+        kind: vocab
+        title: Skill 7.9
+        cefr: A2
+        can_do: I can use the words of skill 7.9.
+        requires: []
+        lemmas:
+          - {lemma: wubuk, pos: verb, en: [word 204], rank: null}
+          - {lemma: wudak, pos: verb, en: [word 205], rank: null}
+          - {lemma: wudek, pos: verb, en: [word 206], rank: null}
+        examples:
+          - {id: 1, target: "Wubuk wudak.", en: ["Word 204 word 205."]}
+          - {id: 2, target: "Wudak wudek.", en: ["Word 205 word 206."]}
+          - {id: 3, target: "Wudek wubuk wudak.", en: ["Word 206 word 204 word 205."]}
+          - {id: 4, target: "Wubuk wubek.", en: ["Word 204 word 201."]}
+      - id: es.a2.u07.s10
+        kind: vocab
+        title: Skill 7.10
+        cefr: A2
+        can_do: I can use the words of skill 7.10.
+        requires: []
+        lemmas:
+          - {lemma: wudik, pos: verb, en: [word 207], rank: null}
+          - {lemma: wudok, pos: verb, en: [word 208], rank: null}
+          - {lemma: wuduk, pos: verb, en: [word 209], rank: null}
+        examples:
+          - {id: 1, target: "Wudik wudok.", en: ["Word 207 word 208."]}
+          - {id: 2, target: "Wudok wuduk.", en: ["Word 208 word 209."]}
+          - {id: 3, target: "Wuduk wudik wudok.", en: ["Word 209 word 207 word 208."]}
+          - {id: 4, target: "Wudik wubuk.", en: ["Word 207 word 204."]}
+  - id: es.a2.u08
+    title: Unit 8
+    cefr: A2
+    skills:
+      - id: es.a2.u08.s01
+        kind: vocab
+        title: Skill 8.1
+        cefr: A2
+        can_do: I can use the words of skill 8.1.
+        requires: []
+        lemmas:
+          - {lemma: wufak, pos: verb, en: [word 210], rank: null}
+          - {lemma: wufek, pos: verb, en: [word 211], rank: null}
+          - {lemma: wufik, pos: verb, en: [word 212], rank: null}
+        examples:
+          - {id: 1, target: "Wufak wufek.", en: ["Word 210 word 211."]}
+          - {id: 2, target: "Wufek wufik.", en: ["Word 211 word 212."]}
+          - {id: 3, target: "Wufik wufak wufek.", en: ["Word 212 word 210 word 211."]}
+          - {id: 4, target: "Wufak wudik.", en: ["Word 210 word 207."]}
+      - id: es.a2.u08.s02
+        kind: vocab
+        title: Skill 8.2
+        cefr: A2
+        can_do: I can use the words of skill 8.2.
+        requires: []
+        lemmas:
+          - {lemma: wufok, pos: verb, en: [word 213], rank: null}
+          - {lemma: wufuk, pos: verb, en: [word 214], rank: null}
+          - {lemma: wugak, pos: verb, en: [word 215], rank: null}
+        examples:
+          - {id: 1, target: "Wufok wufuk.", en: ["Word 213 word 214."]}
+          - {id: 2, target: "Wufuk wugak.", en: ["Word 214 word 215."]}
+          - {id: 3, target: "Wugak wufok wufuk.", en: ["Word 215 word 213 word 214."]}
+          - {id: 4, target: "Wufok wufak.", en: ["Word 213 word 210."]}
+      - id: es.a2.u08.s03
+        kind: vocab
+        title: Skill 8.3
+        cefr: A2
+        can_do: I can use the words of skill 8.3.
+        requires: []
+        lemmas:
+          - {lemma: wugek, pos: verb, en: [word 216], rank: null}
+          - {lemma: wugik, pos: verb, en: [word 217], rank: null}
+          - {lemma: wugok, pos: verb, en: [word 218], rank: null}
+        examples:
+          - {id: 1, target: "Wugek wugik.", en: ["Word 216 word 217."]}
+          - {id: 2, target: "Wugik wugok.", en: ["Word 217 word 218."]}
+          - {id: 3, target: "Wugok wugek wugik.", en: ["Word 218 word 216 word 217."]}
+          - {id: 4, target: "Wugek wufok.", en: ["Word 216 word 213."]}
+      - id: es.a2.u08.s04
+        kind: vocab
+        title: Skill 8.4
+        cefr: A2
+        can_do: I can use the words of skill 8.4.
+        requires: []
+        lemmas:
+          - {lemma: wuguk, pos: verb, en: [word 219], rank: null}
+          - {lemma: wulak, pos: verb, en: [word 220], rank: null}
+          - {lemma: wulek, pos: verb, en: [word 221], rank: null}
+        examples:
+          - {id: 1, target: "Wuguk wulak.", en: ["Word 219 word 220."]}
+          - {id: 2, target: "Wulak wulek.", en: ["Word 220 word 221."]}
+          - {id: 3, target: "Wulek wuguk wulak.", en: ["Word 221 word 219 word 220."]}
+          - {id: 4, target: "Wuguk wugek.", en: ["Word 219 word 216."]}
+      - id: es.a2.u08.s05
+        kind: vocab
+        title: Skill 8.5
+        cefr: A2
+        can_do: I can use the words of skill 8.5.
+        requires: []
+        lemmas:
+          - {lemma: wulik, pos: verb, en: [word 222], rank: null}
+          - {lemma: wulok, pos: verb, en: [word 223], rank: null}
+          - {lemma: wuluk, pos: verb, en: [word 224], rank: null}
+        examples:
+          - {id: 1, target: "Wulik wulok.", en: ["Word 222 word 223."]}
+          - {id: 2, target: "Wulok wuluk.", en: ["Word 223 word 224."]}
+          - {id: 3, target: "Wuluk wulik wulok.", en: ["Word 224 word 222 word 223."]}
+          - {id: 4, target: "Wulik wuguk.", en: ["Word 222 word 219."]}
+      - id: es.a2.u08.s06
+        kind: vocab
+        title: Skill 8.6
+        cefr: A2
+        can_do: I can use the words of skill 8.6.
+        requires: []
+        lemmas:
+          - {lemma: wumak, pos: verb, en: [word 225], rank: null}
+          - {lemma: wumek, pos: verb, en: [word 226], rank: null}
+          - {lemma: wumik, pos: verb, en: [word 227], rank: null}
+        examples:
+          - {id: 1, target: "Wumak wumek.", en: ["Word 225 word 226."]}
+          - {id: 2, target: "Wumek wumik.", en: ["Word 226 word 227."]}
+          - {id: 3, target: "Wumik wumak wumek.", en: ["Word 227 word 225 word 226."]}
+          - {id: 4, target: "Wumak wulik.", en: ["Word 225 word 222."]}
+      - id: es.a2.u08.s07
+        kind: vocab
+        title: Skill 8.7
+        cefr: A2
+        can_do: I can use the words of skill 8.7.
+        requires: []
+        lemmas:
+          - {lemma: wumok, pos: verb, en: [word 228], rank: null}
+          - {lemma: wumuk, pos: verb, en: [word 229], rank: null}
+          - {lemma: wunak, pos: verb, en: [word 230], rank: null}
+        examples:
+          - {id: 1, target: "Wumok wumuk.", en: ["Word 228 word 229."]}
+          - {id: 2, target: "Wumuk wunak.", en: ["Word 229 word 230."]}
+          - {id: 3, target: "Wunak wumok wumuk.", en: ["Word 230 word 228 word 229."]}
+          - {id: 4, target: "Wumok wumak.", en: ["Word 228 word 225."]}
+      - id: es.a2.u08.s08
+        kind: vocab
+        title: Skill 8.8
+        cefr: A2
+        can_do: I can use the words of skill 8.8.
+        requires: []
+        lemmas:
+          - {lemma: wunek, pos: verb, en: [word 231], rank: null}
+          - {lemma: wunik, pos: verb, en: [word 232], rank: null}
+          - {lemma: wunok, pos: verb, en: [word 233], rank: null}
+        examples:
+          - {id: 1, target: "Wunek wunik.", en: ["Word 231 word 232."]}
+          - {id: 2, target: "Wunik wunok.", en: ["Word 232 word 233."]}
+          - {id: 3, target: "Wunok wunek wunik.", en: ["Word 233 word 231 word 232."]}
+          - {id: 4, target: "Wunek wumok.", en: ["Word 231 word 228."]}
+      - id: es.a2.u08.s09
+        kind: vocab
+        title: Skill 8.9
+        cefr: A2
+        can_do: I can use the words of skill 8.9.
+        requires: []
+        lemmas:
+          - {lemma: wunuk, pos: verb, en: [word 234], rank: null}
+          - {lemma: wupak, pos: verb, en: [word 235], rank: null}
+          - {lemma: wupek, pos: verb, en: [word 236], rank: null}
+        examples:
+          - {id: 1, target: "Wunuk wupak.", en: ["Word 234 word 235."]}
+          - {id: 2, target: "Wupak wupek.", en: ["Word 235 word 236."]}
+          - {id: 3, target: "Wupek wunuk wupak.", en: ["Word 236 word 234 word 235."]}
+          - {id: 4, target: "Wunuk wunek.", en: ["Word 234 word 231."]}
+      - id: es.a2.u08.s10
+        kind: vocab
+        title: Skill 8.10
+        cefr: A2
+        can_do: I can use the words of skill 8.10.
+        requires: []
+        lemmas:
+          - {lemma: wupik, pos: verb, en: [word 237], rank: null}
+          - {lemma: wupok, pos: verb, en: [word 238], rank: null}
+          - {lemma: wupuk, pos: verb, en: [word 239], rank: null}
+        examples:
+          - {id: 1, target: "Wupik wupok.", en: ["Word 237 word 238."]}
+          - {id: 2, target: "Wupok wupuk.", en: ["Word 238 word 239."]}
+          - {id: 3, target: "Wupuk wupik wupok.", en: ["Word 239 word 237 word 238."]}
+          - {id: 4, target: "Wupik wunuk.", en: ["Word 237 word 234."]}

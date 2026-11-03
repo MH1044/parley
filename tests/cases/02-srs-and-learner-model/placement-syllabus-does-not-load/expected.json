@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/syllabus/bad-V01.yaml: /version: expected an integer"
+  ],
+  "warnings": []
+}
