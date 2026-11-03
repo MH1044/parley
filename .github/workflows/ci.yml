@@ -136,6 +136,11 @@ jobs:
             & (Join-Path $driverDir 'msedgedriver.exe') --version
           }
           Add-Content -Path $env:GITHUB_PATH -Value $driverDir
+          # Name the driver explicitly as well, so tauri-driver never picks up another copy from the
+          # PATH; list every copy the PATH holds, for the log.
+          $driver = Join-Path $driverDir 'msedgedriver.exe'
+          Add-Content -Path $env:GITHUB_ENV -Value "TAURI_DRIVER_ARGS=--native-driver $driver"
+          Get-Command msedgedriver -All -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "On the PATH: $($_.Source)" }
 
       - name: launch smoke (Linux)
         if: runner.os == 'Linux'

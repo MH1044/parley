@@ -15,6 +15,12 @@ const DRIVER = 'http://127.0.0.1:4444'
 const WELCOME = 'Learn by speaking'
 const DRIVER_READY_MS = 30_000
 const WELCOME_WITHIN_MS = 20_000
+// Creating the session starts the app. The platform driver waits up to about 60 s for the web
+// view to attach before it gives up with its own message, so the request is allowed longer than
+// that and the message reaches the log; every other request fails within 10 s.
+const SESSION_REQUEST_MS = 90_000
+const REQUEST_MS = 10_000
+const TEST_MS = SESSION_REQUEST_MS + WELCOME_WITHIN_MS + 30_000
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const application =
@@ -32,13 +38,25 @@ interface Reply {
   value: Record<string, unknown> | null
 }
 
-async function webdriver(method: string, path: string, body?: unknown): Promise<Reply> {
-  const response = await fetch(`${DRIVER}${path}`, {
-    method,
-    headers: { 'content-type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  })
-  return { status: response.status, value: valueOf(await response.text()) }
+async function webdriver(
+  method: string,
+  path: string,
+  body?: unknown,
+  timeoutMs: number = REQUEST_MS,
+): Promise<Reply> {
+  try {
+    const response = await fetch(`${DRIVER}${path}`, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal: AbortSignal.timeout(timeoutMs),
+    })
+    return { status: response.status, value: valueOf(await response.text()) }
+  } catch (error) {
+    throw new Error(`${method} ${path} got no answer within ${timeoutMs / 1000} s`, {
+      cause: error,
+    })
+  }
 }
 
 /** The `value` of a WebDriver reply, or null when the body is not JSON. */
@@ -89,10 +107,14 @@ afterAll(async () => {
 
 describe('launch smoke (acceptance test 16)', () => {
   it(`shows "${WELCOME}" within ${WELCOME_WITHIN_MS / 1000} s of starting`, async () => {
-    const created = await webdriver('POST', '/session', {
-      capabilities: { alwaysMatch: { 'tauri:options': { application } } },
-    })
-    expect(created.status, JSON.stringify(created.value)).toBe(200)
+    console.log(`starting ${application}`)
+    const created = await webdriver(
+      'POST',
+      '/session',
+      { capabilities: { alwaysMatch: { 'tauri:options': { application } } } },
+      SESSION_REQUEST_MS,
+    )
+    expect(created.status, `the driver answered: ${JSON.stringify(created.value)}`).toBe(200)
     sessionId = created.value?.sessionId as string | undefined
     expect(sessionId, 'a WebDriver session id').toBeTypeOf('string')
     const started = Date.now()
@@ -109,5 +131,5 @@ describe('launch smoke (acceptance test 16)', () => {
     const elapsed = Date.now() - started
     expect(found, `"${WELCOME}" appeared`).toBe(true)
     expect(elapsed).toBeLessThanOrEqual(WELCOME_WITHIN_MS)
-  })
+  }, TEST_MS)
 })
