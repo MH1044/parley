@@ -1,0 +1,131 @@
+{
+  "schema": "parley.backup/1",
+  "app_version": "0.4.0",
+  "exported_at": "2026-10-14T18:00:00Z",
+  "settings": {
+    "schema": "parley.settings/1",
+    "active_course": "es",
+    "daily_goal_xp": 20,
+    "accent_leniency": "lenient",
+    "answer_input": "typing",
+    "desired_retention": 0.9,
+    "new_items_per_lesson": 5,
+    "lesson_length": 12,
+    "audio": {
+      "voice_source": "os",
+      "os_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "natural_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "slow_speed": 0.75,
+      "autoplay": true
+    },
+    "speaking": {
+      "enabled": true,
+      "transcriber": "provider",
+      "pass_threshold": 0.8,
+      "keep_recordings": false
+    },
+    "ai": {
+      "provider": "unset",
+      "fresh_lessons": true,
+      "prepare_next_lesson": true,
+      "stories": true,
+      "share_device_name": false,
+      "own_key": {
+        "base_url": null,
+        "chat_model": null,
+        "transcribe_model": null,
+        "speech_model": null,
+        "speech_voice": null
+      },
+      "local": {
+        "base_url": "http://localhost:11434/v1",
+        "chat_model": null
+      }
+    },
+    "update_check": true
+  },
+  "courses": [
+    {
+      "lang": "es",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1790841600000,
+      "placement_index": null,
+      "cefr_estimate": null,
+      "tested_out": []
+    }
+  ],
+  "items": [
+    {
+      "id": "es:conv:6f1c:1",
+      "lang": "es",
+      "skill_id": "es.a1.u02.s02",
+      "kind": "phrase",
+      "target": "un café con leche",
+      "en": [
+        "a coffee with milk"
+      ],
+      "lemmas": [
+        "un",
+        "café",
+        "con",
+        "leche"
+      ],
+      "cefr": "A1",
+      "source_kind": "conversation",
+      "source_ref": "6f1c",
+      "created_at": 1790935200000,
+      "retired": 0
+    }
+  ],
+  "accepted_answers": [],
+  "cards": [
+    {
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 2.3065,
+      "difficulty": 5.0,
+      "due": 1791108360000,
+      "last_review": 1790935560000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:inexistente",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 2.3065,
+      "difficulty": 5.0,
+      "due": 1791108420000,
+      "last_review": 1790935620000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es:conv:6f1c:1",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 2.3065,
+      "difficulty": 5.0,
+      "due": 1791108300000,
+      "last_review": 1790935500000,
+      "reps": 1,
+      "lapses": 0
+    }
+  ],
+  "review_log": [],
+  "sessions": [],
+  "lessons": [],
+  "judgements": [],
+  "daily": [],
+  "freeze_events": []
+}

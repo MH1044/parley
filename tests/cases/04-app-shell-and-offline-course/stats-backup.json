@@ -1,0 +1,1447 @@
+{
+  "schema": "parley.backup/1",
+  "app_version": "0.4.0",
+  "exported_at": "2026-10-15T11:59:00Z",
+  "settings": {
+    "schema": "parley.settings/1",
+    "active_course": "es",
+    "daily_goal_xp": 20,
+    "accent_leniency": "lenient",
+    "answer_input": "typing",
+    "desired_retention": 0.9,
+    "new_items_per_lesson": 5,
+    "lesson_length": 12,
+    "audio": {
+      "voice_source": "os",
+      "os_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "natural_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "slow_speed": 0.75,
+      "autoplay": true
+    },
+    "speaking": {
+      "enabled": true,
+      "transcriber": "provider",
+      "pass_threshold": 0.8,
+      "keep_recordings": false
+    },
+    "ai": {
+      "provider": "unset",
+      "fresh_lessons": true,
+      "prepare_next_lesson": true,
+      "stories": true,
+      "share_device_name": false,
+      "own_key": {
+        "base_url": null,
+        "chat_model": null,
+        "transcribe_model": null,
+        "speech_model": null,
+        "speech_voice": null
+      },
+      "local": {
+        "base_url": "http://localhost:11434/v1",
+        "chat_model": null
+      }
+    },
+    "update_check": true
+  },
+  "courses": [
+    {
+      "lang": "es",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1789027200000,
+      "placement_index": 1,
+      "cefr_estimate": "Pre-A1",
+      "tested_out": [
+        "es.a1.u01.s01"
+      ]
+    },
+    {
+      "lang": "fr",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1790841600000,
+      "placement_index": null,
+      "cefr_estimate": null,
+      "tested_out": []
+    }
+  ],
+  "items": [],
+  "accepted_answers": [],
+  "cards": [
+    {
+      "item_id": "es.a1.u01.s01#e:1",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:1",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:2",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:2",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:3",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:3",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:4",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:4",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:5",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:5",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:6",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:6",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:7",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#e:7",
+      "facet": "productive",
+      "state": "review",
+      "stability": 30.0,
+      "difficulty": 5.0,
+      "due": 1794484800000,
+      "last_review": 1791892800000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:adiós",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:adiós",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:bien",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:bien",
+      "facet": "productive",
+      "state": "review",
+      "stability": 2.0,
+      "difficulty": 7.0,
+      "due": 1791547200000,
+      "last_review": 1791374400000,
+      "reps": 2,
+      "lapses": 1
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:bueno",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:bueno",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:día",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:día",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:gracias",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:gracias",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:muy",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:muy",
+      "facet": "productive",
+      "state": "review",
+      "stability": 2.0,
+      "difficulty": 7.0,
+      "due": 1791547200000,
+      "last_review": 1791374400000,
+      "reps": 2,
+      "lapses": 1
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:noche",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:noche",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:tal",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:tal",
+      "facet": "productive",
+      "state": "review",
+      "stability": 2.0,
+      "difficulty": 7.0,
+      "due": 1791547200000,
+      "last_review": 1791374400000,
+      "reps": 2,
+      "lapses": 1
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:tarde",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 40.0,
+      "difficulty": 4.5,
+      "due": 1795348800000,
+      "last_review": 1791892800000,
+      "reps": 3,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:tarde",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 2,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:1",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:1",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:2",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:2",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:3",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:3",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:4",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:4",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:5",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:5",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:6",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:6",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:7",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:7",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:8",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#e:8",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:encantado",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:encantado",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:llamarse",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:llamarse",
+      "facet": "productive",
+      "state": "review",
+      "stability": 15.0,
+      "difficulty": 5.0,
+      "due": 1793275200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:mucho gusto",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:mucho gusto",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:nombre",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:nombre",
+      "facet": "productive",
+      "state": "review",
+      "stability": 15.0,
+      "difficulty": 5.0,
+      "due": 1793275200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:perdón",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:perdón",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:señor",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:señor",
+      "facet": "productive",
+      "state": "review",
+      "stability": 1.5,
+      "difficulty": 7.0,
+      "due": 1791720000000,
+      "last_review": 1791547200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:señora",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 10.0,
+      "difficulty": 5.0,
+      "due": 1792843200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s02#l:señora",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:agua",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 3.0,
+      "difficulty": 6.0,
+      "due": 1791460800000,
+      "last_review": 1791201600000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:agua",
+      "facet": "productive",
+      "state": "relearning",
+      "stability": 0.5,
+      "difficulty": 8.0,
+      "due": 1791892800000,
+      "last_review": 1791806400000,
+      "reps": 2,
+      "lapses": 1
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:café",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 5.0,
+      "difficulty": 5.0,
+      "due": 1792454400000,
+      "last_review": 1792022400000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:café",
+      "facet": "productive",
+      "state": "review",
+      "stability": 4.0,
+      "difficulty": 5.0,
+      "due": 1792389600000,
+      "last_review": 1792044000000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:té",
+      "facet": "receptive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u02.s02#l:té",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "fr.a1.u01.s01#l:bonjour",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "fr.a1.u01.s01#l:bonjour",
+      "facet": "productive",
+      "state": "review",
+      "stability": 20.0,
+      "difficulty": 5.0,
+      "due": 1793707200000,
+      "last_review": 1791979200000,
+      "reps": 1,
+      "lapses": 0
+    }
+  ],
+  "review_log": [
+    {
+      "id": 1,
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "receptive",
+      "reviewed_at": 1789203600000,
+      "rating": 3,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a1"
+    },
+    {
+      "id": 2,
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "productive",
+      "reviewed_at": 1789203660000,
+      "rating": 1,
+      "exercise_type": "fill_gap",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a1"
+    },
+    {
+      "id": 3,
+      "item_id": "es.a1.u01.s01#e:1",
+      "facet": "receptive",
+      "reviewed_at": 1789473600000,
+      "rating": 1,
+      "exercise_type": "translate_to_en",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a1"
+    },
+    {
+      "id": 4,
+      "item_id": "es.a1.u01.s01#l:tal",
+      "facet": "receptive",
+      "reviewed_at": 1789545900000,
+      "rating": 3,
+      "exercise_type": "placement",
+      "verdict": "correct",
+      "response_ms": null,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "p-00000000000000b1"
+    },
+    {
+      "id": 5,
+      "item_id": "es.a1.u01.s01#l:tal",
+      "facet": "productive",
+      "reviewed_at": 1789545900000,
+      "rating": 3,
+      "exercise_type": "placement",
+      "verdict": "correct",
+      "response_ms": null,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "p-00000000000000b1"
+    },
+    {
+      "id": 6,
+      "item_id": "es.a1.u01.s02#l:llamarse",
+      "facet": "receptive",
+      "reviewed_at": 1789722000000,
+      "rating": 3,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a2"
+    },
+    {
+      "id": 7,
+      "item_id": "es.a1.u01.s02#l:llamarse",
+      "facet": "productive",
+      "reviewed_at": 1789722060000,
+      "rating": 3,
+      "exercise_type": "translate_to_target",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a2"
+    },
+    {
+      "id": 8,
+      "item_id": "es.a1.u01.s02#l:nombre",
+      "facet": "receptive",
+      "reviewed_at": 1790067600000,
+      "rating": 4,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 1800,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a2"
+    },
+    {
+      "id": 9,
+      "item_id": "es.a1.u01.s02#l:nombre",
+      "facet": "productive",
+      "reviewed_at": 1790067660000,
+      "rating": 1,
+      "exercise_type": "fill_gap",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a2"
+    },
+    {
+      "id": 10,
+      "item_id": "fr.a1.u01.s01#l:bonjour",
+      "facet": "receptive",
+      "reviewed_at": 1790931600000,
+      "rating": 1,
+      "exercise_type": "pick_meaning",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a5"
+    },
+    {
+      "id": 11,
+      "item_id": "es.a1.u01.s02#l:señor",
+      "facet": "receptive",
+      "reviewed_at": 1791018000000,
+      "rating": 3,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 12,
+      "item_id": "es.a1.u01.s02#l:señor",
+      "facet": "productive",
+      "reviewed_at": 1791277200000,
+      "rating": 2,
+      "exercise_type": "fill_gap",
+      "verdict": "almost",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 13,
+      "item_id": "es.a1.u02.s02#l:agua",
+      "facet": "receptive",
+      "reviewed_at": 1791536400000,
+      "rating": 1,
+      "exercise_type": "pick_meaning",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 14,
+      "item_id": "es.a1.u01.s01#l:gracias",
+      "facet": "productive",
+      "reviewed_at": 1791622800000,
+      "rating": 3,
+      "exercise_type": "fill_gap",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 15,
+      "item_id": "es.a1.u02.s02#l:agua",
+      "facet": "productive",
+      "reviewed_at": 1791795600000,
+      "rating": 3,
+      "exercise_type": "fill_gap",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 16,
+      "item_id": "es.a1.u01.s01#l:muy",
+      "facet": "productive",
+      "reviewed_at": 1791882000000,
+      "rating": 3,
+      "exercise_type": "fill_gap",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 17,
+      "item_id": "es.a1.u01.s01#l:bien",
+      "facet": "productive",
+      "reviewed_at": 1791968400000,
+      "rating": 3,
+      "exercise_type": "fill_gap",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a3"
+    },
+    {
+      "id": 18,
+      "item_id": "es.a1.u02.s02#l:café",
+      "facet": "receptive",
+      "reviewed_at": 1792051200000,
+      "rating": 1,
+      "exercise_type": "pick_meaning",
+      "verdict": "wrong",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a4"
+    },
+    {
+      "id": 19,
+      "item_id": "es.a1.u02.s02#l:café",
+      "facet": "productive",
+      "reviewed_at": 1792065600000,
+      "rating": 2,
+      "exercise_type": "fill_gap",
+      "verdict": "almost",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000a4"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "s-00000000000000a1",
+      "lang": "es",
+      "kind": "lesson",
+      "skill_id": "es.a1.u01.s01",
+      "started_at": 1789203300000,
+      "ended_at": 1789204200000,
+      "local_date": "2026-09-12",
+      "xp": 20,
+      "exercises": 12,
+      "correct": 10,
+      "cost_micros": 0
+    },
+    {
+      "id": "s-00000000000000a2",
+      "lang": "es",
+      "kind": "lesson",
+      "skill_id": "es.a1.u01.s02",
+      "started_at": 1789721700000,
+      "ended_at": 1789722600000,
+      "local_date": "2026-09-18",
+      "xp": 25,
+      "exercises": 12,
+      "correct": 11,
+      "cost_micros": 0
+    },
+    {
+      "id": "s-00000000000000a3",
+      "lang": "es",
+      "kind": "review",
+      "skill_id": null,
+      "started_at": 1791968100000,
+      "ended_at": 1791968700000,
+      "local_date": "2026-10-14",
+      "xp": 15,
+      "exercises": 10,
+      "correct": 10,
+      "cost_micros": 0
+    },
+    {
+      "id": "s-00000000000000a4",
+      "lang": "es",
+      "kind": "lesson",
+      "skill_id": "es.a1.u02.s02",
+      "started_at": 1792050900000,
+      "ended_at": 1792051800000,
+      "local_date": "2026-10-15",
+      "xp": 15,
+      "exercises": 5,
+      "correct": 4,
+      "cost_micros": 0
+    },
+    {
+      "id": "s-00000000000000a5",
+      "lang": "fr",
+      "kind": "lesson",
+      "skill_id": "fr.a1.u01.s01",
+      "started_at": 1790931300000,
+      "ended_at": 1790932200000,
+      "local_date": "2026-10-02",
+      "xp": 30,
+      "exercises": 12,
+      "correct": 11,
+      "cost_micros": 0
+    }
+  ],
+  "lessons": [],
+  "judgements": [],
+  "daily": [
+    {
+      "local_date": "2026-09-10",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-11",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-12",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-13",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-14",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-15",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-16",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-17",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-18",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-19",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-20",
+      "xp": 40,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-21",
+      "xp": 50,
+      "sessions": 2,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-22",
+      "xp": 50,
+      "sessions": 2,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-09-23",
+      "xp": 0,
+      "sessions": 0,
+      "goal_xp": 20,
+      "frozen": 1
+    },
+    {
+      "local_date": "2026-10-01",
+      "xp": 30,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-02",
+      "xp": 30,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-03",
+      "xp": 30,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-04",
+      "xp": 30,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-05",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-06",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-07",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-08",
+      "xp": 0,
+      "sessions": 0,
+      "goal_xp": 20,
+      "frozen": 1
+    },
+    {
+      "local_date": "2026-10-09",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-10",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-11",
+      "xp": 25,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-12",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-13",
+      "xp": 35,
+      "sessions": 2,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-14",
+      "xp": 20,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-15",
+      "xp": 15,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    }
+  ],
+  "freeze_events": [
+    {
+      "id": 1,
+      "local_date": "2026-09-16",
+      "kind": "earned",
+      "streak_len": 7
+    },
+    {
+      "id": 2,
+      "local_date": "2026-09-23",
+      "kind": "used",
+      "streak_len": 13
+    },
+    {
+      "id": 3,
+      "local_date": "2026-10-07",
+      "kind": "earned",
+      "streak_len": 7
+    },
+    {
+      "id": 4,
+      "local_date": "2026-10-08",
+      "kind": "used",
+      "streak_len": 7
+    },
+    {
+      "id": 5,
+      "local_date": "2026-10-15",
+      "kind": "earned",
+      "streak_len": 14
+    }
+  ]
+}

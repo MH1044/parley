@@ -1,0 +1,253 @@
+{
+  "clock": {
+    "now": "2026-10-15T12:00:00Z",
+    "now_ms": 1792065600000,
+    "utc_offset_minutes": 0
+  },
+  "tolerance": 1e-06,
+  "stats": {
+    "lang": "es",
+    "empty": false,
+    "streak": 14,
+    "freezes": 1,
+    "days": [
+      {
+        "local_date": "2026-09-16",
+        "xp": 40,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-17",
+        "xp": 40,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-18",
+        "xp": 40,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-19",
+        "xp": 40,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-20",
+        "xp": 40,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-21",
+        "xp": 50,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-22",
+        "xp": 50,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-23",
+        "xp": 0,
+        "active": false,
+        "frozen": true
+      },
+      {
+        "local_date": "2026-09-24",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-25",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-26",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-27",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-28",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-29",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-09-30",
+        "xp": 0,
+        "active": false,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-01",
+        "xp": 30,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-02",
+        "xp": 30,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-03",
+        "xp": 30,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-04",
+        "xp": 30,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-05",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-06",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-07",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-08",
+        "xp": 0,
+        "active": false,
+        "frozen": true
+      },
+      {
+        "local_date": "2026-10-09",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-10",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-11",
+        "xp": 25,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-12",
+        "xp": 20,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-13",
+        "xp": 35,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-14",
+        "xp": 20,
+        "active": true,
+        "frozen": false
+      },
+      {
+        "local_date": "2026-10-15",
+        "xp": 15,
+        "active": true,
+        "frozen": false
+      }
+    ],
+    "week_xp": 90,
+    "record_week_xp": 280,
+    "words_known": 10,
+    "vocab_items": 76,
+    "skills": [
+      {
+        "id": "es.a1.u01.s01",
+        "title": "Greetings",
+        "state": "mastered",
+        "mastery": 0.9735866742286745
+      },
+      {
+        "id": "es.a1.u01.s02",
+        "title": "Names",
+        "state": "practised",
+        "mastery": 0.5849312871472212
+      },
+      {
+        "id": "es.a1.u01.s03",
+        "title": "Where you are from",
+        "state": "available",
+        "mastery": 0.0
+      },
+      {
+        "id": "es.a1.u01.s04",
+        "title": "Numbers and age",
+        "state": "locked",
+        "mastery": 0.0
+      },
+      {
+        "id": "es.a1.u02.s01",
+        "title": "Family",
+        "state": "locked",
+        "mastery": 0.0
+      },
+      {
+        "id": "es.a1.u02.s02",
+        "title": "At the café",
+        "state": "learning",
+        "mastery": 0.09259943923843657
+      },
+      {
+        "id": "es.a1.u02.s03",
+        "title": "Days and time",
+        "state": "locked",
+        "mastery": 0.0
+      },
+      {
+        "id": "es.a1.u02.s04",
+        "title": "Likes",
+        "state": "locked",
+        "mastery": 0.0
+      }
+    ],
+    "cefr_estimate": "Pre-A1",
+    "recall_rate": 0.7692307692307693,
+    "reviews_30": 13
+  }
+}

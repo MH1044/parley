@@ -11,7 +11,7 @@ Every licence is checked again at the module that adds the dependency ("verify a
 |---|---|---|---|
 | App shell | Tauri 2 | MIT OR Apache-2.0 (00) | Small installers, Rust core, Android through Tauri mobile |
 | UI | React + TypeScript, Vite | MIT (00) | Widely known; typed command wrappers |
-| UI tests, launch smoke | Vitest, Testing Library; tauri-driver + WebdriverIO | MIT; Apache-2.0 / MIT (verify 04) | Unit tests without a browser; the official Tauri end-to-end route |
+| UI tests, launch smoke | Vitest, Testing Library; tauri-driver over the W3C WebDriver protocol | MIT; Apache-2.0 OR MIT (04) | Unit tests without a browser; the official Tauri end-to-end route, spoken with `fetch` so no WebdriverIO packages are needed |
 | Database | `rusqlite` with bundled SQLite | MIT; SQLite public domain (02) | One file, transactional, offline |
 | YAML | `serde_yaml_ng` or `serde-saphyr` (`serde_yaml` is archived) | MIT / Apache-2.0 (verify 01) | Syllabus files are hand-edited YAML |
 | JSON Schema | `jsonschema` | MIT (verify 01) | Validates content, backups and every AI response |
@@ -46,7 +46,10 @@ Every licence is checked again at the module that adds the dependency ("verify a
         src/grading/         normalise.rs, typo.rs, grade.rs
         src/exercise/        types.rs, check.rs, template.rs, compose.rs, wordbank.rs, run.rs
         src/game/            xp.rs, streak.rs
-        src/store/           db.rs, migrations/NNNN_name.sql
+        src/store/           db.rs, course.rs, dump.rs, migrations/NNNN_name.sql
+        src/app/             mod.rs (the Parley service every command calls), course.rs, pack.rs,
+                             lesson.rs, placement.rs, stats.rs
+        src/settings.rs      settings.json; src/backup.rs the backup file
         src/ai/              client.rs (AiClient trait), call.rs, cache.rs, prompts.rs, schema.rs,
                              validate.rs, langid.rs, lesson.rs, story.rs, judge.rs, explain.rs,
                              speech.rs, transcribe.rs, roleplay.rs, photo.rs, translate.rs, media.rs
@@ -63,10 +66,13 @@ Every licence is checked again at the module that adds the dependency ("verify a
     app/
       package.json, vite.config.ts, tsconfig.json, index.html
       src/api/commands.ts    typed wrappers for every Tauri command and event
-      src/screens/           Onboarding, Path, Lesson, Review, Stats, Conversation, Photo, Media, Settings
+      src/screens/           Onboarding, Path, Lesson, Review, Stats, Conversation, Photo, Media, Settings,
+                             DataError
       src/components/        exercise views, ResultSheet, AiSetupDialog, BalanceLine, StreakBadge
       src/strings/en.json    every UI string (the copy-rule test reads this file)
-      src-tauri/             Tauri crate: main.rs, commands/*.rs, state.rs, events.rs, capabilities/
+      e2e/                   launch.spec.ts and vitest.config.ts: the launch smoke
+      src-tauri/             Tauri crate: lib.rs (run), main.rs, bundled.rs, env.rs, state.rs,
+                             commands/*.rs, capabilities/
     content/
       LICENSE                the course-content licence (ADR-0003)
       ATTRIBUTION.md         Tatoeba and Wiktionary credits
@@ -243,7 +249,9 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 
 | Command | Arguments | Result | Module |
 |---|---|---|---|
+| `app_start` | | `Launch {onboarded, active_course?, notice?}` | 04 |
 | `app_info` | | `{version, data_dir}` | 04 |
+| `file_pick` | `kind: backup_export/backup_import` | the chosen path or null (a native dialog opened from Rust) | 04 |
 | `data_delete_all` | `confirm_text` (must be `delete`) | `()` | 04 |
 | `cache_clear` | `kind: ai/audio/all` | `{files_removed}` | 04, 09 |
 | `session_skip` | `kind: listen/speak` (60 minutes) | `()` | 09, 10 |

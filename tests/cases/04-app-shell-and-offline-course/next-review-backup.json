@@ -1,0 +1,225 @@
+{
+  "schema": "parley.backup/1",
+  "app_version": "0.4.0",
+  "exported_at": "2026-10-14T18:00:00Z",
+  "settings": {
+    "schema": "parley.settings/1",
+    "active_course": "es",
+    "daily_goal_xp": 20,
+    "accent_leniency": "lenient",
+    "answer_input": "typing",
+    "desired_retention": 0.9,
+    "new_items_per_lesson": 5,
+    "lesson_length": 12,
+    "audio": {
+      "voice_source": "os",
+      "os_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "natural_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "slow_speed": 0.75,
+      "autoplay": true
+    },
+    "speaking": {
+      "enabled": true,
+      "transcriber": "provider",
+      "pass_threshold": 0.8,
+      "keep_recordings": false
+    },
+    "ai": {
+      "provider": "unset",
+      "fresh_lessons": true,
+      "prepare_next_lesson": true,
+      "stories": true,
+      "share_device_name": false,
+      "own_key": {
+        "base_url": null,
+        "chat_model": null,
+        "transcribe_model": null,
+        "speech_model": null,
+        "speech_voice": null
+      },
+      "local": {
+        "base_url": "http://localhost:11434/v1",
+        "chat_model": null
+      }
+    },
+    "update_check": true
+  },
+  "courses": [
+    {
+      "lang": "es",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1791960600000,
+      "placement_index": null,
+      "cefr_estimate": null,
+      "tested_out": []
+    },
+    {
+      "lang": "fr",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1791921000000,
+      "placement_index": null,
+      "cefr_estimate": null,
+      "tested_out": []
+    }
+  ],
+  "items": [],
+  "accepted_answers": [],
+  "cards": [
+    {
+      "item_id": "es.a1.u01.s01#l:adiós",
+      "facet": "receptive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:adiós",
+      "facet": "productive",
+      "state": "new",
+      "stability": null,
+      "difficulty": null,
+      "due": null,
+      "last_review": null,
+      "reps": 0,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 1.0,
+      "difficulty": 5.0,
+      "due": 1792047600000,
+      "last_review": 1791961200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "productive",
+      "state": "review",
+      "stability": 5.0,
+      "difficulty": 5.0,
+      "due": 1792393200000,
+      "last_review": 1791961200000,
+      "reps": 1,
+      "lapses": 0
+    },
+    {
+      "item_id": "fr.a1.u01.s01#l:bonjour",
+      "facet": "receptive",
+      "state": "review",
+      "stability": 1.0,
+      "difficulty": 5.0,
+      "due": 1792008000000,
+      "last_review": 1791921600000,
+      "reps": 1,
+      "lapses": 0
+    }
+  ],
+  "review_log": [
+    {
+      "id": 1,
+      "item_id": "fr.a1.u01.s01#l:bonjour",
+      "facet": "receptive",
+      "reviewed_at": 1791921600000,
+      "rating": 3,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000c1"
+    },
+    {
+      "id": 2,
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "receptive",
+      "reviewed_at": 1791961200000,
+      "rating": 3,
+      "exercise_type": "pick_meaning",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000c2"
+    },
+    {
+      "id": 3,
+      "item_id": "es.a1.u01.s01#l:hola",
+      "facet": "productive",
+      "reviewed_at": 1791961200000,
+      "rating": 3,
+      "exercise_type": "fill_gap",
+      "verdict": "correct",
+      "response_ms": 2400,
+      "elapsed_days": 0.0,
+      "stability_after": 2.3065,
+      "difficulty_after": 5.0,
+      "session_id": "s-00000000000000c2"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "s-00000000000000c1",
+      "lang": "fr",
+      "kind": "lesson",
+      "skill_id": "fr.a1.u01.s01",
+      "started_at": 1791921300000,
+      "ended_at": 1791921900000,
+      "local_date": "2026-10-13",
+      "xp": 16,
+      "exercises": 1,
+      "correct": 1,
+      "cost_micros": 0
+    },
+    {
+      "id": "s-00000000000000c2",
+      "lang": "es",
+      "kind": "lesson",
+      "skill_id": "es.a1.u01.s01",
+      "started_at": 1791960900000,
+      "ended_at": 1791961500000,
+      "local_date": "2026-10-14",
+      "xp": 17,
+      "exercises": 2,
+      "correct": 2,
+      "cost_micros": 0
+    }
+  ],
+  "lessons": [],
+  "judgements": [],
+  "daily": [
+    {
+      "local_date": "2026-10-13",
+      "xp": 16,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    },
+    {
+      "local_date": "2026-10-14",
+      "xp": 17,
+      "sessions": 1,
+      "goal_xp": 20,
+      "frozen": 0
+    }
+  ],
+  "freeze_events": []
+}

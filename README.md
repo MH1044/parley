@@ -4,15 +4,16 @@ Learn Spanish, French or German from English by reading, listening, speaking and
 conversations, with spaced repetition underneath. Free and open source, for Windows, Linux and
 macOS, with Android to follow.
 
-**Status: pre-alpha.** Nothing teaches yet. The repository, the build, the tests and continuous
-integration exist, the desktop window opens and shows the version, and the course exists as
-validated open data: a syllabus format with a validator, word-form tables, and sentence packs
-built from Tatoeba. Underneath, the learner model exists: FSRS cards, an append-only review log,
-skill mastery and states, and an adaptive placement test; and the offline lesson engine: seven
-exercise types, honest grading that forgives accents, articles and typos, template lessons built
-from the syllabus, XP, streaks with earned freezes and the weekly record. All of it is usable
-from the command line; the screens come next. `docs/ROADMAP.md` lists what comes next, in order;
-`docs/PRODUCT.md` describes the finished app.
+**Status: pre-alpha.** The offline app works end to end on the seed course: onboarding with a
+placement test, the learning path, lessons and reviews with honest grading, the streak and stats,
+settings, backup and restore, all with no network and no AI. The course is still the seed
+syllabus (one or two units per language) and no sentence pack is published yet. Underneath: the
+course as validated open data (a syllabus format with a validator, word-form tables, sentence
+packs built from Tatoeba), the learner model (FSRS cards, an append-only review log, skill
+mastery and states, an adaptive placement test) and the offline lesson engine (seven exercise
+types, grading that forgives accents, articles and typos, template lessons, XP, streaks with
+earned freezes and the weekly record), also usable from the command line. `docs/ROADMAP.md` lists
+what comes next, in order; `docs/PRODUCT.md` describes the finished app.
 
 ## What it replaces
 
@@ -49,11 +50,26 @@ scripts/verify
 
 PowerShell: `scripts/verify.ps1`.
 
-The desktop window (the front end is embedded at compile time, so build it first):
+The desktop app (the front end is embedded at compile time, so build it first):
 
 ```sh
 npm --prefix app run build
 cargo run -p parley-app
+```
+
+It opens on "Welcome to Parley" and walks you through choosing a language, the course pack, a
+daily goal and the placement test; `docs/HANDBOOK.md` describes every screen. Your progress lives
+in the app data folder (`parley.sqlite3` and `settings.json`), and Settings > Data exports it as
+one JSON backup that restores on any computer.
+
+The launch smoke test starts the debug build through `tauri-driver` and waits for the welcome
+screen. It needs `tauri-driver` and the platform's WebDriver on the `PATH` (continuous
+integration installs both):
+
+```sh
+npm --prefix app run build
+cargo build -p parley-app
+npm --prefix app run e2e
 ```
 
 The command-line tool:
@@ -182,7 +198,7 @@ no limit on lessons. `docs/HANDBOOK.md` shows each command with its output.
 | `crates/parley-cli` | The `parley` command-line tool and the `parley-fixtures` generator |
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
 | `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
-| `schemas/` | JSON Schemas for the content formats and lessons |
+| `schemas/` | JSON Schemas for the content formats, lessons, settings and backups |
 | `scripts/` | `verify`, the licence gates, the release-notes check; `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |
 | `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated and hand-written fixtures |
 | `docs/` | Product, architecture, Publik integration and contract, testing, roadmap, one spec per module, decision records, the handbook |

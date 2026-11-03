@@ -9,7 +9,7 @@
 | Golden cases | `tests/cases/NN-slug/<case>/` with `args.txt` (one CLI argument per line), optional `stdin.txt` and `input.json`, and `expected.json` | `crates/parley-cli/tests/golden.rs` runs the `parley` binary |
 | Property tests | inside module tests, `proptest` with fixed seeds recorded in `proptest-regressions/` | `cargo test` |
 | UI unit tests | `app/src/**/<name>.test.tsx` | Vitest |
-| Launch smoke | `app/e2e/launch.spec.ts` | tauri-driver + WebdriverIO |
+| Launch smoke | `app/e2e/launch.spec.ts` | Vitest driving tauri-driver over the W3C WebDriver protocol |
 | Quality gates | `scripts/gates/run` (offline) and `scripts/gates/run --live` (spends money, maintainer only); the directory and `crates/parley-core/tests/gates.rs` are created by module 03 | `cargo test --release -- --ignored gate_` |
 | Hygiene | `crates/parley-core/tests/hygiene.rs` | `cargo test`, in `verify` and CI |
 
@@ -31,7 +31,8 @@ describe; the diff is read line by line.
 - One module: `cargo test -p parley-core --test m03_exercise_engine_and_grading` and
   `cargo test -p parley-cli --test golden -- 03-exercise-engine-and-grading`.
 - Fixtures: `cargo run -q -p parley-cli --bin parley-fixtures -- --out tests/fixtures/generated`.
-- Launch smoke: `npm --prefix app run e2e` (after `cargo tauri build --debug`).
+- Launch smoke: `npm --prefix app run e2e` (after `npm --prefix app run build` and `cargo build -p parley-app`;
+  needs `tauri-driver` and the platform's WebDriver on the PATH, as the CI `e2e` job installs them).
 - Local Whisper tests: `cargo test -p parley-audio --features local-whisper` (skip with
   "Whisper model not found at models/whisper/ggml-tiny.bin; run parley whisper download tiny" when
   the model is absent).

@@ -10,7 +10,8 @@
     "build": "vite build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
-    "test": "vitest"
+    "test": "vitest",
+    "e2e": "vitest run --config e2e/vitest.config.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",

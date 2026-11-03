@@ -1,7 +1,9 @@
 //! The learner's store, `parley.sqlite3` (docs/ARCHITECTURE.md §4): the course, its skills and
 //! items, accepted answers, FSRS cards and the append-only review log
 //! (docs/modules/02-srs-and-learner-model.md); sessions, stored lessons, cached judgements, the
-//! daily record and freeze events (docs/modules/03-exercise-engine-and-grading.md).
+//! daily record and freeze events (docs/modules/03-exercise-engine-and-grading.md); the course rows
+//! and counts the app's screens read, and the tables as backup rows
+//! (docs/modules/04-app-shell-and-offline-course.md).
 //!
 //! SQLite cannot go through the [`crate::env::Fs`] trait, so the caller passes the path of the
 //! file, as it does for sentence packs; the store never chooses a path itself. Each migration runs
@@ -14,10 +16,17 @@ use serde::{Deserialize, Serialize};
 use crate::content::{ItemKind, Lang};
 use crate::srs::Verdict;
 
+mod course;
 mod db;
+mod dump;
 
+pub use course::{CourseRow, ReviewCounts, SkillInfo};
 pub use db::Store;
 pub(crate) use db::{SessionEnd, SessionStart};
+pub use dump::{
+    AnswerDump, CardDump, CourseDump, DailyDump, FreezeDump, ItemDump, JudgementDump, LessonDump,
+    RestoreReport, ReviewDump, SessionDump, Tables,
+};
 
 /// One row of `items`, with its JSON columns read.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]

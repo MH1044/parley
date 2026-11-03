@@ -8,6 +8,12 @@ repository.workspace = true
 rust-version.workspace = true
 publish = false
 
+# A library with `run()`, so the command tests can build the app's state without a window, and a
+# binary that only calls it.
+[lib]
+name = "parley_app"
+path = "src/lib.rs"
+
 [[bin]]
 name = "parley-app"
 path = "src/main.rs"
@@ -16,7 +22,12 @@ path = "src/main.rs"
 tauri-build = { workspace = true }
 
 [dependencies]
+chrono = { workspace = true }
 parley-core = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true }
+tauri-plugin-dialog = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

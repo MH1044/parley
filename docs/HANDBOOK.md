@@ -5,9 +5,10 @@ and every example in it has been run.
 
 ## Version 0.1.0
 
-Nothing teaches yet. Building from source (see `README.md`) gives:
+Building from source (see `README.md`) gives:
 
-- a desktop window that opens and shows "Parley" with the version;
+- the desktop app, which teaches offline: onboarding with a placement test, the learning path,
+  lessons and reviews, the streak and stats, settings, and backups (below);
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -15,6 +16,71 @@ Nothing teaches yet. Building from source (see `README.md`) gives:
 - the scheduler and the placement test, which the command line can already show;
 - the offline lesson engine: grading, template lessons, XP and streaks, which the command line
   can already show too.
+
+### The desktop app
+
+Build the front end, then run the app (the front end is embedded at compile time):
+
+```
+npm --prefix app run build
+cargo run -p parley-app
+```
+
+Everything below works with no network and no AI; nothing asks about AI yet.
+
+**First launch.** One step at a time: *Welcome to Parley* ("Learn by speaking. No hearts, no ads,
+nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
+English); *Course pack*, which offers the language's sentence pack with its size first
+("Download the Spanish course pack (8.2 MB)?") or, as now, says "No course pack is published for
+Spanish yet. Parley works without it, with fewer example sentences."; *Daily goal* (10, 20, 30 or
+50 XP a day, 20 by default); and *Where to start*: **Take the placement test (about 5 minutes)**
+or **Start from the beginning**. The placement test asks you to translate a word of one skill
+after another into English (**I don't know** is always fine) and ends with where you start, such
+as "You're around A1. You'll start at Unit 2: …"; the skills before it count as tested out and
+come back in your reviews.
+
+**The path.** Your streak ("3 day streak") and today's XP ("12 of 20 XP today"), then
+**Continue** (the next lesson of the first skill you can learn), **Review (n)** with the number of
+cards due, **Stats** and **Settings**. Below them every unit ("Unit 1: …") and its skills with
+their state: locked, available, learning, practised or mastered. A skill opens its detail: what
+you will be able to do, its words, and **Start lesson**; a locked skill says which skill to finish
+first.
+
+**Lessons.** "Exercise 3 of 12" at the top, then one of: *What does el día mean?* (four choices),
+*Translate into Spanish* or *Translate into English* (typed, or built from a word bank when the
+settings say so), *Fill the gap* with an English hint, and *Match the pairs* (a word, then its
+meaning). **Check** shows the result: Correct, Almost, Typo, Wrong or Not checked, the reason,
+the correct answer and, for a sentence from the course pack, its Tatoeba author ("Sentence by
+… on Tatoeba"). Not checked means a free translation Parley cannot decide offline: **I was
+right** accepts it from then on. The keyboard does it all: Enter checks and continues, 1 to 4
+choose an option, Esc asks "Quit this lesson?". The summary shows the XP earned, how many answers
+were correct and the streak. There is no limit on lessons.
+
+**Reviews.** **Review** takes up to 20 due cards. With nothing due it says when the next review
+is ("Nothing to review. Next review: tomorrow at 09:00."), or, before your first lesson, "Nothing
+to review yet. Finish a lesson to start your reviews."
+
+**Stats.** The streak and freezes, the last 30 days, this week's XP and your best earlier week,
+words known (vocabulary you would recall now with at least 90% likelihood), the share of reviews
+recalled in the last 30 days, your level from the placement test, and every skill's state. Before
+your first lesson: "Finish a lesson to see your stats."
+
+**Settings.** *Learning*: the daily goal, how accents are graded (an accent slip is almost right,
+wrong, or ignored), typing or word bank, exercises per lesson, new words per lesson and the target
+recall (80% to 95%). *Data*: **Export a backup** writes one JSON file (`parley.backup/1`, laid out
+in `docs/modules/04-app-shell-and-offline-course.md`) with your settings and progress, never a
+key, a cache or a pack; **Restore a backup** replaces all your progress on this computer with a
+backup's, after a warning; **Clear caches**; and **Delete everything**, once you type `delete`,
+which starts Parley afresh. *About*: the version, the folder your data is in, and the credits:
+example sentences from Tatoeba (CC BY 2.0 FR), word forms from Wiktionary (CC BY-SA 4.0).
+
+**Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
+Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json` and,
+once downloaded, `packs/`. A settings file that cannot be read gives the default settings and
+says so once. A data file that cannot be opened shows "Parley could not open its data file." with
+**Restore a backup** and **Show details**.
+
+### The command line
 
 Every command prints one JSON object on standard output and exits 0 on success, 1 on a content
 error (the JSON report is still printed) or 2 on a usage error, which prints one line on standard
@@ -348,5 +414,5 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: the full offline app with onboarding, the learning path,
-lessons, reviews, stats, settings and backup.
+In the order of `docs/ROADMAP.md`: the complete A1 and A2 courses for Spanish, French and German
+with their sentence packs, then AI through publik API, your own key or a local model.

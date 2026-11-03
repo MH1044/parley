@@ -1,4 +1,13 @@
 //! Tauri commands, one file per area (docs/ARCHITECTURE.md §5). Each command marshals arguments
-//! into the core and its result or `AppError` back out, and nothing more.
+//! into `parley_core::app::Parley` and its result or `AppError` back out, and nothing more. The
+//! web view passes argument names in snake case, as the command table writes them.
 
 pub mod app;
+pub mod backup;
+pub mod course;
+pub mod lesson;
+pub mod pack;
+pub mod path;
+pub mod placement;
+pub mod settings;
+pub mod stats;

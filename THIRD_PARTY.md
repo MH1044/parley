@@ -10,10 +10,12 @@ get a row here when a module adds them.
 |---|---|---|
 | tauri | Apache-2.0 OR MIT | The desktop shell |
 | tauri-build | Apache-2.0 OR MIT | Build-time setup of the Tauri crate |
+| tauri-plugin-dialog | Apache-2.0 OR MIT | The native file dialog for backups, called from Rust only so the web view needs no dialog permission (it brings tauri-plugin-fs, Apache-2.0 OR MIT, and rfd, MIT) |
+| chrono, with the clock feature only | MIT OR Apache-2.0 | The local UTC offset of the desktop clock, so a day of the streak is the learner's day |
 | serde | MIT OR Apache-2.0 | Serialisation of command results and errors |
 | serde_json | MIT OR Apache-2.0 | JSON output of the command-line tool, the fixture manifest, and the untyped pass of a syllabus before its schema check |
 | serde_yaml_ng | MIT | Reading `syllabus.yaml` and `numbers.yaml` (YAML 1.2: `no` and `yes` stay strings) |
-| jsonschema | MIT | JSON Schema checks of content (later: backups and every AI response); built without its network resolver |
+| jsonschema | MIT | JSON Schema checks of content, settings and backups (later: every AI response); built without its network resolver |
 | rusqlite, with bundled SQLite | MIT; SQLite is public domain | Sentence packs and the learner's store (`parley.sqlite3`: course, items, cards, review log) |
 | fsrs | BSD-3-Clause | FSRS-6 scheduling of every card with the default parameters (no training); its `priority-queue` dependency, offered as LGPL-3.0-or-later OR MPL-2.0, is taken under MPL-2.0 |
 | unicode-segmentation | MIT OR Apache-2.0 | UAX #29 word boundaries in the tokeniser |
@@ -47,6 +49,8 @@ get a row here when a module adds them.
 | actions/checkout, actions/setup-node | MIT | Continuous integration |
 | Swatinem/rust-cache | MIT | Caching Cargo builds in continuous integration |
 | taiki-e/install-action | Apache-2.0 OR MIT | Installing cargo-deny in continuous integration |
+| tauri-driver | Apache-2.0 OR MIT | The launch smoke in continuous integration: a W3C WebDriver server in front of the platform's driver |
+| WebKitWebDriver (Ubuntu's webkit2gtk-driver), Microsoft Edge WebDriver, Xvfb | the platform's own terms | The platform WebDriver tauri-driver talks to, and a virtual display on Linux; installed on the runner by the e2e job, never shipped or linked |
 | py-fsrs 6.3.2, run with uv | py-fsrs MIT; uv MIT OR Apache-2.0 | Recording the FSRS reference values in `tests/cases/02-srs-and-learner-model/fsrs_reference.json` with `scripts/reference/fsrs_reference.py`, run once, never in the build |
 
 ## Models

@@ -154,6 +154,29 @@ pub fn skill_state(store: &Store, skill_id: &str, now_ms: i64) -> Result<SkillSt
     Ok(SkillState::Available)
 }
 
+/// The first prerequisite of a skill that is not met, by [`skill_state`]'s rule: the skill a
+/// locked skill waits for. None when every prerequisite is met.
+pub(crate) fn first_unmet_prerequisite(
+    store: &Store,
+    skill_id: &str,
+) -> Result<Option<String>, StoreError> {
+    let row = store.skill_row(skill_id)?;
+    let prerequisites: Vec<String> = if row.requires.is_empty() {
+        store
+            .previous_skill(&row.lang, row.ord)?
+            .into_iter()
+            .collect()
+    } else {
+        row.requires
+    };
+    for prerequisite in prerequisites {
+        if !prerequisite_met(store, &prerequisite)? {
+            return Ok(Some(prerequisite));
+        }
+    }
+    Ok(None)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

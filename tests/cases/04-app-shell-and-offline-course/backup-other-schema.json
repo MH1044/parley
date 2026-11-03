@@ -1,0 +1,75 @@
+{
+  "schema": "other",
+  "app_version": "0.4.0",
+  "exported_at": "2026-10-14T18:00:00Z",
+  "settings": {
+    "schema": "parley.settings/1",
+    "active_course": "es",
+    "daily_goal_xp": 20,
+    "accent_leniency": "lenient",
+    "answer_input": "typing",
+    "desired_retention": 0.9,
+    "new_items_per_lesson": 5,
+    "lesson_length": 12,
+    "audio": {
+      "voice_source": "os",
+      "os_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "natural_voice": {
+        "es": null,
+        "fr": null,
+        "de": null
+      },
+      "slow_speed": 0.75,
+      "autoplay": true
+    },
+    "speaking": {
+      "enabled": true,
+      "transcriber": "provider",
+      "pass_threshold": 0.8,
+      "keep_recordings": false
+    },
+    "ai": {
+      "provider": "unset",
+      "fresh_lessons": true,
+      "prepare_next_lesson": true,
+      "stories": true,
+      "share_device_name": false,
+      "own_key": {
+        "base_url": null,
+        "chat_model": null,
+        "transcribe_model": null,
+        "speech_model": null,
+        "speech_voice": null
+      },
+      "local": {
+        "base_url": "http://localhost:11434/v1",
+        "chat_model": null
+      }
+    },
+    "update_check": true
+  },
+  "courses": [
+    {
+      "lang": "es",
+      "syllabus_version": 1,
+      "pack_version": null,
+      "started_at": 1790841600000,
+      "placement_index": null,
+      "cefr_estimate": null,
+      "tested_out": []
+    }
+  ],
+  "items": [],
+  "accepted_answers": [],
+  "cards": [],
+  "review_log": [],
+  "sessions": [],
+  "lessons": [],
+  "judgements": [],
+  "daily": [],
+  "freeze_events": []
+}

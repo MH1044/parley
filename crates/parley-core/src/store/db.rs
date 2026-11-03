@@ -468,7 +468,7 @@ fn query_cards(
 /// The learner's data file.
 #[derive(Debug)]
 pub struct Store {
-    conn: Connection,
+    pub(super) conn: Connection,
 }
 
 impl Store {

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley settings (parley.settings/1)",
+  "description": "settings.json in the app data directory (docs/ARCHITECTURE.md §4). Never holds a key. Every key but schema may be left out; a missing key takes its default.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema"],
+  "properties": {
+    "schema": { "const": "parley.settings/1" },
+    "active_course": { "enum": ["es", "fr", "de", null] },
+    "daily_goal_xp": { "enum": [10, 20, 30, 50] },
+    "accent_leniency": { "enum": ["lenient", "strict", "ignore"] },
+    "answer_input": { "enum": ["typing", "word_bank"] },
+    "desired_retention": { "type": "number", "minimum": 0.8, "maximum": 0.95 },
+    "new_items_per_lesson": { "type": "integer", "minimum": 1, "maximum": 10 },
+    "lesson_length": { "type": "integer", "minimum": 8, "maximum": 20 },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "voice_source": { "enum": ["os", "natural"] },
+        "os_voice": { "$ref": "#/$defs/per_language" },
+        "natural_voice": { "$ref": "#/$defs/per_language" },
+        "slow_speed": { "type": "number", "minimum": 0.5, "maximum": 1.0 },
+        "autoplay": { "type": "boolean" }
+      }
+    },
+    "speaking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "transcriber": { "enum": ["provider", "local"] },
+        "pass_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "keep_recordings": { "type": "boolean" }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "enum": ["unset", "publik", "own_key", "local"] },
+        "fresh_lessons": { "type": "boolean" },
+        "prepare_next_lesson": { "type": "boolean" },
+        "stories": { "type": "boolean" },
+        "share_device_name": { "type": "boolean" },
+        "own_key": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "base_url": { "$ref": "#/$defs/text_or_null" },
+            "chat_model": { "$ref": "#/$defs/text_or_null" },
+            "transcribe_model": { "$ref": "#/$defs/text_or_null" },
+            "speech_model": { "$ref": "#/$defs/text_or_null" },
+            "speech_voice": { "$ref": "#/$defs/text_or_null" }
+          }
+        },
+        "local": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "base_url": { "type": "string" },
+            "chat_model": { "$ref": "#/$defs/text_or_null" }
+          }
+        }
+      }
+    },
+    "update_check": { "type": "boolean" }
+  },
+  "$defs": {
+    "text_or_null": { "type": ["string", "null"] },
+    "per_language": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "es": { "$ref": "#/$defs/text_or_null" },
+        "fr": { "$ref": "#/$defs/text_or_null" },
+        "de": { "$ref": "#/$defs/text_or_null" }
+      }
+    }
+  }
+}

@@ -12,17 +12,21 @@
 //! learner's SQLite file). Module 03 adds [`grading`] (the normaliser and the offline grader),
 //! [`exercise`] (exercise types, structural checks, template lessons, the composer and the lesson
 //! runner) and [`game`] (XP, streaks with earned freezes, the weekly record), with sessions,
-//! lessons, judgements and the daily record in the store. Later modules add the AI features, one
-//! folder each.
+//! lessons, judgements and the daily record in the store. Module 04 adds [`app`] (the service
+//! every desktop command calls), [`settings`] and [`backup`]. Later modules add the AI features,
+//! one folder each.
 
 #![forbid(unsafe_code)]
 
 pub mod api;
+pub mod app;
+pub mod backup;
 pub mod content;
 pub mod env;
 pub mod error;
 pub mod exercise;
 pub mod game;
 pub mod grading;
+pub mod settings;
 pub mod srs;
 pub mod store;

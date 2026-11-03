@@ -62,7 +62,7 @@ const PAIR_ITEMS: usize = 4;
 /// The exercise type for a card: receptive vocabulary `pick_meaning`; receptive phrase or
 /// pattern `translate_to_en`; productive vocabulary `fill_gap`, or `translate_to_target` when
 /// its lemma has a space; productive phrase or pattern `translate_to_target`.
-fn kind_for(item: &ItemRow, facet: Facet) -> ExerciseType {
+pub(crate) fn kind_for(item: &ItemRow, facet: Facet) -> ExerciseType {
     match (item.kind, facet) {
         (ItemKind::Vocab, Facet::Receptive) => ExerciseType::PickMeaning,
         (_, Facet::Receptive) => ExerciseType::TranslateToEn,
