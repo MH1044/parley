@@ -1,6 +1,7 @@
 //! The learner's store, `parley.sqlite3` (docs/ARCHITECTURE.md §4): the course, its skills and
 //! items, accepted answers, FSRS cards and the append-only review log
-//! (docs/modules/02-srs-and-learner-model.md).
+//! (docs/modules/02-srs-and-learner-model.md); sessions, stored lessons, cached judgements, the
+//! daily record and freeze events (docs/modules/03-exercise-engine-and-grading.md).
 //!
 //! SQLite cannot go through the [`crate::env::Fs`] trait, so the caller passes the path of the
 //! file, as it does for sentence packs; the store never chooses a path itself. Each migration runs
@@ -8,11 +9,58 @@
 
 use std::fmt;
 
+use serde::{Deserialize, Serialize};
+
+use crate::content::{ItemKind, Lang};
 use crate::srs::Verdict;
 
 mod db;
 
 pub use db::Store;
+pub(crate) use db::{SessionEnd, SessionStart};
+
+/// One row of `items`, with its JSON columns read.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ItemRow {
+    pub id: String,
+    pub lang: Lang,
+    pub skill_id: String,
+    pub kind: ItemKind,
+    pub target: String,
+    pub en: Vec<String>,
+    pub lemmas: Vec<String>,
+    pub retired: bool,
+}
+
+/// Where an accepted answer came from: the course content, the AI judge, or the learner's
+/// "I was right".
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum AnswerSource {
+    Content,
+    Judge,
+    Learner,
+}
+
+impl AnswerSource {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AnswerSource::Content => "content",
+            AnswerSource::Judge => "judge",
+            AnswerSource::Learner => "learner",
+        }
+    }
+}
+
+/// One accepted answer of an item in one direction. `norm` is the key (NFC lower case of the
+/// display); grading always compares the normal form of `display`, so the normaliser can change
+/// without rewriting the table.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct AcceptedAnswer {
+    pub norm: String,
+    pub display: String,
+    pub source: AnswerSource,
+}
 
 /// What `start_course` changed. `items` is the syllabus's item count; `added` counts items that
 /// were not active before the call (new, or back in the syllabus), `retired` those it retired.

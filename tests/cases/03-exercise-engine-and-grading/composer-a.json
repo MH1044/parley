@@ -1,0 +1,11 @@
+{
+  "syllabus": "tests/cases/03-exercise-engine-and-grading/course-es.yaml",
+  "forms": "tests/cases/03-exercise-engine-and-grading/course-es.forms.tsv",
+  "skill": "es.a1.u01.s02",
+  "now_ms": 2592000000,
+  "lesson_length": 12,
+  "new_items_per_lesson": 5,
+  "audio_out": false,
+  "mic": false,
+  "reviews": []
+}

@@ -1,0 +1,17 @@
+{
+  "entries": [
+    {"n": 1, "item_id": "es.a1.u01.s02#l:café", "facet": "receptive", "kind": "pick_meaning", "focus": "el café", "new": true},
+    {"n": 2, "item_id": "es.a1.u01.s02#l:leche", "facet": "receptive", "kind": "pick_meaning", "focus": "la leche", "new": true},
+    {"n": 3, "item_id": "es.a1.u01.s02#l:agua", "facet": "receptive", "kind": "pick_meaning", "focus": "el agua", "new": true},
+    {"n": 4, "item_id": "es.a1.u01.s02#l:café", "facet": "receptive", "kind": "match_pairs", "focus": "el café", "new": true},
+    {"n": 5, "item_id": "es.a1.u01.s01#l:día", "facet": "receptive", "kind": "pick_meaning", "focus": "el día", "new": false},
+    {"n": 6, "item_id": "es.a1.u01.s02#l:café", "facet": "productive", "kind": "fill_gap", "focus": "el café", "new": true},
+    {"n": 7, "item_id": "es.a1.u01.s01#l:hola", "facet": "receptive", "kind": "pick_meaning", "focus": "hola", "new": false},
+    {"n": 8, "item_id": "es.a1.u01.s02#l:leche", "facet": "productive", "kind": "fill_gap", "focus": "la leche", "new": true},
+    {"n": 9, "item_id": "es.a1.u01.s01#l:hola", "facet": "productive", "kind": "fill_gap", "focus": "hola", "new": false},
+    {"n": 10, "item_id": "es.a1.u01.s02#l:agua", "facet": "productive", "kind": "fill_gap", "focus": "el agua", "new": true},
+    {"n": 11, "item_id": "es.a1.u01.s02#e:2", "facet": "receptive", "kind": "translate_to_en", "focus": "Quiero un café con leche.", "new": false},
+    {"n": 12, "item_id": "es.a1.u01.s02#e:3", "facet": "receptive", "kind": "translate_to_en", "focus": "Quiero un café.", "new": false},
+    {"n": 13, "item_id": "es.a1.u01.s02#e:2", "facet": "productive", "kind": "translate_to_target", "focus": "Quiero un café con leche.", "new": false}
+  ]
+}

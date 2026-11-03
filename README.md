@@ -8,8 +8,11 @@ macOS, with Android to follow.
 integration exist, the desktop window opens and shows the version, and the course exists as
 validated open data: a syllabus format with a validator, word-form tables, and sentence packs
 built from Tatoeba. Underneath, the learner model exists: FSRS cards, an append-only review log,
-skill mastery and states, and an adaptive placement test, all usable from the command line.
-`docs/ROADMAP.md` lists what comes next, in order; `docs/PRODUCT.md` describes the finished app.
+skill mastery and states, and an adaptive placement test; and the offline lesson engine: seven
+exercise types, honest grading that forgives accents, articles and typos, template lessons built
+from the syllabus, XP, streaks with earned freezes and the weekly record. All of it is usable
+from the command line; the screens come next. `docs/ROADMAP.md` lists what comes next, in order;
+`docs/PRODUCT.md` describes the finished app.
 
 ## What it replaces
 
@@ -143,6 +146,32 @@ prints
 
 `--slip <p>` flips each answer with probability `p` and `--seed <s>` seeds the generator.
 
+## Lessons, grading and streaks
+
+A lesson is up to 12 exercises of seven types (pick the meaning, translate either way, listen and
+type, speak, fill the gap, match the pairs), planned from the skill's new items and your due
+cards and built offline from the syllabus with a seeded generator, so the same seed gives the
+same lesson on every machine. Answers are graded in a fixed order: exact (case, punctuation and
+spacing never count), a missing or wrong article, an accent slip (almost by default; strict or
+ignore in the settings), one wrong letter in a few long words, then a stored judgement; a free
+translation nothing matches is left unchecked for "I was right", never guessed.
+
+```sh
+cargo run -q -p parley-cli -- grade --lang es --type listen_type --expected "Buenos días." --answer "Buenos dias"
+```
+
+prints
+
+```
+{"verdict":"almost","tags":["accent"],"message":"Almost: mind the accent: días","corrected":"Buenos días.","words":["días"],"rating":2}
+```
+
+`parley lesson template --lang es --skill es.a1.u01.s01 --seed 1` prints the first template lesson
+of a skill (`schemas/lesson.schema.json`), and `parley streak simulate days.json` the streak,
+freezes and weekly records a list of sessions gives: every 7 days in a row earn a freeze (at most
+2 banked) that covers a missed day; freezes are never bought. There are no hearts, no energy and
+no limit on lessons. `docs/HANDBOOK.md` shows each command with its output.
+
 ## Repository
 
 | Path | What |
@@ -153,8 +182,8 @@ prints
 | `crates/parley-cli` | The `parley` command-line tool and the `parley-fixtures` generator |
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
 | `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
-| `schemas/` | JSON Schemas for the content formats |
-| `scripts/` | `verify`, the licence gates, the release-notes check |
+| `schemas/` | JSON Schemas for the content formats and lessons |
+| `scripts/` | `verify`, the licence gates, the release-notes check; `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |
 | `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated and hand-written fixtures |
 | `docs/` | Product, architecture, Publik integration and contract, testing, roadmap, one spec per module, decision records, the handbook |
 

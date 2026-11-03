@@ -84,8 +84,10 @@ fn numbered(part: &str, letter: char) -> bool {
         .is_some_and(|digits| digits.len() == 2 && digits.bytes().all(|b| b.is_ascii_digit()))
 }
 
-/// The words of the syllabus every example may use: function words, names and numbers.
-struct Known {
+/// The words of the syllabus every example may use: function words, names and numbers. Shared
+/// with the exercise checks (`crate::exercise::Allowed`), so V12 and coverage agree on them.
+#[derive(Clone, Debug)]
+pub(crate) struct Known {
     function: HashSet<String>,
     names: HashSet<String>,
     names_lower: HashSet<String>,
@@ -93,7 +95,17 @@ struct Known {
 }
 
 impl Known {
-    fn is_function(&self, token: &Token) -> bool {
+    /// The function words and names of `s` and the number words `numbers`.
+    pub(crate) fn new(s: &Syllabus, numbers: &[String]) -> Known {
+        Known {
+            function: s.function_words.iter().map(|w| nfc_lower(w)).collect(),
+            names: s.names.iter().map(|n| nfc(n)).collect(),
+            names_lower: s.names.iter().map(|n| nfc_lower(n)).collect(),
+            numbers: numbers.iter().map(|w| nfc_lower(w)).collect(),
+        }
+    }
+
+    pub(crate) fn is_function(&self, token: &Token) -> bool {
         self.function.contains(&token.norm)
             || self.function.contains(&nfc(&token.surface))
             || token
@@ -102,11 +114,11 @@ impl Known {
                 .any(|key| self.function.contains(&nfc_lower(key)))
     }
 
-    fn is_name(&self, token: &Token) -> bool {
+    pub(crate) fn is_name(&self, token: &Token) -> bool {
         self.names.contains(&nfc(&token.surface)) || self.names_lower.contains(&token.norm)
     }
 
-    fn is_number(&self, token: &Token) -> bool {
+    pub(crate) fn is_number(&self, token: &Token) -> bool {
         token.kind == TokenKind::Number || self.numbers.contains(&token.norm)
     }
 }
@@ -246,12 +258,7 @@ pub fn validate(s: &Syllabus, ctx: &Context) -> Report {
     }
 
     // Shared by V12 to V14: the known words, each skill's taught forms and each example's tokens.
-    let known = Known {
-        function: s.function_words.iter().map(|w| nfc_lower(w)).collect(),
-        names: s.names.iter().map(|n| nfc(n)).collect(),
-        names_lower: s.names.iter().map(|n| nfc_lower(n)).collect(),
-        numbers: ctx.numbers.iter().map(|w| nfc_lower(w)).collect(),
-    };
+    let known = Known::new(s, ctx.numbers);
     let taught: Vec<Vec<TaughtForms>> = skills
         .iter()
         .map(|skill| skill.lemmas.iter().map(TaughtForms::of).collect())
@@ -727,6 +734,44 @@ mod tests {
                 "de.a1.u01.s01: example 2 uses \"stehe\", which no earlier skill teaches",
                 "de.a1.u01.s01: example 2 uses \"auf\", which no earlier skill teaches",
             ]
+        );
+    }
+
+    // The tokeniser splits `t'appeler` into `t'` and `appeler`, so a lemma with an elision
+    // prefix (`s'appeler`) teaches the word after it; V12 still rejects every word no lemma
+    // teaches, including a form of that lemma the forms table does not list.
+    #[test]
+    fn an_elided_lemma_teaches_the_word_after_its_prefix() {
+        let text = "schema: parley.syllabus/1\nlang: fr\nname: French\nvariety: France French\nversion: 1\nfunction_words: [je, tu, me, te, se]\nnames: [Paul, Marie]\nunits:\n  - id: fr.a1.u01\n    title: Names\n    cefr: A1\n    skills:\n      - id: fr.a1.u01.s01\n        kind: function\n        title: Saying your name\n        cefr: A1\n        can_do: I can say what someone is called.\n        requires: []\n        lemmas:\n          - {lemma: \"s'appeler\", pos: verb, en: [to be called], rank: null}\n          - {lemma: aller, pos: verb, en: [to go], rank: null}\n          - {lemma: bonjour, pos: intj, en: [hello], rank: null}\n        examples:\n          - {id: 1, target: \"Bonjour, Paul.\", en: [\"Hello, Paul.\"]}\n          - {id: 2, target: \"Bonjour, Marie.\", en: [\"Hello, Marie.\"]}\n          - {id: 3, target: \"Tu vas t'appeler Paul.\", en: [\"You are going to be called Paul.\"]}\n          - {id: 4, target: \"Je vais m'appeler Marie.\", en: [\"I am going to be called Marie.\"]}\n";
+        let row = |form: &str| crate::content::forms::FormRow {
+            form: form.into(),
+            lemma: "aller".into(),
+            pos: "verb".into(),
+            gender: None,
+            tags: String::new(),
+        };
+        let forms = Forms::from_rows(vec![row("vais"), row("vas")]);
+        let report = check(text, &forms);
+        assert_eq!(report.errors, Vec::<String>::new(), "{report:?}");
+
+        let untaught = text.replace(
+            "          - {lemma: \"s'appeler\", pos: verb, en: [to be called], rank: null}\n",
+            "          - {lemma: merci, pos: intj, en: [thank you], rank: null}\n",
+        );
+        assert_ne!(untaught, text);
+        assert_eq!(
+            check(&untaught, &forms).errors,
+            [
+                "fr.a1.u01.s01: example 3 uses \"appeler\", which no earlier skill teaches",
+                "fr.a1.u01.s01: example 4 uses \"appeler\", which no earlier skill teaches",
+            ]
+        );
+
+        let inflected = text.replace("Je vais m'appeler Marie.", "Bonjour, je m'appelle Marie.");
+        assert_ne!(inflected, text);
+        assert_eq!(
+            check(&inflected, &forms).errors,
+            ["fr.a1.u01.s01: example 4 uses \"appelle\", which no earlier skill teaches"]
         );
     }
 

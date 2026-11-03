@@ -1,0 +1,9 @@
+grade
+--lang
+es
+--type
+translate_to_target
+--expected
+Hola, ¿qué tal?
+--answer
+hola qué tal

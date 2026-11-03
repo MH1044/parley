@@ -18,6 +18,7 @@ get a row here when a module adds them.
 | fsrs | BSD-3-Clause | FSRS-6 scheduling of every card with the default parameters (no training); its `priority-queue` dependency, offered as LGPL-3.0-or-later OR MPL-2.0, is taken under MPL-2.0 |
 | unicode-segmentation | MIT OR Apache-2.0 | UAX #29 word boundaries in the tokeniser |
 | unicode-normalization | MIT OR Apache-2.0 | Unicode NFC for every comparison of words |
+| strsim | MIT | Optimal string alignment distance between words, for typo tolerance in grading |
 | toml | MIT OR Apache-2.0 | Reading `content/packs.lock.toml` (and `deny.toml`, `Cargo.toml` in tests) |
 | sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures, pack checksums, the content hash and forms-table headers (later: cache keys) |
 | regex (tests only) | MIT OR Apache-2.0 | The source-hygiene test's patterns |

@@ -11,15 +11,24 @@ use rusqlite::types::{FromSql, FromSqlError, FromSqlResult, ToSql, ToSqlOutput, 
 use rusqlite::{Connection, OptionalExtension, Row, params};
 use serde::{Deserialize, Serialize};
 
-use super::{CourseReport, ReviewContext, StoreError};
+use super::{AcceptedAnswer, AnswerSource, CourseReport, ItemRow, ReviewContext, StoreError};
 use crate::content::{Cefr, Forms, ItemKind, Lang, Syllabus, derive_items, nfc_lower};
+use crate::env::LocalDate;
+use crate::exercise::Lesson;
+use crate::game::{
+    DayRow, FreezeEvent, FreezeKind, SessionKind, StreakState, streak, weekly_record,
+};
+use crate::grading::{Direction, StoredJudgement};
 use crate::srs::{
     Card, CardState, Facet, PlacementResult, Rating, ReviewLogEntry, SkillRef, SrsParams, Verdict,
     schedule,
 };
 
 /// Every migration in order; migration `n` is `MIGRATIONS[n - 1]` and sets `user_version` to n.
-const MIGRATIONS: [&str; 1] = [include_str!("migrations/0001_init.sql")];
+const MIGRATIONS: [&str; 2] = [
+    include_str!("migrations/0001_init.sql"),
+    include_str!("migrations/0002_sessions.sql"),
+];
 
 /// The columns of a card, in the order [`card_from_row`] reads them.
 const CARD_COLUMNS: &str =
@@ -119,12 +128,147 @@ impl FromSql for Cefr {
     }
 }
 
+impl FromSql for LocalDate {
+    fn column_result(value: ValueRef<'_>) -> FromSqlResult<Self> {
+        let text = text_of(value)?;
+        LocalDate::parse(text).ok_or_else(|| bad_value(text))
+    }
+}
+
+impl ToSql for LocalDate {
+    fn to_sql(&self) -> rusqlite::Result<ToSqlOutput<'_>> {
+        Ok(ToSqlOutput::from(self.to_string()))
+    }
+}
+
+impl FromSql for FreezeKind {
+    fn column_result(value: ValueRef<'_>) -> FromSqlResult<Self> {
+        match text_of(value)? {
+            "earned" => Ok(FreezeKind::Earned),
+            "used" => Ok(FreezeKind::Used),
+            other => Err(bad_value(other)),
+        }
+    }
+}
+
+impl ToSql for FreezeKind {
+    fn to_sql(&self) -> rusqlite::Result<ToSqlOutput<'_>> {
+        Ok(ToSqlOutput::from(self.as_str()))
+    }
+}
+
+impl FromSql for AnswerSource {
+    fn column_result(value: ValueRef<'_>) -> FromSqlResult<Self> {
+        match text_of(value)? {
+            "content" => Ok(AnswerSource::Content),
+            "judge" => Ok(AnswerSource::Judge),
+            "learner" => Ok(AnswerSource::Learner),
+            other => Err(bad_value(other)),
+        }
+    }
+}
+
+impl FromSql for ItemKind {
+    fn column_result(value: ValueRef<'_>) -> FromSqlResult<Self> {
+        match text_of(value)? {
+            "vocab" => Ok(ItemKind::Vocab),
+            "phrase" => Ok(ItemKind::Phrase),
+            "pattern" => Ok(ItemKind::Pattern),
+            other => Err(bad_value(other)),
+        }
+    }
+}
+
+impl FromSql for Lang {
+    fn column_result(value: ValueRef<'_>) -> FromSqlResult<Self> {
+        let text = text_of(value)?;
+        text.parse().map_err(|_| bad_value(text))
+    }
+}
+
+/// A JSON array of strings from a TEXT column (`items.en`, `items.lemmas`, `judgements.tags`).
+fn string_list(text: &str) -> rusqlite::Result<Vec<String>> {
+    serde_json::from_str(text).map_err(|e| {
+        rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(e))
+    })
+}
+
 fn item_kind(kind: ItemKind) -> &'static str {
     match kind {
         ItemKind::Vocab => "vocab",
         ItemKind::Phrase => "phrase",
         ItemKind::Pattern => "pattern",
     }
+}
+
+/// A session as it starts: the row written to `sessions`.
+#[derive(Debug, Clone)]
+pub(crate) struct SessionStart<'a> {
+    pub id: &'a str,
+    pub lang: Lang,
+    pub kind: SessionKind,
+    pub skill_id: Option<&'a str>,
+    pub started_at: i64,
+    /// The local date of the start, the day the session counts on.
+    pub local_date: LocalDate,
+}
+
+/// A session as it ends: what completes its row and credits its day.
+#[derive(Debug, Clone)]
+pub(crate) struct SessionEnd<'a> {
+    pub id: &'a str,
+    pub ended_at: i64,
+    pub xp: u32,
+    /// Exercises submitted.
+    pub exercises: u32,
+    pub correct: u32,
+    /// The day credited: the session's local date.
+    pub day: LocalDate,
+    /// The learner's today, for the streak.
+    pub today: LocalDate,
+    pub goal_xp: u32,
+}
+
+/// What finishing a session decided.
+#[derive(Debug, Clone)]
+pub(crate) struct FinishedSession {
+    pub record_week: bool,
+    pub streak: StreakState,
+    /// The credited day's XP after the session.
+    pub daily_xp: u32,
+}
+
+fn daily_in(conn: &Connection) -> Result<Vec<DayRow>, StoreError> {
+    let mut statement = conn.prepare(
+        "SELECT local_date, xp, sessions, goal_xp, frozen FROM daily ORDER BY local_date",
+    )?;
+    let rows = statement
+        .query_map([], |row| {
+            Ok(DayRow {
+                local_date: row.get(0)?,
+                xp: row.get(1)?,
+                sessions: row.get(2)?,
+                goal_xp: row.get(3)?,
+                frozen: row.get::<_, i64>(4)? != 0,
+            })
+        })?
+        .collect::<Result<_, _>>()?;
+    Ok(rows)
+}
+
+fn freeze_events_in(conn: &Connection) -> Result<Vec<FreezeEvent>, StoreError> {
+    let mut statement =
+        conn.prepare("SELECT local_date, kind, streak_len FROM freeze_events ORDER BY id")?;
+    let events = statement
+        .query_map([], |row| {
+            Ok(FreezeEvent {
+                local_date: row.get(0)?,
+                kind: row.get(1)?,
+                streak_len: row.get(2)?,
+            })
+        })?
+        .collect::<Result<_, _>>()?;
+    Ok(events)
 }
 
 fn card_from_row(row: &Row<'_>) -> rusqlite::Result<Card> {
@@ -698,6 +842,258 @@ impl Store {
         Ok(())
     }
 
+    /// One item, retired or not; `UnknownItem` when the store has no such item.
+    pub fn item(&self, id: &str) -> Result<ItemRow, StoreError> {
+        self.conn
+            .query_row(
+                "SELECT id, lang, skill_id, kind, target, en, lemmas, retired FROM items
+                 WHERE id = ?1",
+                [id],
+                |row| {
+                    Ok(ItemRow {
+                        id: row.get(0)?,
+                        lang: row.get(1)?,
+                        skill_id: row.get(2)?,
+                        kind: row.get(3)?,
+                        target: row.get(4)?,
+                        en: string_list(&row.get::<_, String>(5)?)?,
+                        lemmas: string_list(&row.get::<_, String>(6)?)?,
+                        retired: row.get::<_, i64>(7)? != 0,
+                    })
+                },
+            )
+            .optional()?
+            .ok_or_else(|| StoreError::UnknownItem(id.to_string()))
+    }
+
+    /// The item's accepted answers in one direction, from every source: content first, then
+    /// judge, then learner, each by `created_at` and then `norm`.
+    pub fn accepted_answers(
+        &self,
+        item_id: &str,
+        direction: Direction,
+    ) -> Result<Vec<AcceptedAnswer>, StoreError> {
+        let mut statement = self.conn.prepare(
+            "SELECT norm, display, source FROM accepted_answers
+             WHERE item_id = ?1 AND direction = ?2
+             ORDER BY CASE source WHEN 'content' THEN 0 WHEN 'judge' THEN 1 ELSE 2 END,
+               created_at, norm",
+        )?;
+        let answers = statement
+            .query_map(params![item_id, direction.as_str()], |row| {
+                Ok(AcceptedAnswer {
+                    norm: row.get(0)?,
+                    display: row.get(1)?,
+                    source: row.get(2)?,
+                })
+            })?
+            .collect::<Result<_, _>>()?;
+        Ok(answers)
+    }
+
+    /// Adds an accepted answer keyed by module 02's normal form (NFC lower case of `display`);
+    /// false when the item already accepts that form in that direction, from any source.
+    pub fn add_accepted_answer(
+        &mut self,
+        item_id: &str,
+        direction: Direction,
+        display: &str,
+        source: AnswerSource,
+        now_ms: i64,
+    ) -> Result<bool, StoreError> {
+        if !item_exists(&self.conn, item_id)? {
+            return Err(StoreError::UnknownItem(item_id.to_string()));
+        }
+        let inserted = self.conn.execute(
+            "INSERT INTO accepted_answers (item_id, direction, norm, display, source, created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+             ON CONFLICT (item_id, direction, norm) DO NOTHING",
+            params![
+                item_id,
+                direction.as_str(),
+                nfc_lower(display),
+                display,
+                source.as_str(),
+                now_ms
+            ],
+        )?;
+        Ok(inserted == 1)
+    }
+
+    /// The cached judgement stored under `key`, if any.
+    pub fn judgement(&self, key: &str) -> Result<Option<StoredJudgement>, StoreError> {
+        Ok(self
+            .conn
+            .query_row(
+                "SELECT verdict, corrected, explanation, tags, provider FROM judgements
+                 WHERE key = ?1",
+                [key],
+                |row| {
+                    Ok(StoredJudgement {
+                        verdict: row.get(0)?,
+                        corrected: row.get(1)?,
+                        explanation: row.get(2)?,
+                        tags: string_list(&row.get::<_, String>(3)?)?,
+                        provider: row.get(4)?,
+                    })
+                },
+            )
+            .optional()?)
+    }
+
+    /// Stores a judgement under `key`, replacing any earlier one for the same key (a learner's
+    /// "I was right" overrules an earlier verdict on the same answer).
+    pub fn put_judgement(
+        &mut self,
+        key: &str,
+        j: &StoredJudgement,
+        now_ms: i64,
+    ) -> Result<(), StoreError> {
+        let tags = serde_json::to_string(&j.tags).expect("strings serialise");
+        self.conn.execute(
+            "INSERT INTO judgements (key, verdict, corrected, explanation, tags, provider,
+               created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+             ON CONFLICT (key) DO UPDATE SET verdict = excluded.verdict,
+               corrected = excluded.corrected, explanation = excluded.explanation,
+               tags = excluded.tags, provider = excluded.provider,
+               created_at = excluded.created_at",
+            params![
+                key,
+                j.verdict,
+                j.corrected,
+                j.explanation,
+                tags,
+                j.provider,
+                now_ms
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// The `seq` of the skill's next lesson: one more than the highest stored, from 1.
+    pub fn next_lesson_seq(&self, skill_id: &str) -> Result<u32, StoreError> {
+        let highest: Option<i64> = self.conn.query_row(
+            "SELECT MAX(seq) FROM lessons WHERE skill_id = ?1",
+            [skill_id],
+            |row| row.get(0),
+        )?;
+        Ok(highest.map_or(1, |seq| u32::try_from(seq.max(0) + 1).unwrap_or(u32::MAX)))
+    }
+
+    /// Every `daily` row, by date.
+    pub fn daily(&self) -> Result<Vec<DayRow>, StoreError> {
+        daily_in(&self.conn)
+    }
+
+    /// Every freeze event, in the order they were written.
+    pub fn freeze_events(&self) -> Result<Vec<FreezeEvent>, StoreError> {
+        freeze_events_in(&self.conn)
+    }
+
+    /// Writes a starting session, and with it the lesson it plays, in one transaction. The
+    /// lesson row is `{skill_id}/{seq}` with the lesson's JSON; a lesson already stored for that
+    /// skill and seq is kept as it is.
+    pub(crate) fn start_session(
+        &mut self,
+        start: &SessionStart,
+        lesson: Option<&Lesson>,
+    ) -> Result<(), StoreError> {
+        let tx = self.conn.transaction()?;
+        if let Some(lesson) = lesson {
+            let content = serde_json::to_string(lesson).expect("a lesson serialises");
+            tx.execute(
+                "INSERT INTO lessons (id, lang, skill_id, seq, origin, prompt_id, content,
+                   created_at)
+                 VALUES (?1, ?2, ?3, ?4, ?5, NULL, ?6, ?7)
+                 ON CONFLICT DO NOTHING",
+                params![
+                    format!("{}/{}", lesson.skill_id, lesson.seq),
+                    lesson.lang.as_str(),
+                    lesson.skill_id,
+                    lesson.seq,
+                    lesson.origin.as_str(),
+                    content,
+                    start.started_at
+                ],
+            )?;
+        }
+        tx.execute(
+            "INSERT INTO sessions (id, lang, kind, skill_id, started_at, local_date)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            params![
+                start.id,
+                start.lang.as_str(),
+                start.kind.as_str(),
+                start.skill_id,
+                start.started_at,
+                start.local_date
+            ],
+        )?;
+        tx.commit()?;
+        Ok(())
+    }
+
+    /// Completes a session in one transaction: its row gets the end time, XP and counts; the
+    /// weekly record is decided against the `daily` rows before the credit; the day is credited
+    /// (XP, one more session, the goal); the streak is recomputed from `daily`, its frozen days
+    /// are marked (a row with 0 XP and 0 sessions when the day had none) and the freeze events
+    /// not yet stored (by date and kind) are appended. This is the only place freezes are
+    /// written, and only as the streak earns or uses them (invariant I7).
+    pub(crate) fn finish_session(
+        &mut self,
+        end: &SessionEnd,
+    ) -> Result<FinishedSession, StoreError> {
+        let tx = self.conn.transaction()?;
+        let updated = tx.execute(
+            "UPDATE sessions SET ended_at = ?2, xp = ?3, exercises = ?4, correct = ?5
+             WHERE id = ?1",
+            params![end.id, end.ended_at, end.xp, end.exercises, end.correct],
+        )?;
+        if updated == 0 {
+            return Err(StoreError::Sqlite(format!("unknown session {}", end.id)));
+        }
+        let record_week = weekly_record(&daily_in(&tx)?, end.day, end.xp);
+        tx.execute(
+            "INSERT INTO daily (local_date, xp, sessions, goal_xp) VALUES (?1, ?2, 1, ?3)
+             ON CONFLICT (local_date) DO UPDATE SET xp = xp + excluded.xp,
+               sessions = sessions + 1, goal_xp = excluded.goal_xp",
+            params![end.day, end.xp, end.goal_xp],
+        )?;
+        let daily = daily_in(&tx)?;
+        let state = streak(&daily, end.today);
+        for day in &state.frozen {
+            tx.execute(
+                "INSERT INTO daily (local_date, xp, sessions, goal_xp, frozen)
+                 VALUES (?1, 0, 0, ?2, 1)
+                 ON CONFLICT (local_date) DO UPDATE SET frozen = 1",
+                params![day, end.goal_xp],
+            )?;
+        }
+        let stored: HashSet<(LocalDate, FreezeKind)> = freeze_events_in(&tx)?
+            .into_iter()
+            .map(|event| (event.local_date, event.kind))
+            .collect();
+        for event in &state.events {
+            if !stored.contains(&(event.local_date, event.kind)) {
+                tx.execute(
+                    "INSERT INTO freeze_events (local_date, kind, streak_len) VALUES (?1, ?2, ?3)",
+                    params![event.local_date, event.kind, event.streak_len],
+                )?;
+            }
+        }
+        let daily_xp = daily
+            .iter()
+            .find(|row| row.local_date == end.day)
+            .map_or(end.xp, |row| row.xp);
+        tx.commit()?;
+        Ok(FinishedSession {
+            record_week,
+            streak: state,
+            daily_xp,
+        })
+    }
+
     /// Cards with `due ≤ now_ms` of the course's items that are not retired.
     pub(crate) fn due_cards(&self, lang: Lang, now_ms: i64) -> Result<Vec<Card>, StoreError> {
         query_cards(
@@ -780,22 +1176,49 @@ mod tests {
     }
 
     #[test]
-    fn a_new_file_gets_the_seven_tables_and_version_1() {
+    fn a_new_file_gets_the_twelve_tables_and_version_2() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("parley.sqlite3");
         let store = Store::open(&path).unwrap();
-        assert_eq!(store.user_version().unwrap(), 1);
+        assert_eq!(store.user_version().unwrap(), 2);
         let tables = count(
             &store,
             "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name IN
              ('meta','courses','skills','items','accepted_answers','cards','review_log')",
         );
-        assert_eq!(tables, 7);
+        assert_eq!(tables, 7, "the tables of 0001_init");
+        let tables = count(
+            &store,
+            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name IN
+             ('sessions','lessons','judgements','daily','freeze_events')",
+        );
+        assert_eq!(tables, 5, "the tables of 0002_sessions");
+        let all = count(
+            &store,
+            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
+        );
+        assert_eq!(all, 12);
         let foreign_keys = count(&store, "PRAGMA foreign_keys");
         assert_eq!(foreign_keys, 1);
         drop(store);
         let again = Store::open(&path).unwrap();
-        assert_eq!(again.user_version().unwrap(), 1, "reopening runs nothing");
+        assert_eq!(again.user_version().unwrap(), 2, "reopening runs nothing");
+    }
+
+    #[test]
+    fn a_version_1_file_is_migrated_to_version_2() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("parley.sqlite3");
+        let conn = Connection::open(&path).unwrap();
+        conn.execute_batch(MIGRATIONS[0]).unwrap();
+        conn.pragma_update(None, "user_version", 1).unwrap();
+        conn.execute("INSERT INTO meta (key, value) VALUES ('kept', 'yes')", [])
+            .unwrap();
+        drop(conn);
+        let store = Store::open(&path).unwrap();
+        assert_eq!(store.user_version().unwrap(), 2);
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM meta"), 1);
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM daily"), 0);
     }
 
     #[test]
@@ -1081,6 +1504,200 @@ mod tests {
             StoreError::UnknownSkill("es.a1.u09.s01".into())
         );
         assert_eq!(store.review_log().unwrap().len(), 22);
+    }
+
+    #[test]
+    fn an_item_row_reads_its_json_columns() {
+        let store = started();
+        let item = store.item("es.a1.u01.s01#l:día").unwrap();
+        assert_eq!(
+            item,
+            ItemRow {
+                id: "es.a1.u01.s01#l:día".into(),
+                lang: Lang::Es,
+                skill_id: "es.a1.u01.s01".into(),
+                kind: ItemKind::Vocab,
+                target: "el día".into(),
+                en: vec!["day".into()],
+                lemmas: vec!["día".into()],
+                retired: false,
+            }
+        );
+        assert_eq!(
+            store.item("nope").unwrap_err(),
+            StoreError::UnknownItem("nope".into())
+        );
+    }
+
+    #[test]
+    fn accepted_answers_come_by_source_then_time() {
+        let mut store = started();
+        let id = "es.a1.u01.s01#e:2";
+        let learner = AnswerSource::Learner;
+        assert!(
+            store
+                .add_accepted_answer(id, Direction::ToEn, "Morning!", learner, 5_000)
+                .unwrap()
+        );
+        assert!(
+            !store
+                .add_accepted_answer(id, Direction::ToEn, "morning!", AnswerSource::Judge, 6_000)
+                .unwrap(),
+            "the same normal form is there already"
+        );
+        assert!(
+            store
+                .add_accepted_answer(id, Direction::ToEn, "Good day.", AnswerSource::Judge, 7_000)
+                .unwrap()
+        );
+        let answers = store.accepted_answers(id, Direction::ToEn).unwrap();
+        let shown: Vec<(&str, AnswerSource)> = answers
+            .iter()
+            .map(|a| (a.display.as_str(), a.source))
+            .collect();
+        assert_eq!(
+            shown,
+            [
+                ("Good morning.", AnswerSource::Content),
+                ("Good day.", AnswerSource::Judge),
+                ("Morning!", AnswerSource::Learner)
+            ]
+        );
+        assert_eq!(answers[2].norm, "morning!");
+        let to_target = store.accepted_answers(id, Direction::ToTarget).unwrap();
+        assert_eq!(to_target.len(), 1);
+        assert_eq!(to_target[0].display, "Buenos días.");
+        assert_eq!(
+            store
+                .add_accepted_answer("nope", Direction::ToEn, "x", learner, 0)
+                .unwrap_err(),
+            StoreError::UnknownItem("nope".into())
+        );
+    }
+
+    #[test]
+    fn a_judgement_is_stored_and_replaced() {
+        let mut store = started();
+        assert_eq!(store.judgement("k").unwrap(), None);
+        let mut judgement = StoredJudgement {
+            verdict: Verdict::Almost,
+            corrected: "Buenos días.".into(),
+            explanation: "días has an accent".into(),
+            tags: vec!["accent".into()],
+            provider: "publik".into(),
+        };
+        store.put_judgement("k", &judgement, 1).unwrap();
+        assert_eq!(store.judgement("k").unwrap(), Some(judgement.clone()));
+        judgement.verdict = Verdict::Correct;
+        judgement.provider = "learner".into();
+        judgement.tags.clear();
+        store.put_judgement("k", &judgement, 2).unwrap();
+        assert_eq!(store.judgement("k").unwrap(), Some(judgement));
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM judgements"), 1);
+    }
+
+    fn lesson(seq: u32) -> Lesson {
+        Lesson {
+            schema: Lesson::SCHEMA.into(),
+            lang: Lang::Es,
+            skill_id: "es.a1.u01.s01".into(),
+            seq,
+            origin: crate::exercise::Origin::Template,
+            exercises: Vec::new(),
+        }
+    }
+
+    fn start(store: &mut Store, id: &str, seq: u32, date: &str) {
+        let start = SessionStart {
+            id,
+            lang: Lang::Es,
+            kind: SessionKind::Lesson,
+            skill_id: Some("es.a1.u01.s01"),
+            started_at: 10,
+            local_date: LocalDate::parse(date).unwrap(),
+        };
+        store.start_session(&start, Some(&lesson(seq))).unwrap();
+    }
+
+    fn end<'a>(id: &'a str, xp: u32, date: &str) -> SessionEnd<'a> {
+        let day = LocalDate::parse(date).unwrap();
+        SessionEnd {
+            id,
+            ended_at: 20,
+            xp,
+            exercises: 3,
+            correct: 2,
+            day,
+            today: day,
+            goal_xp: 20,
+        }
+    }
+
+    #[test]
+    fn lessons_are_numbered_and_kept() {
+        let mut store = started();
+        assert_eq!(store.next_lesson_seq("es.a1.u01.s01").unwrap(), 1);
+        start(&mut store, "s1", 1, "2026-01-05");
+        assert_eq!(store.next_lesson_seq("es.a1.u01.s01").unwrap(), 2);
+        start(&mut store, "s2", 1, "2026-01-05");
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM lessons"), 1, "kept");
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM sessions"), 2);
+        let id: String = store
+            .conn
+            .query_row("SELECT id FROM lessons", [], |row| row.get(0))
+            .unwrap();
+        assert_eq!(id, "es.a1.u01.s01/1");
+        assert_eq!(store.next_lesson_seq("es.a1.u02.s01").unwrap(), 1);
+    }
+
+    #[test]
+    fn finishing_credits_the_day_and_writes_earned_freezes() {
+        let mut store = started();
+        for day in 5..=11 {
+            let date = format!("2026-01-{day:02}");
+            let id = format!("s{day}");
+            start(&mut store, &id, day, &date);
+            let done = store.finish_session(&end(&id, 15, &date)).unwrap();
+            assert_eq!(done.streak.length, day - 4);
+            assert_eq!(done.daily_xp, 15);
+        }
+        let events = store.freeze_events().unwrap();
+        assert_eq!(
+            events,
+            [FreezeEvent {
+                local_date: LocalDate::parse("2026-01-11").unwrap(),
+                kind: FreezeKind::Earned,
+                streak_len: 7
+            }]
+        );
+        // The 12th is missed; the 13th uses the freeze, which is written once.
+        start(&mut store, "s13", 13, "2026-01-13");
+        let done = store.finish_session(&end("s13", 15, "2026-01-13")).unwrap();
+        assert_eq!((done.streak.length, done.streak.freezes), (8, 0));
+        start(&mut store, "s13b", 14, "2026-01-13");
+        let done = store
+            .finish_session(&end("s13b", 10, "2026-01-13"))
+            .unwrap();
+        assert_eq!(done.daily_xp, 25);
+        assert_eq!(store.freeze_events().unwrap().len(), 2);
+        let daily = store.daily().unwrap();
+        let frozen = daily
+            .iter()
+            .find(|row| row.local_date.to_string() == "2026-01-12")
+            .unwrap();
+        assert_eq!((frozen.xp, frozen.sessions, frozen.frozen), (0, 0, true));
+        let row = daily.last().unwrap();
+        assert_eq!((row.xp, row.sessions, row.goal_xp), (25, 2, 20));
+        let (xp, exercises): (i64, i64) = store
+            .conn
+            .query_row(
+                "SELECT xp, exercises FROM sessions WHERE id = 's13b'",
+                [],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!((xp, exercises), (10, 3));
+        assert!(store.finish_session(&end("nope", 1, "2026-01-13")).is_err());
     }
 
     #[test]

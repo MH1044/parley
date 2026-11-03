@@ -1,0 +1,51 @@
+{
+  "length": 7,
+  "freezes": 1,
+  "active_today": true,
+  "frozen": [],
+  "events": [
+    {
+      "local_date": "2026-01-07",
+      "kind": "earned",
+      "streak_len": 7
+    }
+  ],
+  "days": [
+    {
+      "local_date": "2026-01-01",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-02",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-03",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-04",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-05",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-06",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-07",
+      "xp": 10,
+      "sessions": 1
+    }
+  ],
+  "records": []
+}

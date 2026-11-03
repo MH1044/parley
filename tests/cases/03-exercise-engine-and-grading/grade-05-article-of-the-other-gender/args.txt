@@ -1,0 +1,12 @@
+grade
+--lang
+es
+--type
+translate_to_target
+--expected
+el día
+--answer
+la día
+--noun
+--forms
+tests/cases/03-exercise-engine-and-grading/course-es.forms.tsv

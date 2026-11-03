@@ -1,0 +1,11 @@
+grade
+--lang
+es
+--type
+listen_type
+--expected
+Buenos días.
+--expected
+Hola, ¿qué tal?
+--answer
+hola que tal

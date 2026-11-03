@@ -1,0 +1,17 @@
+{
+  "syllabus": "tests/cases/03-exercise-engine-and-grading/course-es.yaml",
+  "forms": "tests/cases/03-exercise-engine-and-grading/course-es.forms.tsv",
+  "skill": "es.a1.u01.s02",
+  "now_ms": 2592000000,
+  "lesson_length": 13,
+  "new_items_per_lesson": 3,
+  "audio_out": false,
+  "mic": false,
+  "reviews": [
+    {"item_id": "es.a1.u01.s01#l:hola", "facet": "receptive", "rating": 3, "at_ms": 0},
+    {"item_id": "es.a1.u01.s01#l:hola", "facet": "productive", "rating": 3, "at_ms": 0},
+    {"item_id": "es.a1.u01.s01#l:día", "facet": "receptive", "rating": 3, "at_ms": 0},
+    {"item_id": "es.a1.u01.s02#e:2", "facet": "receptive", "rating": 3, "at_ms": 0},
+    {"item_id": "es.a1.u01.s02#e:3", "facet": "receptive", "rating": 3, "at_ms": 0}
+  ]
+}

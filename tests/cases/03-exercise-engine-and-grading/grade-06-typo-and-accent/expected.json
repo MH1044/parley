@@ -1,0 +1,14 @@
+{
+  "verdict": "typo",
+  "tags": [
+    "typo",
+    "accent"
+  ],
+  "message": "Typo: café, leche",
+  "corrected": "Quiero un café con leche.",
+  "words": [
+    "café",
+    "leche"
+  ],
+  "rating": 2
+}

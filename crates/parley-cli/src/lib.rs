@@ -2,8 +2,9 @@
 //!
 //! `parley` is the way to use the core without the desktop app: the content commands of module
 //! 01 (`content validate`, `content lock`, `forms extract`, `pack build`, `pack info`), the
-//! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`) and, from
-//! later modules, `grade`, `lesson template` and the others (docs/ARCHITECTURE.md §2). Every
+//! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`), the
+//! grading, lesson and streak commands of module 03 (`grade`, `lesson template`,
+//! `streak simulate`) and, from later modules, the others (docs/ARCHITECTURE.md §2). Every
 //! command prints one JSON object on standard output, exits 0 on success, 1 on a content error
 //! and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
 
@@ -55,6 +56,24 @@ Parley's command-line tool. Every command prints one JSON object on standard out
       generator seeded with <s> (default 0); prints the questions, answers, reversals, estimate,
       CEFR label and tested-out skills. Exit 1 with the validate report on a syllabus that
       does not load.
+  grade --lang <l> --type <t> --expected <s> [--expected <s>]... --answer <s>
+        [--accent lenient|strict|ignore] [--noun] [--forms <forms.tsv>] [--json]
+      Grade one typed answer against the expected answers (in order) of an exercise of type
+      <t> (translate_to_target, translate_to_en, listen_type, speak or fill_gap), offline, with
+      nothing stored; prints {\"verdict\":...,\"tags\":[...],\"message\":...,\"corrected\":...,
+      \"words\":[...],\"rating\":...}. --accent defaults to lenient; --noun applies the article
+      rule to the first expected answer; --forms defaults to content/<l>/forms.tsv. Exit 1 on
+      an answer with no words.
+  lesson template --lang <l> --skill <id> [--seq <n>] [--seed <s>] [--content <dir>] [--json]
+      Build the template lesson <n> (default 1) of a skill from <dir>/<l>/ (default dir:
+      content), for a learner who has done lessons 1 to n-1, with a SplitMix64 generator
+      seeded with <s> (default 0); prints the lesson (schemas/lesson.schema.json). Exit 1 on
+      an unknown skill, or with the validate report on a syllabus that does not load.
+  streak simulate <days.json> [--json]
+      Compute the streak, freezes and weekly records of a list of sessions
+      ({\"today\":\"YYYY-MM-DD\",\"utc_offset_minutes\":n,\"goal_xp\":n,
+      \"sessions\":[{\"started_at\":ms,\"xp\":n},...]}); prints the length, freezes, frozen
+      days, freeze events, days and records. Exit 1 on a file that is not a days file.
   --version, -V   print the version (with --json: {\"name\":\"parley\",\"version\":\"...\"})
   --help, -h      print this help
 
@@ -67,9 +86,12 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
     match args.first().map(String::as_str) {
         Some("content") => return cmd::content::run(&args[1..], out, err),
         Some("forms") => return cmd::forms::run(&args[1..], out, err),
+        Some("grade") => return cmd::grade::run(&args[1..], out, err),
+        Some("lesson") => return cmd::lesson::run(&args[1..], out, err),
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
         Some("placement") => return cmd::placement::run(&args[1..], out, err),
         Some("srs") => return cmd::srs::run(&args[1..], out, err),
+        Some("streak") => return cmd::streak::run(&args[1..], out, err),
         _ => {}
     }
 
@@ -161,6 +183,9 @@ mod tests {
             assert!(out.contains("pack info"));
             assert!(out.contains("srs replay <log.json>"));
             assert!(out.contains("placement simulate --syllabus <file>"));
+            assert!(out.contains("grade --lang <l> --type <t>"));
+            assert!(out.contains("lesson template --lang <l> --skill <id>"));
+            assert!(out.contains("streak simulate <days.json>"));
         }
     }
 
@@ -259,6 +284,8 @@ mod tests {
             (&["pack"][..], "pack build or pack info"),
             (&["srs"][..], "srs replay"),
             (&["placement"][..], "placement simulate"),
+            (&["lesson"][..], "lesson template"),
+            (&["streak"][..], "streak simulate"),
         ] {
             let (code, out, err) = run_capture(args);
             assert_eq!(code, 2, "{args:?}");

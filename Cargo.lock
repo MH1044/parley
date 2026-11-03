@@ -2749,6 +2749,7 @@ dependencies = [
  "serde_json",
  "serde_yaml_ng",
  "sha2 0.11.1",
+ "strsim",
  "tempfile",
  "toml 1.1.8+spec-1.1.0",
  "unicode-normalization",

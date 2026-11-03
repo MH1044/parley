@@ -121,6 +121,14 @@ fn elision(word: &str) -> Option<(usize, &'static [&'static str])> {
     Some((apostrophe + apostrophe_len, keys))
 }
 
+/// The word a French elision prefix is split from (`appeler` in `s'appeler`), as the tokeniser
+/// splits it; none when the word has no elision prefix or nothing follows it.
+pub(crate) fn elided_word(word: &str) -> Option<&str> {
+    let (prefix_len, _) = elision(word)?;
+    let tail = &word[prefix_len..];
+    (!tail.is_empty()).then_some(tail)
+}
+
 fn char_before(text: &str, offset: usize) -> Option<char> {
     text[..offset].chars().next_back()
 }

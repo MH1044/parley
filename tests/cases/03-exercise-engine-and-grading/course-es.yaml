@@ -1,0 +1,54 @@
+# A small project-written Spanish course for the module 03 tests (grading, templates, the
+# composer and the lesson runner). Hand-written, CC0. Its forms table is course-es.forms.tsv.
+# Skill es.a1.u01.s02 holds café, leche, agua (feminine, article el), perro and querer; only
+# example 2 contains a form of leche, and example 1 has nine words, one more than an A1
+# exercise may show.
+schema: parley.syllabus/1
+lang: es
+name: Spanish test course
+variety: Spain Spanish
+version: 1
+function_words: [el, la, los, las, un, una, "y", o, pero, de, a, en, con, sin, por, para, "no",
+  sí, yo, tú, me, te, se, que, qué]
+names: [Ana, Luis]
+units:
+  - id: es.a1.u01
+    title: First words
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and good night and thank someone.
+        requires: []
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: null}
+          - {lemma: bueno, pos: adj, en: [good], rank: null}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: null}
+          - {lemma: noche, pos: noun, gender: f, en: [night], rank: null}
+          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}
+        examples:
+          - {id: 1, target: "Hola, buenos días.", en: ["Hello, good morning.", "Hi, good morning."]}
+          - {id: 2, target: "Buenas noches, Ana.", en: ["Good night, Ana.", "Good evening, Ana."]}
+          - {id: 3, target: "Gracias, Luis.", en: ["Thank you, Luis.", "Thanks, Luis."]}
+          - {id: 4, target: "Buenos días, gracias.", en: ["Good morning, thank you."]}
+      - id: es.a1.u01.s02
+        kind: vocab
+        title: At the café
+        cefr: A1
+        can_do: I can ask for a coffee, milk or water.
+        requires: [es.a1.u01.s01]
+        lemmas:
+          - {lemma: café, pos: noun, gender: m, en: [coffee], rank: null}
+          - {lemma: leche, pos: noun, gender: f, en: [milk], rank: null}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: null}
+          - {lemma: perro, pos: noun, gender: m, en: [dog], rank: null}
+          - {lemma: querer, pos: verb, en: [to want, to love], rank: null}
+          - {lemma: por favor, pos: expr, en: [please], rank: null}
+        examples:
+          - {id: 1, target: "Hola, quiero un café y un agua, por favor.", en: ["Hello, I want a coffee and a water, please."]}
+          - {id: 2, target: "Quiero un café con leche.", en: ["I want a coffee with milk.", "I would like a coffee with milk."]}
+          - {id: 3, target: "Quiero un café.", en: ["I want a coffee.", "I would like a coffee."]}
+          - {id: 4, target: "El perro quiere agua.", en: ["The dog wants water."]}
+          - {id: 5, target: "Un agua, por favor.", en: ["A water, please."]}

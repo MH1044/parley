@@ -1,0 +1,131 @@
+{
+  "length": 21,
+  "freezes": 2,
+  "active_today": true,
+  "frozen": [],
+  "events": [
+    {
+      "local_date": "2026-01-07",
+      "kind": "earned",
+      "streak_len": 7
+    },
+    {
+      "local_date": "2026-01-14",
+      "kind": "earned",
+      "streak_len": 14
+    }
+  ],
+  "days": [
+    {
+      "local_date": "2026-01-01",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-02",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-03",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-04",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-05",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-06",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-07",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-08",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-09",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-10",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-11",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-12",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-13",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-14",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-15",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-16",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-17",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-18",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-19",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-20",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-21",
+      "xp": 10,
+      "sessions": 1
+    }
+  ],
+  "records": [
+    {
+      "local_date": "2026-01-09",
+      "message": "New weekly record!"
+    }
+  ]
+}

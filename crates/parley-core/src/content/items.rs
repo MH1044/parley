@@ -7,7 +7,7 @@ use unicode_segmentation::UnicodeSegmentation;
 
 use super::forms::Forms;
 use super::syllabus::{Cefr, Gender, Lemma, Pos, Skill, SkillKind, Syllabus};
-use super::tokenise::{Token, tokenise};
+use super::tokenise::{Token, elided_word, tokenise};
 use super::{Lang, nfc, nfc_lower};
 
 /// What an item is: a word, a sentence from a vocabulary or function skill, or a sentence that
@@ -73,6 +73,11 @@ impl TaughtForms {
         let mut words = vec![nfc_lower(&lemma.lemma)];
         for word in lemma.lemma.unicode_words() {
             words.push(nfc_lower(word));
+            // The tokeniser splits a French elision prefix from its word (`s'appeler` gives `s'`
+            // and `appeler`), so the word after the prefix is taught too.
+            if let Some(tail) = elided_word(word) {
+                words.push(nfc_lower(tail));
+            }
         }
         if let Some(prefix) = &lemma.separable {
             let prefix = nfc(prefix);
@@ -280,6 +285,15 @@ mod tests {
         assert!(taught.matches(&tokens[1]), "stehe");
         assert!(taught.matches(&tokens[4]), "auf");
         assert!(!taught.matches(&tokens[0]), "Ich");
+        let appeler = TaughtForms::of(&lemma("s'appeler", Pos::Verb, None));
+        let tokens = tokenise(
+            Lang::Fr,
+            "Tu vas t'appeler Paul ? s'appeler",
+            &Forms::default(),
+        );
+        assert!(appeler.matches(&tokens[3]), "appeler after t'");
+        assert!(appeler.matches(&tokens[6]), "appeler after s'");
+        assert!(!appeler.matches(&tokens[2]), "t'");
         let por_favor = lemma("por favor", Pos::Expr, None);
         let taught = TaughtForms::of(&por_favor);
         let tokens = tokenise(Lang::Es, "Un café, por favor.", &Forms::default());

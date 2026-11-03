@@ -12,7 +12,9 @@ Nothing teaches yet. Building from source (see `README.md`) gives:
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
 - the course content tools below;
-- the scheduler and the placement test, which the command line can already show.
+- the scheduler and the placement test, which the command line can already show;
+- the offline lesson engine: grading, template lessons, XP and streaks, which the command line
+  can already show too.
 
 Every command prints one JSON object on standard output and exits 0 on success, 1 on a content
 error (the JSON report is still printed) or 2 on a usage error, which prints one line on standard
@@ -240,7 +242,111 @@ parley placement simulate --syllabus content/es/syllabus.yaml --boundary 5 --sli
 (`error: --boundary must be a whole number. Run parley --help.`); a syllabus that does not load
 exits 1 with the report `parley content validate --json` prints.
 
+### Grading an answer: `parley grade`
+
+An answer is compared after normalising both sides: case, punctuation, typographic apostrophes
+and extra spaces never count (`¿Qué  TAL?` is `qué tal`). Then, in order:
+
+- **exact**: it matches an accepted answer: correct.
+- **article** (vocabulary nouns): the noun without its article is almost ("Almost: remember the
+  article: el día"); the noun with another article is wrong ("Día is masculine: el día.").
+- **accent**: it differs only in accents, or in German writes `ae`, `oe`, `ue`, `ss` or drops the
+  umlaut: almost with the default setting ("Almost: mind the accent: días"), wrong with
+  `strict`, correct with a note with `ignore`.
+- **typo**: one wrong, missing, extra or swapped letter in a word of 4 letters or more, in at
+  most one word in four (at least one), and not a different real word (`pero` for `perro` is
+  wrong): a typo, rated like almost ("Typo: leche").
+- **a stored judgement** of this very answer.
+- otherwise a free translation is **unchecked**: an AI judge decides it later, or you press "I was
+  right", and the same answer is then correct next time, offline. Every other type is wrong.
+
+Almost and typo rate the card Hard, wrong Again. `parley grade` shows it for one answer, with
+nothing stored. `--type` is `translate_to_target`, `translate_to_en`, `listen_type`, `speak` or
+`fill_gap`; `--expected` can be repeated; `--accent` is `lenient` (default), `strict` or
+`ignore`; `--noun` turns on the article rule; the forms table is `content/<lang>/forms.tsv`
+unless `--forms` names another.
+
+```
+parley grade --lang es --type listen_type --expected "Buenos días." --answer "Buenos dias"
+{"verdict":"almost","tags":["accent"],"message":"Almost: mind the accent: días","corrected":"Buenos días.","words":["días"],"rating":2}
+parley grade --lang es --type listen_type --expected "Buenos días." --answer "Buenos dias" --accent ignore
+{"verdict":"correct","tags":["accent"],"message":"Note the accent: días","corrected":"Buenos días.","words":["días"],"rating":3}
+parley grade --lang es --type translate_to_target --expected "el día" --answer "la día" --noun
+{"verdict":"wrong","tags":["article"],"message":"Día is masculine: el día.","corrected":"el día","words":["el día"],"rating":1}
+parley grade --lang es --type fill_gap --expected "Quiero un café con leche." --answer "quiero un cafe con lecje"
+{"verdict":"typo","tags":["typo","accent"],"message":"Typo: café, leche","corrected":"Quiero un café con leche.","words":["café","leche"],"rating":2}
+parley grade --lang de --type speak --expected "Das Mädchen" --answer "das Maedchen"
+{"verdict":"almost","tags":["accent"],"message":"Almost: mind the accent: Mädchen","corrected":"Das Mädchen","words":["Mädchen"],"rating":2}
+parley grade --lang es --type translate_to_en --expected "Good morning." --answer "Morning!"
+{"verdict":"unchecked","tags":[],"message":null,"corrected":null,"words":[],"rating":null}
+```
+
+An answer with no words exits 1 with `error: Type an answer first.`; a type that is not typed is
+a usage error (`error: --type must be translate_to_target, translate_to_en, listen_type, speak or
+fill_gap. Run parley --help.`).
+
+### A template lesson: `parley lesson template`
+
+A lesson plans up to 12 exercises: the skill's next 5 new items, each introduced with a
+recognition exercise; a match-the-pairs round when there are 4 or more words; your due cards
+alternating with a production exercise for each new item; then the skill's other cards, the ones
+you are most likely to have forgotten first. Every exercise uses only words the course has taught
+by then, has at most 8 words at A1 (12 at A2), and practises its item; an exercise that cannot be
+built that way falls back to a simpler type. There is no limit on lessons.
+
+`parley lesson template` builds the template lesson of a skill offline, as the app does without
+AI, for a learner who has done its earlier lessons (`--seq`, default 1); `--seed` seeds the
+generator (default 0), so a seed always gives the same lesson:
+
+```
+parley lesson template --lang es --skill es.a1.u01.s01 --seed 1
+{"schema":"parley.lesson/1","lang":"es","skill_id":"es.a1.u01.s01","seq":1,"origin":"template","exercises":[{"id":"e1","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"hola","options":["afternoon","night","day","hello"],"answer_index":3},{"id":"e2","item_id":"es.a1.u01.s01#l:adiós","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"adiós","options":["very","day","good","goodbye"],"answer_index":3},{"id":"e3","item_id":"es.a1.u01.s01#l:bueno","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"bueno","options":["very","day","such","good"],"answer_index":3},{"id":"e4","item_id":"es.a1.u01.s01#l:día","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"el día","options":["afternoon","day","good","thank you"],"answer_index":1},{"id":"e5","item_id":"es.a1.u01.s01#l:tarde","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"la tarde","options":["goodbye","day","very","afternoon"],"answer_index":3},{"id":"e6","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"match_pairs","pairs":[["adiós","goodbye"],["bueno","good"],["hola","hello"],["el día","day"]]},{"id":"e7","item_id":"es.a1.u01.s01#l:hola","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, ¿qué tal?","answer":"Hola","full_sentence":"Hola, ¿qué tal?","hint_en":"hello"},{"id":"e8","item_id":"es.a1.u01.s01#l:adiós","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, gracias.","answer":"Adiós","full_sentence":"Adiós, gracias.","hint_en":"goodbye"},{"id":"e9","item_id":"es.a1.u01.s01#l:bueno","facet":"productive","origin":"template","type":"fill_gap","sentence":"___ días.","answer":"Buenos","full_sentence":"Buenos días.","hint_en":"good"},{"id":"e10","item_id":"es.a1.u01.s01#l:día","facet":"productive","origin":"template","type":"fill_gap","sentence":"Hola, buenos ___.","answer":"días","full_sentence":"Hola, buenos días.","hint_en":"day"},{"id":"e11","item_id":"es.a1.u01.s01#l:tarde","facet":"productive","origin":"template","type":"fill_gap","sentence":"Buenas ___, Luis.","answer":"tardes","full_sentence":"Buenas tardes, Luis.","hint_en":"afternoon"}]}
+```
+
+`--content <dir>` reads another course folder (default `content`). A skill the syllabus does not
+have exits 1 (`error: unknown skill es.a1.u99.s01`); `--seq` must be a whole number from 1.
+
+### XP, streaks and freezes: `parley streak simulate`
+
+Each correct, typo or almost answer earns 1 XP; finishing a lesson earns 10 more, and 5 more
+again with no wrong answer; finishing a review earns 5. Nothing is ever taken away. The daily goal
+(20 XP by default) is met when the day's XP reaches it.
+
+A day with a finished lesson or review keeps your streak going. Every 7 days of streak earn a
+freeze, and up to 2 can be banked; a missed day uses one (the streak stays) or, without one, the
+streak starts again. Freezes are only earned, never bought. Until you practise today, your streak
+is yesterday's. A session counts on the day it started, where you are. When a week's XP first
+passes your best earlier week, you see "New weekly record!", once that week.
+
+`parley streak simulate` replays a list of sessions. This `days.json` has one session on Monday
+26 October, then one a day from Monday 2 to Sunday 8 November, none on the 9th, and one on the
+10th, all at 19:00 in a time zone one hour east of UTC:
+
+```
+{"today": "2026-11-10", "utc_offset_minutes": 60, "goal_xp": 20, "sessions": [
+  {"started_at": 1793037600000, "xp": 20},
+  {"started_at": 1793642400000, "xp": 15},
+  {"started_at": 1793728800000, "xp": 15},
+  {"started_at": 1793815200000, "xp": 15},
+  {"started_at": 1793901600000, "xp": 15},
+  {"started_at": 1793988000000, "xp": 15},
+  {"started_at": 1794074400000, "xp": 15},
+  {"started_at": 1794160800000, "xp": 15},
+  {"started_at": 1794333600000, "xp": 15}
+]}
+```
+
+```
+parley streak simulate days.json
+{"length":8,"freezes":0,"active_today":true,"frozen":["2026-11-09"],"events":[{"local_date":"2026-11-08","kind":"earned","streak_len":7},{"local_date":"2026-11-09","kind":"used","streak_len":7}],"days":[{"local_date":"2026-10-26","xp":20,"sessions":1},{"local_date":"2026-11-02","xp":15,"sessions":1},{"local_date":"2026-11-03","xp":15,"sessions":1},{"local_date":"2026-11-04","xp":15,"sessions":1},{"local_date":"2026-11-05","xp":15,"sessions":1},{"local_date":"2026-11-06","xp":15,"sessions":1},{"local_date":"2026-11-07","xp":15,"sessions":1},{"local_date":"2026-11-08","xp":15,"sessions":1},{"local_date":"2026-11-10","xp":15,"sessions":1}],"records":[{"local_date":"2026-11-03","message":"New weekly record!"}]}
+```
+
+The missed days after 26 October reset the streak; the seven days from 2 November earn a freeze,
+which covers the 9th, so the streak is 8 on the 10th. The second session of the new week passes
+the 20 XP of the week before: a weekly record. `utc_offset_minutes` defaults to 0 and `goal_xp`
+to 20; a file that is not a days file exits 1 with what is wrong.
+
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: lessons and grading, then the full offline app with
-onboarding, the learning path, reviews, stats, settings and backup.
+In the order of `docs/ROADMAP.md`: the full offline app with onboarding, the learning path,
+lessons, reviews, stats, settings and backup.

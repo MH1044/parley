@@ -1,0 +1,63 @@
+{
+  "length": 1,
+  "freezes": 0,
+  "active_today": true,
+  "frozen": [
+    "2026-01-08"
+  ],
+  "events": [
+    {
+      "local_date": "2026-01-07",
+      "kind": "earned",
+      "streak_len": 7
+    },
+    {
+      "local_date": "2026-01-08",
+      "kind": "used",
+      "streak_len": 7
+    }
+  ],
+  "days": [
+    {
+      "local_date": "2026-01-01",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-02",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-03",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-04",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-05",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-06",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-07",
+      "xp": 10,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-10",
+      "xp": 10,
+      "sessions": 1
+    }
+  ],
+  "records": []
+}

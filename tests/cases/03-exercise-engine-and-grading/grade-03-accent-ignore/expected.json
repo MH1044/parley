@@ -1,0 +1,12 @@
+{
+  "verdict": "correct",
+  "tags": [
+    "accent"
+  ],
+  "message": "Note the accent: días",
+  "corrected": "Buenos días.",
+  "words": [
+    "días"
+  ],
+  "rating": 3
+}

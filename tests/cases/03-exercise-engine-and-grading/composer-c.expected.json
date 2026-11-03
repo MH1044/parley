@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {"n": 1, "item_id": "es.a1.u01.s02#l:café", "facet": "receptive", "kind": "pick_meaning", "focus": "el café", "new": true},
+    {"n": 2, "item_id": "es.a1.u01.s02#l:leche", "facet": "receptive", "kind": "pick_meaning", "focus": "la leche", "new": true},
+    {"n": 3, "item_id": "es.a1.u01.s02#e:1", "facet": "receptive", "kind": "listen_type", "focus": "Hola, quiero un café y un agua, por favor.", "new": false},
+    {"n": 4, "item_id": "es.a1.u01.s02#l:café", "facet": "productive", "kind": "fill_gap", "focus": "el café", "new": true},
+    {"n": 5, "item_id": "es.a1.u01.s02#e:3", "facet": "receptive", "kind": "listen_type", "focus": "Quiero un café.", "new": false},
+    {"n": 6, "item_id": "es.a1.u01.s02#l:leche", "facet": "productive", "kind": "fill_gap", "focus": "la leche", "new": true},
+    {"n": 7, "item_id": "es.a1.u01.s02#e:4", "facet": "receptive", "kind": "translate_to_en", "focus": "El perro quiere agua.", "new": false},
+    {"n": 8, "item_id": "es.a1.u01.s02#e:5", "facet": "receptive", "kind": "translate_to_en", "focus": "Un agua, por favor.", "new": false},
+    {"n": 9, "item_id": "es.a1.u01.s02#l:por favor", "facet": "receptive", "kind": "pick_meaning", "focus": "por favor", "new": false},
+    {"n": 10, "item_id": "es.a1.u01.s02#l:por favor", "facet": "productive", "kind": "translate_to_target", "focus": "por favor", "new": false},
+    {"n": 11, "item_id": "es.a1.u01.s02#e:1", "facet": "productive", "kind": "translate_to_target", "focus": "Hola, quiero un café y un agua, por favor.", "new": false},
+    {"n": 12, "item_id": "es.a1.u01.s02#e:3", "facet": "productive", "kind": "speak", "focus": "Quiero un café.", "new": false},
+    {"n": 13, "item_id": "es.a1.u01.s02#e:4", "facet": "productive", "kind": "speak", "focus": "El perro quiere agua.", "new": false},
+    {"n": 14, "item_id": "es.a1.u01.s02#e:5", "facet": "productive", "kind": "translate_to_target", "focus": "Un agua, por favor.", "new": false}
+  ]
+}

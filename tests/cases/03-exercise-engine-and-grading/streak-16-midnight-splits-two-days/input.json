@@ -1,0 +1,14 @@
+{
+  "today": "2026-01-02",
+  "utc_offset_minutes": 60,
+  "sessions": [
+    {
+      "started_at": 1767306600000,
+      "xp": 10
+    },
+    {
+      "started_at": 1767309000000,
+      "xp": 10
+    }
+  ]
+}

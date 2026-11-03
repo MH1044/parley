@@ -1,0 +1,39 @@
+#!/bin/sh
+# The quality gates (docs/TESTING.md §6): the numbers a release is defined by, too slow for
+# scripts/verify. Run before a release and when changing grading, the template generator, the
+# lesson validators, placement, speaking scoring or any prompt file.
+#
+#   scripts/gates/run              every offline gate (crates/parley-core/tests/gates.rs, gate_*)
+#   scripts/gates/run --live <G>   one live gate, such as G1: sets PARLEY_LIVE=1 and runs live_<g>.
+#                                  Live gates spend money and are the maintainer's to run.
+#
+# Thresholds live in scripts/gates/thresholds.toml.
+
+set -eu
+cd "$(dirname "$0")/../.."
+
+usage() {
+  printf 'error: %s Run scripts/gates/run --help.\n' "$1" >&2
+  exit 2
+}
+
+case "${1:-}" in
+  "")
+    printf '== offline gates\n'
+    cargo test --release -p parley-core --test gates -- --ignored --show-output gate_
+    ;;
+  --help | -h)
+    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+  --live)
+    [ $# -ge 2 ] || usage "--live needs a gate, such as G1."
+    [ $# -eq 2 ] || usage "unknown argument $3."
+    gate=$(printf '%s' "$2" | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' 'abcdefghijklmnopqrstuvwxyz')
+    printf '== live gate %s\n' "$2"
+    printf 'No live gate exists yet, so this runs no test.\n'
+    PARLEY_LIVE=1 cargo test --release -p parley-core --test gates -- --ignored --show-output "live_$gate"
+    ;;
+  *)
+    usage "unknown argument $1."
+    ;;
+esac

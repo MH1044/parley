@@ -1,0 +1,4 @@
+streak
+simulate
+{input}
+--json

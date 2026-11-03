@@ -1,0 +1,45 @@
+{
+  "length": 4,
+  "freezes": 0,
+  "active_today": true,
+  "frozen": [],
+  "events": [],
+  "days": [
+    {
+      "local_date": "2026-01-05",
+      "xp": 100,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-12",
+      "xp": 80,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-19",
+      "xp": 50,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-20",
+      "xp": 50,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-21",
+      "xp": 1,
+      "sessions": 1
+    },
+    {
+      "local_date": "2026-01-22",
+      "xp": 15,
+      "sessions": 2
+    }
+  ],
+  "records": [
+    {
+      "local_date": "2026-01-21",
+      "message": "New weekly record!"
+    }
+  ]
+}

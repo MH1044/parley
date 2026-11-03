@@ -1,0 +1,13 @@
+{
+  "verdict": "typo",
+  "tags": [
+    "typo"
+  ],
+  "message": "Typo: pescado, familia",
+  "corrected": "Nosotros queremos comprar pescado fresco para nuestra familia.",
+  "words": [
+    "pescado",
+    "familia"
+  ],
+  "rating": 2
+}

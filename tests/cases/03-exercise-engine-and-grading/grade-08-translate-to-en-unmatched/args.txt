@@ -1,0 +1,11 @@
+grade
+--lang
+es
+--type
+translate_to_en
+--expected
+I want a coffee.
+--answer
+Give me coffee
+--forms
+tests/cases/03-exercise-engine-and-grading/course-es.forms.tsv

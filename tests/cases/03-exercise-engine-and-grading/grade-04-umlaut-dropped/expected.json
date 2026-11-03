@@ -1,0 +1,12 @@
+{
+  "verdict": "almost",
+  "tags": [
+    "accent"
+  ],
+  "message": "Almost: mind the accent: Mädchen",
+  "corrected": "Das Mädchen",
+  "words": [
+    "Mädchen"
+  ],
+  "rating": 2
+}

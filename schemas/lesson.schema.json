@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley lesson",
+  "description": "A lesson of one skill: its exercises, each one flat object tagged by type, as the exercise engine serialises them and the lessons table stores them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "lang", "skill_id", "seq", "origin", "exercises"],
+  "properties": {
+    "schema": { "const": "parley.lesson/1" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "skill_id": { "type": "string" },
+    "seq": { "type": "integer", "minimum": 1 },
+    "origin": { "$ref": "#/$defs/origin" },
+    "exercises": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": { "$ref": "#/$defs/exercise" }
+    }
+  },
+  "$defs": {
+    "origin": { "enum": ["template", "ai", "course_pack"] },
+    "facet": { "enum": ["receptive", "productive"] },
+    "accepted": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": { "type": "string" }
+    },
+    "exercise": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "prompt_target", "options", "answer_index"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "pick_meaning" },
+            "prompt_target": { "type": "string" },
+            "options": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string" } },
+            "answer_index": { "type": "integer", "minimum": 0, "maximum": 3 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "prompt_en", "target", "accepted"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "translate_to_target" },
+            "prompt_en": { "type": "string" },
+            "target": { "type": "string" },
+            "accepted": { "$ref": "#/$defs/accepted" },
+            "tiles": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "prompt_target", "accepted"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "translate_to_en" },
+            "prompt_target": { "type": "string" },
+            "accepted": { "$ref": "#/$defs/accepted" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "text", "accepted"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "listen_type" },
+            "text": { "type": "string" },
+            "accepted": { "$ref": "#/$defs/accepted" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "text", "prompt_en"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "speak" },
+            "text": { "type": "string" },
+            "prompt_en": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "sentence", "answer", "full_sentence", "hint_en"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "fill_gap" },
+            "sentence": { "type": "string" },
+            "answer": { "type": "string" },
+            "full_sentence": { "type": "string" },
+            "hint_en": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "item_id", "facet", "origin", "type", "pairs"],
+          "properties": {
+            "id": { "type": "string" },
+            "item_id": { "type": "string" },
+            "facet": { "$ref": "#/$defs/facet" },
+            "origin": { "$ref": "#/$defs/origin" },
+            "type": { "const": "match_pairs" },
+            "pairs": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 5,
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

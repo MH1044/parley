@@ -1,0 +1,11 @@
+grade
+--lang
+es
+--type
+fill_gap
+--expected
+leche
+--answer
+agua
+--forms
+tests/cases/03-exercise-engine-and-grading/course-es.forms.tsv

@@ -1,0 +1,11 @@
+grade
+--lang
+es
+--type
+translate_to_target
+--expected
+Buenos días.
+--answer
+Buenos dias
+--accent
+ignore

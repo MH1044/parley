@@ -1,0 +1,9 @@
+grade
+--lang
+de
+--type
+translate_to_target
+--expected
+die Straße
+--answer
+die Strasse

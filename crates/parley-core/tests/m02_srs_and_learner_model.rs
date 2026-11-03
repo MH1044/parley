@@ -428,29 +428,33 @@ fn user_version(conn: &Connection) -> i64 {
 }
 
 // Bullet 1: an empty file gets the seven tables with §4's columns, their indexes and foreign
-// keys, and user_version 1; opening it again keeps version 1.
+// keys. Since module 03 a new file also runs migration 0002 (five more tables), so it opens at
+// user_version 2 with the seven tables among twelve; opening it again keeps version 2.
 #[test]
 fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("parley.sqlite3");
     {
         let store = ok(Store::open(&path));
-        assert_eq!(ok(store.user_version()), 1);
+        assert_eq!(ok(store.user_version()), 2);
     }
     assert!(path.is_file(), "open creates the file");
 
     let conn = Connection::open(&path).unwrap();
-    assert_eq!(user_version(&conn), 1);
-    let mut expected_names: Vec<String> = architecture_tables()
+    assert_eq!(user_version(&conn), 2);
+    let expected_names: Vec<String> = architecture_tables()
         .iter()
         .map(|(name, _)| name.to_string())
         .collect();
-    expected_names.sort();
+    let tables = user_tables(&conn);
     assert_eq!(
-        user_tables(&conn),
-        expected_names,
-        "exactly the seven tables of 0001_init"
+        tables.len(),
+        12,
+        "the tables of 0001_init and 0002_sessions"
     );
+    for name in &expected_names {
+        assert!(tables.contains(name), "{name} of 0001_init is in the file");
+    }
 
     for (table, columns) in architecture_tables() {
         let expected: Vec<ColumnInfo> = columns
@@ -479,6 +483,7 @@ fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
         .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))
         .unwrap()
         .map(|r| r.unwrap())
+        .filter(|(_, table): &(String, String)| expected_names.contains(table))
         .collect();
     drop(stmt);
     let expected_indexes: Vec<(String, String)> = architecture_indexes()
@@ -520,12 +525,12 @@ fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
     let again = ok(Store::open(&path));
     assert_eq!(
         ok(again.user_version()),
-        1,
+        2,
         "nothing is pending on a second open"
     );
     drop(again);
     let in_memory = ok(Store::open_in_memory());
-    assert_eq!(ok(in_memory.user_version()), 1);
+    assert_eq!(ok(in_memory.user_version()), 2);
 }
 
 /// SQL as written, with `--` comments removed, whitespace collapsed and no space next to

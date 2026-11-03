@@ -9,8 +9,11 @@
 //! and the command result types. Module 01 adds [`content`]: the syllabus format, its validator,
 //! the tokeniser, forms tables, item derivation, the id lock and sentence packs. Module 02 adds
 //! [`srs`] (FSRS cards, the review log, mastery, skill states and placement) and [`store`] (the
-//! learner's SQLite file). Later modules add grading, exercises and the AI features, one folder
-//! each.
+//! learner's SQLite file). Module 03 adds [`grading`] (the normaliser and the offline grader),
+//! [`exercise`] (exercise types, structural checks, template lessons, the composer and the lesson
+//! runner) and [`game`] (XP, streaks with earned freezes, the weekly record), with sessions,
+//! lessons, judgements and the daily record in the store. Later modules add the AI features, one
+//! folder each.
 
 #![forbid(unsafe_code)]
 
@@ -18,5 +21,8 @@ pub mod api;
 pub mod content;
 pub mod env;
 pub mod error;
+pub mod exercise;
+pub mod game;
+pub mod grading;
 pub mod srs;
 pub mod store;

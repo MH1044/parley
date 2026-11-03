@@ -1,0 +1,12 @@
+{
+  "verdict": "wrong",
+  "tags": [
+    "article"
+  ],
+  "message": "Agua is feminine: el agua.",
+  "corrected": "el agua",
+  "words": [
+    "el agua"
+  ],
+  "rating": 1
+}

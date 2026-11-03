@@ -1,0 +1,12 @@
+grade
+--lang
+es
+--type
+translate_to_en
+--expected
+I want a coffee.
+--expected
+I would like a coffee.
+--answer
+i would like a coffee
+--json

@@ -1,0 +1,9 @@
+grade
+--lang
+de
+--type
+translate_to_target
+--expected
+Das Mädchen
+--answer
+das Maedchen

@@ -1,0 +1,12 @@
+# Quality gate thresholds (docs/TESTING.md §6): set by a spec or by the first run that measures them, and only tightened afterwards.
+[grading]
+answers = 10000
+p99_ms = 5.0
+source = "docs/modules/03-exercise-engine-and-grading.md, 2026-11-03"
+[template_lesson]
+max_ms = 200.0
+source = "docs/modules/03-exercise-engine-and-grading.md, 2026-11-03"
+[g3]
+lessons = 1000
+pass_share = 1.0
+source = "docs/modules/03-exercise-engine-and-grading.md, 2026-11-03"

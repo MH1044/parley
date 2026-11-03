@@ -44,7 +44,7 @@ Every licence is checked again at the module that adds the dependency ("verify a
         src/content/         syllabus.rs, items.rs, forms.rs, tokenise.rs, pack.rs, validate.rs
         src/srs/             fsrs.rs, mastery.rs, placement.rs
         src/grading/         normalise.rs, typo.rs, grade.rs
-        src/exercise/        types.rs, template.rs, compose.rs, wordbank.rs
+        src/exercise/        types.rs, check.rs, template.rs, compose.rs, wordbank.rs, run.rs
         src/game/            xp.rs, streak.rs
         src/store/           db.rs, migrations/NNNN_name.sql
         src/ai/              client.rs (AiClient trait), call.rs, cache.rs, prompts.rs, schema.rs,

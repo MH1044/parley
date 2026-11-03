@@ -1,0 +1,12 @@
+{
+  "verdict": "wrong",
+  "tags": [
+    "article"
+  ],
+  "message": "Día is masculine: el día.",
+  "corrected": "el día",
+  "words": [
+    "el día"
+  ],
+  "rating": 1
+}

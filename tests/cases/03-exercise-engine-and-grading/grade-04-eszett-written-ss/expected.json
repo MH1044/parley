@@ -1,0 +1,12 @@
+{
+  "verdict": "almost",
+  "tags": [
+    "accent"
+  ],
+  "message": "Almost: mind the accent: Straße",
+  "corrected": "die Straße",
+  "words": [
+    "Straße"
+  ],
+  "rating": 2
+}
