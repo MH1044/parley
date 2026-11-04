@@ -140,7 +140,7 @@ exactly four failures; delete the file.
 | Job | Runners | From module | Steps |
 |---|---|---|---|
 | verify | `windows-latest`, `ubuntu-latest` | 00 | Node LTS, Rust from `rust-toolchain.toml`; on Ubuntu `libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev`; `scripts/verify` |
-| e2e | `windows-latest`, `ubuntu-latest` (xvfb) | 04 | debug build, launch smoke |
+| e2e | `windows-2022` (the Edge driver cannot attach to WebView2 on the windows-2025 image), `ubuntu-latest` (xvfb) | 04 | debug build, launch smoke |
 | whisper | `ubuntu-latest` | 10 | `--features local-whisper`; ggml-tiny cached by SHA-256 from `models/registry.toml` |
 | android | `ubuntu-latest` | 13 | Android SDK and NDK; `cargo tauri android build --debug`; unit tests only |
 | macos | `macos-latest` | 14 | `scripts/verify` and a bundle build |
