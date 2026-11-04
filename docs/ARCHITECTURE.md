@@ -37,7 +37,7 @@ Every licence is checked again at the module that adds the dependency ("verify a
 ## 2. Repository layout
 
     Cargo.toml               workspace; version shared by every crate
-    rust-toolchain.toml      pinned stable toolchain
+    rust-toolchain.toml      the exact Rust release every build uses
     deny.toml                licence gate: fails on GPL, AGPL, SSPL, BUSL (transitive included)
     crates/
       parley-core/           library: content, srs, grading, exercises, game, store, backup, ai features

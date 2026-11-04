@@ -79,7 +79,9 @@ Decisions made during implementation:
 
 - **Toolchain**: `rust-toolchain.toml` pins `channel = "stable"` with rustfmt and clippy; CI
   installs from the file. An exact version pin is a maintainer choice recorded in the roadmap's
-  open questions. The workspace uses edition 2024.
+  open questions. The workspace uses edition 2024. (Later decision, 2026-11-04: the channel is
+  pinned to an exact release, 1.99.1, so CI and local builds use the same compiler and lints, and
+  an upgrade is a deliberate change.)
 - **One version**: `[workspace.package].version` in `Cargo.toml` is inherited by every crate;
   `app/src-tauri/tauri.conf.json` and `app/package.json` carry the same number, and a test fails
   when they differ (`RELEASING.md` lists the three places).

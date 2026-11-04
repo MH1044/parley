@@ -32,8 +32,8 @@ own key or a local model, and every AI answer is checked before you see it.
 
 You need:
 
-- Rust, stable, with rustfmt and clippy (rustup reads `rust-toolchain.toml`), and cargo-deny
-  (`cargo install cargo-deny --locked`).
+- Rust 1.99.1 with rustfmt and clippy: rustup reads the exact version from `rust-toolchain.toml`
+  and installs it on the first build. Also cargo-deny (`cargo install cargo-deny --locked`).
 - Node.js LTS and npm.
 - Windows: the Visual Studio C++ Build Tools and the WebView2 runtime (part of Windows 11; Windows
   10 gets it with Microsoft Edge).
