@@ -1,6 +1,7 @@
 //! The syllabus validator: rules V02 to V21 of docs/modules/01-content-model-and-syllabus.md
 //! (V01, YAML and schema, is [`super::parse_syllabus`]). Errors are ordered by rule number, then
-//! in document order; V17 is a warning.
+//! in document order; V17 is a warning. Rule V22 (ranks, docs/modules/05-course-content-a1-a2.md)
+//! is [`check_ranks`], run on a course folder after the others.
 
 use std::collections::{HashMap, HashSet};
 
@@ -440,6 +441,43 @@ pub fn validate(s: &Syllabus, ctx: &Context) -> Report {
     Report { errors, warnings }
 }
 
+/// The rank above which an A1 lemma draws V22's warning.
+const A1_RANK_LIMIT: u32 = 3_000;
+
+/// Rule V22 (docs/modules/05-course-content-a1-a2.md): every single-word lemma (no space in
+/// `lemma`) has a frequency rank, `{skill}: {lemma} needs a rank`; and, as a warning, an A1
+/// lemma ranked above 3,000 is worth a second look, `warning: {lemma} has rank {n}; check that
+/// it belongs at A1`. Both in document order. It runs on a course folder (one with `review.yaml`
+/// beside the syllabus), and its messages follow those of [`validate`]: the errors after V21, the
+/// warnings after V17.
+pub fn check_ranks(s: &Syllabus) -> Report {
+    let mut errors = Vec::new();
+    let mut warnings = Vec::new();
+    for (_, skill) in s.skills() {
+        for lemma in &skill.lemmas {
+            if lemma.rank.is_none() && !lemma.lemma.contains(' ') {
+                errors.push(format!("{}: {} needs a rank", skill.id, lemma.lemma));
+            }
+        }
+    }
+    for (_, skill) in s.skills() {
+        if skill.cefr != Cefr::A1 {
+            continue;
+        }
+        for lemma in &skill.lemmas {
+            if let Some(rank) = lemma.rank
+                && rank > A1_RANK_LIMIT
+            {
+                warnings.push(format!(
+                    "warning: {} has rank {rank}; check that it belongs at A1",
+                    lemma.lemma
+                ));
+            }
+        }
+    }
+    Report { errors, warnings }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -773,6 +811,59 @@ mod tests {
             check(&inflected, &forms).errors,
             ["fr.a1.u01.s01: example 4 uses \"appelle\", which no earlier skill teaches"]
         );
+    }
+
+    #[test]
+    fn v22_wants_a_rank_for_every_single_word_lemma() {
+        let text = EXAMPLE_SYLLABUS
+            .replace(
+                "{lemma: hola, pos: intj, en: [hello, hi], rank: null}",
+                "{lemma: hola, pos: intj, en: [hello, hi], rank: 12}",
+            )
+            .replace(
+                "{lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}",
+                "{lemma: muchas gracias, pos: expr, en: [thank you very much], rank: null}",
+            );
+        let syllabus = parse_syllabus("s.yaml", &text).unwrap();
+        let report = check_ranks(&syllabus);
+        assert_eq!(
+            report.errors,
+            [
+                "es.a1.u01.s01: adiós needs a rank",
+                "es.a1.u01.s01: bueno needs a rank",
+                "es.a1.u01.s01: día needs a rank",
+                "es.a1.u01.s01: noche needs a rank",
+                "es.a1.u01.s01: tal needs a rank",
+            ],
+            "a multi-word lemma needs no rank"
+        );
+        assert!(report.warnings.is_empty());
+    }
+
+    #[test]
+    fn v22_warns_about_a_rare_a1_lemma_only() {
+        let ranked = EXAMPLE_SYLLABUS
+            .replace("rank: null", "rank: 3000")
+            .replacen(
+                "{lemma: tal, pos: adv, en: [such], rank: 3000}",
+                "{lemma: tal, pos: adv, en: [such], rank: 3500}",
+                1,
+            );
+        let syllabus = parse_syllabus("s.yaml", &ranked).unwrap();
+        assert_eq!(
+            check_ranks(&syllabus),
+            Report {
+                errors: Vec::new(),
+                warnings: vec!["warning: tal has rank 3500; check that it belongs at A1".into()],
+            }
+        );
+        let a2 = ranked
+            .replace("    cefr: A1\n    skills:", "    cefr: A2\n    skills:")
+            .replace("        cefr: A1\n", "        cefr: A2\n")
+            .replace("id: es.a1.u01", "id: es.a2.u01");
+        let syllabus = parse_syllabus("s.yaml", &a2).unwrap();
+        assert_eq!(syllabus.units[0].skills[0].cefr, Cefr::A2);
+        assert_eq!(check_ranks(&syllabus), Report::default());
     }
 
     #[test]

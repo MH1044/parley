@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "errors": [
+    "bad-SC06: es: opening uses \"pongo\", which the listed skills do not teach",
+    "bad-SC06: es: opening uses \"Café\", which the listed skills do not teach"
+  ],
+  "warnings": []
+}

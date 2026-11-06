@@ -1,0 +1,27 @@
+{
+  "lang": "es",
+  "units": {
+    "A1": 2,
+    "A2": 1
+  },
+  "skills": 4,
+  "skills_per_unit": {
+    "min": 1,
+    "max": 2
+  },
+  "lemmas": {
+    "A1": 18,
+    "A2": 5
+  },
+  "examples": 16,
+  "attested_share": null,
+  "a1_rank_le_2000_share": null,
+  "checklist_uncovered": [
+    "a1.g.plural_nouns",
+    "a2.f.directions"
+  ],
+  "unreviewed_units": [
+    "es.a1.u02",
+    "es.a2.u01"
+  ]
+}

@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: shop
+cefr: A1
+title_en: "In a clothes shop"
+partner_role_en: "the shop assistant"
+learner_role_en: "a customer"
+turn_cap: 12
+goals:
+  - {id: greet, text_en: "Greet the assistant"}
+  - {id: ask_item, text_en: "Say what you are looking for"}
+  - {id: size_colour, text_en: "Say which size or colour you want"}
+  - {id: ask_price, text_en: "Ask how much it costs"}
+  - {id: pay_leave, text_en: "Pay and say goodbye"}
+languages:
+  es: {setting_en: "a small clothes shop in the centre of Madrid", opening: "¡Hola, buenos días! ¿Qué busca?", opening_en: "Hello, good morning! What are you looking for?", skills: [es.a1.u05.s01, es.a1.u05.s02, es.a1.u05.s03, es.a1.u05.s04]}
+  fr: {setting_en: a clothes shop in Paris on a Saturday, opening: "Bonjour ! Vous cherchez quelque chose ?", opening_en: "Hello! Are you looking for something?", skills: [fr.a1.u05.s01, fr.a1.u05.s02, fr.a1.u05.s03, fr.a1.u05.s04]}
+  de: {setting_en: a clothes shop in Munich on a Saturday, opening: "Guten Tag! Suchen Sie etwas?", opening_en: "Hello! Are you looking for something?", skills: [de.a1.u05.s01, de.a1.u05.s02, de.a1.u05.s03, de.a1.u05.s04]}

@@ -271,10 +271,12 @@ mod tests {
     }
 
     /// Every skill of the seed content, a few seeds and lessons: one exercise per plan entry,
-    /// every exercise passes the checks, and a seed gives the same lesson.
+    /// every exercise passes the checks, and a seed gives the same lesson. The seed content is the
+    /// course this command was written against, frozen in tests/fixtures/seed-course; every
+    /// skill of the full course is covered by the module 05 tests and gate G3.
     #[test]
     fn seed_content_template_lessons_pass_the_checks() {
-        let dir = content();
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/fixtures/seed-course");
         for lang in Lang::ALL {
             let path = dir.join(lang.as_str()).join("syllabus.yaml");
             let syllabus = load_syllabus(&path).unwrap();

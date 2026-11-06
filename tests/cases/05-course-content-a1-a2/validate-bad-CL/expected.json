@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/course05/bad-CL/es/checklist.yaml: duplicate entry a1.f.greet",
+    "tests/fixtures/course05/bad-CL/es/checklist.yaml: a1.g.ser_present: skill es.a1.u03.s01 does not exist",
+    "tests/fixtures/course05/bad-CL/es/checklist.yaml: a1.f.directions: skill es.a2.u01.s01 is A2, but the entry is A1"
+  ],
+  "warnings": []
+}

@@ -4,10 +4,13 @@ Learn Spanish, French or German from English by reading, listening, speaking and
 conversations, with spaced repetition underneath. Free and open source, for Windows, Linux and
 macOS, with Android to follow.
 
-**Status: pre-alpha.** The offline app works end to end on the seed course: onboarding with a
-placement test, the learning path, lessons and reviews with honest grading, the streak and stats,
-settings, backup and restore, all with no network and no AI. The course is still the seed
-syllabus (one or two units per language) and no sentence pack is published yet. Underneath: the
+**Status: pre-alpha.** The offline app works end to end: onboarding with a placement test, the
+learning path, lessons and reviews with honest grading, the streak and stats, settings, backup and
+restore, all with no network and no AI. The course covers A1 and A2 in Spanish, French and German
+(16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
+Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
+built and pinned by checksum but not yet published; `parley pack install` installs one for
+development. Underneath: the
 course as validated open data (a syllabus format with a validator, word-form tables, sentence
 packs built from Tatoeba), the learner model (FSRS cards, an append-only review log, skill
 mastery and states, an adaptive placement test) and the offline lesson engine (seven exercise
@@ -92,13 +95,19 @@ ADR-0003), one folder per language:
 | `content/<lang>/forms.tsv` | Inflected form to lemma (`buenas` to `bueno`), derived from Wiktionary |
 | `content/<lang>/numbers.yaml` | The words for 0 to 100 |
 | `content/<lang>/exclude.txt` | Lemmas never taught or shown |
+| `content/<lang>/checklist.yaml` | The grammar points and communicative functions of A1 and A2, each mapped to the skills that teach it |
+| `content/<lang>/review.yaml` | Whether a native speaker has reviewed each unit, and since when |
+| `content/scenarios/*.yaml` | The role-play scenarios: goals, a turn cap and, per language, the opening line and the skills it builds on |
 | `content/packs.lock.toml` | The published sentence packs: URL, SHA-256, size per language |
 
 `parley content validate` checks a syllabus file, or every `<dir>/<lang>/syllabus.yaml`, and
 prints an exact message for every problem: the schema (types, required fields, enumerations),
 then the shape rules of `docs/modules/01-content-model-and-syllabus.md`: id shapes, ordering,
 sizes (3 to 20 lemmas and 4 to 15 examples per skill), genders on nouns, every example word
-taught by this or an earlier skill, no repeated sentence, Unicode NFC, and the id lock.
+taught by this or an earlier skill, no repeated sentence, Unicode NFC, and the id lock. In a
+course folder (one with `review.yaml`) every single-word lemma also needs its frequency rank.
+For a directory it then checks each language's checklist and review file and every scenario
+(`docs/modules/05-course-content-a1-a2.md`).
 
 ```sh
 cargo run -q -p parley-cli -- content validate content
@@ -130,6 +139,44 @@ cargo run -q -p parley-cli -- pack info es.sqlite3
 
 A pack keeps every sentence's author (CC BY 2.0 FR) and reports why each dropped sentence was
 dropped; `docs/HANDBOOK.md` shows each command's output.
+
+The scenarios can be checked on their own, against the syllabi of `content/` (or `--content
+<dir>`):
+
+```sh
+cargo run -q -p parley-cli -- content scenarios content/scenarios
+```
+
+prints `{"ok":true,"errors":[],"warnings":[]}`, or every problem, such as `cafe: es: opening
+uses "pongo", which the listed skills do not teach`.
+
+A course report counts the units, skills, lemmas and examples of a language, the checklist
+entries no skill covers and the units still awaiting review, and with a pack the share of
+examples that are real Tatoeba sentences:
+
+```sh
+cargo run -q -p parley-cli -- content report --lang es --pack data-cache/packs/es-2026-11-05.sqlite3 --json
+```
+
+Lemma ranks are the pack's frequency ranks. `freq check` lists every lemma whose `rank` differs
+from the pack's and every lemma the pack does not rank, and exits 1 until there are none:
+
+```sh
+cargo run -q -p parley-cli -- freq check --lang es --pack data-cache/packs/es-2026-11-05.sqlite3
+```
+
+Until the packs are published as release assets, a locally built pack that
+`content/packs.lock.toml` pins is installed into a course started in the app with
+
+```sh
+cargo run -q -p parley-cli -- pack install data-cache/packs/es-2026-11-05.sqlite3 --data-dir <app data folder>
+```
+
+which prints `{"lang":"es","version":"2026-11-05","path":"packs/es-2026-11-05.sqlite3"}`;
+`docs/HANDBOOK.md` says where the app data folder is on each system.
+
+Units still marked `unreviewed` in `review.yaml` ship as a labelled beta until a native speaker
+has reviewed them.
 
 ## Scheduling and placement
 

@@ -1,4 +1,24 @@
-# Sentence packs pinned by checksum. One table per language ([es], [fr], [de]) with
-# version, url, sha256, bytes and content_sha256 is filled in when the packs are built
-# and published as release assets.
+# Sentence packs pinned by checksum: one table per language with the version (the build
+# date), the release-asset URL, the SHA-256 and size of the file, and its content hash.
 schema = "parley.packs/1"
+
+[es]
+version = "2026-11-05"
+url = "https://github.com/MH1044/parley/releases/download/packs-2026-11-05/es-2026-11-05.sqlite3"
+sha256 = "7048467003a599bad64986a049fb45b634f625cb99e94394b1a6c171a5b2bc67"
+bytes = 246796288
+content_sha256 = "6b4a81210541cd5b849676d388341b39db98c4cd8f4e6200bd681e28202fac54"
+
+[fr]
+version = "2026-11-05"
+url = "https://github.com/MH1044/parley/releases/download/packs-2026-11-05/fr-2026-11-05.sqlite3"
+sha256 = "cbbd2f286a0f43b4a4289665bf1cc6775e23e85521a92e536d570009b65ba13e"
+bytes = 174747648
+content_sha256 = "3934855098a865ad45edb14491303d6c10981ce6df916f08a5502ed825bac7c6"
+
+[de]
+version = "2026-11-05"
+url = "https://github.com/MH1044/parley/releases/download/packs-2026-11-05/de-2026-11-05.sqlite3"
+sha256 = "a3335604042c163fb95c77407a990570e9fe25359dc1e3935e47a0dfacfcc2dd"
+bytes = 400797696
+content_sha256 = "e5ec4ba0677afc4efe06bbad6972e19efe3ca292be49d7888f8f1e33dca04443"

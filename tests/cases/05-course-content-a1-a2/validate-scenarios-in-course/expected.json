@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "errors": [
+    "shop: 2 goals; a scenario has 3 to 6",
+    "shop: turn_cap 5 is outside 6 to 20"
+  ],
+  "warnings": []
+}

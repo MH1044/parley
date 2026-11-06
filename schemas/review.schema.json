@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley unit review status",
+  "description": "Whether a native speaker has reviewed each unit of a course (content/<lang>/review.yaml), and the day the status was last set. No reviewer names. The schema checks types, required fields, enumerations, the date shape and the schema constant; the units are rules RV02 to RV04.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "lang", "units"],
+  "properties": {
+    "schema": { "const": "parley.review/1" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } }
+  },
+  "$defs": {
+    "unit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "status", "date"],
+      "properties": {
+        "unit": { "type": "string" },
+        "status": { "enum": ["unreviewed", "reviewed"] },
+        "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    }
+  }
+}

@@ -1,8 +1,10 @@
 //! Acceptance tests of module 04, the app shell and offline course
 //! (docs/modules/04-app-shell-and-offline-course.md).
 //!
-//! They drive `parley_core::app::Parley` the way the desktop commands do: the bundled content,
-//! a temporary data directory read and written through `DirFs`, a clock the test sets, seeded
+//! They drive `parley_core::app::Parley` the way the desktop commands do: the course of
+//! tests/fixtures/seed-course/ (the eight-skill course the app bundled when module 04 was
+//! written, frozen there so the hand-worked numbers below keep their reference), the bundled pack
+//! lock, a temporary data directory read and written through `DirFs`, a clock the test sets, seeded
 //! SplitMix64 randomness and a network that fails every call unless a test says otherwise. No
 //! test reaches the network: the pack tests answer from bytes built here from the committed
 //! tatoeba-mini fixture. Each test names the acceptance test it covers. Expected values come from
@@ -18,10 +20,10 @@ use std::sync::{Arc, Mutex};
 use parley_core::api::{
     COMMANDS, LessonStarted, PackProgress, PackState, language_name, megabytes, next_review_notice,
 };
-use parley_core::app::{Config, Env, PackSentence, Parley, attributions};
+use parley_core::app::{Config, CourseFiles, Env, PackSentence, Parley, attributions};
 use parley_core::content::items::{lemma_item_id, vocab_target};
 use parley_core::content::{
-    Lang, PackInfo, PackInput, Syllabus, build_pack, pack_info, parse_syllabus,
+    Lang, PackInfo, PackInput, Syllabus, build_pack, pack_info, parse_packs_lock, parse_syllabus,
 };
 use parley_core::env::{
     Clock, FailingNet, HttpRequest, HttpResponse, LocalDate, Net, NetError, SplitMix64,
@@ -37,6 +39,8 @@ use serde_json::{Value, json};
 
 const DAY_MS: i64 = 86_400_000;
 const CASES: &str = "tests/cases/04-app-shell-and-offline-course";
+/// The eight-skill course module 04's hand-worked expectations refer to (see `seed_courses`).
+const SEED_COURSE: &str = "tests/fixtures/seed-course";
 const PACK_URL: &str = "https://packs.example.invalid/es-2026-10-01.sqlite3";
 const NOT_STARTED: &str = "This course has not been started.";
 const NO_SKILL: &str = "This skill is not in the course.";
@@ -230,7 +234,7 @@ fn open(
     Parley::new(
         Config {
             data_dir: data_dir.to_path_buf(),
-            courses: parley_app::bundled::courses(),
+            courses: seed_courses(),
             packs_lock: lock.to_string(),
         },
         Env {
@@ -319,14 +323,36 @@ fn assert_json_close(actual: &Value, expected: &Value, tolerance: f64, path: &st
     }
 }
 
+/// The course these tests run on: the eight-skill seed course of tests/fixtures/seed-course/,
+/// in the shape `parley_app::bundled::courses()` gives the app. The bundled course has since
+/// grown to full A1 and A2 syllabi; the placement staircase, the stats and the item counts below
+/// were worked out by hand over the seed course, so it stays their reference.
+fn seed_courses() -> BTreeMap<Lang, CourseFiles> {
+    let dir = repo_root().join(SEED_COURSE);
+    let read = |lang: Lang, file: &str| {
+        let path = dir.join(lang.as_str()).join(file);
+        fs::read_to_string(&path)
+            .unwrap_or_else(|e| panic!("{} could not be read: {e}", path.display()))
+    };
+    [Lang::Es, Lang::Fr, Lang::De]
+        .into_iter()
+        .map(|lang| {
+            let files = CourseFiles {
+                syllabus_yaml: read(lang, "syllabus.yaml"),
+                forms_tsv: read(lang, "forms.tsv"),
+                numbers_yaml: Some(read(lang, "numbers.yaml")),
+            };
+            (lang, files)
+        })
+        .collect()
+}
+
 fn es_syllabus() -> Syllabus {
-    let courses = parley_app::bundled::courses();
-    let files = courses
-        .get(&Lang::Es)
-        .expect("the bundled content has Spanish");
-    parse_syllabus("content/es/syllabus.yaml", &files.syllabus_yaml).unwrap_or_else(|errors| {
+    let courses = seed_courses();
+    let files = courses.get(&Lang::Es).expect("the seed course has Spanish");
+    parse_syllabus("seed-course/es/syllabus.yaml", &files.syllabus_yaml).unwrap_or_else(|errors| {
         let lines: Vec<String> = errors.into_iter().map(|e| e.0).collect();
-        panic!("the bundled Spanish syllabus loads: {}", lines.join("; "))
+        panic!("the seed Spanish syllabus loads: {}", lines.join("; "))
     })
 }
 
@@ -876,7 +902,10 @@ fn t03_a_language_missing_from_the_lock_is_not_published() {
         "https://packs.example.invalid/fr-2026-10-01.sqlite3",
         &pack.info,
     );
-    for lock in [lock.as_str(), parley_app::bundled::PACKS_LOCK] {
+    // The bundled lock publishes every language's pack since the course content was pinned,
+    // so only the French-only lock leaves Spanish unpublished.
+    {
+        let lock = lock.as_str();
         let dir = tempdir();
         let clock = TestClock::at("2026-10-12T09:00:00Z", 0);
         let net = FakeNet::default();
@@ -969,12 +998,21 @@ fn t04_a_full_run_works_with_a_network_that_fails_every_call() {
     // with an onboarded learner opens the path of the active course: so the course started
     // becomes the active one.
     assert!(es.active);
+    // The bundled lock publishes the Spanish pack: it is available to download, and asking for
+    // its status makes no network call.
     let status = ok(app.pack_status("es"));
     assert!(
-        matches!(status.state, PackState::NotPublished),
+        matches!(status.state, PackState::Available),
         "{}",
         show(&status)
     );
+    let locked = parse_packs_lock(parley_app::bundled::PACKS_LOCK)
+        .expect("the bundled lock parses")
+        .langs
+        .remove("es")
+        .expect("the bundled lock publishes Spanish");
+    assert_eq!(status.version.as_deref(), Some(locked.version.as_str()));
+    assert_eq!(status.bytes, Some(locked.bytes));
     let settings = ok(app.settings_set(&json!({"daily_goal_xp": 30})));
     assert_eq!(to_json(&settings)["daily_goal_xp"], json!(30));
 
@@ -1136,7 +1174,7 @@ fn t04_a_full_run_works_with_a_network_that_fails_every_call() {
     assert_eq!(stats.words_known as usize, known.len());
     assert_eq!(
         stats.vocab_items, 76,
-        "the lemmas of content/es/syllabus.yaml"
+        "the lemmas of the seed Spanish syllabus"
     );
     assert_eq!(stats.cefr_estimate.as_deref(), Some("around A1"));
     assert_eq!(stats.reviews_30 as usize, reviews);

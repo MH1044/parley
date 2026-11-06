@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/course05/bad-CL01-RV01/es/checklist.yaml: /entries/0: text_en is required",
+    "tests/fixtures/course05/bad-CL01-RV01/es/review.yaml: /units/0: unknown field reviewer"
+  ],
+  "warnings": []
+}

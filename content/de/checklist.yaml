@@ -1,0 +1,235 @@
+schema: parley.checklist/1
+lang: de
+entries:
+  - {id: a1.g.gender_articles, cefr: A1, kind: grammar,
+     text_en: "Noun gender: der, die and das, ein and eine, and learning each noun with its article",
+     skills: [de.a1.u02.s01, de.a1.u03.s01]}
+  - {id: a1.g.plural_nouns, cefr: A1, kind: grammar,
+     text_en: "Plural nouns, which all take die",
+     skills: [de.a1.u02.s01, de.a1.u06.s01]}
+  - {id: a1.g.sein_haben, cefr: A1, kind: grammar,
+     text_en: "The present tense of sein and haben",
+     skills: [de.a1.u01.s02, de.a1.u01.s04]}
+  - {id: a1.g.present_regular, cefr: A1, kind: grammar,
+     text_en: "The present tense of regular verbs, including stems ending in -t",
+     skills: [de.a1.u01.s03, de.a1.u02.s02]}
+  - {id: a1.g.present_stem_change, cefr: A1, kind: grammar,
+     text_en: "Verbs that change their vowel with du and er or sie: sprechen, lesen, essen, nehmen, fahren, tragen, schlafen",
+     skills: [de.a1.u01.s03, de.a1.u02.s02, de.a1.u03.s02, de.a1.u03.s04, de.a1.u04.s04,
+              de.a1.u05.s01, de.a1.u07.s03]}
+  - {id: a1.g.word_order, cefr: A1, kind: grammar,
+     text_en: "The verb in second place in a statement and first in a yes or no question",
+     skills: [de.a1.u02.s02]}
+  - {id: a1.g.question_words, cefr: A1, kind: grammar,
+     text_en: "Questions with wer, was, wo, woher, wie, wann, wie viel and welcher",
+     skills: [de.a1.u01.s02, de.a1.u01.s03, de.a1.u03.s03, de.a1.u04.s04, de.a1.u05.s02]}
+  - {id: a1.g.negation, cefr: A1, kind: grammar,
+     text_en: "Saying no with nicht and with kein before a noun",
+     skills: [de.a1.u02.s01, de.a1.u02.s03, de.a1.u02.s04]}
+  - {id: a1.g.accusative, cefr: A1, kind: grammar,
+     text_en: "The accusative after a verb or es gibt: den, einen, keinen with der nouns",
+     skills: [de.a1.u03.s01, de.a1.u03.s02, de.a1.u03.s04, de.a1.u04.s01]}
+  - {id: a1.g.modal_verbs, cefr: A1, kind: grammar,
+     text_en: "Möchten, können, müssen, wollen and dürfen with a second verb at the end",
+     skills: [de.a1.u03.s02, de.a1.u04.s02, de.a1.u07.s04, de.a1.u08.s03]}
+  - {id: a1.g.separable_verbs, cefr: A1, kind: grammar,
+     text_en: "Separable verbs such as aufstehen, einkaufen and fernsehen",
+     skills: [de.a1.u07.s03]}
+  - {id: a1.g.possessives, cefr: A1, kind: grammar,
+     text_en: "Possessives: mein, dein, sein, ihr, unser, euer and Ihr",
+     skills: [de.a1.u06.s01, de.a1.u06.s02]}
+  - {id: a1.g.imperative, cefr: A1, kind: grammar,
+     text_en: "Instructions and polite requests with the Sie and du imperative",
+     skills: [de.a1.u04.s03, de.a1.u08.s03]}
+  - {id: a1.g.prepositions_dative, cefr: A1, kind: grammar,
+     text_en: "Mit, zu, in and an with the dative, and the short forms im, am, zum and zur",
+     skills: [de.a1.u04.s01, de.a1.u04.s04, de.a1.u06.s03]}
+  - {id: a1.g.dative_verbs, cefr: A1, kind: grammar,
+     text_en: "Helfen, gefallen and passen with mir, dir and Ihnen",
+     skills: [de.a1.u04.s02, de.a1.u05.s04, de.a1.u08.s04]}
+  - {id: a1.g.object_pronouns, cefr: A1, kind: grammar,
+     text_en: "Er, sie and es for things, and ihn as an object",
+     skills: [de.a1.u05.s04]}
+  - {id: a1.g.adjectives, cefr: A1, kind: grammar,
+     text_en: "Adjectives after sein, with no ending, including colours",
+     skills: [de.a1.u02.s01, de.a1.u05.s02, de.a1.u06.s04]}
+  - {id: a1.g.gern_moegen, cefr: A1, kind: grammar,
+     text_en: "Likes with gern after a verb and with mögen",
+     skills: [de.a1.u02.s03]}
+  - {id: a1.g.time, cefr: A1, kind: grammar,
+     text_en: "Time expressions: am Montag, um acht Uhr, halb acht, Viertel nach zwei",
+     skills: [de.a1.u07.s01, de.a1.u07.s02]}
+  - {id: a1.g.numbers, cefr: A1, kind: grammar,
+     text_en: "Numbers, ages and prices",
+     skills: [de.a1.u01.s04, de.a1.u03.s03]}
+  - {id: a1.f.greet, cefr: A1, kind: function,
+     text_en: "Greet people, say goodbye and ask how someone is",
+     skills: [de.a1.u01.s01]}
+  - {id: a1.f.introduce, cefr: A1, kind: function,
+     text_en: "Say your name and ask someone theirs",
+     skills: [de.a1.u01.s02]}
+  - {id: a1.f.origin_languages, cefr: A1, kind: function,
+     text_en: "Say where you are from, where you live and which languages you speak",
+     skills: [de.a1.u01.s03]}
+  - {id: a1.f.age_phone, cefr: A1, kind: function,
+     text_en: "Give your age and your phone number",
+     skills: [de.a1.u01.s04]}
+  - {id: a1.f.likes, cefr: A1, kind: function,
+     text_en: "Say what you like and do not like",
+     skills: [de.a1.u02.s03, de.a1.u05.s04]}
+  - {id: a1.f.work_study, cefr: A1, kind: function,
+     text_en: "Say what you do for a living or what you study",
+     skills: [de.a1.u02.s04]}
+  - {id: a1.f.order, cefr: A1, kind: function,
+     text_en: "Order food and drink in a café",
+     skills: [de.a1.u03.s01, de.a1.u03.s02]}
+  - {id: a1.f.prices_pay, cefr: A1, kind: function,
+     text_en: "Ask how much something costs and pay",
+     skills: [de.a1.u03.s03, de.a1.u05.s03]}
+  - {id: a1.f.meals, cefr: A1, kind: function,
+     text_en: "Talk about meals and say that you are hungry or thirsty",
+     skills: [de.a1.u03.s01, de.a1.u03.s04]}
+  - {id: a1.f.ask_way, cefr: A1, kind: function,
+     text_en: "Ask a stranger for help and the way, and follow simple directions",
+     skills: [de.a1.u04.s01, de.a1.u04.s02, de.a1.u04.s03]}
+  - {id: a1.f.transport, cefr: A1, kind: function,
+     text_en: "Say how you get somewhere",
+     skills: [de.a1.u04.s04]}
+  - {id: a1.f.shopping, cefr: A1, kind: function,
+     text_en: "Ask for clothes in a shop by colour and size",
+     skills: [de.a1.u05.s01, de.a1.u05.s02, de.a1.u05.s03]}
+  - {id: a1.f.family_friends, cefr: A1, kind: function,
+     text_en: "Talk about your family and friends",
+     skills: [de.a1.u06.s01, de.a1.u06.s02]}
+  - {id: a1.f.home, cefr: A1, kind: function,
+     text_en: "Say where you live and describe your home",
+     skills: [de.a1.u06.s03]}
+  - {id: a1.f.describe_people, cefr: A1, kind: function,
+     text_en: "Describe people and pets in a few words",
+     skills: [de.a1.u06.s04]}
+  - {id: a1.f.days_time, cefr: A1, kind: function,
+     text_en: "Tell the time and say on which day something happens",
+     skills: [de.a1.u07.s01, de.a1.u07.s02]}
+  - {id: a1.f.routine, cefr: A1, kind: function,
+     text_en: "Describe your daily routine",
+     skills: [de.a1.u07.s03]}
+  - {id: a1.f.plans, cefr: A1, kind: function,
+     text_en: "Suggest doing something together, and accept or say no",
+     skills: [de.a1.u07.s04]}
+  - {id: a1.f.travel, cefr: A1, kind: function,
+     text_en: "Talk about a trip and ask where to buy a ticket",
+     skills: [de.a1.u08.s01]}
+  - {id: a1.f.hotel, cefr: A1, kind: function,
+     text_en: "Check in at a hotel and say how long you are staying",
+     skills: [de.a1.u08.s02]}
+  - {id: a1.f.permission, cefr: A1, kind: function,
+     text_en: "Ask for permission and make a polite request",
+     skills: [de.a1.u04.s02, de.a1.u08.s03]}
+  - {id: a1.f.problems, cefr: A1, kind: function,
+     text_en: "Say that something is broken or not working",
+     skills: [de.a1.u08.s04]}
+  - {id: a2.g.perfekt_haben, cefr: A2, kind: grammar,
+     text_en: "The Perfekt with haben: participles with ge- and -t or -en, and verbs without ge-",
+     skills: [de.a2.u01.s01, de.a2.u03.s04, de.a2.u08.s01]}
+  - {id: a2.g.perfekt_sein, cefr: A2, kind: grammar,
+     text_en: "The Perfekt with sein for movement and change: gegangen, angekommen, passiert",
+     skills: [de.a2.u01.s02, de.a2.u08.s02]}
+  - {id: a2.g.separable_past, cefr: A2, kind: grammar,
+     text_en: "Separable verbs in the Perfekt and after modal verbs: angekommen, eingeladen, abholen",
+     skills: [de.a2.u01.s02, de.a2.u04.s02, de.a2.u04.s04]}
+  - {id: a2.g.praeteritum_sein_haben, cefr: A2, kind: grammar,
+     text_en: "The simple past of sein and haben: war and hatte",
+     skills: [de.a2.u01.s03, de.a2.u08.s04]}
+  - {id: a2.g.praeteritum_modals, cefr: A2, kind: grammar,
+     text_en: "The simple past of the modal verbs: musste, konnte, durfte, wollte and sollte",
+     skills: [de.a2.u08.s03]}
+  - {id: a2.g.dative, cefr: A2, kind: grammar,
+     text_en: "The dative case: dem, der and den, the pronouns mir, dir, ihm, ihr, uns, euch and ihnen, and verbs and prepositions that take it",
+     skills: [de.a2.u02.s01, de.a2.u03.s01, de.a2.u06.s02]}
+  - {id: a2.g.seit_vor, cefr: A2, kind: grammar,
+     text_en: "Seit and vor with the dative for time: seit einer Woche, vor drei Tagen",
+     skills: [de.a2.u02.s03, de.a2.u08.s02]}
+  - {id: a2.g.two_way_prepositions, cefr: A2, kind: grammar,
+     text_en: "Two-way prepositions: the accusative for where to and the dative for where, with liegen and legen, stehen and stellen, and hängen",
+     skills: [de.a2.u04.s03, de.a2.u07.s04]}
+  - {id: a2.g.reflexive_verbs, cefr: A2, kind: grammar,
+     text_en: "Reflexive verbs for health and daily routine: sich fühlen, sich erkälten, sich beeilen, sich die Zähne putzen",
+     skills: [de.a2.u02.s02, de.a2.u06.s03]}
+  - {id: a2.g.comparative, cefr: A2, kind: grammar,
+     text_en: "Comparatives with als, and genauso ... wie",
+     skills: [de.a2.u07.s01]}
+  - {id: a2.g.superlative, cefr: A2, kind: grammar,
+     text_en: "Superlatives: der beste, das höchste, am schnellsten",
+     skills: [de.a2.u07.s02]}
+  - {id: a2.g.weil_deshalb, cefr: A2, kind: grammar,
+     text_en: "Reasons with weil, the verb at the end, and with deshalb, the verb next",
+     skills: [de.a2.u03.s02]}
+  - {id: a2.g.dass, cefr: A2, kind: grammar,
+     text_en: "Dass clauses after glauben, denken, hoffen and sicher sein, with the verb at the end",
+     skills: [de.a2.u03.s03]}
+  - {id: a2.g.wenn, cefr: A2, kind: grammar,
+     text_en: "Wenn clauses for if and when, and the verb first in the main clause that follows",
+     skills: [de.a2.u05.s04]}
+  - {id: a2.g.imperative_advice, cefr: A2, kind: grammar,
+     text_en: "The Sie and du imperative for advice and instructions, and sollen to pass them on",
+     skills: [de.a2.u02.s04, de.a2.u05.s04, de.a2.u06.s03]}
+  - {id: a2.g.schon_noch_nicht, cefr: A2, kind: grammar,
+     text_en: "Schon, noch nicht, schon mal and nie with the Perfekt",
+     skills: [de.a2.u08.s01]}
+  - {id: a2.g.werden_future, cefr: A2, kind: grammar,
+     text_en: "Werden with an infinitive for the future, and werden meaning to become",
+     skills: [de.a2.u04.s01]}
+  - {id: a2.g.dates, cefr: A2, kind: grammar,
+     text_en: "Months and dates with im and am and ordinal numbers",
+     skills: [de.a2.u05.s03]}
+  - {id: a2.f.past_events, cefr: A2, kind: function,
+     text_en: "Say what you did, where you went and how it was",
+     skills: [de.a2.u01.s01, de.a2.u01.s02, de.a2.u01.s03]}
+  - {id: a2.f.tell_story, cefr: A2, kind: function,
+     text_en: "Tell a short story in order and say how you felt",
+     skills: [de.a2.u01.s04, de.a2.u08.s04]}
+  - {id: a2.f.health, cefr: A2, kind: function,
+     text_en: "Say what hurts, how you feel and how long you have been ill",
+     skills: [de.a2.u02.s01, de.a2.u02.s02, de.a2.u02.s03]}
+  - {id: a2.f.doctor, cefr: A2, kind: function,
+     text_en: "See a doctor, understand the advice and repeat what you should do",
+     skills: [de.a2.u02.s04]}
+  - {id: a2.f.work, cefr: A2, kind: function,
+     text_en: "Talk about your job, the people you work with and where you have worked",
+     skills: [de.a2.u03.s01]}
+  - {id: a2.f.reasons_opinions, cefr: A2, kind: function,
+     text_en: "Give reasons and say what you think, hope or are sure of",
+     skills: [de.a2.u03.s02, de.a2.u03.s03]}
+  - {id: a2.f.interview, cefr: A2, kind: function,
+     text_en: "Answer and ask questions in a simple job interview",
+     skills: [de.a2.u03.s04]}
+  - {id: a2.f.plans, cefr: A2, kind: function,
+     text_en: "Talk about plans and say what will probably happen",
+     skills: [de.a2.u04.s01, de.a2.u04.s03]}
+  - {id: a2.f.invite_arrange, cefr: A2, kind: function,
+     text_en: "Invite someone, make and cancel arrangements, and congratulate people",
+     skills: [de.a2.u04.s02, de.a2.u04.s04]}
+  - {id: a2.f.weather, cefr: A2, kind: function,
+     text_en: "Talk about the weather and the seasons, and what you do in good or bad weather",
+     skills: [de.a2.u05.s01, de.a2.u05.s02, de.a2.u05.s04]}
+  - {id: a2.f.dates, cefr: A2, kind: function,
+     text_en: "Say the date and when your birthday is",
+     skills: [de.a2.u05.s03]}
+  - {id: a2.f.free_time, cefr: A2, kind: function,
+     text_en: "Talk about hobbies, sport and going out",
+     skills: [de.a2.u06.s01, de.a2.u06.s04]}
+  - {id: a2.f.compare, cefr: A2, kind: function,
+     text_en: "Compare people and things and say which is the best",
+     skills: [de.a2.u07.s01, de.a2.u07.s02]}
+  - {id: a2.f.describe_people, cefr: A2, kind: function,
+     text_en: "Describe what someone looks like",
+     skills: [de.a2.u07.s03]}
+  - {id: a2.f.describe_room, cefr: A2, kind: function,
+     text_en: "Say where things are in a room and where you put them",
+     skills: [de.a2.u07.s04]}
+  - {id: a2.f.experiences, cefr: A2, kind: function,
+     text_en: "Talk about experiences, what you have done before and how long ago",
+     skills: [de.a2.u08.s01, de.a2.u08.s02, de.a2.u08.s04]}
+  - {id: a2.f.school_days, cefr: A2, kind: function,
+     text_en: "Say what you had to do, could do or wanted to do when you were younger",
+     skills: [de.a2.u08.s03]}

@@ -1,0 +1,264 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish for English speakers
+variety: Spain Spanish; usted and tú both taught
+version: 1
+function_words: [el, la, los, las, un, una, unos, unas, "y", e, o, pero, de, a, en, con, sin,
+  por, para, "no", sí, yo, tú, él, ella, usted, nosotros, nosotras, vosotros, vosotras, ellos,
+  ellas, ustedes, me, te, se, nos, os, lo, le, les, que, qué, mi, mis, tu, tus, su, sus, cómo,
+  dónde, cuánto, cuánta, cuántos, cuántas, cuál, quién]
+names: [Ana, Luis, Carmen, Pablo, Madrid, Sevilla, España]
+units:
+  - id: es.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye and ask how someone is.
+        requires: []
+        grammar_note: >-
+          Questions and exclamations open with an upside-down mark: ¿Qué tal? ¡Hola!
+          Say buenos días until lunch, buenas tardes until dark, then buenas noches.
+          The adjective changes with the noun it describes: buenos goes with días,
+          buenas with tardes and noches.
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: null}
+          - {lemma: adiós, pos: intj, en: [goodbye, bye], rank: null}
+          - {lemma: bueno, pos: adj, en: [good], rank: null}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: null}
+          - {lemma: tarde, pos: noun, gender: f, en: [afternoon, evening], rank: null}
+          - {lemma: noche, pos: noun, gender: f, en: [night], rank: null}
+          - {lemma: tal, pos: adv, en: [such], rank: null}
+          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}
+          - {lemma: bien, pos: adv, en: [well, fine], rank: null}
+          - {lemma: muy, pos: adv, en: [very], rank: null}
+        examples:
+          - {id: 1, target: "Hola, ¿qué tal?", en: ["Hi, how are you?", "Hello, how are you?"]}
+          - {id: 2, target: "Buenos días.", en: ["Good morning."]}
+          - {id: 3, target: "Buenas noches, Ana.", en: ["Good night, Ana.", "Good evening, Ana."]}
+          - {id: 4, target: "Adiós, gracias.", en: ["Goodbye, thank you.", "Bye, thanks."]}
+          - {id: 5, target: "Buenas tardes, Luis.", en: ["Good afternoon, Luis.", "Good evening, Luis."]}
+          - {id: 6, target: "Muy bien, gracias. ¿Y tú?", en: ["Very well, thank you. And you?", "Fine, thanks. And you?"]}
+          - {id: 7, target: "Hola, buenos días.", en: ["Hello, good morning."]}
+      - id: es.a1.u01.s02
+        kind: function
+        title: Names
+        cefr: A1
+        can_do: I can say my name and ask someone their name.
+        requires: [es.a1.u01.s01]
+        grammar_note: >-
+          Llamarse means to call oneself, so the small pronoun in front changes with the
+          person: me llamo (I am called), te llamas (you are called, with tú), se llama
+          (he, she or usted is called). Use usted with people you do not know well and
+          with anyone clearly older than you; use tú with friends and family.
+        lemmas:
+          - {lemma: llamarse, pos: verb, en: [to be called], rank: null}
+          - {lemma: nombre, pos: noun, gender: m, en: [name], rank: null}
+          - {lemma: señor, pos: noun, gender: m, en: [sir, Mr, gentleman], rank: null}
+          - {lemma: señora, pos: noun, gender: f, en: [madam, Mrs, lady], rank: null}
+          - {lemma: mucho gusto, pos: expr, en: [nice to meet you, pleased to meet you], rank: null}
+          - {lemma: encantado, pos: adj, en: [pleased to meet you, delighted], rank: null}
+          - {lemma: perdón, pos: intj, en: [sorry, excuse me], rank: null}
+        examples:
+          - {id: 1, target: "Me llamo Ana.", en: ["My name is Ana.", "I am called Ana."]}
+          - {id: 2, target: "¿Cómo te llamas?", en: ["What is your name?", "What are you called?"]}
+          - {id: 3, target: "¿Cómo se llama usted?", en: ["What is your name?"]}
+          - {id: 4, target: "Él se llama Pablo.", en: ["His name is Pablo.", "He is called Pablo."]}
+          - {id: 5, target: "Mucho gusto, señora.", en: ["Nice to meet you, madam.", "Pleased to meet you, madam."]}
+          - {id: 6, target: "Encantada, señor.", en: ["Pleased to meet you, sir."]}
+          - {id: 7, target: "Perdón, ¿cómo se llama?", en: ["Sorry, what is your name?", "Excuse me, what is your name?"]}
+          - {id: 8, target: "¿Y tu nombre?", en: ["And your name?", "And what is your name?"]}
+      - id: es.a1.u01.s03
+        kind: grammar
+        title: Where you are from
+        cefr: A1
+        can_do: I can say where I am from and which languages I speak.
+        requires: [es.a1.u01.s02]
+        grammar_note: >-
+          Ser is the verb to be for who you are and where you are from: soy, eres, es,
+          somos, sois, son. Spanish usually drops the subject pronoun, so soy de Madrid
+          is a full sentence; add yo or usted only for contrast or politeness. Regular
+          -ar verbs like hablar follow one pattern: hablo, hablas, habla, hablamos,
+          habláis, hablan. Language names are not capitalised: español, inglés.
+        lemmas:
+          - {lemma: ser, pos: verb, en: [to be], rank: null}
+          - {lemma: hablar, pos: verb, en: [to speak, to talk], rank: null}
+          - {lemma: español, pos: noun, gender: m, en: [Spanish], rank: null}
+          - {lemma: inglés, pos: noun, gender: m, en: [English], rank: null}
+          - {lemma: francés, pos: noun, gender: m, en: [French], rank: null}
+          - {lemma: alemán, pos: noun, gender: m, en: [German], rank: null}
+          - {lemma: también, pos: adv, en: [also, too], rank: null}
+          - {lemma: aquí, pos: adv, en: [here], rank: null}
+        examples:
+          - {id: 1, target: "Soy de Madrid.", en: ["I am from Madrid."]}
+          - {id: 2, target: "¿De dónde eres?", en: ["Where are you from?"]}
+          - {id: 3, target: "Ana es de Sevilla.", en: ["Ana is from Seville."]}
+          - {id: 4, target: "Hablo español y francés.", en: ["I speak Spanish and French."]}
+          - {id: 5, target: "¿Hablas inglés?", en: ["Do you speak English?"]}
+          - {id: 6, target: "¿Es usted de aquí?", en: ["Are you from here?"]}
+          - {id: 7, target: "Luis también habla alemán.", en: ["Luis also speaks German.", "Luis speaks German too."]}
+          - {id: 8, target: "Somos de España.", en: ["We are from Spain."]}
+      - id: es.a1.u01.s04
+        kind: grammar
+        title: Numbers and age
+        cefr: A1
+        can_do: I can count to twenty and say how old I am.
+        requires: [es.a1.u01.s03]
+        grammar_note: >-
+          Age uses tener (to have), not ser: tengo veinte años is literally I have twenty
+          years. Tener changes its stem in most forms: tengo, tienes, tiene, tenemos,
+          tenéis, tienen. Numbers from sixteen to twenty-nine are written as one word
+          (dieciséis, veintiuno); from thirty-one on they use y: treinta y uno.
+        lemmas:
+          - {lemma: tener, pos: verb, en: [to have], rank: null}
+          - {lemma: año, pos: noun, gender: m, en: [year], rank: null}
+          - {lemma: número, pos: noun, gender: m, en: [number], rank: null}
+          - {lemma: teléfono, pos: noun, gender: m, en: [telephone, phone], rank: null}
+          - {lemma: uno, pos: num, en: [one], rank: null}
+          - {lemma: dos, pos: num, en: [two], rank: null}
+          - {lemma: tres, pos: num, en: [three], rank: null}
+          - {lemma: cuatro, pos: num, en: [four], rank: null}
+          - {lemma: cinco, pos: num, en: [five], rank: null}
+          - {lemma: seis, pos: num, en: [six], rank: null}
+          - {lemma: siete, pos: num, en: [seven], rank: null}
+          - {lemma: ocho, pos: num, en: [eight], rank: null}
+          - {lemma: nueve, pos: num, en: [nine], rank: null}
+          - {lemma: diez, pos: num, en: [ten], rank: null}
+        examples:
+          - {id: 1, target: "Tengo veinte años.", en: ["I am twenty years old.", "I am twenty."]}
+          - {id: 2, target: "¿Cuántos años tienes?", en: ["How old are you?"]}
+          - {id: 3, target: "¿Cuál es tu número de teléfono?", en: ["What is your phone number?"]}
+          - {id: 4, target: "Uno, dos, tres, cuatro, cinco.", en: ["One, two, three, four, five."]}
+          - {id: 5, target: "Ana tiene treinta y dos años.", en: ["Ana is thirty-two years old.", "Ana is thirty-two."]}
+          - {id: 6, target: "¿Cuántos años tiene usted?", en: ["How old are you?"]}
+          - {id: 7, target: "Seis, siete, ocho, nueve y diez.", en: ["Six, seven, eight, nine and ten."]}
+  - id: es.a1.u02
+    title: Day to day
+    cefr: A1
+    skills:
+      - id: es.a1.u02.s01
+        kind: vocab
+        title: Family
+        cefr: A1
+        can_do: I can talk about the people in my family.
+        requires: [es.a1.u01.s04]
+        grammar_note: >-
+          Possessives agree in number with the thing owned, not with the owner: mi
+          hermano, mis hermanos; tu hija, tus hijas; su padre means his, her, their or
+          your (usted) father. A masculine plural can include women: mis hermanos can
+          mean my brothers or my brothers and sisters.
+        lemmas:
+          - {lemma: familia, pos: noun, gender: f, en: [family], rank: null}
+          - {lemma: madre, pos: noun, gender: f, en: [mother], rank: null}
+          - {lemma: padre, pos: noun, gender: m, en: [father], rank: null}
+          - {lemma: hermano, pos: noun, gender: m, en: [brother], rank: null}
+          - {lemma: hermana, pos: noun, gender: f, en: [sister], rank: null}
+          - {lemma: hijo, pos: noun, gender: m, en: [son], rank: null}
+          - {lemma: hija, pos: noun, gender: f, en: [daughter], rank: null}
+          - {lemma: amigo, pos: noun, gender: m, en: [friend], rank: null}
+        examples:
+          - {id: 1, target: "Tengo una hermana.", en: ["I have a sister.", "I have one sister."]}
+          - {id: 2, target: "Mi madre se llama Carmen.", en: ["My mother's name is Carmen.", "My mother is called Carmen."]}
+          - {id: 3, target: "¿Tienes hermanos?", en: ["Do you have brothers or sisters?", "Do you have any siblings?"]}
+          - {id: 4, target: "Mi padre es de Sevilla.", en: ["My father is from Seville."]}
+          - {id: 5, target: "Mi familia es de Madrid.", en: ["My family is from Madrid."]}
+          - {id: 6, target: "Tengo dos hijos y una hija.", en: ["I have two sons and a daughter."]}
+          - {id: 7, target: "Pablo es mi hermano.", en: ["Pablo is my brother."]}
+          - {id: 8, target: "Luis es mi amigo.", en: ["Luis is my friend."]}
+      - id: es.a1.u02.s02
+        kind: function
+        title: At the café
+        cefr: A1
+        can_do: I can order a drink and something to eat and ask for the bill.
+        requires: [es.a1.u02.s01]
+        grammar_note: >-
+          To order, name the thing and add por favor: un café, por favor. Quiero (I want)
+          is normal and polite in a café. Agua is feminine, but it takes el and un in the
+          singular because it starts with a stressed a: el agua, un agua. Ask the price
+          with ¿cuánto es? and answer with son plus the amount: son tres euros.
+        lemmas:
+          - {lemma: café, pos: noun, gender: m, en: [coffee, café], rank: null}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: null}
+          - {lemma: té, pos: noun, gender: m, en: [tea], rank: null}
+          - {lemma: cerveza, pos: noun, gender: f, en: [beer], rank: null}
+          - {lemma: bocadillo, pos: noun, gender: m, en: [sandwich, filled roll], rank: null}
+          - {lemma: querer, pos: verb, en: [to want], rank: null}
+          - {lemma: por favor, pos: expr, en: [please], rank: null}
+          - {lemma: de nada, pos: expr, en: [you are welcome, not at all], rank: null}
+          - {lemma: cuenta, pos: noun, gender: f, en: [bill, check], rank: null}
+          - {lemma: euro, pos: noun, gender: m, en: [euro], rank: null}
+        examples:
+          - {id: 1, target: "Un café, por favor.", en: ["A coffee, please."]}
+          - {id: 2, target: "Quiero una cerveza.", en: ["I want a beer.", "I would like a beer."]}
+          - {id: 3, target: "¿Qué quiere usted?", en: ["What would you like?", "What do you want?"]}
+          - {id: 4, target: "Un agua y un bocadillo, por favor.", en: ["A water and a sandwich, please."]}
+          - {id: 5, target: "La cuenta, por favor.", en: ["The bill, please.", "The check, please."]}
+          - {id: 6, target: "Gracias. De nada.", en: ["Thank you. You are welcome.", "Thanks. Not at all."]}
+          - {id: 7, target: "¿Cuánto es el café?", en: ["How much is the coffee?"]}
+          - {id: 8, target: "Son tres euros.", en: ["That is three euros.", "It is three euros."]}
+          - {id: 9, target: "¿Quieres un té?", en: ["Do you want a tea?", "Would you like a tea?"]}
+      - id: es.a1.u02.s03
+        kind: vocab
+        title: Days and time
+        cefr: A1
+        can_do: I can name the days of the week and say what time it is.
+        requires: [es.a1.u02.s02]
+        grammar_note: >-
+          Days of the week are masculine and not capitalised; el lunes means on Monday.
+          Ask the time with ¿qué hora es? and answer with es la una for one o'clock and
+          son las dos, son las tres and so on for the other hours; add y media for half
+          past.
+        lemmas:
+          - {lemma: lunes, pos: noun, gender: m, en: [Monday], rank: null}
+          - {lemma: martes, pos: noun, gender: m, en: [Tuesday], rank: null}
+          - {lemma: miércoles, pos: noun, gender: m, en: [Wednesday], rank: null}
+          - {lemma: jueves, pos: noun, gender: m, en: [Thursday], rank: null}
+          - {lemma: viernes, pos: noun, gender: m, en: [Friday], rank: null}
+          - {lemma: sábado, pos: noun, gender: m, en: [Saturday], rank: null}
+          - {lemma: domingo, pos: noun, gender: m, en: [Sunday], rank: null}
+          - {lemma: hora, pos: noun, gender: f, en: [hour, time], rank: null}
+          - {lemma: hoy, pos: adv, en: [today], rank: null}
+          - {lemma: mañana, pos: noun, gender: f, en: [morning, tomorrow], rank: null}
+          - {lemma: semana, pos: noun, gender: f, en: [week], rank: null}
+          - {lemma: medio, pos: adj, en: [half], rank: null}
+        examples:
+          - {id: 1, target: "¿Qué hora es?", en: ["What time is it?"]}
+          - {id: 2, target: "Hoy es lunes.", en: ["Today is Monday."]}
+          - {id: 3, target: "Mañana es martes.", en: ["Tomorrow is Tuesday."]}
+          - {id: 4, target: "Son las tres y media.", en: ["It is half past three.", "It is three thirty."]}
+          - {id: 5, target: "La semana tiene siete días.", en: ["The week has seven days.", "A week has seven days."]}
+          - {id: 6, target: "Hoy es sábado y mañana es domingo.", en: ["Today is Saturday and tomorrow is Sunday."]}
+          - {id: 7, target: "¿Qué día es hoy?", en: ["What day is it today?"]}
+          - {id: 8, target: "El viernes a las diez de la mañana.", en: ["On Friday at ten in the morning.", "Friday at ten in the morning."]}
+          - {id: 9, target: "El miércoles y el jueves.", en: ["On Wednesday and Thursday.", "Wednesday and Thursday."]}
+      - id: es.a1.u02.s04
+        kind: grammar
+        title: Likes
+        cefr: A1
+        can_do: I can say what I like and what I do not like.
+        requires: [es.a1.u02.s03]
+        grammar_note: >-
+          Gustar works backwards: me gusta el café is literally coffee pleases me. The
+          verb agrees with the thing liked, so one thing takes gusta and several take
+          gustan: me gusta el cine, me gustan los libros. The person is a pronoun before
+          the verb: me, te, le (usted, él, ella), nos, os, les. For a name, add a: a Luis
+          le gusta el fútbol.
+        lemmas:
+          - {lemma: gustar, pos: verb, en: [to like, to please], rank: null}
+          - {lemma: música, pos: noun, gender: f, en: [music], rank: null}
+          - {lemma: libro, pos: noun, gender: m, en: [book], rank: null}
+          - {lemma: cine, pos: noun, gender: m, en: [cinema, movies], rank: null}
+          - {lemma: deporte, pos: noun, gender: m, en: [sport], rank: null}
+          - {lemma: fútbol, pos: noun, gender: m, en: [football, soccer], rank: null}
+          - {lemma: mucho, pos: adv, en: [a lot, much], rank: null}
+        examples:
+          - {id: 1, target: "Me gusta el café.", en: ["I like coffee."]}
+          - {id: 2, target: "No me gusta el fútbol.", en: ["I do not like football.", "I don't like soccer."]}
+          - {id: 3, target: "¿Te gusta la música?", en: ["Do you like music?"]}
+          - {id: 4, target: "Me gustan los libros.", en: ["I like books."]}
+          - {id: 5, target: "A Luis le gusta mucho el cine.", en: ["Luis likes the cinema a lot.", "Luis really likes the movies."]}
+          - {id: 6, target: "Nos gusta el deporte.", en: ["We like sport.", "We like sports."]}
+          - {id: 7, target: "¿Le gusta el té, señora?", en: ["Do you like tea, madam?"]}

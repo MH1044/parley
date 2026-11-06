@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: directions
+cefr: A1
+title_en: "Asking the way"
+partner_role_en: "a passer-by"
+learner_role_en: "a visitor to the town"
+turn_cap: 10
+goals:
+  - {id: attention, text_en: "Get the person's attention politely"}
+  - {id: ask_place, text_en: "Ask where a place is"}
+  - {id: check_way, text_en: "Check the way (left, right or straight on)"}
+  - {id: ask_far, text_en: "Ask whether it is far"}
+  - {id: thank, text_en: "Thank them and say goodbye"}
+languages:
+  es: {setting_en: "a street in the old town of Seville in the afternoon", opening: "Hola, buenas tardes. ¿Le puedo ayudar?", opening_en: "Hello, good afternoon. Can I help you?", skills: [es.a1.u04.s01, es.a1.u04.s02, es.a1.u04.s03, es.a1.u04.s04]}
+  fr: {setting_en: a street in the centre of Paris in the afternoon, opening: "Bonjour ! Je peux vous aider ?", opening_en: "Hello! Can I help you?", skills: [fr.a1.u04.s01, fr.a1.u04.s02, fr.a1.u04.s03, fr.a1.u04.s04]}
+  de: {setting_en: a street in the centre of Hamburg in the afternoon, opening: "Ja, bitte? Kann ich Ihnen helfen?", opening_en: "Yes? Can I help you?", skills: [de.a1.u04.s01, de.a1.u04.s02, de.a1.u04.s03, de.a1.u04.s04]}

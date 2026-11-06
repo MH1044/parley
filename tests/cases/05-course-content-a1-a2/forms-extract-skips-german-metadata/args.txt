@@ -1,0 +1,12 @@
+forms
+extract
+--lang
+de
+--wiktextract
+tests/fixtures/course05/wiktextract-meta.jsonl
+--lemma
+sehen
+--date
+2026-11-04
+--out
+{tmp}/forms.tsv

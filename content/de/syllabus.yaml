@@ -5,10 +5,13 @@ variety: Standard German of Germany; du and Sie both taught
 version: 1
 function_words: [der, die, das, den, dem, des, ein, eine, einen, einem, einer, kein, keine,
   keinen, und, oder, aber, in, an, auf, aus, bei, mit, nach, von, zu, für, um, bis, nicht, ja,
-  nein, ich, du, er, sie, es, wir, ihr, mich, dich, sich, uns, euch, mir, dir, ihm, ihnen,
-  mein, meine, meinen, dein, deine, deinen, unser, unsere, wie, wo, was, wer, woher, wohin,
-  wann, warum, da]
-names: [Anna, Paul, Lukas, Berlin, Hamburg, Deutschland]
+  nein, ich, du, er, sie, es, wir, ihr, mich, dich, sich, uns, euch, mir, dir, ihm, ihnen, mein,
+  meine, meinen, dein, deine, deinen, unser, unsere, wie, wo, was, wer, woher, wohin, wann, warum,
+  da, welcher, welche, welches, welchen, jeder, jede, jedes, jeden, vor, welchem, man, dieser,
+  diese, dieses, diesen, diesem, ans, ihn, ihre, ihren, ihrem, ihrer, meinem, meiner, deinem,
+  deiner, unserem, unseren, unserer, euer, eure, keinem, keiner, eines, wem, wen, ohne, durch,
+  gegen]
+names: [Anna, Paul, Lukas, Tom, Maria, Berlin, Hamburg, München, Köln, Deutschland]
 units:
   - id: de.a1.u01
     title: Hello
@@ -27,17 +30,17 @@ units:
           wie geht es Ihnen? (Sie) and answer gut, danke. Every noun starts with a capital
           letter: Tag, Nacht.
         lemmas:
-          - {lemma: hallo, pos: intj, en: [hello, hi], rank: null}
-          - {lemma: gut, pos: adj, en: [good], rank: null}
-          - {lemma: Tag, pos: noun, gender: m, en: [day], rank: null}
-          - {lemma: Morgen, pos: noun, gender: m, en: [morning], rank: null}
-          - {lemma: Abend, pos: noun, gender: m, en: [evening], rank: null}
-          - {lemma: Nacht, pos: noun, gender: f, en: [night], rank: null}
-          - {lemma: tschüss, pos: intj, en: [bye], rank: null}
-          - {lemma: danke, pos: intj, en: [thank you, thanks], rank: null}
-          - {lemma: bitte, pos: intj, en: [please, you are welcome], rank: null}
+          - {lemma: hallo, pos: intj, en: [hello, hi], rank: 2029}
+          - {lemma: gut, pos: adj, en: [good], rank: 83}
+          - {lemma: Tag, pos: noun, gender: m, en: [day], rank: 176}
+          - {lemma: Morgen, pos: noun, gender: m, en: [morning], rank: 474}
+          - {lemma: Abend, pos: noun, gender: m, en: [evening], rank: 429}
+          - {lemma: Nacht, pos: noun, gender: f, en: [night], rank: 463}
+          - {lemma: tschüss, pos: intj, en: [bye], rank: 11276}
+          - {lemma: danke, pos: intj, en: [thank you, thanks], rank: 605}
+          - {lemma: bitte, pos: intj, en: [please, you are welcome], rank: 147}
           - {lemma: auf Wiedersehen, pos: expr, en: [goodbye], rank: null}
-          - {lemma: gehen, pos: verb, en: [to go], rank: null}
+          - {lemma: gehen, pos: verb, en: [to go], rank: 75}
         examples:
           - {id: 1, target: "Hallo, wie geht es dir?", en: ["Hello, how are you?", "Hi, how are you doing?"]}
           - {id: 2, target: "Guten Morgen, Anna!", en: ["Good morning, Anna!"]}
@@ -59,15 +62,16 @@ units:
           du heißt, er or sie heißt, Sie heißen; ich bin, du bist, er or sie ist, wir sind,
           Sie sind. Sie with a capital letter is the polite you, for adults you do not
           know; du is for friends, family and children. Herr and Frau go before a surname
-          when you address someone politely.
+          when you address someone politely. Freut mich (pleased to meet you) is short for
+          es freut mich, from freuen (to please).
         lemmas:
-          - {lemma: heißen, pos: verb, en: [to be called], rank: null}
-          - {lemma: sein, pos: verb, en: [to be], rank: null}
-          - {lemma: Name, pos: noun, gender: m, en: [name], rank: null}
-          - {lemma: Herr, pos: noun, gender: m, en: [Mr, gentleman], rank: null}
-          - {lemma: Frau, pos: noun, gender: f, en: [Mrs, Ms, woman], rank: null}
-          - {lemma: freut mich, pos: expr, en: [nice to meet you, pleased to meet you], rank: null}
-          - {lemma: Entschuldigung, pos: intj, en: [excuse me, sorry], rank: null}
+          - {lemma: heißen, pos: verb, en: [to be called], rank: 363}
+          - {lemma: sein, pos: verb, en: [to be], rank: 12}
+          - {lemma: Name, pos: noun, gender: m, en: [name], rank: 471}
+          - {lemma: Herr, pos: noun, gender: m, en: [Mr, gentleman], rank: 616}
+          - {lemma: Frau, pos: noun, gender: f, en: [Mrs, Ms, woman], rank: 280}
+          - {lemma: freuen, pos: verb, en: [to please, to be glad], rank: 601}
+          - {lemma: Entschuldigung, pos: intj, en: [excuse me, sorry], rank: 1755}
         examples:
           - {id: 1, target: "Ich heiße Anna.", en: ["My name is Anna.", "I am called Anna."]}
           - {id: 2, target: "Wie heißt du?", en: ["What is your name?", "What are you called?"]}
@@ -91,17 +95,17 @@ units:
           vowel in two forms: du sprichst, er spricht. Say where you are from with aus and
           where you live with in: ich komme aus Berlin, ich wohne in Hamburg. Ask with
           woher? (from where) and wo? (where). Language names are capitalised: Deutsch,
-          Englisch.
+          Englisch. Ein bisschen means a little: ich spreche ein bisschen Deutsch.
         lemmas:
-          - {lemma: kommen, pos: verb, en: [to come], rank: null}
-          - {lemma: wohnen, pos: verb, en: [to live], rank: null}
-          - {lemma: sprechen, pos: verb, en: [to speak], rank: null}
-          - {lemma: Deutsch, pos: noun, gender: "n", en: [German], rank: null}
-          - {lemma: Englisch, pos: noun, gender: "n", en: [English], rank: null}
-          - {lemma: Spanisch, pos: noun, gender: "n", en: [Spanish], rank: null}
-          - {lemma: Französisch, pos: noun, gender: "n", en: [French], rank: null}
-          - {lemma: auch, pos: adv, en: [also, too], rank: null}
-          - {lemma: ein bisschen, pos: expr, en: [a little, a bit], rank: null}
+          - {lemma: kommen, pos: verb, en: [to come], rank: 90}
+          - {lemma: wohnen, pos: verb, en: [to live], rank: 305}
+          - {lemma: sprechen, pos: verb, en: [to speak], rank: 121}
+          - {lemma: Deutsch, pos: noun, gender: "n", en: [German], rank: 926}
+          - {lemma: Englisch, pos: noun, gender: "n", en: [English], rank: 442}
+          - {lemma: Spanisch, pos: noun, gender: "n", en: [Spanish], rank: 2124}
+          - {lemma: Französisch, pos: noun, gender: "n", en: [French], rank: 247}
+          - {lemma: auch, pos: adv, en: [also, too], rank: 197}
+          - {lemma: bisschen, pos: pron, en: [a bit, a little], rank: 591}
         examples:
           - {id: 1, target: "Ich komme aus Deutschland.", en: ["I come from Germany.", "I am from Germany."]}
           - {id: 2, target: "Woher kommst du?", en: ["Where are you from?", "Where do you come from?"]}
@@ -125,21 +129,21 @@ units:
           come first and the tens last, joined by und, all in one word: einundzwanzig,
           zweiunddreißig.
         lemmas:
-          - {lemma: haben, pos: verb, en: [to have], rank: null}
-          - {lemma: Jahr, pos: noun, gender: "n", en: [year], rank: null}
-          - {lemma: alt, pos: adj, en: [old], rank: null}
-          - {lemma: Nummer, pos: noun, gender: f, en: [number], rank: null}
-          - {lemma: Telefonnummer, pos: noun, gender: f, en: [phone number, telephone number], rank: null}
-          - {lemma: eins, pos: num, en: [one], rank: null}
-          - {lemma: zwei, pos: num, en: [two], rank: null}
-          - {lemma: drei, pos: num, en: [three], rank: null}
-          - {lemma: vier, pos: num, en: [four], rank: null}
-          - {lemma: fünf, pos: num, en: [five], rank: null}
-          - {lemma: sechs, pos: num, en: [six], rank: null}
-          - {lemma: sieben, pos: num, en: [seven], rank: null}
-          - {lemma: acht, pos: num, en: [eight], rank: null}
-          - {lemma: neun, pos: num, en: [nine], rank: null}
-          - {lemma: zehn, pos: num, en: [ten], rank: null}
+          - {lemma: haben, pos: verb, en: [to have], rank: 19}
+          - {lemma: Jahr, pos: noun, gender: "n", en: [year], rank: 186}
+          - {lemma: alt, pos: adj, en: [old], rank: 196}
+          - {lemma: Nummer, pos: noun, gender: f, en: [number], rank: 2092}
+          - {lemma: Telefonnummer, pos: noun, gender: f, en: [phone number, telephone number], rank: 1945}
+          - {lemma: eins, pos: num, en: [one], rank: 1534}
+          - {lemma: zwei, pos: num, en: [two], rank: 303}
+          - {lemma: drei, pos: num, en: [three], rank: 223}
+          - {lemma: vier, pos: num, en: [four], rank: 939}
+          - {lemma: fünf, pos: num, en: [five], rank: 704}
+          - {lemma: sechs, pos: num, en: [six], rank: 1087}
+          - {lemma: sieben, pos: num, en: [seven], rank: 1147}
+          - {lemma: acht, pos: num, en: [eight], rank: 1383}
+          - {lemma: neun, pos: num, en: [nine], rank: 1941}
+          - {lemma: zehn, pos: num, en: [ten], rank: 626}
         examples:
           - {id: 1, target: "Ich bin zwanzig Jahre alt.", en: ["I am twenty years old.", "I am twenty."]}
           - {id: 2, target: "Wie alt bist du?", en: ["How old are you?"]}
@@ -150,3 +154,1936 @@ units:
           - {id: 7, target: "Wie ist deine Telefonnummer?", en: ["What is your phone number?"]}
           - {id: 8, target: "Hast du meine Nummer?", en: ["Do you have my number?"]}
           - {id: 9, target: "Paul hat meine Telefonnummer.", en: ["Paul has my phone number."]}
+  - id: de.a1.u02
+    title: Day to day
+    cefr: A1
+    skills:
+      - id: de.a1.u02.s01
+        kind: grammar
+        title: Things around you
+        cefr: A1
+        can_do: I can name everyday things with der, die or das and say what I do not have.
+        requires: [de.a1.u01.s04]
+        grammar_note: >-
+          Every noun is masculine, feminine or neuter, and the article shows which: der
+          Tisch, die Tür, das Buch. Learn each noun with its article. A or an is ein for der
+          and das nouns and eine for die nouns. Kein (no, not a) works the same way: ich
+          habe kein Auto, das ist keine Uhr. Plurals vary, so learn them too; all of them
+          take die: das Buch, die Bücher; das Auto, die Autos. An adjective after sein
+          never changes: das Auto ist neu, die Bücher sind klein.
+        lemmas:
+          - {lemma: Buch, pos: noun, gender: "n", en: [book], rank: 175}
+          - {lemma: Tisch, pos: noun, gender: m, en: [table], rank: 638}
+          - {lemma: Stuhl, pos: noun, gender: m, en: [chair], rank: 1470}
+          - {lemma: Tür, pos: noun, gender: f, en: [door], rank: 392}
+          - {lemma: Fenster, pos: noun, gender: "n", en: [window], rank: 603}
+          - {lemma: Auto, pos: noun, gender: "n", en: [car], rank: 253}
+          - {lemma: Uhr, pos: noun, gender: f, en: [clock, watch, o'clock], rank: 312}
+          - {lemma: Tasche, pos: noun, gender: f, en: [bag], rank: 1065}
+          - {lemma: groß, pos: adj, en: [big, tall], rank: 182}
+          - {lemma: klein, pos: adj, en: [small, little], rank: 355}
+          - {lemma: neu, pos: adj, en: [new], rank: 214}
+        examples:
+          - {id: 1, target: "Das ist ein Buch.", en: ["This is a book.", "That's a book.", "It is a book."]}
+          - {id: 2, target: "Das Auto ist klein.", en: ["The car is small."]}
+          - {id: 3, target: "Mein Auto ist neu.", en: ["My car is new."]}
+          - {id: 4, target: "Wo ist der Tisch?", en: ["Where is the table?", "Where's the table?"]}
+          - {id: 5, target: "Ich habe zwei Bücher.", en: ["I have two books.", "I've got two books."]}
+          - {id: 6, target: "Ich habe kein Auto.", en: ["I don't have a car.", "I haven't got a car.", "I have no car."]}
+          - {id: 7, target: "Das ist nicht meine Tasche.", en: ["This isn't my bag.", "That is not my bag."]}
+          - {id: 8, target: "Es ist ein Stuhl.", en: ["It is a chair.", "It's a chair."]}
+      - id: de.a1.u02.s02
+        kind: grammar
+        title: What people do
+        cefr: A1
+        can_do: I can say what I and other people are doing today.
+        requires: [de.a1.u02.s01]
+        grammar_note: >-
+          Most verbs work like kommen: ich mache, du machst, er or sie macht, wir machen,
+          ihr macht, sie and Sie machen. A stem ending in -t adds an e: du arbeitest, er
+          arbeitet. Some verbs change their vowel with du and er or sie: lesen gives du
+          liest, er liest; sehen gives du siehst, er sieht. German has one present tense
+          for I read and I am reading. The verb comes second in a statement (heute arbeite
+          ich nicht) and first in a yes or no question (liest du ein Buch?).
+        lemmas:
+          - {lemma: machen, pos: verb, en: [to do, to make], rank: 82}
+          - {lemma: arbeiten, pos: verb, en: [to work], rank: 144}
+          - {lemma: lernen, pos: verb, en: [to learn, to study], rank: 215}
+          - {lemma: spielen, pos: verb, en: [to play], rank: 201}
+          - {lemma: hören, pos: verb, en: [to hear, to listen to], rank: 142}
+          - {lemma: lesen, pos: verb, en: [to read], rank: 233}
+          - {lemma: schreiben, pos: verb, en: [to write], rank: 246}
+          - {lemma: sehen, pos: verb, en: [to see], rank: 85}
+          - {lemma: heute, pos: adv, en: [today], rank: 141}
+          - {lemma: jetzt, pos: adv, en: [now], rank: 171}
+        examples:
+          - {id: 1, target: "Was machst du heute?", en: ["What are you doing today?"]}
+          - {id: 2, target: "Wo arbeiten Sie?", en: ["Where do you work?"]}
+          - {id: 3, target: "Ich arbeite heute nicht.", en: ["I'm not working today.", "I don't work today."]}
+          - {id: 4, target: "Ich lerne jetzt Deutsch.", en: ["I'm learning German now.", "I am learning German now."]}
+          - {id: 5, target: "Tom liest ein Buch.", en: ["Tom is reading a book.", "Tom reads a book."]}
+          - {id: 6, target: "Er schreibt ein Buch.", en: ["He is writing a book.", "He's writing a book."]}
+          - {id: 7, target: "Was siehst du?", en: ["What do you see?", "What can you see?"]}
+          - {id: 8, target: "Was hörst du?", en: ["What do you hear?", "What are you listening to?"]}
+      - id: de.a1.u02.s03
+        kind: function
+        title: Likes
+        cefr: A1
+        can_do: I can say what I like doing and what I do not like.
+        requires: [de.a1.u02.s02]
+        grammar_note: >-
+          To say you like doing something, put gern after the verb: ich koche gern (I like
+          cooking), ich schwimme nicht gern (I don't like swimming). Sehr gern means very
+          much: ich lese sehr gern. To like a thing or a person, use mögen, which is
+          irregular: ich mag, du magst, er or sie mag, wir mögen, Sie mögen. Ich mag Musik.
+          Ask what someone likes doing with was machst du gern?
+        lemmas:
+          - {lemma: gern, pos: adv, en: [gladly, with pleasure], rank: 139}
+          - {lemma: mögen, pos: verb, en: [to like], rank: 98}
+          - {lemma: sehr, pos: adv, en: [very, very much], rank: 70}
+          - {lemma: Musik, pos: noun, gender: f, en: [music], rank: 766}
+          - {lemma: Film, pos: noun, gender: m, en: [film, movie], rank: 566}
+          - {lemma: Fußball, pos: noun, gender: m, en: [football, soccer], rank: 1603}
+          - {lemma: schwimmen, pos: verb, en: [to swim], rank: 483}
+          - {lemma: kochen, pos: verb, en: [to cook], rank: 687}
+          - {lemma: tanzen, pos: verb, en: [to dance], rank: 846}
+          - {lemma: singen, pos: verb, en: [to sing], rank: 559}
+        examples:
+          - {id: 1, target: "Ich spiele gern Fußball.", en: ["I like playing football.", "I like to play football.", "I like to play soccer."]}
+          - {id: 2, target: "Ich koche gern.", en: ["I like to cook.", "I like cooking."]}
+          - {id: 3, target: "Singst du gern?", en: ["Do you like singing?", "Do you like to sing?"]}
+          - {id: 4, target: "Ich schwimme nicht gern.", en: ["I don't like swimming.", "I don't like to swim."]}
+          - {id: 5, target: "Was machst du gern?", en: ["What do you like to do?", "What do you like doing?"]}
+          - {id: 6, target: "Magst du Musik?", en: ["Do you like music?"]}
+          - {id: 7, target: "Ich mag Filme.", en: ["I like films.", "I like movies."]}
+          - {id: 8, target: "Ich lese sehr gern.", en: ["I love reading.", "I really like reading.", "I love to read."]}
+      - id: de.a1.u02.s04
+        kind: vocab
+        title: Work and study
+        cefr: A1
+        can_do: I can say what I do for a living and where I work or study.
+        requires: [de.a1.u02.s02]
+        grammar_note: >-
+          After sein, a job takes no article: ich bin Lehrer (I am a teacher). Most jobs
+          have a female form ending in -in: Lehrer and Lehrerin, Student and Studentin,
+          Arzt and Ärztin. To say what you are not, use kein: ich bin kein Arzt. Zur Arbeit
+          and zur Schule mean to work and to school; im Büro means in the office.
+        lemmas:
+          - {lemma: Arbeit, pos: noun, gender: f, en: [work, job], rank: 275}
+          - {lemma: Lehrer, pos: noun, gender: m, en: [teacher], rank: 399}
+          - {lemma: Lehrerin, pos: noun, gender: f, en: [teacher], rank: 413}
+          - {lemma: Student, pos: noun, gender: m, en: [student], rank: 891}
+          - {lemma: Studentin, pos: noun, gender: f, en: [student], rank: 1683}
+          - {lemma: Arzt, pos: noun, gender: m, en: [doctor], rank: 481}
+          - {lemma: Ärztin, pos: noun, gender: f, en: [doctor], rank: 523}
+          - {lemma: Schule, pos: noun, gender: f, en: [school], rank: 301}
+          - {lemma: Büro, pos: noun, gender: "n", en: [office], rank: 872}
+          - {lemma: studieren, pos: verb, en: [to study, to be at university], rank: 761}
+        examples:
+          - {id: 1, target: "Ich bin Lehrerin.", en: ["I'm a teacher.", "I am a teacher."]}
+          - {id: 2, target: "Tom ist Arzt.", en: ["Tom is a doctor.", "Tom's a doctor."]}
+          - {id: 3, target: "Sie ist Ärztin.", en: ["She is a doctor.", "She's a doctor."]}
+          - {id: 4, target: "Bist du Student?", en: ["Are you a student?"]}
+          - {id: 5, target: "Ich bin kein Lehrer.", en: ["I'm not a teacher.", "I am not a teacher."]}
+          - {id: 6, target: "Was studieren Sie?", en: ["What do you study?", "What are you studying?"]}
+          - {id: 7, target: "Ich gehe zur Arbeit.", en: ["I'm going to work.", "I go to work."]}
+          - {id: 8, target: "Tom ist im Büro.", en: ["Tom is in the office.", "Tom is in his office."]}
+  - id: de.a1.u03
+    title: Food and drink
+    cefr: A1
+    skills:
+      - id: de.a1.u03.s01
+        kind: vocab
+        title: Drinks
+        cefr: A1
+        can_do: I can name common drinks and say what I drink and what I do not.
+        requires: [de.a1.u02.s03]
+        grammar_note: >-
+          Most drinks are der words (der Kaffee, der Tee, der Wein), but it is das Wasser,
+          das Bier and die Milch. After a verb such as trinken, ein and kein become einen
+          and keinen with der nouns: ich trinke keinen Wein. Die and das nouns do not
+          change: keine Milch, kein Bier. A cup of tea is eine Tasse Tee and a glass of
+          water ein Glas Wasser, with no word for of. Ich habe Durst (I have thirst) means
+          I am thirsty.
+        lemmas:
+          - {lemma: trinken, pos: verb, en: [to drink], rank: 287}
+          - {lemma: Kaffee, pos: noun, gender: m, en: [coffee], rank: 468}
+          - {lemma: Tee, pos: noun, gender: m, en: [tea], rank: 702}
+          - {lemma: Wasser, pos: noun, gender: "n", en: [water], rank: 419}
+          - {lemma: Milch, pos: noun, gender: f, en: [milk], rank: 943}
+          - {lemma: Bier, pos: noun, gender: "n", en: [beer], rank: 911}
+          - {lemma: Wein, pos: noun, gender: m, en: [wine], rank: 864}
+          - {lemma: Glas, pos: noun, gender: "n", en: [glass], rank: 1032}
+          - {lemma: Tasse, pos: noun, gender: f, en: [cup], rank: 1057}
+          - {lemma: Flasche, pos: noun, gender: f, en: [bottle], rank: 1510}
+          - {lemma: Durst, pos: noun, gender: m, en: [thirst], rank: 2693}
+        examples:
+          - {id: 1, target: "Ich trinke Kaffee.", en: ["I drink coffee.", "I'm drinking coffee."]}
+          - {id: 2, target: "Trinkst du Tee?", en: ["Do you drink tea?"]}
+          - {id: 3, target: "Was trinken Sie?", en: ["What would you like to drink?", "What are you drinking?"]}
+          - {id: 4, target: "Ich trinke keinen Wein.", en: ["I don't drink wine."]}
+          - {id: 5, target: "Ich trinke keine Milch.", en: ["I don't drink milk."]}
+          - {id: 6, target: "Hast du Durst?", en: ["Are you thirsty?"]}
+          - {id: 7, target: "Ein Glas Wasser, bitte!", en: ["A glass of water, please.", "I'd like a glass of water, please."]}
+          - {id: 8, target: "Eine Tasse Tee, bitte.", en: ["A cup of tea, please."]}
+      - id: de.a1.u03.s02
+        kind: grammar
+        title: Ordering
+        cefr: A1
+        can_do: I can order something to eat and drink in a café.
+        requires: [de.a1.u03.s01]
+        grammar_note: >-
+          Order politely with möchten (would like): ich möchte, du möchtest, er or sie
+          möchte, Sie möchten. Ich hätte gern means the same, and ich nehme (I'll have)
+          works too; nehmen changes its vowel: du nimmst, er nimmt. What you order is the
+          object of the verb, so ein becomes einen with der nouns (ich möchte einen
+          Kaffee), while eine and ein stay the same (eine Suppe, ein Stück Kuchen). Noch
+          ein means another: noch ein Bier. Etwas means something.
+        lemmas:
+          - {lemma: möchten, pos: verb, en: [would like], rank: 914}
+          - {lemma: nehmen, pos: verb, en: [to take, to have], rank: 205}
+          - {lemma: etwas, pos: pron, en: [something, anything], rank: 48}
+          - {lemma: noch, pos: adv, en: [still, another, else], rank: 87}
+          - {lemma: Brot, pos: noun, gender: "n", en: [bread], rank: 883}
+          - {lemma: Kuchen, pos: noun, gender: m, en: [cake], rank: 1011}
+          - {lemma: Käse, pos: noun, gender: m, en: [cheese], rank: 2212}
+          - {lemma: Suppe, pos: noun, gender: f, en: [soup], rank: 1889}
+          - {lemma: Pizza, pos: noun, gender: f, en: [pizza], rank: 1689}
+          - {lemma: Stück, pos: noun, gender: "n", en: [piece, slice], rank: 1175}
+        examples:
+          - {id: 1, target: "Möchten Sie etwas trinken?", en: ["Would you like something to drink?", "Would you like anything to drink?"]}
+          - {id: 2, target: "Ich möchte ein Stück Kuchen.", en: ["I'd like a piece of cake.", "I want a piece of cake."]}
+          - {id: 3, target: "Ich hätte gern etwas Käse.", en: ["I'd like some cheese."]}
+          - {id: 4, target: "Möchtest du noch etwas?", en: ["Would you like anything else?", "Would you like something else?"]}
+          - {id: 5, target: "Ich möchte noch ein Bier.", en: ["I'd like another beer.", "I want another beer."]}
+          - {id: 6, target: "Was nimmst du?", en: ["What are you having?", "What are you going to have?"]}
+          - {id: 7, target: "Ich nehme die Suppe des Tages.", en: ["I'll have the soup of the day."]}
+          - {id: 8, target: "Möchtest du noch ein Stück Pizza?", en: ["Would you like another slice of pizza?", "Would you like another piece of pizza?"]}
+      - id: de.a1.u03.s03
+        kind: function
+        title: Paying
+        cefr: A1
+        can_do: I can ask how much something costs and pay the bill.
+        requires: [de.a1.u03.s02]
+        grammar_note: >-
+          Ask the price with wie viel kostet das? or was kostet das? For more than one
+          thing the verb is plural: was kosten die? Euro takes no -s after a number: zwei
+          Euro; drei Euro fünfzig is 3.50 euros. The waiter may say das macht drei Euro
+          (that comes to three euros) and ask zusammen oder getrennt? (one bill or
+          separate ones?). Zahlen and bezahlen both mean to pay; die Rechnung, bitte asks
+          for the bill.
+        lemmas:
+          - {lemma: kosten, pos: verb, en: [to cost], rank: 670}
+          - {lemma: wie viel, pos: expr, en: [how much], rank: null}
+          - {lemma: Euro, pos: noun, gender: m, en: [euro], rank: 2918}
+          - {lemma: zahlen, pos: verb, en: [to pay], rank: 941}
+          - {lemma: bezahlen, pos: verb, en: [to pay, to pay for], rank: 592}
+          - {lemma: Rechnung, pos: noun, gender: f, en: [bill, check], rank: 2019}
+          - {lemma: alles, pos: pron, en: [everything, all], rank: 177}
+        examples:
+          - {id: 1, target: "Wie viel kostet das?", en: ["How much is it?", "How much does that cost?", "How much does this cost?"]}
+          - {id: 2, target: "Was kostet ein Bier?", en: ["How much does a beer cost?", "How much is a beer?"]}
+          - {id: 3, target: "Der Tee kostet zwei Euro.", en: ["The tea costs two euros.", "The tea is two euros."]}
+          - {id: 4, target: "Das macht drei Euro.", en: ["That'll be three euros.", "That comes to three euros."]}
+          - {id: 5, target: "Die Rechnung, bitte.", en: ["The bill, please.", "The check, please."]}
+          - {id: 6, target: "Ich möchte zahlen.", en: ["I'd like to pay."]}
+          - {id: 7, target: "Ich bezahle alles.", en: ["I'm paying for everything.", "I'll pay for everything."]}
+          - {id: 8, target: "Ist das alles?", en: ["Is that all?", "Is that everything?"]}
+      - id: de.a1.u03.s04
+        kind: vocab
+        title: Meals
+        cefr: A1
+        can_do: I can talk about meals, say what I eat and say that I am hungry.
+        requires: [de.a1.u03.s02]
+        grammar_note: >-
+          Essen changes its vowel: ich esse, du isst, er or sie isst. Ich habe Hunger means
+          I am hungry. Es gibt (there is, there are) is followed by the accusative, and was
+          gibt es zum Frühstück? asks what there is for breakfast; zum is zu dem. The three
+          meals are das Frühstück, das Mittagessen and das Abendessen. Obst (fruit) and
+          Gemüse (vegetables) are singular words in German. Viel means a lot or much: ich
+          esse viel Obst.
+        lemmas:
+          - {lemma: essen, pos: verb, en: [to eat], rank: 138}
+          - {lemma: Hunger, pos: noun, gender: m, en: [hunger], rank: 1122}
+          - {lemma: es gibt, pos: expr, en: [there is, there are], rank: null}
+          - {lemma: viel, pos: adv, en: [a lot, much], rank: 94}
+          - {lemma: Frühstück, pos: noun, gender: "n", en: [breakfast], rank: 1182}
+          - {lemma: Mittagessen, pos: noun, gender: "n", en: [lunch], rank: 1423}
+          - {lemma: Abendessen, pos: noun, gender: "n", en: [dinner, supper], rank: 942}
+          - {lemma: Fleisch, pos: noun, gender: "n", en: [meat], rank: 1284}
+          - {lemma: Fisch, pos: noun, gender: m, en: [fish], rank: 834}
+          - {lemma: Obst, pos: noun, gender: "n", en: [fruit], rank: 2101}
+          - {lemma: Gemüse, pos: noun, gender: "n", en: [vegetables], rank: 1932}
+          - {lemma: Apfel, pos: noun, gender: m, en: [apple], rank: 816}
+        examples:
+          - {id: 1, target: "Ich habe Hunger!", en: ["I'm hungry!", "I am hungry."]}
+          - {id: 2, target: "Ich esse kein Fleisch.", en: ["I don't eat meat."]}
+          - {id: 3, target: "Isst du Fisch?", en: ["Do you eat fish?"]}
+          - {id: 4, target: "Was gibt es zum Frühstück?", en: ["What's for breakfast?", "What is there for breakfast?"]}
+          - {id: 5, target: "Was gibt es heute zum Abendessen?", en: ["What's for dinner today?", "What are we having for dinner today?"]}
+          - {id: 6, target: "Tom isst einen Apfel.", en: ["Tom is eating an apple.", "Tom eats an apple."]}
+          - {id: 7, target: "Ich esse viel Obst.", en: ["I eat a lot of fruit."]}
+          - {id: 8, target: "Ich mag Gemüse.", en: ["I like vegetables."]}
+  - id: de.a1.u04
+    title: Around town
+    cefr: A1
+    skills:
+      - id: de.a1.u04.s01
+        kind: vocab
+        title: Places in town
+        cefr: A1
+        can_do: I can name places in a town and ask whether there is one nearby.
+        requires: [de.a1.u03.s04]
+        grammar_note: >-
+          Ask whether a place is near with gibt es in der Nähe ein Restaurant? (in der Nähe
+          means nearby). After es gibt, der nouns take einen: gibt es einen Supermarkt in
+          der Nähe? With in, a place where you are takes the dative (in der Stadt, im Park)
+          and a place you go to takes the accusative (in die Stadt, in den Park). Wie komme
+          ich zum Bahnhof? asks the way to the station.
+        lemmas:
+          - {lemma: Stadt, pos: noun, gender: f, en: [town, city], rank: 397}
+          - {lemma: Bahnhof, pos: noun, gender: m, en: [station, railway station], rank: 817}
+          - {lemma: Bank, pos: noun, gender: f, en: [bank], rank: 1345}
+          - {lemma: Hotel, pos: noun, gender: "n", en: [hotel], rank: 979}
+          - {lemma: Museum, pos: noun, gender: "n", en: [museum], rank: 1794}
+          - {lemma: Restaurant, pos: noun, gender: "n", en: [restaurant], rank: 1196}
+          - {lemma: Park, pos: noun, gender: m, en: [park], rank: 916}
+          - {lemma: Kino, pos: noun, gender: "n", en: [cinema, movie theater], rank: 1279}
+          - {lemma: Supermarkt, pos: noun, gender: m, en: [supermarket], rank: 2426}
+          - {lemma: Straße, pos: noun, gender: f, en: [street, road], rank: 552}
+          - {lemma: Post, pos: noun, gender: f, en: [post office, post, mail], rank: 1903}
+          - {lemma: in der Nähe, pos: expr, en: [nearby, close by], rank: null}
+        examples:
+          - {id: 1, target: "Wo ist der Bahnhof?", en: ["Where is the station?", "Where is the railway station?"]}
+          - {id: 2, target: "Wie komme ich zum Bahnhof?", en: ["How do I get to the station?", "How can I get to the station?"]}
+          - {id: 3, target: "Gibt es in der Nähe ein Restaurant?", en: ["Is there a restaurant nearby?", "Is there a restaurant close by?"]}
+          - {id: 4, target: "Gibt es einen Supermarkt in der Nähe?", en: ["Is there a supermarket nearby?"]}
+          - {id: 5, target: "Ich bin neu in der Stadt.", en: ["I'm new in town.", "I am new in town."]}
+          - {id: 6, target: "Wo ist das Museum?", en: ["Where is the museum?", "Where's the museum?"]}
+          - {id: 7, target: "Ich gehe in den Park.", en: ["I'm going to the park.", "I go to the park."]}
+          - {id: 8, target: "Sie arbeitet in einer Bank.", en: ["She works in a bank.", "She works at a bank."]}
+      - id: de.a1.u04.s02
+        kind: grammar
+        title: Asking for help
+        cefr: A1
+        can_do: I can ask a stranger for help and say what I am looking for.
+        requires: [de.a1.u04.s01]
+        grammar_note: >-
+          Können (can) is irregular: ich kann, du kannst, er or sie kann, wir können, Sie
+          können. The second verb goes to the end of the sentence in the infinitive: ich
+          kann das Hotel nicht finden. Wissen (to know a fact) is irregular too: ich weiß,
+          du weißt, er weiß, Sie wissen. After wissen Sie, wo the verb also goes to the
+          end: wissen Sie, wo die Post ist? Helfen takes mir and Ihnen, not mich and Sie:
+          können Sie mir helfen? kann ich Ihnen helfen?
+        lemmas:
+          - {lemma: können, pos: verb, en: [can, to be able to], rank: 47}
+          - {lemma: helfen, pos: verb, en: [to help], rank: 149}
+          - {lemma: suchen, pos: verb, en: [to look for, to search], rank: 380}
+          - {lemma: finden, pos: verb, en: [to find], rank: 158}
+          - {lemma: wissen, pos: verb, en: [to know], rank: 77}
+          - {lemma: Weg, pos: noun, gender: m, en: [way, path], rank: 545}
+          - {lemma: hier, pos: adv, en: [here], rank: 108}
+          - {lemma: dort, pos: adv, en: [there], rank: 337}
+          - {lemma: weit, pos: adj, en: [far], rank: 370}
+        examples:
+          - {id: 1, target: "Können Sie mir helfen?", en: ["Can you help me?"]}
+          - {id: 2, target: "Ich suche den Bahnhof.", en: ["I'm looking for the station.", "I'm looking for the railway station."]}
+          - {id: 3, target: "Was suchen Sie?", en: ["What are you looking for?"]}
+          - {id: 4, target: "Ich kann das Hotel nicht finden.", en: ["I can't find the hotel.", "I cannot find the hotel."]}
+          - {id: 5, target: "Wissen Sie, wo die Post ist?", en: ["Do you know where the post office is?"]}
+          - {id: 6, target: "Ist es weit von hier?", en: ["Is it far from here?"]}
+          - {id: 7, target: "Ich weiß es nicht.", en: ["I don't know.", "I don't know that."]}
+          - {id: 8, target: "Ich bin nicht von hier.", en: ["I'm not from here.", "I am not from here."]}
+      - id: de.a1.u04.s03
+        kind: function
+        title: Directions
+        cefr: A1
+        can_do: I can understand and give simple directions.
+        requires: [de.a1.u04.s02]
+        grammar_note: >-
+          Directions use the polite imperative, with the verb first and then Sie: gehen Sie
+          geradeaus! nehmen Sie die Straße links. With du, use the verb on its own: geh,
+          nimm. Nach links and nach rechts mean to the left and to the right; links and
+          rechts on their own mean on the left and on the right. Immer geradeaus is keep
+          straight on, an der Ecke at the corner, dann then. Die erste Straße is the first
+          street.
+        lemmas:
+          - {lemma: links, pos: adv, en: [left, on the left], rank: 2177}
+          - {lemma: rechts, pos: adv, en: [right, on the right], rank: 2541}
+          - {lemma: geradeaus, pos: adv, en: [straight on, straight ahead], rank: 7784}
+          - {lemma: immer, pos: adv, en: [always], rank: 126}
+          - {lemma: dann, pos: adv, en: [then], rank: 569}
+          - {lemma: erste, pos: adj, en: [first], rank: 414}
+          - {lemma: Ecke, pos: noun, gender: f, en: [corner], rank: 2549}
+        examples:
+          - {id: 1, target: "Gehen Sie immer geradeaus!", en: ["Go straight on.", "Keep going straight on."]}
+          - {id: 2, target: "Gehen Sie geradeaus und dann nach rechts.", en: ["Go straight on and then turn right.", "Go straight, then turn right."]}
+          - {id: 3, target: "Nehmen Sie die Straße links.", en: ["Take the road on the left.", "Take the street on the left."]}
+          - {id: 4, target: "Es ist die erste Tür rechts.", en: ["It's the first door on the right."]}
+          - {id: 5, target: "Geh an der Ecke nach links.", en: ["Turn left at the corner.", "Go left at the corner."]}
+          - {id: 6, target: "Es ist an der Ecke.", en: ["It's at the corner.", "It's on the corner."]}
+          - {id: 7, target: "Geradeaus und dann nach links!", en: ["Straight on and then left!", "Go straight ahead and then turn left."]}
+          - {id: 8, target: "Nimm die erste Straße rechts.", en: ["Take the first street on the right.", "Take the first street to the right."]}
+      - id: de.a1.u04.s04
+        kind: grammar
+        title: Getting around
+        cefr: A1
+        can_do: I can say how I get somewhere, by bus, train or bike or on foot.
+        requires: [de.a1.u04.s03]
+        grammar_note: >-
+          Fahren (to go by vehicle, to drive, to ride) changes its vowel: du fährst, er
+          fährt. Gehen is to go on foot: ich gehe zu Fuß. Mit (by, with) is always followed
+          by the dative: der Bus becomes mit dem Bus, das Fahrrad mit dem Fahrrad. Zu takes
+          the dative too: zum Bahnhof (zu dem), zur Arbeit (zu der). Nehmen works for
+          transport as in English: ich nehme den Zug. Welcher Bus? asks which bus.
+        lemmas:
+          - {lemma: fahren, pos: verb, en: [to go, to drive, to ride], rank: 174}
+          - {lemma: Bus, pos: noun, gender: m, en: [bus], rank: 541}
+          - {lemma: Zug, pos: noun, gender: m, en: [train], rank: 475}
+          - {lemma: Fahrrad, pos: noun, gender: "n", en: [bicycle, bike], rank: 770}
+          - {lemma: Taxi, pos: noun, gender: "n", en: [taxi], rank: 1512}
+          - {lemma: zu Fuß, pos: expr, en: [on foot], rank: null}
+          - {lemma: schnell, pos: adj, en: [fast, quick], rank: 346}
+        examples:
+          - {id: 1, target: "Ich fahre mit dem Bus zur Arbeit.", en: ["I take the bus to work.", "I go to work by bus."]}
+          - {id: 2, target: "Ich fahre mit dem Fahrrad zur Arbeit.", en: ["I cycle to work.", "I ride a bike to work.", "I go to work by bike."]}
+          - {id: 3, target: "Ich gehe zu Fuß zur Schule.", en: ["I walk to school.", "I go to school on foot."]}
+          - {id: 4, target: "Ich nehme den Zug.", en: ["I'll take the train.", "I'm taking the train."]}
+          - {id: 5, target: "Nehmen wir ein Taxi?", en: ["Shall we take a taxi?"]}
+          - {id: 6, target: "Welcher Bus fährt zum Bahnhof?", en: ["Which bus goes to the station?"]}
+          - {id: 7, target: "Du fährst zu schnell.", en: ["You're driving too fast.", "You drive too fast."]}
+          - {id: 8, target: "Wann kommt der Bus?", en: ["When is the bus coming?", "When will the bus be here?"]}
+  - id: de.a1.u05
+    title: Shopping
+    cefr: A1
+    skills:
+      - id: de.a1.u05.s01
+        kind: vocab
+        title: Clothes
+        cefr: A1
+        can_do: I can name clothes and say what someone is wearing.
+        requires: [de.a1.u04.s04]
+        grammar_note: >-
+          Tragen (to wear, to carry) changes its vowel: du trägst, er or sie trägt. As with
+          every verb, one form covers wears and is wearing: Maria trägt ein Kleid. Clothes
+          are the object, so der words take einen: er trägt einen Mantel. An adjective
+          before a noun takes an ending: ein neues Kleid, eine neue Jacke, einen neuen
+          Mantel. Die Hose (trousers) is singular in German: wie viel kostet die Hose?
+        lemmas:
+          - {lemma: tragen, pos: verb, en: [to wear, to carry], rank: 322}
+          - {lemma: Hose, pos: noun, gender: f, en: [trousers, pants], rank: 2083}
+          - {lemma: Hemd, pos: noun, gender: "n", en: [shirt], rank: 1327}
+          - {lemma: Kleid, pos: noun, gender: "n", en: [dress], rank: 932}
+          - {lemma: Schuh, pos: noun, gender: m, en: [shoe], rank: 762}
+          - {lemma: Jacke, pos: noun, gender: f, en: [jacket], rank: 2530}
+          - {lemma: Mantel, pos: noun, gender: m, en: [coat], rank: 1459}
+          - {lemma: Pullover, pos: noun, gender: m, en: [jumper, sweater], rank: 2163}
+          - {lemma: Hut, pos: noun, gender: m, en: [hat], rank: 1071}
+        examples:
+          - {id: 1, target: "Maria trägt ein neues Kleid.", en: ["Maria is wearing a new dress."]}
+          - {id: 2, target: "Er trägt einen neuen Mantel.", en: ["He's wearing a new coat.", "He is wearing a new coat."]}
+          - {id: 3, target: "Ich suche einen Pullover.", en: ["I'm looking for a sweater.", "I'm looking for a jumper."]}
+          - {id: 4, target: "Wie viel kostet die Hose?", en: ["How much are the trousers?", "How much do the trousers cost?", "How much are these pants?"]}
+          - {id: 5, target: "Ich kann meine Schuhe nicht finden.", en: ["I can't find my shoes."]}
+          - {id: 6, target: "Ich habe eine neue Jacke.", en: ["I have a new jacket.", "I've got a new jacket."]}
+          - {id: 7, target: "Ist das ein neues Hemd?", en: ["Is that a new shirt?"]}
+          - {id: 8, target: "Tom hat immer einen Hut auf.", en: ["Tom always wears a hat.", "Tom always has a hat on."]}
+      - id: de.a1.u05.s02
+        kind: vocab
+        title: Colours and sizes
+        cefr: A1
+        can_do: I can say which colour and size I want.
+        requires: [de.a1.u05.s01]
+        grammar_note: >-
+          After sein a colour has no ending: mein Auto ist rot. Before a noun it takes an
+          ending like any adjective: ein blauer Hut, einen blauen Hut, eine rote Jacke. Ask
+          about colour with welche Farbe hat ...? (what colour is ...?). A colour used as a
+          noun is capitalised: haben Sie das auch in Schwarz? Größe is size, of clothes
+          and shoes too: das ist nicht meine Größe.
+        lemmas:
+          - {lemma: Farbe, pos: noun, gender: f, en: [colour, color], rank: 1051}
+          - {lemma: rot, pos: adj, en: [red], rank: 746}
+          - {lemma: blau, pos: adj, en: [blue], rank: 1021}
+          - {lemma: grün, pos: adj, en: [green], rank: 1349}
+          - {lemma: schwarz, pos: adj, en: [black], rank: 930}
+          - {lemma: weiß, pos: adj, en: [white], rank: 123}
+          - {lemma: gelb, pos: adj, en: [yellow], rank: 2054}
+          - {lemma: braun, pos: adj, en: [brown], rank: 2319}
+          - {lemma: Größe, pos: noun, gender: f, en: [size], rank: 3429}
+        examples:
+          - {id: 1, target: "Welche Farbe hat dein Auto?", en: ["What colour is your car?", "What color is your car?"]}
+          - {id: 2, target: "Ist dein Hemd weiß?", en: ["Is your shirt white?"]}
+          - {id: 3, target: "Tom trägt einen blauen Hut.", en: ["Tom is wearing a blue hat."]}
+          - {id: 4, target: "Haben Sie das auch in Schwarz?", en: ["Do you have this in black too?", "Do you also have this in black?"]}
+          - {id: 5, target: "Seine Schuhe sind braun.", en: ["His shoes are brown."]}
+          - {id: 6, target: "Das ist nicht meine Größe.", en: ["That's not my size.", "It's not my size."]}
+          - {id: 7, target: "Wir haben Ihre Größe nicht.", en: ["We don't have your size."]}
+          - {id: 8, target: "Äpfel sind grün, gelb oder rot.", en: ["Apples are green, yellow or red."]}
+      - id: de.a1.u05.s03
+        kind: function
+        title: Buying things
+        cefr: A1
+        can_do: I can say what I need, talk about prices and pay in a shop.
+        requires: [de.a1.u05.s02]
+        grammar_note: >-
+          Brauchen (to need) and kaufen (to buy) are regular and take the accusative: ich
+          brauche einen Mantel. With möchten or können the infinitive goes to the end: ich
+          möchte einen Hut kaufen; kann ich mit Karte zahlen? (mit Karte means by card). Zu
+          before an adjective means too: das ist zu teuer, and das ist mir zu teuer is
+          that's too expensive for me.
+        lemmas:
+          - {lemma: kaufen, pos: verb, en: [to buy], rank: 192}
+          - {lemma: brauchen, pos: verb, en: [to need], rank: 151}
+          - {lemma: Geschäft, pos: noun, gender: "n", en: [shop, store], rank: 1392}
+          - {lemma: teuer, pos: adj, en: [expensive], rank: 971}
+          - {lemma: billig, pos: adj, en: [cheap], rank: 1724}
+          - {lemma: Geld, pos: noun, gender: "n", en: [money], rank: 217}
+          - {lemma: Karte, pos: noun, gender: f, en: [card, map, ticket], rank: 1221}
+          - {lemma: Preis, pos: noun, gender: m, en: [price], rank: 1012}
+        examples:
+          - {id: 1, target: "Ich brauche neue Schuhe.", en: ["I need new shoes.", "I need a new pair of shoes."]}
+          - {id: 2, target: "Was brauchen Sie?", en: ["What do you need?"]}
+          - {id: 3, target: "Ich möchte einen Hut kaufen.", en: ["I want to buy a hat.", "I'd like to buy a hat."]}
+          - {id: 4, target: "Das ist mir zu teuer.", en: ["That's too expensive for me."]}
+          - {id: 5, target: "Das Kleid da ist billig.", en: ["That dress is cheap.", "The dress there is cheap."]}
+          - {id: 6, target: "Kann ich mit Karte zahlen?", en: ["Can I pay by card?", "Can I pay with a card?"]}
+          - {id: 7, target: "Ich habe nicht viel Geld.", en: ["I don't have much money.", "I don't have a lot of money."]}
+          - {id: 8, target: "Gibt es hier ein Geschäft?", en: ["Is there a shop here?", "Is there a store here?"]}
+      - id: de.a1.u05.s04
+        kind: grammar
+        title: Saying what you think
+        cefr: A1
+        can_do: I can say whether I like something and whether it fits.
+        requires: [de.a1.u05.s03]
+        grammar_note: >-
+          Gefallen works the other way round from like: the thing is the subject and the
+          person is in the dative. Das gefällt mir is literally that pleases me, so I like
+          it; gefällt es dir? or gefällt es Ihnen? asks do you like it? Passen (to fit)
+          works the same way: die Hose passt mir nicht. Finden gives an opinion: ich finde
+          es toll (I think it's great). Instead of repeating a noun, use er, sie or es,
+          which become ihn, sie and es as objects: der Hut? Ich nehme ihn.
+        lemmas:
+          - {lemma: gefallen, pos: verb, en: [to please, to be liked], rank: 265}
+          - {lemma: passen, pos: verb, en: [to fit, to suit], rank: 705}
+          - {lemma: schön, pos: adj, en: [beautiful, nice, lovely], rank: 263}
+          - {lemma: toll, pos: adj, en: [great, fantastic], rank: 1608}
+          - {lemma: hässlich, pos: adj, en: [ugly], rank: 2497}
+          - {lemma: perfekt, pos: adj, en: [perfect], rank: 1769}
+        examples:
+          - {id: 1, target: "Das gefällt mir.", en: ["I like that.", "I like it."]}
+          - {id: 2, target: "Gefällt es dir?", en: ["Do you like it?"]}
+          - {id: 3, target: "Ich finde seinen Hut hässlich.", en: ["I think his hat is ugly.", "I find his hat ugly."]}
+          - {id: 4, target: "Die Hose passt nicht.", en: ["The trousers don't fit.", "These trousers don't fit."]}
+          - {id: 5, target: "Meine Schuhe passen mir nicht sehr gut.", en: ["My shoes don't fit me very well."]}
+          - {id: 6, target: "Das ist sehr schön.", en: ["It's very beautiful.", "That's very nice."]}
+          - {id: 7, target: "Ich finde es toll.", en: ["I think it's great."]}
+          - {id: 8, target: "Es ist gut, aber es ist nicht perfekt.", en: ["It's good, but it's not perfect."]}
+  - id: de.a1.u06
+    title: Home and family
+    cefr: A1
+    skills:
+      - id: de.a1.u06.s01
+        kind: vocab
+        title: Family
+        cefr: A1
+        can_do: I can name the people in my family.
+        requires: [de.a1.u05.s04]
+        grammar_note: >-
+          Many family words add an umlaut in the plural: der Bruder, die Brüder; die
+          Mutter, die Mütter; die Tochter, die Töchter. Das Kind becomes die Kinder. Mein
+          Mann means my husband and meine Frau my wife. Mein becomes meine before die nouns
+          and plurals: mein Vater, meine Mutter, meine Kinder. After haben, der nouns take
+          einen: ich habe einen Bruder.
+        lemmas:
+          - {lemma: Familie, pos: noun, gender: f, en: [family], rank: 562}
+          - {lemma: Mutter, pos: noun, gender: f, en: [mother], rank: 351}
+          - {lemma: Vater, pos: noun, gender: m, en: [father], rank: 290}
+          - {lemma: Bruder, pos: noun, gender: m, en: [brother], rank: 422}
+          - {lemma: Schwester, pos: noun, gender: f, en: [sister], rank: 482}
+          - {lemma: Sohn, pos: noun, gender: m, en: [son], rank: 570}
+          - {lemma: Tochter, pos: noun, gender: f, en: [daughter], rank: 725}
+          - {lemma: Kind, pos: noun, gender: "n", en: [child], rank: 195}
+          - {lemma: Mann, pos: noun, gender: m, en: [man, husband], rank: 173}
+        examples:
+          - {id: 1, target: "Das ist meine Familie.", en: ["This is my family."]}
+          - {id: 2, target: "Meine Mutter ist Lehrerin.", en: ["My mother is a teacher."]}
+          - {id: 3, target: "Mein Vater ist Arzt.", en: ["My father is a doctor.", "My dad is a doctor."]}
+          - {id: 4, target: "Ich habe zwei Brüder.", en: ["I have two brothers.", "I've got two brothers."]}
+          - {id: 5, target: "Hast du eine Schwester?", en: ["Do you have a sister?", "Have you got a sister?"]}
+          - {id: 6, target: "Ich habe einen Sohn und eine Tochter.", en: ["I have a son and a daughter."]}
+          - {id: 7, target: "Haben Sie Kinder?", en: ["Do you have children?", "Do you have any children?"]}
+          - {id: 8, target: "Das ist mein Mann.", en: ["This is my husband."]}
+      - id: de.a1.u06.s02
+        kind: grammar
+        title: Whose is it?
+        cefr: A1
+        can_do: I can talk about my relatives and friends and say whose they are.
+        requires: [de.a1.u06.s01]
+        grammar_note: >-
+          Possessives take the endings of ein: mein (my), dein (your, for du), sein (his),
+          ihr (her, their), unser (our), euer (your, for ihr) and Ihr (your, for Sie). Add
+          -e before die nouns and plurals (meine Tante, seine Kinder) and -em after bei or
+          mit before der and das nouns (bei seinem Onkel). Mein Freund and meine Freundin
+          often mean my boyfriend and my girlfriend; ein Freund von mir is simply a friend
+          of mine.
+        lemmas:
+          - {lemma: Freund, pos: noun, gender: m, en: [friend, boyfriend], rank: 181}
+          - {lemma: Freundin, pos: noun, gender: f, en: [friend, girlfriend], rank: 278}
+          - {lemma: Großmutter, pos: noun, gender: f, en: [grandmother], rank: 1786}
+          - {lemma: Großvater, pos: noun, gender: m, en: [grandfather], rank: 1682}
+          - {lemma: Onkel, pos: noun, gender: m, en: [uncle], rank: 1455}
+          - {lemma: Tante, pos: noun, gender: f, en: [aunt], rank: 2198}
+          - {lemma: verheiratet, pos: adj, en: [married], rank: 1040}
+        examples:
+          - {id: 1, target: "Tom ist ein Freund von mir.", en: ["Tom is a friend of mine.", "Tom is one of my friends."]}
+          - {id: 2, target: "Wie heißt ihr Freund?", en: ["What's her boyfriend's name?", "What is her friend's name?", "What is their friend's name?"]}
+          - {id: 3, target: "Ich bin verheiratet und habe zwei Kinder.", en: ["I am married and have two children.", "I'm married with two children."]}
+          - {id: 4, target: "Sind Sie verheiratet?", en: ["Are you married?"]}
+          - {id: 5, target: "Meine Großmutter ist sehr alt.", en: ["My grandmother is very old."]}
+          - {id: 6, target: "Wie alt ist dein Großvater?", en: ["How old is your grandfather?"]}
+          - {id: 7, target: "Tom wohnt jetzt bei seinem Onkel.", en: ["Tom is living with his uncle now.", "Tom lives with his uncle now."]}
+          - {id: 8, target: "Das ist deine Tante, oder?", en: ["That's your aunt, isn't it?", "She's your aunt, isn't she?"]}
+      - id: de.a1.u06.s03
+        kind: vocab
+        title: At home
+        cefr: A1
+        can_do: I can describe my home and say where people are in it.
+        requires: [de.a1.u06.s02]
+        grammar_note: >-
+          Zu Hause means at home and nach Hause (to) home, after a verb of movement: ich bin
+          zu Hause, ich gehe nach Hause. In with the dative says where someone or something
+          is (in der Küche, im Garten, in einer Wohnung), and with the accusative where
+          someone goes (ins Bett). Im is in dem and ins is in das. Das Bad is the bathroom,
+          and ein Bad nehmen is to have a bath.
+        lemmas:
+          - {lemma: Haus, pos: noun, gender: "n", en: [house], rank: 128}
+          - {lemma: Wohnung, pos: noun, gender: f, en: [flat, apartment], rank: 1077}
+          - {lemma: Zimmer, pos: noun, gender: "n", en: [room], rank: 341}
+          - {lemma: Küche, pos: noun, gender: f, en: [kitchen], rank: 1183}
+          - {lemma: Bad, pos: noun, gender: "n", en: [bathroom, bath], rank: 2487}
+          - {lemma: Garten, pos: noun, gender: m, en: [garden], rank: 757}
+          - {lemma: Bett, pos: noun, gender: "n", en: [bed], rank: 520}
+          - {lemma: zu Hause, pos: expr, en: [at home], rank: null}
+          - {lemma: nach Hause, pos: expr, en: [home], rank: null}
+        examples:
+          - {id: 1, target: "Ich bin jetzt zu Hause.", en: ["I'm at home now.", "I'm home now."]}
+          - {id: 2, target: "Wann kommst du nach Hause?", en: ["When are you coming home?", "When will you come home?"]}
+          - {id: 3, target: "Ich wohne in einer Wohnung.", en: ["I live in a flat.", "I live in an apartment."]}
+          - {id: 4, target: "Ich gehe jetzt ins Bett.", en: ["I'm going to bed now."]}
+          - {id: 5, target: "Wo ist mein Zimmer?", en: ["Where is my room?", "Where's my room?"]}
+          - {id: 6, target: "Tom ist in der Küche.", en: ["Tom is in the kitchen."]}
+          - {id: 7, target: "Hat das Zimmer ein Bad?", en: ["Does the room have a bathroom?", "Does the room have a bath?"]}
+          - {id: 8, target: "Wir haben einen großen Garten.", en: ["We have a big garden.", "We've got a big garden."]}
+      - id: de.a1.u06.s04
+        kind: function
+        title: People and pets
+        cefr: A1
+        can_do: I can describe people and pets in a few words.
+        requires: [de.a1.u06.s03]
+        grammar_note: >-
+          Describe someone with sein and an adjective, which has no ending: mein Vater ist
+          sehr nett, sie ist noch jung. Wie ist er? asks what he is like. Nett means nice or
+          kind, and das ist sehr nett von Ihnen means that's very kind of you. Lieben (to
+          love) is for people and things you love deeply: ich liebe meine Familie; for
+          things you simply like, use mögen: ich mag Tiere.
+        lemmas:
+          - {lemma: nett, pos: adj, en: [nice, kind], rank: 794}
+          - {lemma: jung, pos: adj, en: [young], rank: 272}
+          - {lemma: lustig, pos: adj, en: [funny, fun], rank: 1210}
+          - {lemma: freundlich, pos: adj, en: [friendly, kind], rank: 1479}
+          - {lemma: Hund, pos: noun, gender: m, en: [dog], rank: 281}
+          - {lemma: Katze, pos: noun, gender: f, en: [cat], rank: 389}
+          - {lemma: Tier, pos: noun, gender: "n", en: [animal, pet], rank: 928}
+          - {lemma: lieben, pos: verb, en: [to love], rank: 208}
+        examples:
+          - {id: 1, target: "Mein Vater ist sehr nett.", en: ["My father is very nice.", "My father is very kind."]}
+          - {id: 2, target: "Sie ist noch jung.", en: ["She's still young.", "She is still young."]}
+          - {id: 3, target: "Das ist nicht lustig!", en: ["That's not funny!", "It's not funny."]}
+          - {id: 4, target: "Tom ist sehr freundlich.", en: ["Tom is very friendly.", "Tom is very kind."]}
+          - {id: 5, target: "Wir haben einen Hund.", en: ["We have a dog.", "We've got a dog."]}
+          - {id: 6, target: "Hast du eine Katze?", en: ["Do you have a cat?", "Have you got a cat?"]}
+          - {id: 7, target: "Ich mag Tiere.", en: ["I like animals."]}
+          - {id: 8, target: "Ich liebe meine Familie.", en: ["I love my family."]}
+  - id: de.a1.u07
+    title: Time and routine
+    cefr: A1
+    skills:
+      - id: de.a1.u07.s01
+        kind: vocab
+        title: Days of the week
+        cefr: A1
+        can_do: I can name the days of the week and say on which day something happens.
+        requires: [de.a1.u06.s04]
+        grammar_note: >-
+          The days of the week are all der words: der Montag, der Sonntag. On a day is am
+          (an dem): am Montag, am Wochenende. With a small letter and an -s, sonntags means
+          on Sundays, every Sunday. Heute is today and morgen tomorrow; der Morgen, with a
+          capital, is the morning. Wir sehen uns morgen! means see you tomorrow.
+        lemmas:
+          - {lemma: Montag, pos: noun, gender: m, en: [Monday], rank: 812}
+          - {lemma: Dienstag, pos: noun, gender: m, en: [Tuesday], rank: 3480}
+          - {lemma: Mittwoch, pos: noun, gender: m, en: [Wednesday], rank: 5192}
+          - {lemma: Donnerstag, pos: noun, gender: m, en: [Thursday], rank: 4851}
+          - {lemma: Freitag, pos: noun, gender: m, en: [Friday], rank: 2576}
+          - {lemma: Samstag, pos: noun, gender: m, en: [Saturday], rank: 2833}
+          - {lemma: Sonntag, pos: noun, gender: m, en: [Sunday], rank: 1258}
+          - {lemma: Woche, pos: noun, gender: f, en: [week], rank: 347}
+          - {lemma: Wochenende, pos: noun, gender: "n", en: [weekend], rank: 925}
+          - {lemma: morgen, pos: adv, en: [tomorrow], rank: 199}
+        examples:
+          - {id: 1, target: "Heute ist Mittwoch.", en: ["Today is Wednesday.", "It's Wednesday today."]}
+          - {id: 2, target: "Morgen ist Samstag.", en: ["Tomorrow is Saturday.", "It's Saturday tomorrow."]}
+          - {id: 3, target: "Ich arbeite am Montag.", en: ["I work on Monday.", "I'm working on Monday."]}
+          - {id: 4, target: "Am Sonntag arbeite ich nicht.", en: ["I don't work on Sunday.", "I'm not working on Sunday."]}
+          - {id: 5, target: "Was machst du am Wochenende?", en: ["What are you doing at the weekend?", "What are you doing this weekend?"]}
+          - {id: 6, target: "Eine Woche hat sieben Tage.", en: ["A week has seven days.", "There are seven days in a week."]}
+          - {id: 7, target: "Wir sehen uns morgen!", en: ["See you tomorrow!"]}
+          - {id: 8, target: "Am Dienstag und am Freitag spiele ich Fußball.", en: ["I play football on Tuesdays and Fridays.", "On Tuesday and Friday I play football."]}
+      - id: de.a1.u07.s02
+        kind: grammar
+        title: Telling the time
+        cefr: A1
+        can_do: I can ask and tell the time and say when something starts.
+        requires: [de.a1.u07.s01]
+        grammar_note: >-
+          Ask the time with wie spät ist es? and answer es ist acht Uhr. Halb looks forward
+          to the next hour: halb acht is half past seven (7.30). Viertel nach zwei is a
+          quarter past two and Viertel vor acht a quarter to eight. At a time is um: um acht
+          Uhr. Timetables use the 24-hour clock: um 20 Uhr. Zu spät means late: Tom kommt
+          immer zu spät. Beginnen (to begin) is regular in the present: der Film beginnt.
+        lemmas:
+          - {lemma: spät, pos: adj, en: [late], rank: 336}
+          - {lemma: früh, pos: adj, en: [early], rank: 291}
+          - {lemma: halb, pos: adj, en: [half], rank: 809}
+          - {lemma: Viertel, pos: noun, gender: "n", en: [quarter], rank: 3906}
+          - {lemma: Stunde, pos: noun, gender: f, en: [hour], rank: 434}
+          - {lemma: Minute, pos: noun, gender: f, en: [minute], rank: 600}
+          - {lemma: Mittag, pos: noun, gender: m, en: [midday, noon], rank: 1393}
+          - {lemma: beginnen, pos: verb, en: [to begin, to start], rank: 609}
+        examples:
+          - {id: 1, target: "Wie spät ist es?", en: ["What time is it?", "What's the time?"]}
+          - {id: 2, target: "Es ist halb acht.", en: ["It's half past seven.", "It's seven thirty."]}
+          - {id: 3, target: "Es ist Viertel vor acht.", en: ["It's a quarter to eight.", "It's quarter to eight."]}
+          - {id: 4, target: "Es ist Mittag.", en: ["It's midday.", "It's noon."]}
+          - {id: 5, target: "Es ist noch früh.", en: ["It's still early."]}
+          - {id: 6, target: "Wann beginnt der Film?", en: ["When does the film start?", "When does the movie start?"]}
+          - {id: 7, target: "Eine Stunde hat sechzig Minuten.", en: ["An hour has sixty minutes.", "There are sixty minutes in an hour."]}
+          - {id: 8, target: "Tom kommt immer zu spät.", en: ["Tom is always late."]}
+      - id: de.a1.u07.s03
+        kind: grammar
+        title: My day
+        cefr: A1
+        can_do: I can describe my daily routine.
+        requires: [de.a1.u07.s02]
+        grammar_note: >-
+          Many routine verbs are separable: a prefix such as auf, ein, fern or an goes to
+          the end of the sentence while the verb itself stands second. Aufstehen gives ich
+          stehe um sieben Uhr auf; fernsehen gives ich sehe jeden Abend fern. With a second
+          verb such as können, the verb stays whole at the end: wann kann ich Sie anrufen?
+          Dictionaries list these verbs as one word. Stehen on its own means to stand.
+          Schlafen changes its vowel: du schläfst, er schläft.
+        lemmas:
+          - {lemma: stehen, pos: verb, en: [to stand], rank: 252}
+          - {lemma: aufstehen, pos: verb, en: [to get up], rank: 1176, separable: auf}
+          - {lemma: frühstücken, pos: verb, en: [to have breakfast], rank: 837}
+          - {lemma: duschen, pos: verb, en: [to shower, to have a shower], rank: 1839}
+          - {lemma: einkaufen, pos: verb, en: [to go shopping, to shop], rank: 1791, separable: ein}
+          - {lemma: fernsehen, pos: verb, en: [to watch television], rank: 1132, separable: fern}
+          - {lemma: anrufen, pos: verb, en: [to phone, to call], rank: 553, separable: an}
+          - {lemma: schlafen, pos: verb, en: [to sleep], rank: 298}
+        examples:
+          - {id: 1, target: "Ich stehe um sieben Uhr auf.", en: ["I get up at seven o'clock.", "I get up at seven."]}
+          - {id: 2, target: "Wann stehst du auf?", en: ["When do you get up?", "What time do you get up?"]}
+          - {id: 3, target: "Ich frühstücke um sieben.", en: ["I have breakfast at seven.", "I eat breakfast at seven o'clock."]}
+          - {id: 4, target: "Ich dusche jeden Tag.", en: ["I shower every day.", "I take a shower every day."]}
+          - {id: 5, target: "Ich gehe einkaufen.", en: ["I'm going shopping.", "I go shopping."]}
+          - {id: 6, target: "Ich sehe jeden Abend fern.", en: ["I watch TV every evening.", "I watch television every evening."]}
+          - {id: 7, target: "Wann kann ich Sie anrufen?", en: ["When can I call you?", "When can I phone you?"]}
+          - {id: 8, target: "Tom schläft noch.", en: ["Tom is still asleep.", "Tom is still sleeping."]}
+      - id: de.a1.u07.s04
+        kind: function
+        title: Making plans
+        cefr: A1
+        can_do: I can suggest doing something together and accept or say no.
+        requires: [de.a1.u07.s03]
+        grammar_note: >-
+          Müssen (must, to have to) and wollen (to want) are modal verbs like können, with
+          the second verb at the end: ich muss morgen arbeiten; was willst du machen? Both
+          change in the singular: ich muss, du musst, er muss; ich will, du willst, er will.
+          Hast du Zeit? asks whether someone is free, and hast du Lust, ins Kino zu gehen?
+          whether they feel like going. Say yes with gern! and no politely with leider
+          (unfortunately). Wir treffen uns means we are meeting.
+        lemmas:
+          - {lemma: Zeit, pos: noun, gender: f, en: [time], rank: 187}
+          - {lemma: Lust, pos: noun, gender: f, en: [desire, feeling like], rank: 999}
+          - {lemma: treffen, pos: verb, en: [to meet], rank: 296}
+          - {lemma: müssen, pos: verb, en: [must, to have to], rank: 96}
+          - {lemma: wollen, pos: verb, en: [to want], rank: 69}
+          - {lemma: vielleicht, pos: adv, en: [maybe, perhaps], rank: 377}
+          - {lemma: leider, pos: adv, en: [unfortunately], rank: 1370}
+          - {lemma: zusammen, pos: adv, en: [together], rank: 447}
+        examples:
+          - {id: 1, target: "Hast du morgen Zeit?", en: ["Are you free tomorrow?", "Do you have time tomorrow?"]}
+          - {id: 2, target: "Hast du Lust, ins Kino zu gehen?", en: ["Do you feel like going to the cinema?", "Do you fancy going to the cinema?"]}
+          - {id: 3, target: "Wir gehen zusammen.", en: ["We'll go together.", "We're going together."]}
+          - {id: 4, target: "Ich muss morgen arbeiten.", en: ["I have to work tomorrow."]}
+          - {id: 5, target: "Was willst du machen?", en: ["What do you want to do?"]}
+          - {id: 6, target: "Wann treffen wir uns?", en: ["When are we meeting?", "When shall we meet?"]}
+          - {id: 7, target: "Leider kann ich nicht kommen.", en: ["Unfortunately, I can't come.", "Unfortunately I cannot come."]}
+          - {id: 8, target: "Vielleicht kommt er morgen.", en: ["Maybe he'll come tomorrow.", "Perhaps he will come tomorrow."]}
+  - id: de.a1.u08
+    title: Travel and hotel
+    cefr: A1
+    skills:
+      - id: de.a1.u08.s01
+        kind: vocab
+        title: Travelling
+        cefr: A1
+        can_do: I can talk about a trip and how I travel.
+        requires: [de.a1.u07.s04]
+        grammar_note: >-
+          Reisen is to travel in general; going by car, bus or train is fahren and going by
+          plane is fliegen. Use nach for towns and most countries (nach Berlin, nach
+          Deutschland) and an das, shortened to ans, for the sea: wir fahren ans Meer. In
+          Urlaub fahren is to go on holiday, im Urlaub sein to be on holiday. Gute Reise!
+          means have a good trip. Aus welchem Land kommen Sie? asks which country someone is
+          from.
+        lemmas:
+          - {lemma: Reise, pos: noun, gender: f, en: [journey, trip], rank: 1114}
+          - {lemma: reisen, pos: verb, en: [to travel], rank: 508}
+          - {lemma: Urlaub, pos: noun, gender: m, en: [holiday, vacation], rank: 1445}
+          - {lemma: Koffer, pos: noun, gender: m, en: [suitcase], rank: 1623}
+          - {lemma: Flughafen, pos: noun, gender: m, en: [airport], rank: 1601}
+          - {lemma: fliegen, pos: verb, en: [to fly], rank: 871}
+          - {lemma: Flugzeug, pos: noun, gender: "n", en: [plane, aeroplane], rank: 1357}
+          - {lemma: Fahrkarte, pos: noun, gender: f, en: [ticket], rank: 2676}
+          - {lemma: Land, pos: noun, gender: "n", en: [country], rank: 448}
+          - {lemma: Meer, pos: noun, gender: "n", en: [sea], rank: 1400}
+        examples:
+          - {id: 1, target: "Mein Vater reist gern mit dem Flugzeug.", en: ["My father likes travelling by plane.", "My father loves to travel by plane."]}
+          - {id: 2, target: "Ich fliege nicht gern.", en: ["I don't like flying.", "I don't like to fly."]}
+          - {id: 3, target: "Wir sind im Urlaub.", en: ["We're on holiday.", "We are on vacation."]}
+          - {id: 4, target: "Wir fahren ans Meer.", en: ["We're going to the seaside.", "We're going to the sea."]}
+          - {id: 5, target: "Wie komme ich zum Flughafen?", en: ["How do I get to the airport?"]}
+          - {id: 6, target: "Wo ist mein Koffer?", en: ["Where is my suitcase?", "Where's my suitcase?"]}
+          - {id: 7, target: "Wo kann ich eine Fahrkarte kaufen?", en: ["Where can I buy a ticket?"]}
+          - {id: 8, target: "Aus welchem Land kommen Sie?", en: ["What country are you from?", "Which country are you from?"]}
+      - id: de.a1.u08.s02
+        kind: function
+        title: At the hotel
+        cefr: A1
+        can_do: I can check in at a hotel and understand questions about my stay.
+        requires: [de.a1.u08.s01]
+        grammar_note: >-
+          At reception you may hear wie lange bleiben Sie? (how long are you staying?);
+          answer ich bleibe zwei Nächte or wir bleiben eine Woche. Haben Sie ein Zimmer frei?
+          asks whether a room is available, and wann gibt es Frühstück? when breakfast is
+          served. Floors are counted above the ground floor, so im ersten Stock is one floor
+          up. Hier ist Ihr Schlüssel means here is your key.
+        lemmas:
+          - {lemma: Schlüssel, pos: noun, gender: m, en: [key], rank: 813}
+          - {lemma: frei, pos: adj, en: [free, available], rank: 966}
+          - {lemma: bleiben, pos: verb, en: [to stay], rank: 227}
+          - {lemma: lange, pos: adv, en: [long, a long time], rank: 210}
+          - {lemma: Pass, pos: noun, gender: m, en: [passport], rank: 1731}
+          - {lemma: Stock, pos: noun, gender: m, en: [floor, storey], rank: 2416}
+          - {lemma: Gast, pos: noun, gender: m, en: [guest], rank: 2077}
+        examples:
+          - {id: 1, target: "Haben Sie ein Zimmer frei?", en: ["Do you have a room available?", "Do you have any vacancies?"]}
+          - {id: 2, target: "Ich bleibe zwei Nächte.", en: ["I'm staying two nights.", "I'm staying for two nights."]}
+          - {id: 3, target: "Wie lange bleiben Sie?", en: ["How long are you staying?", "How long will you stay?"]}
+          - {id: 4, target: "Wer ist der neue Gast?", en: ["Who is the new guest?", "Who's the new guest?"]}
+          - {id: 5, target: "Hier ist Ihr Schlüssel.", en: ["Here is your key.", "Here's your key."]}
+          - {id: 6, target: "Hier ist mein Pass.", en: ["Here is my passport.", "Here's my passport."]}
+          - {id: 7, target: "In welchem Stock wohnt Maria?", en: ["Which floor does Maria live on?", "What floor does Maria live on?"]}
+          - {id: 8, target: "Ich kann meinen Schlüssel nicht finden.", en: ["I can't find my key."]}
+      - id: de.a1.u08.s03
+        kind: grammar
+        title: May I?
+        cefr: A1
+        can_do: I can ask for permission and say what is not allowed.
+        requires: [de.a1.u08.s02]
+        grammar_note: >-
+          Dürfen (may, to be allowed to) asks for and gives permission: darf ich das
+          Fenster öffnen? It changes in the singular: ich darf, du darfst, er darf; wir
+          dürfen, Sie dürfen. Nicht dürfen means must not: Sie dürfen hier nicht parken. Man
+          is the general you: man darf hier nicht parken. A polite request puts bitte with
+          the Sie imperative: bitte schließen Sie die Tür. In everyday speech, aufmachen and
+          zumachen also mean to open and to close.
+        lemmas:
+          - {lemma: dürfen, pos: verb, en: [may, to be allowed to], rank: 316}
+          - {lemma: öffnen, pos: verb, en: [to open], rank: 547}
+          - {lemma: schließen, pos: verb, en: [to close, to shut], rank: 513}
+          - {lemma: parken, pos: verb, en: [to park], rank: 737}
+          - {lemma: sitzen, pos: verb, en: [to sit], rank: 439}
+          - {lemma: Platz, pos: noun, gender: m, en: [seat, place, square], rank: 898}
+          - {lemma: Foto, pos: noun, gender: "n", en: [photo, picture], rank: 1168}
+        examples:
+          - {id: 1, target: "Darf ich das Fenster öffnen?", en: ["May I open the window?", "Can I open the window?"]}
+          - {id: 2, target: "Bitte schließen Sie die Tür.", en: ["Please close the door.", "Close the door, please.", "Please shut the door."]}
+          - {id: 3, target: "Sie dürfen hier nicht parken.", en: ["You mustn't park here.", "You're not allowed to park here."]}
+          - {id: 4, target: "Wo kann ich parken?", en: ["Where can I park?"]}
+          - {id: 5, target: "Kann ich hier sitzen?", en: ["Can I sit here?", "May I sit here?"]}
+          - {id: 6, target: "Ist dieser Platz frei?", en: ["Is this seat free?", "Is this seat available?"]}
+          - {id: 7, target: "Darf ich ein Foto von Ihnen machen?", en: ["May I take a picture of you?", "Can I take your picture?"]}
+          - {id: 8, target: "Bitte bleiben Sie sitzen.", en: ["Please remain seated.", "Please stay seated."]}
+      - id: de.a1.u08.s04
+        kind: function
+        title: Problems
+        cefr: A1
+        can_do: I can say that something is wrong or not working.
+        requires: [de.a1.u08.s03]
+        grammar_note: >-
+          Say what is wrong with ist kaputt (is broken) or funktioniert nicht (does not
+          work): das Licht funktioniert nicht. Ich habe ein Problem introduces a problem.
+          For how you feel, German uses the dative and no word for I am: mir ist kalt (I am
+          cold), mir ist warm; ist Ihnen kalt? asks whether you are cold. For a place, use
+          es ist: hier ist es zu laut. Dieser (this) takes the endings of der: dieser
+          Platz, diese Uhr, in diesem Zimmer.
+        lemmas:
+          - {lemma: Problem, pos: noun, gender: "n", en: [problem], rank: 338}
+          - {lemma: kaputt, pos: adj, en: [broken], rank: 1728}
+          - {lemma: funktionieren, pos: verb, en: [to work, to function], rank: 1151}
+          - {lemma: warm, pos: adj, en: [warm], rank: 1133}
+          - {lemma: kalt, pos: adj, en: [cold], rank: 580}
+          - {lemma: laut, pos: adj, en: [loud, noisy], rank: 978}
+          - {lemma: Licht, pos: noun, gender: "n", en: [light], rank: 897}
+          - {lemma: sauber, pos: adj, en: [clean], rank: 1811}
+        examples:
+          - {id: 1, target: "Ich habe ein Problem.", en: ["I have a problem.", "I've got a problem."]}
+          - {id: 2, target: "Das Licht funktioniert nicht.", en: ["The light doesn't work.", "The light isn't working."]}
+          - {id: 3, target: "Die Tür ist kaputt.", en: ["The door is broken."]}
+          - {id: 4, target: "In diesem Zimmer ist es sehr kalt.", en: ["It's very cold in this room.", "This room is very cold."]}
+          - {id: 5, target: "Mir ist warm.", en: ["I'm warm.", "I feel warm."]}
+          - {id: 6, target: "Hier ist es zu laut.", en: ["It's too noisy here.", "It's too noisy in here."]}
+          - {id: 7, target: "Ist das Wasser in diesem Glas sauber?", en: ["Is the water in this glass clean?"]}
+          - {id: 8, target: "Der Kaffee ist kalt.", en: ["The coffee is cold."]}
+  - id: de.a2.u01
+    title: What I did
+    cefr: A2
+    skills:
+      - id: de.a2.u01.s01
+        kind: grammar
+        title: Yesterday
+        cefr: A2
+        can_do: I can say what I did yesterday and last week.
+        requires: [de.a1.u08.s04]
+        grammar_note: >-
+          The Perfekt is the usual past tense in speech: haben in second place and a past
+          participle at the end. Regular verbs make the participle with ge- and -t: machen,
+          gemacht; spielen, gespielt; arbeiten, gearbeitet. Verbs that begin with be-, er-
+          or ver- and verbs ending in -ieren take no ge-: besucht, erzählt, studiert. Ich
+          habe gearbeitet covers I worked, I have worked and I was working. Letzte agrees
+          with its noun: letzte Woche, letzten Montag, letztes Jahr. Gestern Nachmittag is
+          yesterday afternoon.
+        lemmas:
+          - {lemma: gestern, pos: adv, en: [yesterday], rank: 273}
+          - {lemma: letzte, pos: adj, en: [last], rank: 251}
+          - {lemma: Nachmittag, pos: noun, gender: m, en: [afternoon], rank: 1188}
+          - {lemma: sagen, pos: verb, en: [to say, to tell], rank: 63}
+          - {lemma: fragen, pos: verb, en: [to ask], rank: 150}
+          - {lemma: warten, pos: verb, en: [to wait], rank: 209}
+          - {lemma: besuchen, pos: verb, en: [to visit], rank: 452}
+          - {lemma: erzählen, pos: verb, en: [to tell], rank: 393}
+        examples:
+          - {id: 1, target: "Was hast du gestern gemacht?", en: ["What did you do yesterday?"]}
+          - {id: 2, target: "Wir haben gestern Nachmittag Fußball gespielt.", en: ["We played football yesterday afternoon.", "We played soccer yesterday afternoon."]}
+          - {id: 3, target: "Wo hast du letztes Jahr gearbeitet?", en: ["Where did you work last year?", "Where were you working last year?"]}
+          - {id: 4, target: "Was hast du gesagt?", en: ["What did you say?"]}
+          - {id: 5, target: "Ich habe Tom gefragt.", en: ["I asked Tom.", "I've asked Tom."]}
+          - {id: 6, target: "Er hat lange gewartet.", en: ["He waited for a long time.", "He was waiting for a long time."]}
+          - {id: 7, target: "Tom hat Maria gestern besucht.", en: ["Tom visited Maria yesterday."]}
+          - {id: 8, target: "Er hat mir alles erzählt.", en: ["He told me everything.", "He's told me everything."]}
+      - id: de.a2.u01.s02
+        kind: grammar
+        title: Went, came and stayed
+        cefr: A2
+        can_do: I can say where I went, when I arrived and where I was born.
+        requires: [de.a2.u01.s01]
+        grammar_note: >-
+          Verbs that mean moving from one place to another or a change of state make the
+          Perfekt with sein instead of haben: ich bin gegangen, du bist gefahren, wir sind
+          angekommen. Sein, bleiben and passieren take sein too: ich bin dort gewesen, was
+          ist passiert? Many of these participles end in -en: gegangen, gekommen, gelaufen.
+          In a separable verb, ge goes between the prefix and the verb: angekommen,
+          eingeschlafen, zurückgekommen. Wo bist du geboren? (where were you born?) uses the
+          present of sein. Laufen means to walk or to run.
+        lemmas:
+          - {lemma: ankommen, pos: verb, en: [to arrive], rank: 677, separable: an}
+          - {lemma: zurückkommen, pos: verb, en: [to come back, to return], rank: 1309, separable: zurück}
+          - {lemma: passieren, pos: verb, en: [to happen], rank: 317}
+          - {lemma: laufen, pos: verb, en: [to walk, to run, to go], rank: 457}
+          - {lemma: einschlafen, pos: verb, en: [to fall asleep], rank: 1746, separable: ein}
+          - {lemma: umziehen, pos: verb, en: [to move house, to move], rank: 3082, separable: um}
+          - {lemma: geboren, pos: adj, en: [born], rank: 913}
+        examples:
+          - {id: 1, target: "Wann bist du angekommen?", en: ["When did you arrive?", "When did you get here?"]}
+          - {id: 2, target: "Was ist passiert?", en: ["What happened?", "What's happened?"]}
+          - {id: 3, target: "Wir sind viel gelaufen.", en: ["We walked a lot.", "We did a lot of walking."]}
+          - {id: 4, target: "Ich bin schnell eingeschlafen.", en: ["I fell asleep quickly.", "I quickly fell asleep."]}
+          - {id: 5, target: "Wann bist du zurückgekommen?", en: ["When did you get back?", "When did you come back?", "When did you return?"]}
+          - {id: 6, target: "Wo sind Sie geboren?", en: ["Where were you born?"]}
+          - {id: 7, target: "Wir sind letztes Jahr umgezogen.", en: ["We moved house last year.", "We moved last year."]}
+          - {id: 8, target: "Wie ist es gestern gelaufen?", en: ["How did it go yesterday?"]}
+      - id: de.a2.u01.s03
+        kind: grammar
+        title: Was and had
+        cefr: A2
+        can_do: I can say how I was, what I had and how things used to be.
+        requires: [de.a2.u01.s02]
+        grammar_note: >-
+          With sein and haben, German prefers the simple past (Präteritum) to the Perfekt,
+          in speech too: ich war, du warst, er or sie war, wir waren, Sie waren; ich hatte,
+          du hattest, er or sie hatte, wir hatten, Sie hatten. The ich and er forms are the
+          same. German says ich hatte Glück (I was lucky) and ich hatte Geburtstag (it was
+          my birthday). Früher means in the past and often translates used to: früher war
+          hier eine Schule. Damals means at that time. Mir war langweilig is I was bored.
+        lemmas:
+          - {lemma: müde, pos: adj, en: [tired], rank: 594}
+          - {lemma: langweilig, pos: adj, en: [boring], rank: 1550}
+          - {lemma: Glück, pos: noun, gender: "n", en: [luck, happiness], rank: 847}
+          - {lemma: Spaß, pos: noun, gender: m, en: [fun], rank: 699}
+          - {lemma: Party, pos: noun, gender: f, en: [party], rank: 1119}
+          - {lemma: Geburtstag, pos: noun, gender: m, en: [birthday], rank: 1096}
+          - {lemma: früher, pos: adv, en: [in the past, formerly, earlier], rank: 466}
+          - {lemma: damals, pos: adv, en: [at that time, back then], rank: 1707}
+        examples:
+          - {id: 1, target: "Ich war sehr müde.", en: ["I was very tired.", "I was really tired."]}
+          - {id: 2, target: "Wie war die Party?", en: ["How was the party?", "How did the party go?"]}
+          - {id: 3, target: "Ich hatte viel Spaß auf der Party.", en: ["I had a lot of fun at the party.", "I had a good time at the party."]}
+          - {id: 4, target: "Wir hatten Glück.", en: ["We were lucky.", "We got lucky."]}
+          - {id: 5, target: "Ich hatte gestern Geburtstag.", en: ["Yesterday was my birthday.", "It was my birthday yesterday."]}
+          - {id: 6, target: "Damals war ich noch Student.", en: ["At that time I was still a student.", "Back then I was still a student."]}
+          - {id: 7, target: "Früher war hier eine Schule.", en: ["There used to be a school here."]}
+          - {id: 8, target: "Mir war langweilig.", en: ["I was bored.", "I felt bored."]}
+      - id: de.a2.u01.s04
+        kind: function
+        title: First, then, finally
+        cefr: A2
+        can_do: I can tell what happened in order.
+        requires: [de.a2.u01.s03]
+        grammar_note: >-
+          Put events in order with zuerst (first), dann (then), danach (after that), später
+          (later) and endlich or schließlich (finally, at last). When one of these words
+          starts the sentence, the verb still comes second: zuerst bin ich nach Hause
+          gegangen, dann habe ich gegessen. Plötzlich means suddenly. Erst with a time means
+          not until: Tom kommt erst morgen; with a number it means only: ich bin erst
+          achtzehn. Eine Geschichte is a story, and also history.
+        lemmas:
+          - {lemma: zuerst, pos: adv, en: [first, at first], rank: 1450}
+          - {lemma: danach, pos: adv, en: [after that, afterwards], rank: 1853}
+          - {lemma: später, pos: adv, en: [later], rank: 738}
+          - {lemma: plötzlich, pos: adv, en: [suddenly], rank: 1135}
+          - {lemma: endlich, pos: adv, en: [finally, at last], rank: 1010}
+          - {lemma: schließlich, pos: adv, en: [finally, in the end, after all], rank: 2388}
+          - {lemma: erst, pos: adv, en: [not until, only], rank: 697}
+          - {lemma: Geschichte, pos: noun, gender: f, en: [story, history], rank: 560}
+        examples:
+          - {id: 1, target: "Wir sind zuerst angekommen.", en: ["We arrived first.", "We got here first."]}
+          - {id: 2, target: "Wohin gehen wir danach?", en: ["Where are we going after this?", "Where do we go after that?"]}
+          - {id: 3, target: "Wir sehen uns später.", en: ["See you later.", "I'll see you later."]}
+          - {id: 4, target: "Ich bin plötzlich müde.", en: ["I'm suddenly tired.", "I feel tired all of a sudden."]}
+          - {id: 5, target: "Tom ist endlich eingeschlafen.", en: ["Tom has finally fallen asleep.", "Tom is finally asleep."]}
+          - {id: 6, target: "Das ist eine lange Geschichte.", en: ["It's a long story.", "That's a long story."]}
+          - {id: 7, target: "Tom kommt erst morgen.", en: ["Tom isn't coming until tomorrow.", "Tom won't come until tomorrow."]}
+          - {id: 8, target: "Schließlich habe ich ihn getroffen.", en: ["In the end I met him.", "I finally met him."]}
+  - id: de.a2.u02
+    title: Health
+    cefr: A2
+    skills:
+      - id: de.a2.u02.s01
+        kind: vocab
+        title: The body
+        cefr: A2
+        can_do: I can name parts of the body and say where it hurts.
+        requires: [de.a2.u01.s04]
+        grammar_note: >-
+          Say what hurts with weh tun: mein Kopf tut weh (my head hurts), and with a plural,
+          meine Füße tun weh. German often puts the person in the dative and uses the
+          article, not my, for parts of the body: mir tut der Rücken weh (my back hurts),
+          tut Ihnen der Hals weh? Mir läuft die Nase means my nose is running. Learn the
+          plurals too: die Hände, die Füße, die Zähne, die Augen. On its own, tun means to
+          do: was tust du?
+        lemmas:
+          - {lemma: Kopf, pos: noun, gender: m, en: [head], rank: 900}
+          - {lemma: Rücken, pos: noun, gender: m, en: [back], rank: 1910}
+          - {lemma: Hals, pos: noun, gender: m, en: [throat, neck], rank: 3109}
+          - {lemma: Hand, pos: noun, gender: f, en: [hand], rank: 467}
+          - {lemma: Arm, pos: noun, gender: m, en: [arm], rank: 1014}
+          - {lemma: Bein, pos: noun, gender: "n", en: [leg], rank: 1202}
+          - {lemma: Fuß, pos: noun, gender: m, en: [foot], rank: 784}
+          - {lemma: Auge, pos: noun, gender: "n", en: [eye], rank: 491}
+          - {lemma: Zahn, pos: noun, gender: m, en: [tooth], rank: 1485}
+          - {lemma: Nase, pos: noun, gender: f, en: [nose], rank: 1836}
+          - {lemma: weh, pos: adj, en: [sore, aching], rank: 1291}
+          - {lemma: tun, pos: verb, en: [to do], rank: 84}
+        examples:
+          - {id: 1, target: "Mein Kopf tut weh.", en: ["My head hurts.", "I have a headache."]}
+          - {id: 2, target: "Mir tut der Rücken weh.", en: ["My back hurts.", "I have a pain in my back."]}
+          - {id: 3, target: "Tut das weh?", en: ["Does that hurt?", "Does it hurt?"]}
+          - {id: 4, target: "Meine Füße tun weh.", en: ["My feet hurt.", "I have sore feet."]}
+          - {id: 5, target: "Welcher Zahn tut weh?", en: ["Which tooth hurts?"]}
+          - {id: 6, target: "Mir tut der Hals weh.", en: ["My throat hurts.", "I have a sore throat."]}
+          - {id: 7, target: "Mir läuft die Nase.", en: ["My nose is running.", "I have a runny nose."]}
+          - {id: 8, target: "Schließen Sie die Augen.", en: ["Close your eyes.", "Shut your eyes."]}
+      - id: de.a2.u02.s02
+        kind: grammar
+        title: Feeling ill
+        cefr: A2
+        can_do: I can say how I feel and that I have a cold or a fever.
+        requires: [de.a2.u02.s01]
+        grammar_note: >-
+          Many verbs about how you feel are reflexive: a pronoun points back to the
+          subject. Ich fühle mich, du fühlst dich, er or sie fühlt sich, wir fühlen uns,
+          Sie fühlen sich. In the Perfekt the pronoun comes after haben: ich habe mich
+          erkältet (I've caught a cold), while ich bin erkältet means I have a cold. After
+          a modal verb the pronoun stays near the front: du musst dich ausruhen. Mir ist
+          schlecht means I feel sick. Kopfschmerzen (a headache) is usually plural.
+        lemmas:
+          - {lemma: fühlen, pos: verb, en: [to feel], rank: 503}
+          - {lemma: krank, pos: adj, en: [ill, sick], rank: 572}
+          - {lemma: gesund, pos: adj, en: [healthy, well], rank: 1526}
+          - {lemma: schlecht, pos: adj, en: [bad, unwell], rank: 431}
+          - {lemma: Fieber, pos: noun, gender: "n", en: [fever, temperature], rank: 3159}
+          - {lemma: Erkältung, pos: noun, gender: f, en: [cold], rank: 2376}
+          - {lemma: erkälten, pos: verb, en: [to catch a cold], rank: 2773}
+          - {lemma: Kopfschmerz, pos: noun, gender: m, en: [headache], rank: 2398}
+          - {lemma: Schmerz, pos: noun, gender: m, en: [pain], rank: 1574}
+          - {lemma: ausruhen, pos: verb, en: [to rest], rank: 3587, separable: aus}
+        examples:
+          - {id: 1, target: "Wie fühlen Sie sich?", en: ["How do you feel?", "How are you feeling?"]}
+          - {id: 2, target: "Ich fühle mich krank.", en: ["I feel ill.", "I'm feeling sick."]}
+          - {id: 3, target: "Ich habe mich erkältet.", en: ["I've caught a cold.", "I caught a cold."]}
+          - {id: 4, target: "Haben Sie Fieber?", en: ["Do you have a temperature?", "Do you have a fever?"]}
+          - {id: 5, target: "Hast du Kopfschmerzen?", en: ["Do you have a headache?", "Have you got a headache?"]}
+          - {id: 6, target: "Mir ist schlecht.", en: ["I feel sick.", "I feel ill."]}
+          - {id: 7, target: "Obst ist gesund.", en: ["Fruit is healthy.", "Fruit is good for you."]}
+          - {id: 8, target: "Du musst dich ausruhen.", en: ["You need to rest.", "You have to rest."]}
+      - id: de.a2.u02.s03
+        kind: grammar
+        title: Since when?
+        cefr: A2
+        can_do: I can say how long I have been ill or doing something.
+        requires: [de.a2.u02.s02]
+        grammar_note: >-
+          Seit (since, for) says how long something has been going on, and German uses the
+          present tense where English says has been: er ist seit einer Woche krank (he has
+          been ill for a week). Seit takes the dative: seit einem Monat, seit einer Woche,
+          and plural nouns add -n: seit drei Tagen, seit zwei Jahren. Ask seit wann? (how
+          long, since when?). Immer noch means still: mein Hals tut immer noch weh. Wieder
+          means again: jetzt geht es mir wieder gut.
+        lemmas:
+          - {lemma: seit, pos: prep, en: [since, for], rank: 364}
+          - {lemma: Monat, pos: noun, gender: m, en: [month], rank: 529}
+          - {lemma: immer noch, pos: expr, en: [still], rank: null}
+          - {lemma: wieder, pos: adv, en: [again], rank: 232}
+          - {lemma: schlimm, pos: adj, en: [bad, serious], rank: 1044}
+        examples:
+          - {id: 1, target: "Seit wann ist sie krank?", en: ["How long has she been ill?", "Since when has she been ill?"]}
+          - {id: 2, target: "Mein Bruder ist seit gestern krank.", en: ["My brother has been ill since yesterday.", "My brother has been sick since yesterday."]}
+          - {id: 3, target: "Er ist seit einer Woche krank.", en: ["He has been ill for a week.", "He's been sick for a week."]}
+          - {id: 4, target: "Ich lerne seit zwei Jahren Deutsch.", en: ["I have been learning German for two years.", "I've been studying German for two years."]}
+          - {id: 5, target: "Ich wohne seit einem Monat in Berlin.", en: ["I have been living in Berlin for a month.", "I've lived in Berlin for a month."]}
+          - {id: 6, target: "Ist es schlimm?", en: ["Is it bad?", "Is it serious?"]}
+          - {id: 7, target: "Mein Hals tut immer noch weh.", en: ["My throat still hurts.", "My neck still hurts."]}
+          - {id: 8, target: "Jetzt geht es mir wieder gut.", en: ["I'm fine again now.", "Now I'm well again."]}
+      - id: de.a2.u02.s04
+        kind: function
+        title: At the doctor's
+        cefr: A2
+        can_do: I can understand a doctor's advice and repeat what I should do.
+        requires: [de.a2.u02.s03]
+        grammar_note: >-
+          The doctor gives advice with the Sie imperative, the verb first: nehmen Sie das
+          Medikament dreimal am Tag, bleiben Sie im Bett. With du, drop -st from the du
+          form: du trinkst, trink viel Wasser!; du nimmst, nimm das! Sollen (should, to be
+          supposed to) passes on advice or instructions: der Arzt sagt, ich soll im Bett
+          bleiben. It goes ich soll, du sollst, er or sie soll, wir sollen, Sie sollen. Ins
+          Krankenhaus is to hospital, im Krankenhaus in hospital. Gute Besserung! means get
+          well soon.
+        lemmas:
+          - {lemma: Termin, pos: noun, gender: m, en: [appointment], rank: 2600}
+          - {lemma: setzen, pos: verb, en: [to sit down, to put], rank: 546}
+          - {lemma: Medikament, pos: noun, gender: "n", en: [medicine, medication], rank: 1635}
+          - {lemma: dreimal, pos: adv, en: [three times], rank: 2096}
+          - {lemma: sollen, pos: verb, en: [should, to be supposed to], rank: 100}
+          - {lemma: sofort, pos: adv, en: [immediately, right away], rank: 671}
+          - {lemma: Krankenhaus, pos: noun, gender: "n", en: [hospital], rank: 934}
+          - {lemma: Ruhe, pos: noun, gender: f, en: [rest, quiet], rank: 1613}
+          - {lemma: gute Besserung, pos: expr, en: [get well soon], rank: null}
+        examples:
+          - {id: 1, target: "Haben Sie einen Termin?", en: ["Do you have an appointment?", "Have you got an appointment?"]}
+          - {id: 2, target: "Bitte setzen Sie sich.", en: ["Please sit down.", "Please take a seat."]}
+          - {id: 3, target: "Nehmen Sie das Medikament dreimal am Tag.", en: ["Take the medicine three times a day."]}
+          - {id: 4, target: "Was soll ich tun?", en: ["What should I do?", "What am I supposed to do?"]}
+          - {id: 5, target: "Der Arzt sagt, ich soll im Bett bleiben.", en: ["The doctor says I should stay in bed.", "The doctor says I'm supposed to stay in bed."]}
+          - {id: 6, target: "Sie müssen sofort ins Krankenhaus.", en: ["You have to go to hospital immediately.", "You need to go to the hospital right away."]}
+          - {id: 7, target: "Tom braucht jetzt Ruhe.", en: ["Tom needs rest now.", "Tom needs some rest now."]}
+          - {id: 8, target: "Gute Besserung, Anna!", en: ["Get well soon, Anna!"]}
+  - id: de.a2.u03
+    title: Work
+    cefr: A2
+    skills:
+      - id: de.a2.u03.s01
+        kind: vocab
+        title: Jobs and the workplace
+        cefr: A2
+        can_do: I can talk about jobs, the people I work with and where I have worked.
+        requires: [de.a2.u02.s04]
+        grammar_note: >-
+          Von Beruf adds by profession: er ist von Beruf Arzt. Most job words add -in for a
+          woman: der Chef, die Chefin; der Kollege, die Kollegin; der Kellner, die
+          Kellnerin; der Polizist, die Polizistin. Bei says where you work: ich arbeite bei
+          einer Bank, ich habe drei Jahre bei einer großen Firma gearbeitet. Die Stelle is a
+          job or position you hold; die Arbeit is work in general. Verdienen means to earn:
+          sie verdient gut.
+        lemmas:
+          - {lemma: Beruf, pos: noun, gender: m, en: [job, profession, occupation], rank: 3402}
+          - {lemma: Firma, pos: noun, gender: f, en: [company, firm], rank: 1426}
+          - {lemma: Chef, pos: noun, gender: m, en: [boss], rank: 1385}
+          - {lemma: Chefin, pos: noun, gender: f, en: [boss], rank: 1430}
+          - {lemma: Kollege, pos: noun, gender: m, en: [colleague], rank: 3628}
+          - {lemma: Kunde, pos: noun, gender: m, en: [customer, client], rank: 2471}
+          - {lemma: Kellner, pos: noun, gender: m, en: [waiter], rank: 3404}
+          - {lemma: Polizist, pos: noun, gender: m, en: [police officer, policeman], rank: 1469}
+          - {lemma: Stelle, pos: noun, gender: f, en: [job, position, place], rank: 789}
+          - {lemma: verdienen, pos: verb, en: [to earn, to deserve], rank: 839}
+        examples:
+          - {id: 1, target: "Was ist Ihr Beruf?", en: ["What do you do for a living?", "What is your job?"]}
+          - {id: 2, target: "Er ist von Beruf Arzt.", en: ["He is a doctor by profession.", "He's a doctor."]}
+          - {id: 3, target: "Ich habe drei Jahre bei einer großen Firma gearbeitet.", en: ["I worked for a big company for three years.", "I worked at a large company for three years."]}
+          - {id: 4, target: "Meine Chefin ist sehr nett.", en: ["My boss is very nice."]}
+          - {id: 5, target: "Tom ist mein Kollege.", en: ["Tom is my colleague."]}
+          - {id: 6, target: "Sind Sie Kellner?", en: ["Are you a waiter?"]}
+          - {id: 7, target: "Sie verdient gut.", en: ["She earns well.", "She makes a good living."]}
+          - {id: 8, target: "Wollen Sie die Stelle?", en: ["Do you want the job?"]}
+      - id: de.a2.u03.s02
+        kind: grammar
+        title: Because
+        cefr: A2
+        can_do: I can give reasons with weil and deshalb.
+        requires: [de.a2.u03.s01]
+        grammar_note: >-
+          Weil (because) sends the verb to the end of its clause: ich bleibe zu Hause, weil
+          ich krank bin. With two verbs, the one that changes goes last: weil er arbeiten
+          muss. A comma always comes before weil, and warum? (why?) is answered with weil.
+          Deshalb (that's why, so) works differently: it is an adverb, so the verb comes
+          straight after it: deshalb lerne ich Deutsch. Der Mensch is a person or human
+          being; die Menschen are people.
+        lemmas:
+          - {lemma: weil, pos: conj, en: [because], rank: 579}
+          - {lemma: deshalb, pos: adv, en: [that's why, so, therefore], rank: 2338}
+          - {lemma: interessant, pos: adj, en: [interesting], rank: 790}
+          - {lemma: wichtig, pos: adj, en: [important], rank: 502}
+          - {lemma: Mensch, pos: noun, gender: m, en: [person, human being], rank: 292}
+          - {lemma: Sprache, pos: noun, gender: f, en: [language], rank: 473}
+        examples:
+          - {id: 1, target: "Ich kann nicht kommen, weil ich krank bin.", en: ["I can't come because I'm ill.", "I can't come because I'm sick."]}
+          - {id: 2, target: "Tom bleibt zu Hause, weil er arbeiten muss.", en: ["Tom is staying at home because he has to work."]}
+          - {id: 3, target: "Ich tue es, weil es mir Spaß macht.", en: ["I do it because I enjoy it.", "I do it because it's fun."]}
+          - {id: 4, target: "Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte.", en: ["I'm learning German because I'd like to work in Germany."]}
+          - {id: 5, target: "Ich mag meine Arbeit, weil sie interessant ist.", en: ["I like my job because it's interesting.", "I like my work because it is interesting."]}
+          - {id: 6, target: "Deshalb lerne ich Deutsch.", en: ["That's why I'm learning German.", "That's why I learn German."]}
+          - {id: 7, target: "Ich arbeite gern mit Menschen.", en: ["I like working with people.", "I enjoy working with people."]}
+          - {id: 8, target: "Sprachen sind sehr wichtig.", en: ["Languages are very important."]}
+      - id: de.a2.u03.s03
+        kind: grammar
+        title: I think that
+        cefr: A2
+        can_do: I can give my opinion and say what I hope or know.
+        requires: [de.a2.u03.s02]
+        grammar_note: >-
+          Dass (that) also sends the verb to the end, after a comma: ich glaube, dass er
+          recht hat. English often leaves out that; German can too, but then the verb stays
+          second: ich glaube, er hat recht. Glauben, denken and meinen all give an opinion,
+          and ich glaube nicht means I don't think so. Recht haben is to be right: du hast
+          recht. Sicher means sure: bist du sicher? Danke, dass Sie gekommen sind thanks
+          someone for coming.
+        lemmas:
+          - {lemma: dass, pos: conj, en: [that], rank: 22}
+          - {lemma: glauben, pos: verb, en: [to believe, to think], rank: 120}
+          - {lemma: denken, pos: verb, en: [to think], rank: 129}
+          - {lemma: meinen, pos: verb, en: [to mean, to think], rank: 66}
+          - {lemma: hoffen, pos: verb, en: [to hope], rank: 359}
+          - {lemma: sicher, pos: adj, en: [sure, certain, safe], rank: 340}
+          - {lemma: recht, pos: adj, en: [right], rank: 403}
+          - {lemma: wahr, pos: adj, en: ["true"], rank: 343}
+        examples:
+          - {id: 1, target: "Ich glaube, dass du recht hast.", en: ["I think you're right.", "I think that you're right."]}
+          - {id: 2, target: "Ich hoffe, dass Tom kommt.", en: ["I hope Tom comes.", "I hope that Tom will come."]}
+          - {id: 3, target: "Ich bin sicher, dass er kommt.", en: ["I'm sure he's coming.", "I'm certain that he'll come."]}
+          - {id: 4, target: "Ich denke, dass das wichtig ist.", en: ["I think that's important.", "I think that this is important."]}
+          - {id: 5, target: "Danke, dass Sie gekommen sind.", en: ["Thank you for coming.", "Thanks for coming."]}
+          - {id: 6, target: "Das ist nicht wahr.", en: ["That's not true.", "That isn't true."]}
+          - {id: 7, target: "Ich glaube nicht.", en: ["I don't think so."]}
+          - {id: 8, target: "Was meinen Sie?", en: ["What do you think?", "What do you mean?"]}
+      - id: de.a2.u03.s04
+        kind: function
+        title: The job interview
+        cefr: A2
+        can_do: I can answer questions in a job interview and ask about the job.
+        requires: [de.a2.u03.s03]
+        grammar_note: >-
+          An interview is held with Sie throughout. Talk about experience with the Perfekt:
+          ich habe zwei Jahre in einem Hotel gearbeitet. Anfangen (to start) is separable:
+          wann können Sie anfangen? ich fange am Montag an. Eine Frage stellen is to ask a
+          question: darf ich eine Frage stellen? Say what you do well with gut and gern:
+          ich arbeite gern im Team, ich bin immer pünktlich. Das Gespräch is a conversation,
+          and a job interview is ein Vorstellungsgespräch.
+        lemmas:
+          - {lemma: Erfahrung, pos: noun, gender: f, en: [experience], rank: 1663}
+          - {lemma: Gespräch, pos: noun, gender: "n", en: [conversation, talk, interview], rank: 2202}
+          - {lemma: Frage, pos: noun, gender: f, en: [question], rank: 307}
+          - {lemma: stellen, pos: verb, en: [to put, to place], rank: 286}
+          - {lemma: anfangen, pos: verb, en: [to start, to begin], rank: 726, separable: an}
+          - {lemma: Team, pos: noun, gender: "n", en: [team], rank: 3384}
+          - {lemma: pünktlich, pos: adj, en: [punctual, on time], rank: 1789}
+        examples:
+          - {id: 1, target: "Ich habe viel Erfahrung.", en: ["I have a lot of experience."]}
+          - {id: 2, target: "Wann können Sie anfangen?", en: ["When can you start?"]}
+          - {id: 3, target: "Ich kann am Montag anfangen.", en: ["I can start on Monday."]}
+          - {id: 4, target: "Haben Sie Fragen?", en: ["Do you have any questions?", "Have you got any questions?"]}
+          - {id: 5, target: "Darf ich eine Frage stellen?", en: ["May I ask a question?", "Can I ask a question?"]}
+          - {id: 6, target: "Ich arbeite gern im Team.", en: ["I like working in a team.", "I enjoy teamwork."]}
+          - {id: 7, target: "Ich bin immer pünktlich.", en: ["I'm always on time.", "I'm always punctual."]}
+          - {id: 8, target: "Danke für das interessante Gespräch!", en: ["Thank you for the interesting conversation!", "Thanks for the interesting talk."]}
+  - id: de.a2.u04
+    title: Plans
+    cefr: A2
+    skills:
+      - id: de.a2.u04.s01
+        kind: grammar
+        title: What will happen
+        cefr: A2
+        can_do: I can talk about the future and say what will probably happen.
+        requires: [de.a2.u03.s04]
+        grammar_note: >-
+          Werden with an infinitive at the end talks about the future: ich werde nächste
+          Woche zurückkommen. It goes ich werde, du wirst, er or sie wird, wir werden, ihr
+          werdet, Sie werden. When a time word already makes the future clear, German often
+          uses the present instead: ich komme morgen. With wahrscheinlich (probably),
+          werden makes a guess: er wird wahrscheinlich kommen. On its own, werden means to
+          become or to get: ich möchte Arzt werden, nächste Woche werde ich dreißig.
+        lemmas:
+          - {lemma: werden, pos: verb, en: [will, to become, to get], rank: 41}
+          - {lemma: nächste, pos: adj, en: [next], rank: 874}
+          - {lemma: bald, pos: adv, en: [soon], rank: 402}
+          - {lemma: wahrscheinlich, pos: adv, en: [probably], rank: 734}
+          - {lemma: Zukunft, pos: noun, gender: f, en: [future], rank: 1294}
+          - {lemma: Plan, pos: noun, gender: m, en: [plan], rank: 707}
+        examples:
+          - {id: 1, target: "Ich werde nächste Woche zurückkommen.", en: ["I will come back next week.", "I'll be back next week."]}
+          - {id: 2, target: "Was wirst du nächste Woche machen?", en: ["What are you going to do next week?", "What will you do next week?"]}
+          - {id: 3, target: "Er wird bald kommen.", en: ["He will come soon.", "He'll be here soon."]}
+          - {id: 4, target: "Tom wird wahrscheinlich nicht kommen.", en: ["Tom probably won't come.", "Tom probably isn't coming."]}
+          - {id: 5, target: "Wir werden sehen.", en: ["We'll see.", "We shall see."]}
+          - {id: 6, target: "Ich möchte in Zukunft Arzt werden.", en: ["I want to become a doctor in the future.", "I'd like to be a doctor one day."]}
+          - {id: 7, target: "Der Plan wird funktionieren.", en: ["The plan will work.", "The plan will work out."]}
+          - {id: 8, target: "Nächste Woche werde ich 17.", en: ["I'll be seventeen next week.", "I'm turning seventeen next week."]}
+      - id: de.a2.u04.s02
+        kind: vocab
+        title: Parties and presents
+        cefr: A2
+        can_do: I can invite someone, accept an invitation and congratulate people.
+        requires: [de.a2.u04.s01]
+        grammar_note: >-
+          Einladen (to invite) and mitbringen (to bring along) are separable: ich lade dich
+          ein, er bringt Wein mit. After a modal verb they stay whole: ich möchte dich zu
+          meiner Party einladen, was soll ich mitbringen? Their participles are eingeladen
+          and mitgebracht. Schenken is to give as a present: was willst du Tom schenken?
+          Herzlichen Glückwunsch! means congratulations; add zum Geburtstag for happy
+          birthday. Danke für takes the accusative: danke für die Einladung.
+        lemmas:
+          - {lemma: einladen, pos: verb, en: [to invite], rank: 1003, separable: ein}
+          - {lemma: Einladung, pos: noun, gender: f, en: [invitation], rank: 2886}
+          - {lemma: mitbringen, pos: verb, en: [to bring, to bring along], rank: 1500, separable: mit}
+          - {lemma: Geschenk, pos: noun, gender: "n", en: [present, gift], rank: 927}
+          - {lemma: schenken, pos: verb, en: [to give as a present], rank: 1035}
+          - {lemma: feiern, pos: verb, en: [to celebrate, to party], rank: 892}
+          - {lemma: Hochzeit, pos: noun, gender: f, en: [wedding], rank: 2440}
+          - {lemma: herzlichen Glückwunsch, pos: expr, en: [congratulations], rank: null}
+        examples:
+          - {id: 1, target: "Ich möchte dich zu meiner Party einladen.", en: ["I'd like to invite you to my party."]}
+          - {id: 2, target: "Danke für die Einladung!", en: ["Thanks for the invitation!", "Thank you for inviting me!"]}
+          - {id: 3, target: "Was soll ich mitbringen?", en: ["What should I bring?", "What shall I bring?"]}
+          - {id: 4, target: "Danke für das Geschenk.", en: ["Thank you for the present.", "Thanks for the gift."]}
+          - {id: 5, target: "Was willst du Tom schenken?", en: ["What do you want to give Tom?", "What are you going to give Tom?"]}
+          - {id: 6, target: "Wir feiern am Samstag.", en: ["We're celebrating on Saturday.", "We're having a party on Saturday."]}
+          - {id: 7, target: "Wann ist die Hochzeit?", en: ["When is the wedding?", "When's the wedding?"]}
+          - {id: 8, target: "Herzlichen Glückwunsch zum Geburtstag!", en: ["Happy birthday!", "Many happy returns!"]}
+      - id: de.a2.u04.s03
+        kind: grammar
+        title: Where to, and where
+        cefr: A2
+        can_do: I can say where I am going and where I am or was, in town or in the country.
+        requires: [de.a2.u04.s02]
+        grammar_note: >-
+          Nine prepositions take the accusative for where to and the dative for where: in,
+          an, auf, über, unter, vor, hinter, neben and zwischen. Wohin? (where to?) takes
+          the accusative: wir gehen in die Berge, an den See, ins Ausland. Wo? (where?)
+          takes the dative: ich war in den Bergen, am Strand, auf der Insel. Use an for
+          water and its edge (am See, am Meer, am Fluss), auf for islands and the
+          countryside (auf dem Land) and in for mountains, woods and villages.
+        lemmas:
+          - {lemma: Berg, pos: noun, gender: m, en: [mountain], rank: 1305}
+          - {lemma: See, pos: noun, gender: m, en: [lake], rank: 1511}
+          - {lemma: Fluss, pos: noun, gender: m, en: [river], rank: 831}
+          - {lemma: Strand, pos: noun, gender: m, en: [beach], rank: 1179}
+          - {lemma: Insel, pos: noun, gender: f, en: [island], rank: 1675}
+          - {lemma: Wald, pos: noun, gender: m, en: [forest, woods], rank: 1334}
+          - {lemma: Dorf, pos: noun, gender: "n", en: [village], rank: 1359}
+          - {lemma: Ausland, pos: noun, gender: "n", en: [abroad, foreign countries], rank: 1399}
+        examples:
+          - {id: 1, target: "Wir gehen in die Berge.", en: ["We're going to the mountains.", "We're going into the mountains."]}
+          - {id: 2, target: "Ich war in den Bergen.", en: ["I was in the mountains."]}
+          - {id: 3, target: "Wir gehen an den See.", en: ["We're going to the lake."]}
+          - {id: 4, target: "Ich bin am Strand.", en: ["I'm at the beach.", "I'm on the beach."]}
+          - {id: 5, target: "Gibt es Hotels auf der Insel?", en: ["Are there any hotels on the island?", "Are there hotels on the island?"]}
+          - {id: 6, target: "Er wohnt in einem Dorf.", en: ["He lives in a village."]}
+          - {id: 7, target: "Ich möchte ins Ausland.", en: ["I want to go abroad.", "I'd like to go abroad."]}
+          - {id: 8, target: "Ich bin gern im Wald.", en: ["I like being in the woods.", "I like being in the forest."]}
+      - id: de.a2.u04.s04
+        kind: function
+        title: Making arrangements
+        cefr: A2
+        can_do: I can make, accept and cancel arrangements with friends.
+        requires: [de.a2.u04.s03]
+        grammar_note: >-
+          Vorhaben (to plan, to have on) is separable: was hast du am Wochenende vor?
+          Abholen (to pick up) and absagen (to cancel) work the same way but stay whole
+          after a modal verb: soll ich dich abholen? ich muss leider absagen. Doch makes a
+          suggestion friendly: komm doch mit! (why don't you come along?). Lieber means
+          rather: ich gehe lieber schwimmen (I'd rather go swimming). Bis dann! means see
+          you then.
+        lemmas:
+          - {lemma: vorhaben, pos: verb, en: [to plan, to have planned], rank: 1908, separable: vor}
+          - {lemma: Vorschlag, pos: noun, gender: m, en: [suggestion], rank: 1647}
+          - {lemma: Idee, pos: noun, gender: f, en: [idea], rank: 691}
+          - {lemma: lieber, pos: adv, en: [rather, preferably], rank: 589}
+          - {lemma: doch, pos: adv, en: [after all, why don't you], rank: 255}
+          - {lemma: abholen, pos: verb, en: [to pick up, to collect], rank: 2240, separable: ab}
+          - {lemma: absagen, pos: verb, en: [to cancel, to call off], rank: 2565, separable: ab}
+          - {lemma: bis dann, pos: expr, en: [see you then, see you], rank: null}
+        examples:
+          - {id: 1, target: "Was hast du am Wochenende vor?", en: ["What are you doing at the weekend?", "What are your plans for the weekend?"]}
+          - {id: 2, target: "Hast du einen Vorschlag?", en: ["Do you have a suggestion?", "Have you got any suggestions?"]}
+          - {id: 3, target: "Das ist eine gute Idee.", en: ["That's a good idea."]}
+          - {id: 4, target: "Ich gehe lieber schwimmen.", en: ["I'd rather go swimming.", "I prefer to go swimming."]}
+          - {id: 5, target: "Komm doch mit!", en: ["Why don't you come along?", "Come with us!"]}
+          - {id: 6, target: "Soll ich dich abholen?", en: ["Shall I pick you up?", "Do you want me to pick you up?"]}
+          - {id: 7, target: "Ich muss leider absagen.", en: ["I'm afraid I have to cancel.", "Unfortunately I have to cancel."]}
+          - {id: 8, target: "Gut, bis dann!", en: ["OK, see you then!", "Alright, see you then."]}
+  - id: de.a2.u05
+    title: Weather and seasons
+    cefr: A2
+    skills:
+      - id: de.a2.u05.s01
+        kind: vocab
+        title: The weather
+        cefr: A2
+        can_do: I can ask about the weather and say what it is like.
+        requires: [de.a2.u04.s04]
+        grammar_note: >-
+          Weather verbs take es: es regnet (it's raining), es schneit (it's snowing), and in
+          the Perfekt es hat geregnet. Die Sonne scheint means the sun is shining. Ask wie
+          ist das Wetter? and answer das Wetter ist schön or heute ist schönes Wetter.
+          Temperatures are in Celsius: hier haben wir 30 Grad (it's 30 degrees here). As
+          with kalt and warm, mir ist heiß means I am hot, and es ist heiß means it is hot.
+        lemmas:
+          - {lemma: Wetter, pos: noun, gender: "n", en: [weather], rank: 890}
+          - {lemma: Sonne, pos: noun, gender: f, en: [sun], rank: 989}
+          - {lemma: Regen, pos: noun, gender: m, en: [rain], rank: 1000}
+          - {lemma: Schnee, pos: noun, gender: m, en: [snow], rank: 1213}
+          - {lemma: Wind, pos: noun, gender: m, en: [wind], rank: 1741}
+          - {lemma: Wolke, pos: noun, gender: f, en: [cloud], rank: 2477}
+          - {lemma: Himmel, pos: noun, gender: m, en: [sky], rank: 1109}
+          - {lemma: regnen, pos: verb, en: [to rain], rank: 574}
+          - {lemma: schneien, pos: verb, en: [to snow], rank: 1560}
+          - {lemma: scheinen, pos: verb, en: [to shine, to seem], rank: 285}
+          - {lemma: heiß, pos: adj, en: [hot], rank: 606}
+          - {lemma: Grad, pos: noun, gender: m, en: [degree], rank: 3087}
+        examples:
+          - {id: 1, target: "Wie ist das Wetter?", en: ["What's the weather like?", "How's the weather?"]}
+          - {id: 2, target: "Heute ist schönes Wetter.", en: ["The weather is nice today.", "It's a nice day today."]}
+          - {id: 3, target: "Die Sonne scheint.", en: ["The sun is shining."]}
+          - {id: 4, target: "Es regnet wieder!", en: ["It's raining again!"]}
+          - {id: 5, target: "Heute schneit es.", en: ["It's snowing today."]}
+          - {id: 6, target: "Hier haben wir 30 Grad.", en: ["It's thirty degrees here.", "It's 30 degrees here."]}
+          - {id: 7, target: "Es ist keine Wolke am Himmel.", en: ["There isn't a cloud in the sky.", "There's not a cloud in the sky."]}
+          - {id: 8, target: "Heute gibt es keinen Wind.", en: ["There's no wind today."]}
+      - id: de.a2.u05.s02
+        kind: vocab
+        title: The seasons
+        cefr: A2
+        can_do: I can name the seasons and say what they are like.
+        requires: [de.a2.u05.s01]
+        grammar_note: >-
+          The seasons are all der words: der Frühling, der Sommer, der Herbst, der Winter.
+          In a season is im (in dem): im Sommer ist es heiß, im Winter schneit es. Es wird
+          (it is getting) describes a change: es wird dunkel, es wird Winter, and the leaves
+          turn yellow is die Blätter werden gelb. Die Jahreszeit is a season of the year.
+          Kühl is cool and nass wet.
+        lemmas:
+          - {lemma: Jahreszeit, pos: noun, gender: f, en: [season], rank: 4588}
+          - {lemma: Frühling, pos: noun, gender: m, en: [spring], rank: 1938}
+          - {lemma: Sommer, pos: noun, gender: m, en: [summer], rank: 867}
+          - {lemma: Herbst, pos: noun, gender: m, en: [autumn, fall], rank: 2439}
+          - {lemma: Winter, pos: noun, gender: m, en: [winter], rank: 1233}
+          - {lemma: Blatt, pos: noun, gender: "n", en: [leaf, sheet of paper], rank: 2266}
+          - {lemma: kühl, pos: adj, en: [cool], rank: 3637}
+          - {lemma: nass, pos: adj, en: [wet], rank: 2370}
+          - {lemma: dunkel, pos: adj, en: [dark], rank: 1276}
+        examples:
+          - {id: 1, target: "Ein Jahr hat vier Jahreszeiten.", en: ["There are four seasons in a year.", "A year has four seasons."]}
+          - {id: 2, target: "Der Frühling ist da.", en: ["Spring is here.", "Spring has come."]}
+          - {id: 3, target: "Im Sommer ist es heiß.", en: ["It's hot in summer.", "In summer it is hot."]}
+          - {id: 4, target: "Im Herbst werden die Blätter gelb.", en: ["In autumn the leaves turn yellow.", "The leaves turn yellow in the fall."]}
+          - {id: 5, target: "Es wird Winter.", en: ["Winter is coming.", "It's getting wintry."]}
+          - {id: 6, target: "Heute ist es kühl.", en: ["It's cool today.", "It's chilly today."]}
+          - {id: 7, target: "Es wird dunkel.", en: ["It's getting dark."]}
+          - {id: 8, target: "Die Straße ist nass.", en: ["The street is wet.", "The road is wet."]}
+      - id: de.a2.u05.s03
+        kind: vocab
+        title: Months and dates
+        cefr: A2
+        can_do: I can name the months and say when my birthday is.
+        requires: [de.a2.u05.s02]
+        grammar_note: >-
+          The months are der words and take im for in: im Mai, im Juli. Dates use am with
+          an ordinal ending in -ten: am ersten Mai, am dritten Oktober; heute ist der erste
+          April. In writing, a full stop after the number marks the ordinal: am 3. Oktober.
+          Ask wann hast du Geburtstag? and answer im Juli or am zehnten Juli. Ich bin im
+          November geboren means I was born in November.
+        lemmas:
+          - {lemma: Januar, pos: noun, gender: m, en: [January], rank: 4292}
+          - {lemma: Februar, pos: noun, gender: m, en: [February], rank: 4526}
+          - {lemma: März, pos: noun, gender: m, en: [March], rank: 4990}
+          - {lemma: April, pos: noun, gender: m, en: [April], rank: 3969}
+          - {lemma: Mai, pos: noun, gender: m, en: [May], rank: 4044}
+          - {lemma: Juni, pos: noun, gender: m, en: [June], rank: 3861}
+          - {lemma: Juli, pos: noun, gender: m, en: [July], rank: 4589}
+          - {lemma: August, pos: noun, gender: m, en: [August], rank: 4975}
+          - {lemma: September, pos: noun, gender: m, en: [September], rank: 4938}
+          - {lemma: Oktober, pos: noun, gender: m, en: [October], rank: 1442}
+          - {lemma: November, pos: noun, gender: m, en: [November], rank: 5464}
+          - {lemma: Dezember, pos: noun, gender: m, en: [December], rank: 5535}
+        examples:
+          - {id: 1, target: "Mein Geburtstag ist im Juli.", en: ["My birthday is in July."]}
+          - {id: 2, target: "Im Januar schneit es.", en: ["It snows in January."]}
+          - {id: 3, target: "Der Frühling beginnt im März.", en: ["Spring begins in March.", "Spring starts in March."]}
+          - {id: 4, target: "Es ist der erste April.", en: ["It's the first of April.", "It's April the first."]}
+          - {id: 5, target: "Ich bin im November geboren.", en: ["I was born in November."]}
+          - {id: 6, target: "Er ist letzten August zurückgekommen.", en: ["He came back last August."]}
+          - {id: 7, target: "Es regnet viel im Juni.", en: ["It rains a lot in June."]}
+          - {id: 8, target: "Sie wird im Februar siebzehn.", en: ["She'll be seventeen in February.", "She turns seventeen in February."]}
+      - id: de.a2.u05.s04
+        kind: grammar
+        title: If it rains
+        cefr: A2
+        can_do: I can say what I do when the weather is good or bad.
+        requires: [de.a2.u05.s03]
+        grammar_note: >-
+          Wenn means if, and also when or whenever for something that happens again or in
+          the future. Like weil and dass, it sends the verb to the end: wenn es regnet. When
+          the wenn clause comes first, the main clause starts with its verb: wenn es
+          regnet, bleiben wir zu Hause. For a single event in the past German uses als
+          instead. Oft is often and manchmal sometimes; draußen is outside and drinnen
+          inside. Mitnehmen (to take along) is separable: nimm einen Regenschirm mit!
+        lemmas:
+          - {lemma: wenn, pos: conj, en: [if, when, whenever], rank: 110}
+          - {lemma: oft, pos: adv, en: [often], rank: 306}
+          - {lemma: manchmal, pos: adv, en: [sometimes], rank: 880}
+          - {lemma: draußen, pos: adv, en: [outside, outdoors], rank: 684}
+          - {lemma: drinnen, pos: adv, en: [inside, indoors], rank: 1553}
+          - {lemma: Regenschirm, pos: noun, gender: m, en: [umbrella], rank: 2071}
+          - {lemma: mitnehmen, pos: verb, en: [to take along, to take with you], rank: 1995, separable: mit}
+        examples:
+          - {id: 1, target: "Wenn es regnet, bleiben wir zu Hause.", en: ["If it rains, we stay at home.", "If it rains, we'll stay home."]}
+          - {id: 2, target: "Wenn er Zeit hat, kommt er.", en: ["If he has time, he'll come.", "When he has time, he comes."]}
+          - {id: 3, target: "Iss, wenn du Hunger hast!", en: ["Eat if you're hungry!"]}
+          - {id: 4, target: "Schreib mir, wenn du angekommen bist.", en: ["Write to me when you've arrived.", "Send me a message when you arrive."]}
+          - {id: 5, target: "Nimm einen Regenschirm mit!", en: ["Take an umbrella with you!", "Take an umbrella!"]}
+          - {id: 6, target: "Wenn die Sonne scheint, sind wir oft draußen.", en: ["When the sun shines, we're often outside.", "When it's sunny, we are often outdoors."]}
+          - {id: 7, target: "Bei Regen spielen die Kinder drinnen.", en: ["When it rains, the children play inside.", "In rainy weather the children play indoors."]}
+          - {id: 8, target: "Im April schneit es manchmal.", en: ["It sometimes snows in April.", "In April it sometimes snows."]}
+  - id: de.a2.u06
+    title: Free time
+    cefr: A2
+    skills:
+      - id: de.a2.u06.s01
+        kind: vocab
+        title: Hobbies
+        cefr: A2
+        can_do: I can talk about my hobbies and what I do in my free time.
+        requires: [de.a2.u05.s04]
+        grammar_note: >-
+          Spielen is for games, sports and instruments, with no article before an
+          instrument: ich spiele Gitarre, sie spielt Klavier. Gehen with a second verb says
+          you go and do something: wir gehen wandern, gehen wir spazieren? (shall we go for
+          a walk?). Gern after the verb says you like doing it: ich fotografiere gern;
+          gerne is the same word. In deiner Freizeit means in your free time, and Ihr Hobby
+          is your hobby, for Sie.
+        lemmas:
+          - {lemma: Hobby, pos: noun, gender: "n", en: [hobby], rank: 2799}
+          - {lemma: Freizeit, pos: noun, gender: f, en: [free time, spare time], rank: 3033}
+          - {lemma: Sport, pos: noun, gender: m, en: [sport, sports], rank: 2021}
+          - {lemma: wandern, pos: verb, en: [to hike, to go walking], rank: 2995}
+          - {lemma: spazieren, pos: verb, en: [to stroll, to go for a walk], rank: 1429}
+          - {lemma: fotografieren, pos: verb, en: [to take photos], rank: 2867}
+          - {lemma: malen, pos: verb, en: [to paint], rank: 179}
+          - {lemma: Gitarre, pos: noun, gender: f, en: [guitar], rank: 1628}
+          - {lemma: Klavier, pos: noun, gender: "n", en: [piano], rank: 1415}
+        examples:
+          - {id: 1, target: "Was ist Ihr Hobby?", en: ["What's your hobby?", "What is your hobby?"]}
+          - {id: 2, target: "Was machst du in deiner Freizeit?", en: ["What do you do in your free time?", "What do you do in your spare time?"]}
+          - {id: 3, target: "Magst du Sport?", en: ["Do you like sport?", "Do you like sports?"]}
+          - {id: 4, target: "Wir gehen gern wandern.", en: ["We like hiking.", "We like going hiking."]}
+          - {id: 5, target: "Gehen wir spazieren?", en: ["Shall we go for a walk?"]}
+          - {id: 6, target: "Ich fotografiere gerne.", en: ["I like taking photos.", "I love taking pictures."]}
+          - {id: 7, target: "Spielst du Klavier oder Gitarre?", en: ["Do you play the piano or the guitar?"]}
+          - {id: 8, target: "Malst du gern?", en: ["Do you like painting?", "Do you like to paint?"]}
+      - id: de.a2.u06.s02
+        kind: grammar
+        title: Giving and showing
+        cefr: A2
+        can_do: I can say who gets, borrows or owns something.
+        requires: [de.a2.u06.s01]
+        grammar_note: >-
+          The dative marks the person who receives something: ich gebe dem Kind einen Apfel.
+          Der and das become dem, die becomes der, and plural die becomes den, with -n on
+          the noun: den Kindern. Mein and ein add -em or -er: meinem Vater, meiner Mutter.
+          The pronouns are mir, dir, ihm, ihr, uns, euch, ihnen and Ihnen. Geben, zeigen,
+          schicken, leihen, erklären and schreiben take a person in the dative and a thing
+          in the accusative; gehören takes only the dative: das gehört mir (that's mine).
+        lemmas:
+          - {lemma: geben, pos: verb, en: [to give], rank: 107}
+          - {lemma: zeigen, pos: verb, en: [to show], rank: 451}
+          - {lemma: schicken, pos: verb, en: [to send], rank: 750}
+          - {lemma: leihen, pos: verb, en: [to lend, to borrow], rank: 870}
+          - {lemma: erklären, pos: verb, en: [to explain], rank: 667}
+          - {lemma: gehören, pos: verb, en: [to belong to], rank: 295}
+          - {lemma: Nachricht, pos: noun, gender: f, en: [message, news], rank: 715}
+          - {lemma: Brief, pos: noun, gender: m, en: [letter], rank: 462}
+        examples:
+          - {id: 1, target: "Das gehört meinem Vater.", en: ["That belongs to my father.", "This is my father's."]}
+          - {id: 2, target: "Gib mir den Schlüssel.", en: ["Give me the key."]}
+          - {id: 3, target: "Ich zeige den Kindern die Stadt.", en: ["I'm showing the children the town.", "I'll show the children the city."]}
+          - {id: 4, target: "Ich erkläre es ihr.", en: ["I'll explain it to her.", "I'm explaining it to her."]}
+          - {id: 5, target: "Ich schicke dir eine Nachricht.", en: ["I'll send you a message.", "I'm sending you a message."]}
+          - {id: 6, target: "Leih mir dein Fahrrad!", en: ["Lend me your bike!", "Lend me your bicycle."]}
+          - {id: 7, target: "Gehört Ihnen dieses Buch?", en: ["Does this book belong to you?", "Is this book yours?"]}
+          - {id: 8, target: "Ich habe meiner Mutter einen Brief geschrieben.", en: ["I wrote my mother a letter.", "I've written a letter to my mother."]}
+      - id: de.a2.u06.s03
+        kind: grammar
+        title: Myself and yourself
+        cefr: A2
+        can_do: I can use reflexive verbs to talk about my routine, interests and feelings.
+        requires: [de.a2.u06.s02]
+        grammar_note: >-
+          Reflexive verbs need a pronoun that refers back to the subject: ich beeile mich,
+          du beeilst dich, er beeilt sich, wir beeilen uns, ihr beeilt euch, Sie beeilen
+          sich. In the imperative it follows the verb: beeil dich! entspannen Sie sich!
+          When the verb already has an object, the pronoun is dative, so mich becomes mir
+          and dich becomes dir: ich putze mir die Zähne. Sich interessieren für is to be
+          interested in: ich interessiere mich für Musik. Darf ich mich vorstellen? means
+          may I introduce myself?
+        lemmas:
+          - {lemma: interessieren, pos: verb, en: [to interest, to be interested], rank: 651}
+          - {lemma: langweilen, pos: verb, en: [to bore, to be bored], rank: 1969}
+          - {lemma: entspannen, pos: verb, en: [to relax], rank: 2536}
+          - {lemma: beeilen, pos: verb, en: [to hurry], rank: 1605}
+          - {lemma: anziehen, pos: verb, en: [to put on, to get dressed], rank: 1695, separable: an}
+          - {lemma: waschen, pos: verb, en: [to wash], rank: 779}
+          - {lemma: putzen, pos: verb, en: [to clean, to brush], rank: 1842}
+          - {lemma: vorstellen, pos: verb, en: [to introduce], rank: 1362, separable: vor}
+        examples:
+          - {id: 1, target: "Ich interessiere mich für Musik.", en: ["I'm interested in music.", "I am interested in music."]}
+          - {id: 2, target: "Ich langweile mich.", en: ["I'm bored."]}
+          - {id: 3, target: "Entspannen Sie sich.", en: ["Relax.", "Please relax."]}
+          - {id: 4, target: "Bitte beeil dich!", en: ["Please hurry up!", "Please hurry!"]}
+          - {id: 5, target: "Tom hat sich schnell angezogen.", en: ["Tom got dressed quickly.", "Tom quickly got dressed."]}
+          - {id: 6, target: "Wascht euch die Hände!", en: ["Wash your hands!"]}
+          - {id: 7, target: "Er putzt sich die Zähne.", en: ["He's brushing his teeth.", "He brushes his teeth."]}
+          - {id: 8, target: "Darf ich mich vorstellen?", en: ["May I introduce myself?"]}
+      - id: de.a2.u06.s04
+        kind: function
+        title: Going out
+        cefr: A2
+        can_do: I can talk about going out, matches and shows, and say who won.
+        requires: [de.a2.u06.s03]
+        grammar_note: >-
+          Ausgehen (to go out) is separable: gehst du heute Abend aus? Ins Theater and ins
+          Konzert (in das) say where you are going, im Theater and im Konzert where you are.
+          Gewinnen and verlieren have irregular participles: wir haben gewonnen, wir haben
+          verloren. Das Spiel is a game or a match, and die Mannschaft is a team in sport.
+          Die Eintrittskarte is a ticket for a show or a match; for a train it is die
+          Fahrkarte.
+        lemmas:
+          - {lemma: ausgehen, pos: verb, en: [to go out], rank: 1255, separable: aus}
+          - {lemma: Theater, pos: noun, gender: "n", en: [theatre, theater], rank: 2552}
+          - {lemma: Konzert, pos: noun, gender: "n", en: [concert], rank: 1654}
+          - {lemma: Eintrittskarte, pos: noun, gender: f, en: [ticket, admission ticket], rank: 3459}
+          - {lemma: Spiel, pos: noun, gender: "n", en: [game, match], rank: 658}
+          - {lemma: Mannschaft, pos: noun, gender: f, en: [team], rank: 1850}
+          - {lemma: gewinnen, pos: verb, en: [to win], rank: 480}
+          - {lemma: verlieren, pos: verb, en: [to lose], rank: 353}
+        examples:
+          - {id: 1, target: "Willst du ausgehen?", en: ["Do you want to go out?"]}
+          - {id: 2, target: "Wir gehen ins Theater.", en: ["We're going to the theatre.", "We're going to the theater."]}
+          - {id: 3, target: "Wie war das Konzert?", en: ["How was the concert?"]}
+          - {id: 4, target: "Zwei Eintrittskarten, bitte.", en: ["Two tickets, please."]}
+          - {id: 5, target: "Wann beginnt das Spiel?", en: ["When does the game start?", "When does the match begin?"]}
+          - {id: 6, target: "Welche Mannschaft gewinnt?", en: ["Which team is winning?"]}
+          - {id: 7, target: "Wir haben gewonnen.", en: ["We won.", "We've won."]}
+          - {id: 8, target: "Unsere Mannschaft hat verloren.", en: ["Our team lost.", "Our team has lost."]}
+  - id: de.a2.u07
+    title: Comparing and describing
+    cefr: A2
+    skills:
+      - id: de.a2.u07.s01
+        kind: grammar
+        title: Bigger and better
+        cefr: A2
+        can_do: I can compare two people or things.
+        requires: [de.a2.u06.s04]
+        grammar_note: >-
+          Add -er to an adjective to compare, and than is als: Tom ist älter als ich. Many
+          short adjectives also add an umlaut: alt, älter; groß, größer; jung, jünger; kurz,
+          kürzer. A few are irregular: gut, besser; viel, mehr; gern, lieber. Genauso ...
+          wie (just as ... as) says two things are equal: ich bin genauso alt wie du. Viel
+          before a comparative means much: das ist viel einfacher. Schwer means hard or
+          heavy, leicht easy or light.
+        lemmas:
+          - {lemma: als, pos: conj, en: [than, as, when], rank: 92}
+          - {lemma: genauso, pos: adv, en: [just as, exactly the same], rank: 1185}
+          - {lemma: schwer, pos: adj, en: [hard, difficult, heavy], rank: 440}
+          - {lemma: leicht, pos: adj, en: [easy, light], rank: 531}
+          - {lemma: einfach, pos: adj, en: [simple, easy], rank: 276}
+          - {lemma: langsam, pos: adj, en: [slow, slowly], rank: 776}
+          - {lemma: kurz, pos: adj, en: [short], rank: 607}
+        examples:
+          - {id: 1, target: "Tom ist älter als ich.", en: ["Tom is older than me.", "Tom is older than I am."]}
+          - {id: 2, target: "Ist Französisch schwerer als Englisch?", en: ["Is French harder than English?", "Is French more difficult than English?"]}
+          - {id: 3, target: "Er schwimmt besser als ich.", en: ["He swims better than I do.", "He's a better swimmer than me."]}
+          - {id: 4, target: "Können Sie langsamer sprechen?", en: ["Can you speak more slowly?", "Could you speak more slowly?"]}
+          - {id: 5, target: "Das ist viel einfacher.", en: ["That's much easier.", "This is much simpler."]}
+          - {id: 6, target: "Die Tage werden kürzer.", en: ["The days are getting shorter."]}
+          - {id: 7, target: "Leichter gesagt als getan.", en: ["Easier said than done."]}
+          - {id: 8, target: "Ich bin genauso alt wie du.", en: ["I'm just as old as you.", "I'm the same age as you."]}
+      - id: de.a2.u07.s02
+        kind: grammar
+        title: The best of all
+        cefr: A2
+        can_do: I can say which is the biggest, the best or my favourite.
+        requires: [de.a2.u07.s01]
+        grammar_note: >-
+          The superlative adds -st (-est after d, t, s or z) and the usual adjective ending:
+          das höchste Gebäude, die schönste Stadt der Welt (in the world). After a verb,
+          use am ...sten: wer läuft am schnellsten? Adjectives that take an umlaut in the
+          comparative take it here too: alt, älter, am ältesten. Irregular ones: gut,
+          besser, am besten; gern, lieber, am liebsten; viel, mehr, am meisten; hoch,
+          höher, am höchsten. Was isst du am liebsten? asks what you like eating best.
+        lemmas:
+          - {lemma: beste, pos: adj, en: [best], rank: 888}
+          - {lemma: hoch, pos: adj, en: [high, tall], rank: 630}
+          - {lemma: Welt, pos: noun, gender: f, en: [world], rank: 460}
+          - {lemma: Gebäude, pos: noun, gender: "n", en: [building], rank: 1274}
+          - {lemma: berühmt, pos: adj, en: [famous], rank: 1206}
+          - {lemma: Klasse, pos: noun, gender: f, en: [class], rank: 1321}
+        examples:
+          - {id: 1, target: "Wie heißt der höchste Berg der Welt?", en: ["What is the highest mountain in the world called?", "What's the name of the highest mountain in the world?"]}
+          - {id: 2, target: "Das ist das höchste Gebäude der Stadt.", en: ["This is the tallest building in the city.", "That's the town's tallest building."]}
+          - {id: 3, target: "Wer läuft in deiner Klasse am schnellsten?", en: ["Who runs fastest in your class?", "Who is the fastest runner in your class?"]}
+          - {id: 4, target: "Das ist das berühmteste Museum in Berlin.", en: ["That's the most famous museum in Berlin."]}
+          - {id: 5, target: "Was ist die schönste Stadt der Welt?", en: ["What is the most beautiful city in the world?"]}
+          - {id: 6, target: "Sie ist meine beste Freundin.", en: ["She's my best friend.", "She is my best friend."]}
+          - {id: 7, target: "Erfahrung ist der beste Lehrer.", en: ["Experience is the best teacher."]}
+      - id: de.a2.u07.s03
+        kind: vocab
+        title: What people look like
+        cefr: A2
+        can_do: I can describe what someone looks like.
+        requires: [de.a2.u07.s02]
+        grammar_note: >-
+          Aussehen (to look, to appear) is separable: wie sieht er aus? (what does he look
+          like?), du siehst gut aus (you look good). Ähnlich sehen with the dative means to
+          look like someone: Maria sieht ihrer Mutter ähnlich. Haare is usually plural for
+          the hair on your head: sie hat lange Haare. Eine Brille is a pair of glasses,
+          singular in German: er trägt eine Brille. Hübsch means pretty or good-looking.
+        lemmas:
+          - {lemma: aussehen, pos: verb, en: [to look, to appear], rank: 1184, separable: aus}
+          - {lemma: Haar, pos: noun, gender: "n", en: [hair], rank: 629}
+          - {lemma: Gesicht, pos: noun, gender: "n", en: [face], rank: 1097}
+          - {lemma: lang, pos: adj, en: [long], rank: 167}
+          - {lemma: hübsch, pos: adj, en: [pretty, good-looking], rank: 1280}
+          - {lemma: Brille, pos: noun, gender: f, en: [glasses], rank: 1314}
+          - {lemma: Bart, pos: noun, gender: m, en: [beard], rank: 3130}
+          - {lemma: ähnlich, pos: adj, en: [similar, alike], rank: 2058}
+        examples:
+          - {id: 1, target: "Wie sieht er aus?", en: ["What does he look like?"]}
+          - {id: 2, target: "Du siehst gut aus!", en: ["You look good!", "You're looking well!"]}
+          - {id: 3, target: "Maria hat lange Haare.", en: ["Maria has long hair."]}
+          - {id: 4, target: "Sie hat kurze Haare.", en: ["She has short hair.", "She's got short hair."]}
+          - {id: 5, target: "Er trägt eine Brille.", en: ["He wears glasses.", "He's wearing glasses."]}
+          - {id: 6, target: "Er hat einen Bart.", en: ["He has a beard.", "He's got a beard."]}
+          - {id: 7, target: "Maria sieht ihrer Mutter ähnlich.", en: ["Maria looks like her mother.", "Maria takes after her mother."]}
+          - {id: 8, target: "Sie hat ein hübsches Gesicht.", en: ["She has a pretty face."]}
+      - id: de.a2.u07.s04
+        kind: grammar
+        title: Where things are
+        cefr: A2
+        can_do: I can say where things are in a room and where I put them.
+        requires: [de.a2.u07.s03]
+        grammar_note: >-
+          The nine two-way prepositions (in, an, auf, über, unter, vor, hinter, neben,
+          zwischen) take the dative for where something is and the accusative for where it
+          is put. German has pairs of verbs for this: liegen (to lie, to be lying) with the
+          dative and legen (to lay, to put down) with the accusative: das Buch liegt auf dem
+          Tisch, leg das Buch auf den Tisch! Stehen and stellen work the same way for
+          upright things, and hängen covers both: das Bild hängt an der Wand, ich hänge das
+          Bild an die Wand.
+        lemmas:
+          - {lemma: liegen, pos: verb, en: [to lie, to be lying], rank: 390}
+          - {lemma: legen, pos: verb, en: [to lay, to put], rank: 637}
+          - {lemma: hängen, pos: verb, en: [to hang], rank: 1241}
+          - {lemma: über, pos: prep, en: [over, above, about], rank: 130}
+          - {lemma: unter, pos: prep, en: [under, below], rank: 443}
+          - {lemma: neben, pos: prep, en: [next to, beside], rank: 1129}
+          - {lemma: hinter, pos: prep, en: [behind], rank: 773}
+          - {lemma: zwischen, pos: prep, en: [between], rank: 908}
+          - {lemma: Wand, pos: noun, gender: f, en: [wall], rank: 1643}
+          - {lemma: Bild, pos: noun, gender: "n", en: [picture], rank: 661}
+          - {lemma: Sofa, pos: noun, gender: "n", en: [sofa, couch], rank: 1851}
+          - {lemma: Schrank, pos: noun, gender: m, en: [cupboard, wardrobe], rank: 3699}
+        examples:
+          - {id: 1, target: "Das Bild hängt an der Wand.", en: ["The picture is hanging on the wall.", "The picture is on the wall."]}
+          - {id: 2, target: "Er liegt auf dem Sofa.", en: ["He's lying on the sofa.", "He is lying on the couch."]}
+          - {id: 3, target: "Leg das Buch auf den Tisch!", en: ["Put the book on the table!"]}
+          - {id: 4, target: "Der Schrank steht neben dem Fenster.", en: ["The cupboard is next to the window.", "The wardrobe is beside the window."]}
+          - {id: 5, target: "Die Katze schläft unter dem Tisch.", en: ["The cat is sleeping under the table.", "The cat sleeps under the table."]}
+          - {id: 6, target: "Tom ist hinter dir.", en: ["Tom is behind you."]}
+          - {id: 7, target: "Über dem Sofa hängt eine Uhr.", en: ["There's a clock above the sofa.", "A clock hangs over the sofa."]}
+          - {id: 8, target: "Der Tisch steht zwischen dem Sofa und dem Fenster.", en: ["The table is between the sofa and the window."]}
+  - id: de.a2.u08
+    title: Experiences
+    cefr: A2
+    skills:
+      - id: de.a2.u08.s01
+        kind: grammar
+        title: Already, not yet, never
+        cefr: A2
+        can_do: I can say what I have already done, not done yet or never done.
+        requires: [de.a2.u07.s04]
+        grammar_note: >-
+          Schon (already) and noch nicht (not yet) often go with the Perfekt: hast du schon
+          gegessen? ich habe noch nicht gefrühstückt. In a question, schon also means yet.
+          Schon mal, short for schon einmal, asks about experience: warst du schon mal im
+          Ausland? (have you ever been abroad?). Nie means never: das habe ich nie gesagt,
+          and noch nie means never so far: ich war noch nie in Berlin. Das Mal is a time,
+          an occasion: das erste Mal, jedes Mal.
+        lemmas:
+          - {lemma: schon, pos: adv, en: [already, yet], rank: 114}
+          - {lemma: noch nicht, pos: expr, en: [not yet], rank: null}
+          - {lemma: schon mal, pos: expr, en: [ever, before], rank: null}
+          - {lemma: nie, pos: adv, en: [never], rank: 154}
+          - {lemma: probieren, pos: verb, en: [to try, to taste], rank: 1671}
+          - {lemma: Mal, pos: noun, gender: "n", en: [time, occasion], rank: 510}
+        examples:
+          - {id: 1, target: "Hast du schon gegessen?", en: ["Have you eaten yet?", "Have you already eaten?"]}
+          - {id: 2, target: "Ich habe noch nicht gefrühstückt.", en: ["I haven't had breakfast yet.", "I haven't eaten breakfast yet."]}
+          - {id: 3, target: "Sie sind noch nicht angekommen.", en: ["They haven't arrived yet."]}
+          - {id: 4, target: "Warst du schon mal im Ausland?", en: ["Have you ever been abroad?", "Have you been abroad?"]}
+          - {id: 5, target: "Haben wir uns schon mal getroffen?", en: ["Have we met before?"]}
+          - {id: 6, target: "Das habe ich nie gesagt!", en: ["I never said that!", "I've never said that!"]}
+          - {id: 7, target: "Wir haben schon alles probiert.", en: ["We've already tried everything.", "We have tried everything."]}
+          - {id: 8, target: "Das ist mein erstes Mal.", en: ["It's my first time.", "This is my first time."]}
+      - id: de.a2.u08.s02
+        kind: grammar
+        title: How long ago
+        cefr: A2
+        can_do: I can say how long ago something happened.
+        requires: [de.a2.u08.s01]
+        grammar_note: >-
+          Vor with a time in the dative means ago, and it comes before the time: vor drei
+          Tagen (three days ago), vor einer Stunde, vor einem Jahr. Plural nouns add -n:
+          vor zwei Jahren. Vor kurzem means recently, and das ist lange her means that was
+          a long time ago. Kennen is to know a person or a place (wissen is to know a fact);
+          kennenlernen is to meet for the first time, to get to know: wir haben uns vor
+          zwei Jahren kennengelernt. Heiraten is to get married.
+        lemmas:
+          - {lemma: vor, pos: prep, en: [ago, before, in front of], rank: 135}
+          - {lemma: vor kurzem, pos: expr, en: [recently, not long ago], rank: null}
+          - {lemma: her, pos: adv, en: [ago, here], rank: 887}
+          - {lemma: kennen, pos: verb, en: [to know], rank: 211}
+          - {lemma: kennenlernen, pos: verb, en: [to get to know, to meet], rank: 811, separable: kennen}
+          - {lemma: heiraten, pos: verb, en: [to marry, to get married], rank: 542}
+        examples:
+          - {id: 1, target: "Das war vor drei Tagen.", en: ["That was three days ago.", "It was three days ago."]}
+          - {id: 2, target: "Ich habe vor drei Jahren geheiratet.", en: ["I got married three years ago."]}
+          - {id: 3, target: "Er ist vor einer Stunde gegangen.", en: ["He left an hour ago."]}
+          - {id: 4, target: "Wir sind vor zwei Tagen angekommen.", en: ["We arrived two days ago."]}
+          - {id: 5, target: "Wir sind vor kurzem umgezogen.", en: ["We moved recently.", "We've recently moved house."]}
+          - {id: 6, target: "Wir haben uns vor zwei Jahren kennengelernt.", en: ["We met two years ago."]}
+          - {id: 7, target: "Kennst du Tom?", en: ["Do you know Tom?"]}
+          - {id: 8, target: "Das ist lange her.", en: ["That was a long time ago.", "That was a while ago."]}
+      - id: de.a2.u08.s03
+        kind: grammar
+        title: School days
+        cefr: A2
+        can_do: I can say what I had to do, could do and wanted to do when I was younger.
+        requires: [de.a2.u08.s02]
+        grammar_note: >-
+          To talk about the past, modal verbs use the simple past (Präteritum), not the
+          Perfekt. They drop any umlaut and add -te: ich musste, ich konnte, ich durfte,
+          ich wollte, ich sollte. The ich and er forms are the same: als Kind musste er früh
+          ins Bett. Other persons add the usual endings: du musstest, wir mussten, Sie
+          konnten. Als with a role means as: als Schüler (as a pupil). Eine Prüfung bestehen
+          is to pass an exam; Hausaufgaben (homework) is plural.
+        lemmas:
+          - {lemma: Schüler, pos: noun, gender: m, en: [pupil, schoolboy, student], rank: 752}
+          - {lemma: Schülerin, pos: noun, gender: f, en: [pupil, schoolgirl, student], rank: 799}
+          - {lemma: Kindheit, pos: noun, gender: f, en: [childhood], rank: 3110}
+          - {lemma: Hausaufgabe, pos: noun, gender: f, en: [homework, piece of homework], rank: 1036}
+          - {lemma: Prüfung, pos: noun, gender: f, en: [exam, test], rank: 1083}
+          - {lemma: bestehen, pos: verb, en: [to pass, to exist], rank: 641}
+          - {lemma: Universität, pos: noun, gender: f, en: [university], rank: 1965}
+        examples:
+          - {id: 1, target: "Als Schüler musste ich jeden Tag Hausaufgaben machen.", en: ["As a pupil I had to do homework every day.", "When I was at school I had to do homework every day."]}
+          - {id: 2, target: "In meiner Kindheit wollte ich Lehrer werden.", en: ["As a child I wanted to become a teacher.", "In my childhood I wanted to be a teacher."]}
+          - {id: 3, target: "Ich musste für die Prüfung lernen.", en: ["I had to study for the exam.", "I had to revise for the test."]}
+          - {id: 4, target: "Hat er die Prüfung bestanden?", en: ["Did he pass the exam?", "Has he passed the test?"]}
+          - {id: 5, target: "Als Schülerin durfte ich nicht ausgehen.", en: ["As a schoolgirl I wasn't allowed to go out.", "When I was at school I wasn't allowed to go out."]}
+          - {id: 6, target: "Er sollte seine Hausaufgaben machen.", en: ["He was supposed to do his homework.", "He should have been doing his homework."]}
+          - {id: 7, target: "Ich konnte damals nicht an die Universität gehen.", en: ["At that time I couldn't go to university.", "Back then I wasn't able to go to university."]}
+          - {id: 8, target: "Wir kennen uns seit unserer Kindheit.", en: ["We've known each other since we were children.", "We have known each other since childhood."]}
+      - id: de.a2.u08.s04
+        kind: function
+        title: Telling about an experience
+        cefr: A2
+        can_do: I can tell someone about something that happened to me and how I felt.
+        requires: [de.a2.u08.s03]
+        grammar_note: >-
+          When you tell a story, use the Perfekt for what happened and war and hatte for how
+          things were: ich hatte einen Unfall, ich hatte Angst, es war unglaublich. Sich
+          erinnern an (to remember) is reflexive and takes the accusative: ich erinnere
+          mich an alles. Vergessen (to forget) is not reflexive: ich habe es vergessen. Glück
+          haben is to be lucky and Pech haben to be unlucky. Angst haben means to be
+          afraid: hab keine Angst!
+        lemmas:
+          - {lemma: erinnern, pos: verb, en: [to remind, to remember], rank: 512}
+          - {lemma: vergessen, pos: verb, en: [to forget], rank: 319}
+          - {lemma: Unfall, pos: noun, gender: m, en: [accident], rank: 889}
+          - {lemma: Angst, pos: noun, gender: f, en: [fear], rank: 407}
+          - {lemma: Pech, pos: noun, gender: "n", en: [bad luck], rank: 4866}
+          - {lemma: unglaublich, pos: adj, en: [unbelievable, incredible, amazing], rank: 2927}
+          - {lemma: wunderbar, pos: adj, en: [wonderful], rank: 3030}
+          - {lemma: gefährlich, pos: adj, en: [dangerous], rank: 1149}
+        examples:
+          - {id: 1, target: "Erinnerst du dich an mich?", en: ["Do you remember me?"]}
+          - {id: 2, target: "Ich erinnere mich an alles.", en: ["I remember everything.", "I remember it all."]}
+          - {id: 3, target: "Ich habe es vergessen.", en: ["I forgot.", "I've forgotten it."]}
+          - {id: 4, target: "Ich hatte einen Unfall.", en: ["I had an accident.", "I was in an accident."]}
+          - {id: 5, target: "Ich hatte Angst.", en: ["I was afraid.", "I was scared."]}
+          - {id: 6, target: "Es war unglaublich.", en: ["It was incredible.", "It was amazing."]}
+          - {id: 7, target: "Tom hatte Pech.", en: ["Tom was unlucky.", "Tom had bad luck."]}
+          - {id: 8, target: "Das war gefährlich!", en: ["That was dangerous!"]}

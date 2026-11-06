@@ -1,0 +1,5 @@
+content
+scenarios
+tests/fixtures/scenarios/bad-SC06.yaml
+--content
+tests/fixtures/scenarios/content

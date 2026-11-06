@@ -1,0 +1,218 @@
+schema: parley.checklist/1
+lang: es
+entries:
+  - {id: a1.g.ser, cefr: A1, kind: grammar,
+     text_en: "Ser for identity, origin, profession and what someone is like",
+     skills: [es.a1.u01.s03, es.a1.u06.s04, es.a1.u07.s02]}
+  - {id: a1.g.estar_hay, cefr: A1, kind: grammar,
+     text_en: "Estar for where something is and how someone is; hay for what there is",
+     skills: [es.a1.u04.s01, es.a1.u04.s02]}
+  - {id: a1.g.present_regular, cefr: A1, kind: grammar,
+     text_en: "The present tense of regular -ar, -er and -ir verbs",
+     skills: [es.a1.u01.s03, es.a1.u03.s02, es.a1.u06.s02, es.a1.u07.s02]}
+  - {id: a1.g.present_stem_change, cefr: A1, kind: grammar,
+     text_en: "Present-tense verbs whose stem changes: e to ie, o to ue, e to i",
+     skills: [es.a1.u01.s04, es.a1.u04.s04, es.a1.u05.s04, es.a1.u07.s01, es.a1.u07.s03,
+              es.a1.u08.s04]}
+  - {id: a1.g.present_irregular, cefr: A1, kind: grammar,
+     text_en: "Common irregular verbs in the present: ir, venir, and the yo forms pongo, salgo, hago, conozco",
+     skills: [es.a1.u03.s04, es.a1.u04.s03, es.a1.u07.s03, es.a1.u07.s04, es.a1.u08.s02]}
+  - {id: a1.g.tener, cefr: A1, kind: grammar,
+     text_en: "Tener for possession, age, hunger and thirst",
+     skills: [es.a1.u01.s04, es.a1.u02.s01, es.a1.u03.s02]}
+  - {id: a1.g.gustar, cefr: A1, kind: grammar,
+     text_en: "Gustar with me, te, le, nos, os, les, and me gustaría for polite wishes",
+     skills: [es.a1.u02.s04, es.a1.u03.s04]}
+  - {id: a1.g.articles_gender, cefr: A1, kind: grammar,
+     text_en: "Noun gender and number, the articles, and the contractions al and del",
+     skills: [es.a1.u02.s02, es.a1.u03.s01, es.a1.u04.s02, es.a1.u04.s03]}
+  - {id: a1.g.adjective_agreement, cefr: A1, kind: grammar,
+     text_en: "Adjectives agree with their noun and usually follow it",
+     skills: [es.a1.u01.s01, es.a1.u05.s02, es.a1.u06.s04]}
+  - {id: a1.g.possessives, cefr: A1, kind: grammar,
+     text_en: "Possessive determiners: mi, tu, su, nuestro, vuestro",
+     skills: [es.a1.u02.s01, es.a1.u06.s02]}
+  - {id: a1.g.demonstratives, cefr: A1, kind: grammar,
+     text_en: "Demonstratives este and ese, and the neuter esto and eso",
+     skills: [es.a1.u05.s03]}
+  - {id: a1.g.reflexive, cefr: A1, kind: grammar,
+     text_en: "Reflexive verbs with me, te, se: llamarse and the daily routine",
+     skills: [es.a1.u01.s02, es.a1.u07.s01]}
+  - {id: a1.g.ir_a_infinitive, cefr: A1, kind: grammar,
+     text_en: "Ir a with an infinitive for plans",
+     skills: [es.a1.u08.s02]}
+  - {id: a1.g.questions, cefr: A1, kind: grammar,
+     text_en: "Questions with qué, cómo, dónde, cuánto, cuál and cuándo, opened with ¿",
+     skills: [es.a1.u01.s01, es.a1.u01.s03, es.a1.u05.s04, es.a1.u07.s03]}
+  - {id: a1.g.negation_frequency, cefr: A1, kind: grammar,
+     text_en: "Negation with no and nunca, and adverbs of frequency",
+     skills: [es.a1.u02.s04, es.a1.u03.s02, es.a1.u07.s04]}
+  - {id: a1.g.polite_commands, cefr: A1, kind: grammar,
+     text_en: "Commands for directions and polite requests, with tú and usted",
+     skills: [es.a1.u04.s04, es.a1.u08.s04]}
+  - {id: a1.g.prepositions_place_time, cefr: A1, kind: grammar,
+     text_en: "Prepositions of place and time: en, a, de, al lado de, delante de, antes de, después de",
+     skills: [es.a1.u04.s02, es.a1.u07.s03, es.a1.u07.s05]}
+  - {id: a1.f.greet, cefr: A1, kind: function, text_en: "Greet people and say goodbye",
+     skills: [es.a1.u01.s01]}
+  - {id: a1.f.introduce, cefr: A1, kind: function,
+     text_en: "Introduce yourself and ask someone's name, where they are from and which languages they speak",
+     skills: [es.a1.u01.s02, es.a1.u01.s03]}
+  - {id: a1.f.numbers_age, cefr: A1, kind: function,
+     text_en: "Count and give your age and phone number",
+     skills: [es.a1.u01.s04]}
+  - {id: a1.f.family, cefr: A1, kind: function, text_en: "Talk about your family",
+     skills: [es.a1.u02.s01, es.a1.u06.s03]}
+  - {id: a1.f.likes, cefr: A1, kind: function, text_en: "Say what you like and dislike",
+     skills: [es.a1.u02.s04, es.a1.u03.s01]}
+  - {id: a1.f.eat_drink, cefr: A1, kind: function,
+     text_en: "Order food and drink in a café or restaurant and ask for the bill",
+     skills: [es.a1.u02.s02, es.a1.u03.s03, es.a1.u03.s04]}
+  - {id: a1.f.time_dates, cefr: A1, kind: function,
+     text_en: "Tell the time and say the day and the date",
+     skills: [es.a1.u02.s03, es.a1.u07.s03, es.a1.u07.s05]}
+  - {id: a1.f.location, cefr: A1, kind: function,
+     text_en: "Say where places and things are and whether there is one nearby",
+     skills: [es.a1.u04.s01, es.a1.u04.s02]}
+  - {id: a1.f.directions, cefr: A1, kind: function,
+     text_en: "Ask the way and understand simple directions",
+     skills: [es.a1.u04.s04]}
+  - {id: a1.f.transport, cefr: A1, kind: function,
+     text_en: "Say where you are going and how you get there",
+     skills: [es.a1.u04.s03, es.a1.u08.s01]}
+  - {id: a1.f.shopping, cefr: A1, kind: function,
+     text_en: "Say what you are looking for in a shop, ask the price and pay",
+     skills: [es.a1.u05.s01, es.a1.u05.s03, es.a1.u05.s04]}
+  - {id: a1.f.describe_things, cefr: A1, kind: function,
+     text_en: "Describe things by colour and size",
+     skills: [es.a1.u05.s02, es.a1.u05.s03]}
+  - {id: a1.f.home, cefr: A1, kind: function, text_en: "Describe your home and say where you live",
+     skills: [es.a1.u06.s01, es.a1.u06.s02]}
+  - {id: a1.f.describe_people, cefr: A1, kind: function,
+     text_en: "Describe what people look like and what they are like",
+     skills: [es.a1.u06.s04]}
+  - {id: a1.f.routine, cefr: A1, kind: function,
+     text_en: "Describe your day and say how often you do things",
+     skills: [es.a1.u07.s01, es.a1.u07.s04]}
+  - {id: a1.f.work_study, cefr: A1, kind: function,
+     text_en: "Say what you do and where you work or study",
+     skills: [es.a1.u07.s02]}
+  - {id: a1.f.plans, cefr: A1, kind: function, text_en: "Talk about simple plans",
+     skills: [es.a1.u08.s02]}
+  - {id: a1.f.hotel, cefr: A1, kind: function,
+     text_en: "Check in at a hotel and ask about the room and breakfast",
+     skills: [es.a1.u08.s03]}
+  - {id: a1.f.repair, cefr: A1, kind: function,
+     text_en: "Say you do not understand and ask someone to repeat or speak more slowly",
+     skills: [es.a1.u08.s04]}
+  - {id: a2.g.preterite_regular, cefr: A2, kind: grammar,
+     text_en: "The preterite of regular -ar, -er and -ir verbs for finished events",
+     skills: [es.a2.u01.s01, es.a2.u01.s02]}
+  - {id: a2.g.preterite_irregular, cefr: A2, kind: grammar,
+     text_en: "Common irregular preterites: fui, estuve, tuve, hice, dije, di, vine",
+     skills: [es.a2.u01.s03]}
+  - {id: a2.g.imperfect, cefr: A2, kind: grammar,
+     text_en: "The imperfect for descriptions, background and past habits",
+     skills: [es.a2.u05.s03, es.a2.u06.s03]}
+  - {id: a2.g.preterite_or_imperfect, cefr: A2, kind: grammar,
+     text_en: "Choosing between the preterite and the imperfect when telling what happened",
+     skills: [es.a2.u05.s03, es.a2.u08.s03]}
+  - {id: a2.g.present_perfect, cefr: A2, kind: grammar,
+     text_en: "The present perfect with regular and irregular participles, for experiences and periods not yet over",
+     skills: [es.a2.u03.s02, es.a2.u08.s01]}
+  - {id: a2.g.future, cefr: A2, kind: grammar,
+     text_en: "Ir a with an infinitive and the simple future for plans, promises and predictions",
+     skills: [es.a2.u04.s01, es.a2.u04.s02]}
+  - {id: a2.g.comparatives, cefr: A2, kind: grammar,
+     text_en: "Comparisons with más ... que, menos ... que and tan ... como, and mejor, peor, mayor, menor",
+     skills: [es.a2.u07.s01, es.a2.u07.s02]}
+  - {id: a2.g.superlatives, cefr: A2, kind: grammar,
+     text_en: "Superlatives with el más ... de and adjectives in -ísimo",
+     skills: [es.a2.u07.s03]}
+  - {id: a2.g.object_pronouns, cefr: A2, kind: grammar,
+     text_en: "Direct and indirect object pronouns, their order, and se in place of le before lo",
+     skills: [es.a2.u06.s04]}
+  - {id: a2.g.reflexive_health, cefr: A2, kind: grammar,
+     text_en: "Reflexive verbs for routine and health, with the article for parts of the body",
+     skills: [es.a2.u02.s01, es.a2.u02.s02, es.a2.u04.s01]}
+  - {id: a2.g.possessive_pronouns, cefr: A2, kind: grammar,
+     text_en: "Possessive pronouns: el mío, el tuyo, el suyo, el nuestro, el vuestro",
+     skills: [es.a2.u07.s04]}
+  - {id: a2.g.por_para, cefr: A2, kind: grammar,
+     text_en: "Por for reason, means, route and part of the day; para for purpose, recipient and deadline",
+     skills: [es.a2.u04.s04]}
+  - {id: a2.g.imperative, cefr: A2, kind: grammar,
+     text_en: "Positive and negative commands with tú and usted for advice and instructions, with pronouns attached",
+     skills: [es.a2.u02.s04, es.a2.u05.s04]}
+  - {id: a2.g.hace_desde, cefr: A2, kind: grammar,
+     text_en: "Hace for ago, and desde, desde hace and hace ... que for how long something has lasted",
+     skills: [es.a2.u02.s03]}
+  - {id: a2.g.ya_todavia, cefr: A2, kind: grammar,
+     text_en: "Ya, todavía, aún and acabar de",
+     skills: [es.a2.u08.s02]}
+  - {id: a2.g.frequency, cefr: A2, kind: grammar,
+     text_en: "Adverbs and phrases of frequency, and soler with an infinitive",
+     skills: [es.a2.u06.s02]}
+  - {id: a2.g.like_gustar, cefr: A2, kind: grammar,
+     text_en: "Verbs that work like gustar: doler, interesar, encantar, apetecer, preocupar",
+     skills: [es.a2.u02.s01, es.a2.u03.s04, es.a2.u04.s03, es.a2.u08.s04]}
+  - {id: a2.g.saber_poder, cefr: A2, kind: grammar,
+     text_en: "Saber, conocer and poder for knowledge and ability",
+     skills: [es.a2.u03.s03]}
+  - {id: a2.g.si_present, cefr: A2, kind: grammar,
+     text_en: "Real conditions with si and the present",
+     skills: [es.a2.u05.s04]}
+  - {id: a2.g.weather, cefr: A2, kind: grammar,
+     text_en: "Weather with hacer, and llover and nevar used only in the él form",
+     skills: [es.a2.u05.s01, es.a2.u05.s02]}
+  - {id: a2.g.indefinites, cefr: A2, kind: grammar,
+     text_en: "Indefinite and negative words: algo, nada, alguien, nadie, alguna vez, jamás",
+     skills: [es.a2.u01.s01, es.a2.u01.s04, es.a2.u08.s01]}
+  - {id: a2.f.past_events, cefr: A2, kind: function,
+     text_en: "Say what you did yesterday, last week or last year",
+     skills: [es.a2.u01.s01, es.a2.u01.s02, es.a2.u01.s03]}
+  - {id: a2.f.tell_story, cefr: A2, kind: function,
+     text_en: "Tell a short story in order and say what happened in the end",
+     skills: [es.a2.u01.s04, es.a2.u08.s03]}
+  - {id: a2.f.health, cefr: A2, kind: function,
+     text_en: "Say what is wrong, where it hurts and how long you have been ill",
+     skills: [es.a2.u02.s01, es.a2.u02.s02, es.a2.u02.s03]}
+  - {id: a2.f.advice, cefr: A2, kind: function,
+     text_en: "Understand and give simple advice and instructions",
+     skills: [es.a2.u02.s04, es.a2.u05.s04]}
+  - {id: a2.f.work_experience, cefr: A2, kind: function,
+     text_en: "Talk about your job, your experience and what you can do",
+     skills: [es.a2.u03.s01, es.a2.u03.s02, es.a2.u03.s03]}
+  - {id: a2.f.job_questions, cefr: A2, kind: function,
+     text_en: "Ask about hours and pay and say when you are available",
+     skills: [es.a2.u03.s04]}
+  - {id: a2.f.plans_meet, cefr: A2, kind: function,
+     text_en: "Talk about plans and arrange to meet",
+     skills: [es.a2.u04.s01, es.a2.u04.s02]}
+  - {id: a2.f.invite, cefr: A2, kind: function,
+     text_en: "Invite someone, and accept or refuse an invitation politely",
+     skills: [es.a2.u04.s03]}
+  - {id: a2.f.purpose_reason, cefr: A2, kind: function,
+     text_en: "Say what something is for, who it is for and why something happened",
+     skills: [es.a2.u04.s04]}
+  - {id: a2.f.weather, cefr: A2, kind: function,
+     text_en: "Talk about the weather and the seasons and plan around them",
+     skills: [es.a2.u05.s01, es.a2.u05.s02, es.a2.u05.s04]}
+  - {id: a2.f.describe_past, cefr: A2, kind: function,
+     text_en: "Describe how things were and what you used to do",
+     skills: [es.a2.u05.s03, es.a2.u06.s03]}
+  - {id: a2.f.free_time, cefr: A2, kind: function,
+     text_en: "Talk about your free time and how often you do things",
+     skills: [es.a2.u06.s01, es.a2.u06.s02]}
+  - {id: a2.f.give_lend, cefr: A2, kind: function,
+     text_en: "Give, lend and borrow things and say whose they are",
+     skills: [es.a2.u06.s04, es.a2.u07.s04]}
+  - {id: a2.f.compare_describe, cefr: A2, kind: function,
+     text_en: "Describe and compare people, places and things",
+     skills: [es.a2.u07.s01, es.a2.u07.s02, es.a2.u07.s03]}
+  - {id: a2.f.experiences, cefr: A2, kind: function,
+     text_en: "Ask about and describe experiences, and say what you have or have not done yet",
+     skills: [es.a2.u08.s01, es.a2.u08.s02]}
+  - {id: a2.f.react, cefr: A2, kind: function,
+     text_en: "React to news with surprise, sympathy or pleasure",
+     skills: [es.a2.u08.s04]}

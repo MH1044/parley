@@ -5,9 +5,10 @@ variety: Spain Spanish; usted and tú both taught
 version: 1
 function_words: [el, la, los, las, un, una, unos, unas, "y", e, o, pero, de, a, en, con, sin,
   por, para, "no", sí, yo, tú, él, ella, usted, nosotros, nosotras, vosotros, vosotras, ellos,
-  ellas, ustedes, me, te, se, nos, os, lo, le, les, que, qué, mi, mis, tu, tus, su, sus, cómo,
-  dónde, cuánto, cuánta, cuántos, cuántas, cuál, quién]
-names: [Ana, Luis, Carmen, Pablo, Madrid, Sevilla, España]
+  ellas, ustedes, me, te, se, nos, os, lo, le, les, mí, ti, que, qué, mi, mis, tu, tus, su, sus,
+  cómo, dónde, cuánto, cuánta, cuántos, cuántas, cuál, quién]
+names: [Ana, Luis, Carmen, Pablo, María, Juan, Carlos, Pedro, Lucía, José, Laura, Madrid, Sevilla,
+  España, Barcelona, Valencia]
 units:
   - id: es.a1.u01
     title: Hello
@@ -25,16 +26,16 @@ units:
           The adjective changes with the noun it describes: buenos goes with días,
           buenas with tardes and noches.
         lemmas:
-          - {lemma: hola, pos: intj, en: [hello, hi], rank: null}
-          - {lemma: adiós, pos: intj, en: [goodbye, bye], rank: null}
-          - {lemma: bueno, pos: adj, en: [good], rank: null}
-          - {lemma: día, pos: noun, gender: m, en: [day], rank: null}
-          - {lemma: tarde, pos: noun, gender: f, en: [afternoon, evening], rank: null}
-          - {lemma: noche, pos: noun, gender: f, en: [night], rank: null}
-          - {lemma: tal, pos: adv, en: [such], rank: null}
-          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}
-          - {lemma: bien, pos: adv, en: [well, fine], rank: null}
-          - {lemma: muy, pos: adv, en: [very], rank: null}
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: 1672}
+          - {lemma: adiós, pos: intj, en: [goodbye, bye], rank: 2659}
+          - {lemma: bueno, pos: adj, en: [good], rank: 102}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: 127}
+          - {lemma: tarde, pos: noun, gender: f, en: [afternoon, evening], rank: 253}
+          - {lemma: noche, pos: noun, gender: f, en: [night], rank: 252}
+          - {lemma: tal, pos: adv, en: [such], rank: 584}
+          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: 470}
+          - {lemma: bien, pos: adv, en: [well, fine], rank: 94}
+          - {lemma: muy, pos: adv, en: [very], rank: 90}
         examples:
           - {id: 1, target: "Hola, ¿qué tal?", en: ["Hi, how are you?", "Hello, how are you?"]}
           - {id: 2, target: "Buenos días.", en: ["Good morning."]}
@@ -55,13 +56,14 @@ units:
           (he, she or usted is called). Use usted with people you do not know well and
           with anyone clearly older than you; use tú with friends and family.
         lemmas:
-          - {lemma: llamarse, pos: verb, en: [to be called], rank: null}
-          - {lemma: nombre, pos: noun, gender: m, en: [name], rank: null}
-          - {lemma: señor, pos: noun, gender: m, en: [sir, Mr, gentleman], rank: null}
-          - {lemma: señora, pos: noun, gender: f, en: [madam, Mrs, lady], rank: null}
+          - {lemma: llamarse, pos: verb, en: [to be called], rank: 860}
+          - {lemma: llamar, pos: verb, en: [to call], rank: 177}
+          - {lemma: nombre, pos: noun, gender: m, en: [name], rank: 378}
+          - {lemma: señor, pos: noun, gender: m, en: [sir, Mr, gentleman], rank: 760}
+          - {lemma: señora, pos: noun, gender: f, en: [madam, Mrs, lady], rank: 705}
           - {lemma: mucho gusto, pos: expr, en: [nice to meet you, pleased to meet you], rank: null}
-          - {lemma: encantado, pos: adj, en: [pleased to meet you, delighted], rank: null}
-          - {lemma: perdón, pos: intj, en: [sorry, excuse me], rank: null}
+          - {lemma: encantado, pos: adj, en: [pleased to meet you, delighted], rank: 3117}
+          - {lemma: perdón, pos: intj, en: [sorry, excuse me], rank: 1916}
         examples:
           - {id: 1, target: "Me llamo Ana.", en: ["My name is Ana.", "I am called Ana."]}
           - {id: 2, target: "¿Cómo te llamas?", en: ["What is your name?", "What are you called?"]}
@@ -71,6 +73,7 @@ units:
           - {id: 6, target: "Encantada, señor.", en: ["Pleased to meet you, sir."]}
           - {id: 7, target: "Perdón, ¿cómo se llama?", en: ["Sorry, what is your name?", "Excuse me, what is your name?"]}
           - {id: 8, target: "¿Y tu nombre?", en: ["And your name?", "And what is your name?"]}
+          - {id: 9, target: "Gracias por llamar.", en: ["Thanks for calling.", "Thank you for calling."]}
       - id: es.a1.u01.s03
         kind: grammar
         title: Where you are from
@@ -84,14 +87,14 @@ units:
           -ar verbs like hablar follow one pattern: hablo, hablas, habla, hablamos,
           habláis, hablan. Language names are not capitalised: español, inglés.
         lemmas:
-          - {lemma: ser, pos: verb, en: [to be], rank: null}
-          - {lemma: hablar, pos: verb, en: [to speak, to talk], rank: null}
-          - {lemma: español, pos: noun, gender: m, en: [Spanish], rank: null}
-          - {lemma: inglés, pos: noun, gender: m, en: [English], rank: null}
-          - {lemma: francés, pos: noun, gender: m, en: [French], rank: null}
-          - {lemma: alemán, pos: noun, gender: m, en: [German], rank: null}
-          - {lemma: también, pos: adv, en: [also, too], rank: null}
-          - {lemma: aquí, pos: adv, en: [here], rank: null}
+          - {lemma: ser, pos: verb, en: [to be], rank: 4}
+          - {lemma: hablar, pos: verb, en: [to speak, to talk], rank: 92}
+          - {lemma: español, pos: noun, gender: m, en: [Spanish], rank: 808}
+          - {lemma: inglés, pos: noun, gender: m, en: [English], rank: 267}
+          - {lemma: francés, pos: noun, gender: m, en: [French], rank: 258}
+          - {lemma: alemán, pos: noun, gender: m, en: [German], rank: 906}
+          - {lemma: también, pos: adv, en: [also, too], rank: 359}
+          - {lemma: aquí, pos: adv, en: [here], rank: 105}
         examples:
           - {id: 1, target: "Soy de Madrid.", en: ["I am from Madrid."]}
           - {id: 2, target: "¿De dónde eres?", en: ["Where are you from?"]}
@@ -113,20 +116,20 @@ units:
           tenéis, tienen. Numbers from sixteen to twenty-nine are written as one word
           (dieciséis, veintiuno); from thirty-one on they use y: treinta y uno.
         lemmas:
-          - {lemma: tener, pos: verb, en: [to have], rank: null}
-          - {lemma: año, pos: noun, gender: m, en: [year], rank: null}
-          - {lemma: número, pos: noun, gender: m, en: [number], rank: null}
-          - {lemma: teléfono, pos: noun, gender: m, en: [telephone, phone], rank: null}
-          - {lemma: uno, pos: num, en: [one], rank: null}
-          - {lemma: dos, pos: num, en: [two], rank: null}
-          - {lemma: tres, pos: num, en: [three], rank: null}
-          - {lemma: cuatro, pos: num, en: [four], rank: null}
-          - {lemma: cinco, pos: num, en: [five], rank: null}
-          - {lemma: seis, pos: num, en: [six], rank: null}
-          - {lemma: siete, pos: num, en: [seven], rank: null}
-          - {lemma: ocho, pos: num, en: [eight], rank: null}
-          - {lemma: nueve, pos: num, en: [nine], rank: null}
-          - {lemma: diez, pos: num, en: [ten], rank: null}
+          - {lemma: tener, pos: verb, en: [to have], rank: 21}
+          - {lemma: año, pos: noun, gender: m, en: [year], rank: 151}
+          - {lemma: número, pos: noun, gender: m, en: [number], rank: 691}
+          - {lemma: teléfono, pos: noun, gender: m, en: [telephone, phone], rank: 539}
+          - {lemma: uno, pos: num, en: [one], rank: 36}
+          - {lemma: dos, pos: num, en: [two], rank: 163}
+          - {lemma: tres, pos: num, en: [three], rank: 257}
+          - {lemma: cuatro, pos: num, en: [four], rank: 742}
+          - {lemma: cinco, pos: num, en: [five], rank: 481}
+          - {lemma: seis, pos: num, en: [six], rank: 796}
+          - {lemma: siete, pos: num, en: [seven], rank: 1012}
+          - {lemma: ocho, pos: num, en: [eight], rank: 1404}
+          - {lemma: nueve, pos: num, en: [nine], rank: 1551}
+          - {lemma: diez, pos: num, en: [ten], rank: 462}
         examples:
           - {id: 1, target: "Tengo veinte años.", en: ["I am twenty years old.", "I am twenty."]}
           - {id: 2, target: "¿Cuántos años tienes?", en: ["How old are you?"]}
@@ -151,14 +154,14 @@ units:
           your (usted) father. A masculine plural can include women: mis hermanos can
           mean my brothers or my brothers and sisters.
         lemmas:
-          - {lemma: familia, pos: noun, gender: f, en: [family], rank: null}
-          - {lemma: madre, pos: noun, gender: f, en: [mother], rank: null}
-          - {lemma: padre, pos: noun, gender: m, en: [father], rank: null}
-          - {lemma: hermano, pos: noun, gender: m, en: [brother], rank: null}
-          - {lemma: hermana, pos: noun, gender: f, en: [sister], rank: null}
-          - {lemma: hijo, pos: noun, gender: m, en: [son], rank: null}
-          - {lemma: hija, pos: noun, gender: f, en: [daughter], rank: null}
-          - {lemma: amigo, pos: noun, gender: m, en: [friend], rank: null}
+          - {lemma: familia, pos: noun, gender: f, en: [family], rank: 508}
+          - {lemma: madre, pos: noun, gender: f, en: [mother], rank: 121}
+          - {lemma: padre, pos: noun, gender: m, en: [father], rank: 120}
+          - {lemma: hermano, pos: noun, gender: m, en: [brother], rank: 165}
+          - {lemma: hermana, pos: noun, gender: f, en: [sister], rank: 208}
+          - {lemma: hijo, pos: noun, gender: m, en: [son], rank: 242}
+          - {lemma: hija, pos: noun, gender: f, en: [daughter], rank: 246}
+          - {lemma: amigo, pos: noun, gender: m, en: [friend], rank: 185}
         examples:
           - {id: 1, target: "Tengo una hermana.", en: ["I have a sister.", "I have one sister."]}
           - {id: 2, target: "Mi madre se llama Carmen.", en: ["My mother's name is Carmen.", "My mother is called Carmen."]}
@@ -180,16 +183,16 @@ units:
           singular because it starts with a stressed a: el agua, un agua. Ask the price
           with ¿cuánto es? and answer with son plus the amount: son tres euros.
         lemmas:
-          - {lemma: café, pos: noun, gender: m, en: [coffee, café], rank: null}
-          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: null}
-          - {lemma: té, pos: noun, gender: m, en: [tea], rank: null}
-          - {lemma: cerveza, pos: noun, gender: f, en: [beer], rank: null}
-          - {lemma: bocadillo, pos: noun, gender: m, en: [sandwich, filled roll], rank: null}
-          - {lemma: querer, pos: verb, en: [to want], rank: null}
+          - {lemma: café, pos: noun, gender: m, en: [coffee, café], rank: 435}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: 307}
+          - {lemma: té, pos: noun, gender: m, en: [tea], rank: 764}
+          - {lemma: cerveza, pos: noun, gender: f, en: [beer], rank: 1072}
+          - {lemma: bocadillo, pos: noun, gender: m, en: [sandwich, filled roll], rank: 11228}
+          - {lemma: querer, pos: verb, en: [to want], rank: 53}
           - {lemma: por favor, pos: expr, en: [please], rank: null}
           - {lemma: de nada, pos: expr, en: [you are welcome, not at all], rank: null}
-          - {lemma: cuenta, pos: noun, gender: f, en: [bill, check], rank: null}
-          - {lemma: euro, pos: noun, gender: m, en: [euro], rank: null}
+          - {lemma: cuenta, pos: noun, gender: f, en: [bill, check], rank: 476}
+          - {lemma: euro, pos: noun, gender: m, en: [euro], rank: 3595}
         examples:
           - {id: 1, target: "Un café, por favor.", en: ["A coffee, please."]}
           - {id: 2, target: "Quiero una cerveza.", en: ["I want a beer.", "I would like a beer."]}
@@ -212,18 +215,18 @@ units:
           son las dos, son las tres and so on for the other hours; add y media for half
           past.
         lemmas:
-          - {lemma: lunes, pos: noun, gender: m, en: [Monday], rank: null}
-          - {lemma: martes, pos: noun, gender: m, en: [Tuesday], rank: null}
-          - {lemma: miércoles, pos: noun, gender: m, en: [Wednesday], rank: null}
-          - {lemma: jueves, pos: noun, gender: m, en: [Thursday], rank: null}
-          - {lemma: viernes, pos: noun, gender: m, en: [Friday], rank: null}
-          - {lemma: sábado, pos: noun, gender: m, en: [Saturday], rank: null}
-          - {lemma: domingo, pos: noun, gender: m, en: [Sunday], rank: null}
-          - {lemma: hora, pos: noun, gender: f, en: [hour, time], rank: null}
-          - {lemma: hoy, pos: adv, en: [today], rank: null}
-          - {lemma: mañana, pos: noun, gender: f, en: [morning, tomorrow], rank: null}
-          - {lemma: semana, pos: noun, gender: f, en: [week], rank: null}
-          - {lemma: medio, pos: adj, en: [half], rank: null}
+          - {lemma: lunes, pos: noun, gender: m, en: [Monday], rank: 690}
+          - {lemma: martes, pos: noun, gender: m, en: [Tuesday], rank: 3174}
+          - {lemma: miércoles, pos: noun, gender: m, en: [Wednesday], rank: 4366}
+          - {lemma: jueves, pos: noun, gender: m, en: [Thursday], rank: 4166}
+          - {lemma: viernes, pos: noun, gender: m, en: [Friday], rank: 1876}
+          - {lemma: sábado, pos: noun, gender: m, en: [Saturday], rank: 1807}
+          - {lemma: domingo, pos: noun, gender: m, en: [Sunday], rank: 833}
+          - {lemma: hora, pos: noun, gender: f, en: [hour, time], rank: 211}
+          - {lemma: hoy, pos: adv, en: [today], rank: 195}
+          - {lemma: mañana, pos: noun, gender: f, en: [morning, tomorrow], rank: 170}
+          - {lemma: semana, pos: noun, gender: f, en: [week], rank: 324}
+          - {lemma: medio, pos: adj, en: [half], rank: 486}
         examples:
           - {id: 1, target: "¿Qué hora es?", en: ["What time is it?"]}
           - {id: 2, target: "Hoy es lunes.", en: ["Today is Monday."]}
@@ -247,13 +250,13 @@ units:
           the verb: me, te, le (usted, él, ella), nos, os, les. For a name, add a: a Luis
           le gusta el fútbol.
         lemmas:
-          - {lemma: gustar, pos: verb, en: [to like, to please], rank: null}
-          - {lemma: música, pos: noun, gender: f, en: [music], rank: null}
-          - {lemma: libro, pos: noun, gender: m, en: [book], rank: null}
-          - {lemma: cine, pos: noun, gender: m, en: [cinema, movies], rank: null}
-          - {lemma: deporte, pos: noun, gender: m, en: [sport], rank: null}
-          - {lemma: fútbol, pos: noun, gender: m, en: [football, soccer], rank: null}
-          - {lemma: mucho, pos: adv, en: [a lot, much], rank: null}
+          - {lemma: gustar, pos: verb, en: [to like, to please], rank: 84}
+          - {lemma: música, pos: noun, gender: f, en: [music], rank: 520}
+          - {lemma: libro, pos: noun, gender: m, en: [book], rank: 134}
+          - {lemma: cine, pos: noun, gender: m, en: [cinema, movies], rank: 1209}
+          - {lemma: deporte, pos: noun, gender: m, en: [sport], rank: 1382}
+          - {lemma: fútbol, pos: noun, gender: m, en: [football, soccer], rank: 990}
+          - {lemma: mucho, pos: adv, en: [a lot, much], rank: 87}
         examples:
           - {id: 1, target: "Me gusta el café.", en: ["I like coffee."]}
           - {id: 2, target: "No me gusta el fútbol.", en: ["I do not like football.", "I don't like soccer."]}
@@ -262,3 +265,1872 @@ units:
           - {id: 5, target: "A Luis le gusta mucho el cine.", en: ["Luis likes the cinema a lot.", "Luis really likes the movies."]}
           - {id: 6, target: "Nos gusta el deporte.", en: ["We like sport.", "We like sports."]}
           - {id: 7, target: "¿Le gusta el té, señora?", en: ["Do you like tea, madam?"]}
+  - id: es.a1.u03
+    title: Food and drink
+    cefr: A1
+    skills:
+      - id: es.a1.u03.s01
+        kind: vocab
+        title: Food
+        cefr: A1
+        can_do: I can name everyday food and say what I like to eat.
+        requires: [es.a1.u02.s04]
+        grammar_note: >-
+          Spanish uses the article when it talks about a food in general: me gusta el
+          pan (I like bread), no me gusta la carne (I do not like meat). With quiero or
+          tengo and no particular amount, leave the article out: quiero pan, ¿tienes
+          leche? Pescado is fish as food; a live fish is un pez. Comida means food or a
+          meal, and in Spain also lunch, the main meal of the day.
+        lemmas:
+          - {lemma: comida, pos: noun, gender: f, en: [food, meal, lunch], rank: 410}
+          - {lemma: pan, pos: noun, gender: m, en: [bread], rank: 950}
+          - {lemma: leche, pos: noun, gender: f, en: [milk], rank: 668}
+          - {lemma: carne, pos: noun, gender: f, en: [meat], rank: 887}
+          - {lemma: pescado, pos: noun, gender: m, en: [fish], rank: 1369}
+          - {lemma: pollo, pos: noun, gender: m, en: [chicken], rank: 2370}
+          - {lemma: huevo, pos: noun, gender: m, en: [egg], rank: 811}
+          - {lemma: queso, pos: noun, gender: m, en: [cheese], rank: 1581}
+          - {lemma: arroz, pos: noun, gender: m, en: [rice], rank: 1647}
+          - {lemma: fruta, pos: noun, gender: f, en: [fruit], rank: 1174}
+          - {lemma: manzana, pos: noun, gender: f, en: [apple], rank: 720}
+          - {lemma: sopa, pos: noun, gender: f, en: [soup], rank: 1407}
+        examples:
+          - {id: 1, target: "Me gusta el pescado.", en: ["I like fish."]}
+          - {id: 2, target: "¿Carne o pescado?", en: ["Meat or fish?"]}
+          - {id: 3, target: "No me gusta mucho el queso.", en: ["I don't like cheese very much.", "I do not like cheese much."]}
+          - {id: 4, target: "¿Quieres una manzana?", en: ["Do you want an apple?", "Would you like an apple?"]}
+          - {id: 5, target: "¿Cómo quiere los huevos?", en: ["How would you like your eggs?", "How do you want your eggs?"]}
+          - {id: 6, target: "Me gustan el pan y la leche.", en: ["I like bread and milk."]}
+          - {id: 7, target: "Me gusta la fruta.", en: ["I like fruit."]}
+          - {id: 8, target: "Hoy tenemos mucha comida.", en: ["Today we have a lot of food.", "We have a lot of food today."]}
+      - id: es.a1.u03.s02
+        kind: grammar
+        title: Eating and drinking
+        cefr: A1
+        can_do: I can say what I eat and drink and say that I am hungry or thirsty.
+        requires: [es.a1.u03.s01]
+        grammar_note: >-
+          Regular -er verbs such as comer and beber end in -o, -es, -e, -emos, -éis,
+          -en: como, comes, come, comemos, coméis, comen. Tomar is the everyday verb for
+          having something to eat or drink: ¿tomas café? Hunger and thirst use tener
+          with a noun: tengo hambre (I am hungry), tengo mucha sed (I am very thirsty).
+          Hambre is feminine but takes el, like agua, so it is el hambre but mucha
+          hambre. Nunca before the verb means never; after the verb it needs no in
+          front: nunca bebo vino, no bebo vino nunca.
+        lemmas:
+          - {lemma: comer, pos: verb, en: [to eat], rank: 83}
+          - {lemma: beber, pos: verb, en: [to drink], rank: 256}
+          - {lemma: tomar, pos: verb, en: [to have, to take, to drink], rank: 114}
+          - {lemma: vino, pos: noun, gender: m, en: [wine], rank: 438}
+          - {lemma: zumo, pos: noun, gender: m, en: [juice], rank: 2908}
+          - {lemma: hambre, pos: noun, gender: f, article: el, en: [hunger], rank: 900}
+          - {lemma: sed, pos: noun, gender: f, en: [thirst], rank: 2553}
+          - {lemma: nunca, pos: adv, en: [never], rank: 169}
+        examples:
+          - {id: 1, target: "No como carne.", en: ["I don't eat meat.", "I do not eat meat."]}
+          - {id: 2, target: "Tengo mucha sed.", en: ["I'm very thirsty.", "I am very thirsty."]}
+          - {id: 3, target: "¿Tiene usted hambre?", en: ["Are you hungry?"]}
+          - {id: 4, target: "Nunca tomo café.", en: ["I never drink coffee.", "I never have coffee."]}
+          - {id: 5, target: "Ellos beben leche.", en: ["They drink milk."]}
+          - {id: 6, target: "¿Qué queréis beber?", en: ["What do you want to drink?", "What would you like to drink?"]}
+          - {id: 7, target: "Él bebe zumo.", en: ["He drinks juice."]}
+          - {id: 8, target: "No bebo vino.", en: ["I don't drink wine.", "I do not drink wine."]}
+      - id: es.a1.u03.s03
+        kind: vocab
+        title: Meals
+        cefr: A1
+        can_do: I can talk about breakfast, lunch and dinner and when I have them.
+        requires: [es.a1.u03.s02]
+        grammar_note: >-
+          Spain eats late. El desayuno is breakfast, la comida is the main meal at about
+          two o'clock, and la cena is dinner, often at nine or ten in the evening. Each
+          meal has its own verb: desayunar, comer and cenar, so desayuno a las siete
+          means I have breakfast at seven. Desayuno is both the noun and the yo form of
+          desayunar, and cena is both the noun and the él form of cenar. Ask when with
+          ¿a qué hora...?
+        lemmas:
+          - {lemma: desayuno, pos: noun, gender: m, en: [breakfast], rank: 1390}
+          - {lemma: cena, pos: noun, gender: f, en: [dinner, supper], rank: 1096}
+          - {lemma: desayunar, pos: verb, en: [to have breakfast], rank: 836}
+          - {lemma: cenar, pos: verb, en: [to have dinner], rank: 554}
+          - {lemma: cocinar, pos: verb, en: [to cook], rank: 541}
+          - {lemma: plato, pos: noun, gender: m, en: [plate, dish], rank: 1107}
+          - {lemma: mesa, pos: noun, gender: f, en: [table], rank: 540}
+        examples:
+          - {id: 1, target: "Desayuno a las siete.", en: ["I have breakfast at seven."]}
+          - {id: 2, target: "¿A qué hora cenas?", en: ["What time do you have dinner?", "What time do you eat dinner?"]}
+          - {id: 3, target: "Me gusta cocinar.", en: ["I like cooking.", "I like to cook."]}
+          - {id: 4, target: "Mi madre cocina bien.", en: ["My mother cooks well.", "My mother is a good cook."]}
+          - {id: 5, target: "Una mesa para dos, por favor.", en: ["A table for two, please."]}
+          - {id: 6, target: "Gracias por la cena.", en: ["Thanks for dinner.", "Thank you for dinner."]}
+          - {id: 7, target: "Se cena muy tarde en España.", en: ["People have dinner very late in Spain.", "People dine very late in Spain."]}
+          - {id: 8, target: "Desayunamos pan y huevos.", en: ["We have bread and eggs for breakfast."]}
+      - id: es.a1.u03.s04
+        kind: function
+        title: Ordering
+        cefr: A1
+        can_do: I can order food and drink politely and ask for more.
+        requires: [es.a1.u03.s03]
+        grammar_note: >-
+          In a Spanish bar the waiter often asks ¿qué le pongo? (what can I get you?),
+          and customers answer ¿me pone un café? or simply un café, por favor. ¿Me
+          trae...? asks someone to bring you something, and tráigame is the polite usted
+          command. Me gustaría (I would like) is softer than quiero. Otro already means
+          another, so it never takes un: otra cerveza, not una otra cerveza. Más means
+          more and un poco means a little.
+        lemmas:
+          - {lemma: poner, pos: verb, en: [to put, to place, to serve], rank: 172}
+          - {lemma: traer, pos: verb, en: [to bring], rank: 415}
+          - {lemma: carta, pos: noun, gender: f, en: [menu, letter], rank: 383}
+          - {lemma: vaso, pos: noun, gender: m, en: [glass], rank: 1184}
+          - {lemma: botella, pos: noun, gender: f, en: [bottle], rank: 1495}
+          - {lemma: taza, pos: noun, gender: f, en: [cup], rank: 1204}
+          - {lemma: otro, pos: det, en: [another, other], rank: 174}
+          - {lemma: más, pos: adv, en: [more], rank: 80}
+          - {lemma: poco, pos: adv, en: [a little, little], rank: 196}
+        examples:
+          - {id: 1, target: "Un vaso de agua, por favor.", en: ["A glass of water, please."]}
+          - {id: 2, target: "Una botella de vino, por favor.", en: ["A bottle of wine, please."]}
+          - {id: 3, target: "Por favor, ¿me trae otra taza de café?", en: ["Could I have another cup of coffee, please?", "Could you bring me another cup of coffee, please?"]}
+          - {id: 4, target: "Tráigame la cuenta, por favor.", en: ["Bring me the bill, please.", "Bring the bill, please."]}
+          - {id: 5, target: "Me gustaría más café.", en: ["I'd like some more coffee.", "I would like more coffee."]}
+          - {id: 6, target: "¿Quieres un poco más?", en: ["Would you like some more?", "Would you like a little more?"]}
+          - {id: 7, target: "¿Me pone un café con leche?", en: ["Can I have a white coffee?", "Could I have a coffee with milk?"]}
+          - {id: 8, target: "¿Qué le pongo?", en: ["What can I get you?", "What would you like?"]}
+  - id: es.a1.u04
+    title: Around town
+    cefr: A1
+    skills:
+      - id: es.a1.u04.s01
+        kind: grammar
+        title: Where things are
+        cefr: A1
+        can_do: I can say where something is and whether there is one nearby.
+        requires: [es.a1.u03.s04]
+        grammar_note: >-
+          Spanish has two verbs for to be. Ser says who or what something is; estar says
+          where something is and how someone feels: el banco está aquí, estoy bien.
+          Estar is irregular: estoy, estás, está, estamos, estáis, están. Hay (from
+          haber) means there is or there are and never changes: hay un hotel, hay dos
+          bancos. Use hay to say that something exists, usually with un, una or no
+          article, and está for where a particular thing is: ¿hay un banco cerca? ¿dónde
+          está el banco? Aquí is here, ahí is there near you, allí is over there.
+        lemmas:
+          - {lemma: estar, pos: verb, en: [to be], rank: 14}
+          - {lemma: haber, pos: verb, en: [there is, there are], rank: 23}
+          - {lemma: cerca, pos: adv, en: [near, nearby, close], rank: 576}
+          - {lemma: lejos, pos: adv, en: [far, far away], rank: 812}
+          - {lemma: allí, pos: adv, en: [there, over there], rank: 376}
+          - {lemma: ahí, pos: adv, en: [there], rank: 432}
+        examples:
+          - {id: 1, target: "Barcelona está en España.", en: ["Barcelona is in Spain."]}
+          - {id: 2, target: "Está muy cerca.", en: ["It's very close.", "It is very near."]}
+          - {id: 3, target: "No está lejos de aquí.", en: ["It's not far from here.", "It is not far from here."]}
+          - {id: 4, target: "¿Qué hay para comer?", en: ["What is there to eat?", "What's there to eat?"]}
+          - {id: 5, target: "Estoy bien, ¿y tú?", en: ["I'm fine, and you?", "I am fine, and you?"]}
+          - {id: 6, target: "No hay café.", en: ["There's no coffee.", "There is no coffee."]}
+          - {id: 7, target: "Ellos están allí.", en: ["They're there.", "They are over there."]}
+          - {id: 8, target: "¿Quién está ahí?", en: ["Who's there?", "Who is there?"]}
+      - id: es.a1.u04.s02
+        kind: vocab
+        title: Places in town
+        cefr: A1
+        can_do: I can name the main places in a town.
+        requires: [es.a1.u04.s01]
+        grammar_note: >-
+          Place nouns take el or la like any other noun: la estación, el museo, la
+          calle. De followed by el becomes del: el hotel está al lado del cine, delante
+          del museo; with la it stays apart: al lado de la estación. To ask whether
+          there is a place nearby, use hay with un or una: ¿hay un banco cerca de aquí?
+          To ask where a particular place is, use está: ¿dónde está la estación? Banco
+          means a bank and also a bench in a park.
+        lemmas:
+          - {lemma: ciudad, pos: noun, gender: f, en: [city, town], rank: 316}
+          - {lemma: calle, pos: noun, gender: f, en: [street], rank: 627}
+          - {lemma: estación, pos: noun, gender: f, en: [station], rank: 594}
+          - {lemma: museo, pos: noun, gender: m, en: [museum], rank: 1659}
+          - {lemma: parque, pos: noun, gender: m, en: [park], rank: 880}
+          - {lemma: banco, pos: noun, gender: m, en: [bank, bench], rank: 994}
+          - {lemma: hospital, pos: noun, gender: m, en: [hospital], rank: 1034}
+          - {lemma: restaurante, pos: noun, gender: m, en: [restaurant], rank: 1056}
+          - {lemma: centro, pos: noun, gender: m, en: [centre, center, town centre], rank: 1542}
+          - {lemma: hotel, pos: noun, gender: m, en: [hotel], rank: 758}
+          - {lemma: al lado de, pos: expr, en: [next to, beside], rank: null}
+          - {lemma: delante de, pos: expr, en: [in front of], rank: null}
+        examples:
+          - {id: 1, target: "¿Dónde está la estación?", en: ["Where is the station?"]}
+          - {id: 2, target: "¿Hay un banco cerca de aquí?", en: ["Is there a bank near here?", "Is there a bank nearby?"]}
+          - {id: 3, target: "El hotel está al lado del cine.", en: ["The hotel is next to the cinema.", "The hotel is next to the movie theater."]}
+          - {id: 4, target: "¿Dónde está el museo?", en: ["Where is the museum?", "Where's the museum?"]}
+          - {id: 5, target: "Hay muchos hoteles en el centro.", en: ["There are many hotels in the town centre.", "There are a lot of hotels downtown."]}
+          - {id: 6, target: "Me gusta tu ciudad.", en: ["I like your city.", "I like your town."]}
+          - {id: 7, target: "El museo está delante del parque.", en: ["The museum is in front of the park."]}
+          - {id: 8, target: "¿En qué calle está el restaurante?", en: ["What street is the restaurant on?", "Which street is the restaurant in?"]}
+      - id: es.a1.u04.s03
+        kind: grammar
+        title: Getting around
+        cefr: A1
+        can_do: I can say where I am going and how I get there.
+        requires: [es.a1.u04.s02]
+        grammar_note: >-
+          Ir (to go) is irregular: voy, vas, va, vamos, vais, van. It takes a before the
+          place, and a followed by el becomes al: voy al banco, vamos a la estación.
+          Venir (to come) changes its stem in most forms: vengo, vienes, viene, venimos,
+          venís, vienen. Say how you travel with en: en coche, en tren, en autobús, en
+          metro; on foot is a pie. In Spain el metro is the underground railway, and it
+          also means a metre.
+        lemmas:
+          - {lemma: ir, pos: verb, en: [to go], rank: 34}
+          - {lemma: venir, pos: verb, en: [to come], rank: 113}
+          - {lemma: coche, pos: noun, gender: m, en: [car], rank: 266}
+          - {lemma: autobús, pos: noun, gender: m, en: [bus], rank: 698}
+          - {lemma: metro, pos: noun, gender: m, en: [underground, subway, metre], rank: 1489}
+          - {lemma: tren, pos: noun, gender: m, en: [train], rank: 416}
+          - {lemma: taxi, pos: noun, gender: m, en: [taxi], rank: 1300}
+          - {lemma: bicicleta, pos: noun, gender: f, en: [bicycle, bike], rank: 777}
+          - {lemma: a pie, pos: expr, en: [on foot], rank: null}
+        examples:
+          - {id: 1, target: "Voy al banco.", en: ["I'm going to the bank.", "I am going to the bank."]}
+          - {id: 2, target: "¿A dónde vas?", en: ["Where are you going?"]}
+          - {id: 3, target: "Vamos al centro.", en: ["Let's go to the town centre.", "We're going to the centre.", "Let's go downtown."]}
+          - {id: 4, target: "¿Vas a pie?", en: ["Are you going on foot?", "Are you walking?"]}
+          - {id: 5, target: "¿Viene en tren o autobús?", en: ["Is he coming by train or by bus?", "Are you coming by train or by bus?"]}
+          - {id: 6, target: "¡Ahí viene el autobús!", en: ["Here comes the bus!", "There comes the bus!"]}
+          - {id: 7, target: "¿Tomamos un taxi?", en: ["Shall we take a taxi?", "Shall we get a taxi?"]}
+          - {id: 8, target: "No tengo coche.", en: ["I don't have a car.", "I haven't got a car."]}
+      - id: es.a1.u04.s04
+        kind: function
+        title: Asking the way
+        cefr: A1
+        can_do: I can ask the way and understand simple directions.
+        requires: [es.a1.u04.s03]
+        grammar_note: >-
+          Get a stranger's attention with perdone or disculpe, the usted forms, or
+          perdona and disculpa with tú. Directions are usually commands. The usted
+          command uses the other vowel: gire and tome from -ar verbs, siga from seguir.
+          The tú command looks like the él form of the present: gira, toma, sigue.
+          Straight on is todo recto, on the right a la derecha, on the left a la
+          izquierda. Poder (can) changes its stem: puedo, puedes, puede, podemos,
+          podéis, pueden, so ¿puede ayudarme? means can you help me?
+        lemmas:
+          - {lemma: perdonar, pos: verb, en: [to forgive, to excuse], rank: 1114}
+          - {lemma: disculpar, pos: verb, en: [to excuse], rank: 862}
+          - {lemma: poder, pos: verb, en: [can, to be able to], rank: 45}
+          - {lemma: ayudar, pos: verb, en: [to help], rank: 158}
+          - {lemma: izquierda, pos: noun, gender: f, en: [left], rank: 1691}
+          - {lemma: derecha, pos: noun, gender: f, en: [right], rank: 2022}
+          - {lemma: todo, pos: det, en: [all, every], rank: 75}
+          - {lemma: recto, pos: adv, en: [straight, straight on], rank: 5712}
+          - {lemma: seguir, pos: verb, en: [to follow, to carry on], rank: 284}
+          - {lemma: girar, pos: verb, en: [to turn], rank: 1814}
+          - {lemma: primero, pos: adj, en: [first], rank: 360}
+        examples:
+          - {id: 1, target: "Disculpe, ¿puede ayudarme?", en: ["Excuse me, can you help me?", "Excuse me, could you help me?"]}
+          - {id: 2, target: "Siga usted todo recto.", en: ["Go straight on.", "Carry straight on.", "Continue straight ahead."]}
+          - {id: 3, target: "Gire a la derecha.", en: ["Turn right.", "Turn to the right."]}
+          - {id: 4, target: "Gira a la izquierda.", en: ["Turn left.", "Turn to the left."]}
+          - {id: 5, target: "Es allí a la izquierda.", en: ["It's over there on the left.", "It is there on the left."]}
+          - {id: 6, target: "¿Te puedo ayudar?", en: ["Can I help you?"]}
+          - {id: 7, target: "Perdone, ¿dónde está la estación?", en: ["Excuse me, where is the station?"]}
+          - {id: 8, target: "Tome la primera calle a la izquierda.", en: ["Take the first street on the left.", "Take the first left."]}
+  - id: es.a1.u05
+    title: Shopping
+    cefr: A1
+    skills:
+      - id: es.a1.u05.s01
+        kind: vocab
+        title: Clothes
+        cefr: A1
+        can_do: I can name clothes and say what someone is wearing.
+        requires: [es.a1.u04.s04]
+        grammar_note: >-
+          Llevar means to wear as well as to carry: llevo un abrigo (I am wearing a
+          coat). For putting clothes on, use ponerse: ponte el abrigo (put your coat
+          on). When it is clear whose clothes they are, Spanish uses the article rather
+          than a possessive: me pongo los zapatos (I put my shoes on). Trousers are el
+          pantalón or los pantalones; both are normal in Spain. A clothes shop is una
+          tienda de ropa.
+        lemmas:
+          - {lemma: ropa, pos: noun, gender: f, en: [clothes, clothing], rank: 788}
+          - {lemma: camisa, pos: noun, gender: f, en: [shirt], rank: 1122}
+          - {lemma: pantalón, pos: noun, gender: m, en: [trousers, pants], rank: 2081}
+          - {lemma: zapato, pos: noun, gender: m, en: [shoe], rank: 665}
+          - {lemma: vestido, pos: noun, gender: m, en: [dress], rank: 889}
+          - {lemma: falda, pos: noun, gender: f, en: [skirt], rank: 2206}
+          - {lemma: chaqueta, pos: noun, gender: f, en: [jacket], rank: 2508}
+          - {lemma: abrigo, pos: noun, gender: m, en: [coat], rank: 1415}
+          - {lemma: sombrero, pos: noun, gender: m, en: [hat], rank: 1037}
+          - {lemma: tienda, pos: noun, gender: f, en: [shop, store], rank: 661}
+          - {lemma: llevar, pos: verb, en: [to wear, to carry, to take], rank: 197}
+        examples:
+          - {id: 1, target: "Él lleva sombrero.", en: ["He is wearing a hat.", "He's wearing a hat."]}
+          - {id: 2, target: "Ponte el abrigo.", en: ["Put on your coat.", "Put your coat on."]}
+          - {id: 3, target: "Me gusta tu chaqueta.", en: ["I like your jacket."]}
+          - {id: 4, target: "¿Dónde están mis zapatos?", en: ["Where are my shoes?"]}
+          - {id: 5, target: "Voy a la tienda.", en: ["I'm going to the shop.", "I am going to the store."]}
+          - {id: 6, target: "¿Qué vestido te gusta más?", en: ["Which dress do you like more?", "Which dress do you like best?"]}
+          - {id: 7, target: "¿Qué llevas puesto?", en: ["What are you wearing?"]}
+          - {id: 8, target: "Tiene muchas faldas.", en: ["She has a lot of skirts.", "She has many skirts."]}
+      - id: es.a1.u05.s02
+        kind: grammar
+        title: Colours
+        cefr: A1
+        can_do: I can say what colour something is.
+        requires: [es.a1.u05.s01]
+        grammar_note: >-
+          Colours are adjectives and usually come after the noun: una camisa blanca, los
+          zapatos negros. Colours ending in -o change for gender and number: rojo, roja,
+          rojos, rojas. Those ending in -e or a consonant change only for number: verde,
+          verdes; azul, azules; gris, grises; marrón, marrones. Ask about colour with
+          ¿de qué color es? With el in front, a colour works as a noun: me gusta el azul
+          (I like blue, or I like the blue one).
+        lemmas:
+          - {lemma: color, pos: noun, gender: m, en: [colour, color], rank: 828}
+          - {lemma: rojo, pos: adj, en: [red], rank: 636}
+          - {lemma: azul, pos: adj, en: [blue], rank: 928}
+          - {lemma: verde, pos: adj, en: [green], rank: 1077}
+          - {lemma: blanco, pos: adj, en: [white], rank: 710}
+          - {lemma: negro, pos: adj, en: [black], rank: 867}
+          - {lemma: amarillo, pos: adj, en: [yellow], rank: 1615}
+          - {lemma: gris, pos: adj, en: [grey, gray], rank: 2932}
+          - {lemma: marrón, pos: adj, en: [brown], rank: 2742}
+        examples:
+          - {id: 1, target: "¿De qué color es?", en: ["What colour is it?", "What color is it?"]}
+          - {id: 2, target: "Mis zapatos son marrones.", en: ["My shoes are brown."]}
+          - {id: 3, target: "Tengo una camisa verde.", en: ["I have a green shirt."]}
+          - {id: 4, target: "Quiero un pantalón blanco.", en: ["I want white trousers.", "I want white pants."]}
+          - {id: 5, target: "Las manzanas son rojas.", en: ["Apples are red.", "The apples are red."]}
+          - {id: 6, target: "Me gustan los zapatos negros.", en: ["I like the black shoes."]}
+          - {id: 7, target: "¿Los tienen en otros colores?", en: ["Do you have them in other colours?", "Do you have these in other colors?"]}
+          - {id: 8, target: "Le gustan los vestidos azules.", en: ["She likes blue dresses."]}
+      - id: es.a1.u05.s03
+        kind: grammar
+        title: This one and that one
+        cefr: A1
+        can_do: I can point out the thing I want and ask for another size.
+        requires: [es.a1.u05.s02]
+        grammar_note: >-
+          Este (this) points to things near you; ese (that) to things near the person
+          you are talking to or a little further away. Both agree with the noun: este
+          libro, esta camisa, estos zapatos, estas faldas; ese, esa, esos, esas. Without
+          a noun they mean this one and that one: quiero ese. Esto and eso never change
+          and stand for something you do not name: ¿qué es esto? Talla is a clothes
+          size; for shoes, say número. Probarse means to try on: ¿puedo probarme esto?
+        lemmas:
+          - {lemma: este, pos: det, en: [this], rank: 20}
+          - {lemma: ese, pos: det, en: [that], rank: 19}
+          - {lemma: esto, pos: pron, en: [this, this thing], rank: 72}
+          - {lemma: eso, pos: pron, en: [that, that thing], rank: 71}
+          - {lemma: grande, pos: adj, en: [big, large], rank: 161}
+          - {lemma: pequeño, pos: adj, en: [small, little], rank: 420}
+          - {lemma: talla, pos: noun, gender: f, en: [size], rank: 3570}
+          - {lemma: buscar, pos: verb, en: [to look for, to search], rank: 381}
+          - {lemma: probar, pos: verb, en: [to try, to try on, to taste], rank: 676}
+        examples:
+          - {id: 1, target: "¿Qué es esto?", en: ["What is this?", "What's this?"]}
+          - {id: 2, target: "¿Puedo probarme esto?", en: ["Can I try this on?", "May I try this on?"]}
+          - {id: 3, target: "Pruébate esa camisa.", en: ["Try on that shirt.", "Try that shirt on."]}
+          - {id: 4, target: "¿Qué busca usted?", en: ["What are you looking for?"]}
+          - {id: 5, target: "¿Tiene esta camisa en una talla más grande?", en: ["Do you have this shirt in a bigger size?", "Do you have this shirt in a larger size?"]}
+          - {id: 6, target: "Esas manzanas son grandes.", en: ["Those apples are big."]}
+          - {id: 7, target: "Este libro es pequeño.", en: ["This book is small."]}
+          - {id: 8, target: "¿Te gusta eso?", en: ["Do you like that?"]}
+      - id: es.a1.u05.s04
+        kind: function
+        title: Prices and paying
+        cefr: A1
+        can_do: I can ask what something costs and pay for it.
+        requires: [es.a1.u05.s03]
+        grammar_note: >-
+          Costar changes its stem: cuesta for one thing and cuestan for several: ¿cuánto
+          cuesta esta camisa? ¿cuánto cuestan estos zapatos? ¿Qué precio tiene? also
+          asks the price. In Spain you pay con tarjeta (by card) or en efectivo (in
+          cash), and a shop assistant may simply ask ¿efectivo o tarjeta? Caro and
+          barato agree like other adjectives: es muy cara, son baratos. Ir de compras
+          means to go shopping.
+        lemmas:
+          - {lemma: costar, pos: verb, en: [to cost], rank: 562}
+          - {lemma: precio, pos: noun, gender: m, en: [price], rank: 1091}
+          - {lemma: caro, pos: adj, en: [expensive, dear], rank: 492}
+          - {lemma: barato, pos: adj, en: [cheap], rank: 1432}
+          - {lemma: comprar, pos: verb, en: [to buy], rank: 152}
+          - {lemma: pagar, pos: verb, en: [to pay, to pay for], rank: 409}
+          - {lemma: tarjeta, pos: noun, gender: f, en: [card], rank: 1971}
+          - {lemma: dinero, pos: noun, gender: m, en: [money], rank: 204}
+          - {lemma: en efectivo, pos: expr, en: [in cash, cash], rank: null}
+        examples:
+          - {id: 1, target: "¿Cuánto cuesta esto?", en: ["How much does this cost?", "How much is this?"]}
+          - {id: 2, target: "¿Cuánto cuestan estos pantalones?", en: ["How much are these trousers?", "How much do these trousers cost?"]}
+          - {id: 3, target: "¿Qué precio tiene?", en: ["How much is it?", "What does it cost?"]}
+          - {id: 4, target: "¡Es muy caro!", en: ["It's very expensive!", "It's too expensive!"]}
+          - {id: 5, target: "Es muy barato.", en: ["It's very cheap.", "It is really cheap."]}
+          - {id: 6, target: "Pago con tarjeta.", en: ["I'll pay by card.", "I'm paying by card."]}
+          - {id: 7, target: "¿Efectivo o tarjeta?", en: ["Cash or card?"]}
+          - {id: 8, target: "¿Quieres ir de compras?", en: ["Do you want to go shopping?"]}
+  - id: es.a1.u06
+    title: Home and family
+    cefr: A1
+    skills:
+      - id: es.a1.u06.s01
+        kind: vocab
+        title: At home
+        cefr: A1
+        can_do: I can name the rooms and things in my home.
+        requires: [es.a1.u05.s04]
+        grammar_note: >-
+          In Spain un piso is a flat or apartment, and piso also means a floor of a
+          building. Habitación is any room and is often used for a bedroom. El baño is
+          the bathroom, so ¿dónde está el baño? is the polite way to ask for the toilet.
+          En casa, with no article, means at home: estoy en casa. La cocina is the
+          kitchen, and cocina is also the él form of cocinar.
+        lemmas:
+          - {lemma: casa, pos: noun, gender: f, en: [house, home], rank: 107}
+          - {lemma: piso, pos: noun, gender: m, en: [flat, apartment, floor], rank: 1469}
+          - {lemma: habitación, pos: noun, gender: f, en: [room, bedroom], rank: 371}
+          - {lemma: cocina, pos: noun, gender: f, en: [kitchen], rank: 955}
+          - {lemma: baño, pos: noun, gender: m, en: [bathroom, bath], rank: 974}
+          - {lemma: jardín, pos: noun, gender: m, en: [garden], rank: 878}
+          - {lemma: cama, pos: noun, gender: f, en: [bed], rank: 561}
+          - {lemma: silla, pos: noun, gender: f, en: [chair], rank: 1183}
+          - {lemma: puerta, pos: noun, gender: f, en: [door], rank: 370}
+          - {lemma: ventana, pos: noun, gender: f, en: [window], rank: 629}
+          - {lemma: perro, pos: noun, gender: m, en: [dog], rank: 228}
+          - {lemma: gato, pos: noun, gender: m, en: [cat], rank: 315}
+        examples:
+          - {id: 1, target: "Estoy en casa.", en: ["I'm at home.", "I am at home."]}
+          - {id: 2, target: "¿Cuántas habitaciones tienes?", en: ["How many rooms do you have?", "How many bedrooms do you have?"]}
+          - {id: 3, target: "¿Dónde está el baño?", en: ["Where is the bathroom?", "Where is the toilet?"]}
+          - {id: 4, target: "Desayunamos en la cocina.", en: ["We have breakfast in the kitchen."]}
+          - {id: 5, target: "Mi jardín es pequeño.", en: ["My garden is small."]}
+          - {id: 6, target: "Tenemos dos gatos.", en: ["We have two cats.", "We've got two cats."]}
+          - {id: 7, target: "¿Cómo es tu casa?", en: ["What is your house like?", "What's your home like?"]}
+          - {id: 8, target: "Llaman a la puerta.", en: ["Someone is knocking at the door.", "There's someone at the door."]}
+      - id: es.a1.u06.s02
+        kind: grammar
+        title: Where I live
+        cefr: A1
+        can_do: I can say where I live and describe my home simply.
+        requires: [es.a1.u06.s01]
+        grammar_note: >-
+          Regular -ir verbs such as vivir and abrir end in -o, -es, -e, -imos, -ís, -en:
+          vivo, vives, vive, vivimos, vivís, viven. Only the nosotros and vosotros forms
+          differ from -er verbs. Cerrar changes e to ie when the stress falls on it:
+          cierro, cierras, cierra, but cerramos. Nuestro (our) and vuestro (your, for
+          vosotros) agree with the thing owned: nuestra casa, nuestros hijos, vuestro
+          piso. Nuevo and viejo agree in the same way: una casa vieja.
+        lemmas:
+          - {lemma: vivir, pos: verb, en: [to live], rank: 138}
+          - {lemma: abrir, pos: verb, en: [to open], rank: 327}
+          - {lemma: cerrar, pos: verb, en: [to close, to shut], rank: 428}
+          - {lemma: nuestro, pos: det, en: [our, ours], rank: 171}
+          - {lemma: vuestro, pos: det, en: [your, yours], rank: 819}
+          - {lemma: pueblo, pos: noun, gender: m, en: [village, small town], rank: 986}
+          - {lemma: nuevo, pos: adj, en: [new], rank: 178}
+          - {lemma: viejo, pos: adj, en: [old], rank: 471}
+        examples:
+          - {id: 1, target: "¿Dónde vive usted?", en: ["Where do you live?"]}
+          - {id: 2, target: "Vivo en un piso.", en: ["I live in a flat.", "I live in an apartment."]}
+          - {id: 3, target: "¿Dónde vivís vosotros?", en: ["Where do you live?", "Where do you all live?"]}
+          - {id: 4, target: "Vivo con mis padres.", en: ["I live with my parents."]}
+          - {id: 5, target: "Mi hermano vive en un pueblo pequeño.", en: ["My brother lives in a small village."]}
+          - {id: 6, target: "Cierra la ventana.", en: ["Close the window.", "Shut the window."]}
+          - {id: 7, target: "¿Puede abrir la ventana?", en: ["Can you open the window?", "Could you open the window?"]}
+          - {id: 8, target: "Es nuestro hijo.", en: ["He's our son.", "He is our son."]}
+      - id: es.a1.u06.s03
+        kind: vocab
+        title: The wider family
+        cefr: A1
+        can_do: I can talk about my grandparents, cousins, partner and children.
+        requires: [es.a1.u06.s02]
+        grammar_note: >-
+          Many family words have a masculine form in -o and a feminine form in -a:
+          abuelo, abuela; tío, tía; primo, prima. The masculine plural covers both: mis
+          abuelos (my grandparents), mis tíos (my uncles, or my aunts and uncles). Mujer
+          means woman and also wife; marido is husband. Niño and niña are a boy and a
+          girl, or a child; los niños are children. Before a word that begins with the
+          sound i, y becomes e: mujer e hijos.
+        lemmas:
+          - {lemma: abuelo, pos: noun, gender: m, en: [grandfather, grandad], rank: 626}
+          - {lemma: abuela, pos: noun, gender: f, en: [grandmother, grandma], rank: 624}
+          - {lemma: tío, pos: noun, gender: m, en: [uncle], rank: 717}
+          - {lemma: tía, pos: noun, gender: f, en: [aunt], rank: 715}
+          - {lemma: primo, pos: noun, gender: m, en: [cousin], rank: 1611}
+          - {lemma: prima, pos: noun, gender: f, en: [cousin], rank: 1610}
+          - {lemma: marido, pos: noun, gender: m, en: [husband], rank: 1437}
+          - {lemma: mujer, pos: noun, gender: f, en: [woman, wife], rank: 299}
+          - {lemma: novio, pos: noun, gender: m, en: [boyfriend], rank: 600}
+          - {lemma: novia, pos: noun, gender: f, en: [girlfriend], rank: 933}
+          - {lemma: niño, pos: noun, gender: m, en: [child, boy], rank: 166}
+          - {lemma: niña, pos: noun, gender: f, en: [girl, child], rank: 167}
+        examples:
+          - {id: 1, target: "Tengo tres primos.", en: ["I have three cousins."]}
+          - {id: 2, target: "¿Dónde vive tu abuela?", en: ["Where does your grandmother live?"]}
+          - {id: 3, target: "Mi tía tiene tres hijos.", en: ["My aunt has three children."]}
+          - {id: 4, target: "¿Cómo están tus abuelos?", en: ["How are your grandparents?"]}
+          - {id: 5, target: "Mi marido es alemán.", en: ["My husband is German."]}
+          - {id: 6, target: "Tengo mujer e hijos.", en: ["I have a wife and children.", "I have a wife and kids."]}
+          - {id: 7, target: "¿Ella tiene novio?", en: ["Does she have a boyfriend?"]}
+          - {id: 8, target: "¿Es niño o niña?", en: ["Is it a boy or a girl?"]}
+      - id: es.a1.u06.s04
+        kind: grammar
+        title: Describing people
+        cefr: A1
+        can_do: I can describe what someone looks like and what they are like.
+        requires: [es.a1.u06.s03]
+        grammar_note: >-
+          Use ser with adjectives for what someone is like: es alto, es muy amable.
+          Adjectives agree with the person: él es alto, ella es alta, ellos son altos.
+          Many adjectives ending in -e or a consonant, such as amable, inteligente, joven
+          and mayor, change only for the plural: jóvenes, mayores. For hair and eyes Spanish
+          uses tener with the article: tengo los ojos azules, tiene el pelo negro. Mayor
+          also means older: mi hermano mayor. Porque (because) is one word; ¿por qué?
+          (why?) is two.
+        lemmas:
+          - {lemma: alto, pos: adj, en: [tall, high], rank: 431}
+          - {lemma: bajo, pos: adj, en: [short, low], rank: 574}
+          - {lemma: joven, pos: adj, en: [young], rank: 382}
+          - {lemma: mayor, pos: adj, en: [older, elderly], rank: 536}
+          - {lemma: guapo, pos: adj, en: [good-looking, handsome, pretty], rank: 1436}
+          - {lemma: amable, pos: adj, en: [kind, friendly], rank: 1238}
+          - {lemma: inteligente, pos: adj, en: [clever, intelligent], rank: 1166}
+          - {lemma: pelo, pos: noun, gender: m, en: [hair], rank: 709}
+          - {lemma: ojo, pos: noun, gender: m, en: [eye], rank: 469}
+          - {lemma: porque, pos: conj, en: [because], rank: 387}
+        examples:
+          - {id: 1, target: "Mi padre es joven.", en: ["My father is young."]}
+          - {id: 2, target: "Es alto y guapo.", en: ["He is tall and handsome.", "He's tall and good-looking."]}
+          - {id: 3, target: "Ella es muy inteligente.", en: ["She is very intelligent.", "She's very clever."]}
+          - {id: 4, target: "Tengo los ojos azules.", en: ["I have blue eyes.", "My eyes are blue."]}
+          - {id: 5, target: "Tienen el pelo negro.", en: ["They have black hair."]}
+          - {id: 6, target: "Tengo un hermano mayor.", en: ["I have an older brother."]}
+          - {id: 7, target: "Usted es muy amable.", en: ["You are very kind.", "That's very kind of you."]}
+          - {id: 8, target: "Bebo agua porque tengo sed.", en: ["I drink water because I'm thirsty.", "I'm drinking water because I'm thirsty."]}
+  - id: es.a1.u07
+    title: Time and routine
+    cefr: A1
+    skills:
+      - id: es.a1.u07.s01
+        kind: grammar
+        title: My daily routine
+        cefr: A1
+        can_do: I can describe my morning and evening routine.
+        requires: [es.a1.u06.s04]
+        grammar_note: >-
+          Many routine verbs are reflexive: they take me, te, se, nos or os when you do
+          the action to yourself. Levantar means to raise, and levantarse means to get
+          up: me levanto a las siete. In the same way you have despertarse (to wake up),
+          acostarse (to go to bed) and ducharse (to have a shower). Compare la madre
+          despierta a su hija (wakes her daughter) with me despierto (I wake up). Some
+          change their stem: me acuesto, me despierto, and dormir gives duermo, duermes,
+          duerme, dormimos, dormís, duermen.
+        lemmas:
+          - {lemma: levantar, pos: verb, en: [to raise, to lift], rank: 444}
+          - {lemma: despertar, pos: verb, en: [to wake, to wake up], rank: 666}
+          - {lemma: acostar, pos: verb, en: [to put to bed, to lay down], rank: 1287}
+          - {lemma: duchar, pos: verb, en: [to shower], rank: 1728}
+          - {lemma: dormir, pos: verb, en: [to sleep], rank: 255}
+          - {lemma: temprano, pos: adv, en: [early], rank: 639}
+          - {lemma: cansado, pos: adj, en: [tired], rank: 521}
+        examples:
+          - {id: 1, target: "Me levanto a las siete.", en: ["I get up at seven."]}
+          - {id: 2, target: "¿A qué hora te acuestas?", en: ["What time do you go to bed?"]}
+          - {id: 3, target: "Me despierto muy temprano.", en: ["I wake up very early."]}
+          - {id: 4, target: "¿Te duchas todos los días?", en: ["Do you shower every day?", "Do you have a shower every day?"]}
+          - {id: 5, target: "Mi madre nunca se levanta temprano.", en: ["My mother never gets up early."]}
+          - {id: 6, target: "No duermo bien.", en: ["I don't sleep well.", "I do not sleep well."]}
+          - {id: 7, target: "Estoy muy cansada.", en: ["I'm very tired.", "I am very tired."]}
+          - {id: 8, target: "La madre despierta a su hija.", en: ["The mother wakes her daughter up.", "The mother is waking up her daughter."]}
+      - id: es.a1.u07.s02
+        kind: vocab
+        title: Work and study
+        cefr: A1
+        can_do: I can say what I do and where I work or study.
+        requires: [es.a1.u07.s01]
+        grammar_note: >-
+          After ser, a profession takes no article: soy profesor, mi padre es médico.
+          Add un or una only when you describe the person: es un médico muy bueno. Most
+          professions have a feminine form: profesor, profesora; médico, médica.
+          Trabajar and estudiar are regular -ar verbs: trabajo, trabajas, trabaja,
+          trabajamos, trabajáis, trabajan. Voy al trabajo means I go to work. With days,
+          el lunes means on Monday and los lunes means on Mondays.
+        lemmas:
+          - {lemma: trabajar, pos: verb, en: [to work], rank: 115}
+          - {lemma: estudiar, pos: verb, en: [to study], rank: 274}
+          - {lemma: trabajo, pos: noun, gender: m, en: [work, job], rank: 188}
+          - {lemma: oficina, pos: noun, gender: f, en: [office], rank: 786}
+          - {lemma: clase, pos: noun, gender: f, en: [class, lesson], rank: 388}
+          - {lemma: escuela, pos: noun, gender: f, en: [school], rank: 348}
+          - {lemma: universidad, pos: noun, gender: f, en: [university], rank: 1280}
+          - {lemma: profesor, pos: noun, gender: m, en: [teacher, professor], rank: 392}
+          - {lemma: médico, pos: noun, gender: m, en: [doctor], rank: 650}
+        examples:
+          - {id: 1, target: "¿Estudias o trabajas?", en: ["Do you study or work?", "Are you a student or do you work?"]}
+          - {id: 2, target: "¿Dónde trabaja usted?", en: ["Where do you work?"]}
+          - {id: 3, target: "Trabajo en un hospital.", en: ["I work in a hospital.", "I work at a hospital."]}
+          - {id: 4, target: "Mi madre es profesora.", en: ["My mother is a teacher."]}
+          - {id: 5, target: "Mi padre es médico.", en: ["My father is a doctor."]}
+          - {id: 6, target: "Voy a la escuela.", en: ["I go to school.", "I'm going to school."]}
+          - {id: 7, target: "Yo estudio español.", en: ["I study Spanish.", "I am studying Spanish."]}
+          - {id: 8, target: "Busco un trabajo.", en: ["I'm looking for a job.", "I am looking for work."]}
+      - id: es.a1.u07.s03
+        kind: grammar
+        title: When things happen
+        cefr: A1
+        can_do: I can say when things start and finish and tell the time to the quarter hour.
+        requires: [es.a1.u07.s02]
+        grammar_note: >-
+          Some verbs change their stem when the stress falls on it: empezar gives
+          empiezo, empiezas, empieza, empezamos, empezáis, empiezan, and volver gives
+          vuelvo, vuelves, vuelve, volvemos, volvéis, vuelven. Salir has an irregular yo
+          form: salgo. Tell the time to the quarter hour with y cuarto (quarter past)
+          and menos cuarto (quarter to): son las ocho y cuarto, son las tres menos
+          cuarto. Antes de and después de take an infinitive: desayuno antes de
+          trabajar. Llegar tarde means to be late. Cuándo (when) has an accent in
+          questions.
+        lemmas:
+          - {lemma: empezar, pos: verb, en: [to start, to begin], rank: 303}
+          - {lemma: terminar, pos: verb, en: [to finish, to end], rank: 319}
+          - {lemma: salir, pos: verb, en: [to go out, to leave], rank: 190}
+          - {lemma: volver, pos: verb, en: [to come back, to return], rank: 183}
+          - {lemma: llegar, pos: verb, en: [to arrive, to get to], rank: 164}
+          - {lemma: cuarto, pos: noun, gender: m, en: [quarter, room], rank: 722}
+          - {lemma: menos, pos: adv, en: [less, minus], rank: 352}
+          - {lemma: después, pos: adv, en: [after, afterwards, later], rank: 364}
+          - {lemma: antes, pos: adv, en: [before, earlier], rank: 239}
+          - {lemma: cuándo, pos: adv, en: [when], rank: 314}
+        examples:
+          - {id: 1, target: "Son las ocho y cuarto.", en: ["It's a quarter past eight.", "It is quarter past eight."]}
+          - {id: 2, target: "Son las tres menos cuarto.", en: ["It's a quarter to three.", "It is quarter to three."]}
+          - {id: 3, target: "¿Cuándo vuelves a casa?", en: ["When are you coming home?", "When do you come back home?"]}
+          - {id: 4, target: "Salgo a las diez.", en: ["I leave at ten.", "I am leaving at ten o'clock."]}
+          - {id: 5, target: "Desayuno antes de trabajar.", en: ["I have breakfast before work.", "I eat breakfast before work."]}
+          - {id: 6, target: "Las clases empiezan mañana.", en: ["Classes start tomorrow."]}
+          - {id: 7, target: "¿Cuándo terminan las clases?", en: ["When do classes finish?", "When is school over?"]}
+          - {id: 8, target: "El tren llega tarde.", en: ["The train is late.", "The train is arriving late."]}
+      - id: es.a1.u07.s04
+        kind: vocab
+        title: How often
+        cefr: A1
+        can_do: I can say how often I do things and what I do at the weekend.
+        requires: [es.a1.u07.s03]
+        grammar_note: >-
+          Siempre (always), normalmente (usually) and a veces (sometimes) usually go
+          before the verb or at the start: a veces voy al cine. Nunca works the same
+          way. Cada (each, every) never changes: cada noche, cada mes. Una vez means
+          once and dos veces twice; al mes means a month: una vez al mes. Hacer (to do,
+          to make) has an irregular yo form, hago, and is the verb for asking about
+          activities: ¿qué haces el fin de semana?
+        lemmas:
+          - {lemma: hacer, pos: verb, en: [to do, to make], rank: 44}
+          - {lemma: siempre, pos: adv, en: [always], rank: 180}
+          - {lemma: a veces, pos: expr, en: [sometimes], rank: null}
+          - {lemma: normalmente, pos: adv, en: [normally, usually], rank: 1701}
+          - {lemma: cada, pos: det, en: [each, every], rank: 355}
+          - {lemma: vez, pos: noun, gender: f, en: [time, occasion], rank: 103}
+          - {lemma: fin de semana, pos: expr, en: [weekend], rank: null}
+          - {lemma: mes, pos: noun, gender: m, en: [month], rank: 467}
+          - {lemma: cumpleaños, pos: noun, gender: m, en: [birthday], rank: 964}
+        examples:
+          - {id: 1, target: "Siempre tengo hambre.", en: ["I'm always hungry.", "I am always hungry."]}
+          - {id: 2, target: "A veces voy al cine.", en: ["I sometimes go to the cinema.", "Sometimes I go to the movies."]}
+          - {id: 3, target: "Normalmente como en casa.", en: ["I usually eat at home."]}
+          - {id: 4, target: "Viene aquí una vez al mes.", en: ["He comes here once a month.", "She comes here once a month."]}
+          - {id: 5, target: "Me ducho cada noche.", en: ["I have a shower every night.", "I take a shower every night."]}
+          - {id: 6, target: "No me gusta trabajar en fin de semana.", en: ["I don't like working at the weekend.", "I don't like working on weekends."]}
+          - {id: 7, target: "¿Cuándo es tu cumpleaños?", en: ["When is your birthday?", "When's your birthday?"]}
+          - {id: 8, target: "¿Qué haces el fin de semana?", en: ["What are you doing at the weekend?", "What do you do at the weekend?"]}
+      - id: es.a1.u07.s05
+        kind: vocab
+        title: Months
+        cefr: A1
+        can_do: I can name the months and say when my birthday is.
+        requires: [es.a1.u07.s04]
+        grammar_note: >-
+          Months are masculine and, like days, are not written with a capital letter:
+          enero, febrero. Use en for in a month: en agosto. Dates use the ordinary
+          number with de: hoy es cinco de marzo, el treinta de enero. The first of the
+          month can be el uno or el primero: el uno de mayo. Put el before a date to
+          mean on: nos vamos el once de junio. To ask about a birthday, say ¿cuándo es
+          tu cumpleaños?
+        lemmas:
+          - {lemma: enero, pos: noun, gender: m, en: [January], rank: 3723}
+          - {lemma: febrero, pos: noun, gender: m, en: [February], rank: 3866}
+          - {lemma: marzo, pos: noun, gender: m, en: [March], rank: 920}
+          - {lemma: abril, pos: noun, gender: m, en: [April], rank: 3831}
+          - {lemma: mayo, pos: noun, gender: m, en: [May], rank: 4174}
+          - {lemma: junio, pos: noun, gender: m, en: [June], rank: 3007}
+          - {lemma: julio, pos: noun, gender: m, en: [July], rank: 3874}
+          - {lemma: agosto, pos: noun, gender: m, en: [August], rank: 5957}
+          - {lemma: septiembre, pos: noun, gender: m, en: [September], rank: 5390}
+          - {lemma: octubre, pos: noun, gender: m, en: [October], rank: 2672}
+          - {lemma: noviembre, pos: noun, gender: m, en: [November], rank: 5361}
+          - {lemma: diciembre, pos: noun, gender: m, en: [December], rank: 5629}
+        examples:
+          - {id: 1, target: "Mi cumpleaños es en julio.", en: ["My birthday is in July."]}
+          - {id: 2, target: "Hoy es veintiséis de octubre.", en: ["Today is the twenty-sixth of October.", "Today is October twenty-sixth."]}
+          - {id: 3, target: "No hay clases en agosto.", en: ["There are no classes in August.", "There's no school in August."]}
+          - {id: 4, target: "Mayo viene después de abril.", en: ["May comes after April."]}
+          - {id: 5, target: "Diciembre tiene treinta y un días.", en: ["December has thirty-one days."]}
+          - {id: 6, target: "Treinta días tienen septiembre, abril, junio y noviembre.", en: ["Thirty days has September, April, June and November."]}
+          - {id: 7, target: "Mi cumpleaños es el diez de noviembre.", en: ["My birthday is November 10th.", "My birthday is on the tenth of November.", "My birthday is on November 10th."]}
+          - {id: 8, target: "Febrero no tiene treinta días.", en: ["February does not have thirty days.", "February doesn't have thirty days."]}
+  - id: es.a1.u08
+    title: Travel and hotel
+    cefr: A1
+    skills:
+      - id: es.a1.u08.s01
+        kind: vocab
+        title: Travelling
+        cefr: A1
+        can_do: I can talk about a trip and the things I need for it.
+        requires: [es.a1.u07.s05]
+        grammar_note: >-
+          Viajar is a regular -ar verb: viajo, viajas, viaja. Say how you travel with
+          en: viajo en tren, voy en avión. Estar de vacaciones means to be on holiday;
+          in this sense vacaciones is always plural. In Spain a ticket for a train, bus
+          or plane is un billete, and un billete is also a banknote. Salir is used for
+          departures: el avión sale a las seis. Ir de viaje means to go on a trip.
+        lemmas:
+          - {lemma: viaje, pos: noun, gender: m, en: [trip, journey], rank: 789}
+          - {lemma: viajar, pos: verb, en: [to travel], rank: 427}
+          - {lemma: avión, pos: noun, gender: m, en: [plane, aeroplane, airplane], rank: 762}
+          - {lemma: aeropuerto, pos: noun, gender: m, en: [airport], rank: 1333}
+          - {lemma: billete, pos: noun, gender: m, en: [ticket, banknote], rank: 2091}
+          - {lemma: maleta, pos: noun, gender: f, en: [suitcase], rank: 1868}
+          - {lemma: pasaporte, pos: noun, gender: m, en: [passport], rank: 2389}
+          - {lemma: vacaciones, pos: noun, gender: f, article: las, en: [holiday, holidays, vacation], rank: 926}
+          - {lemma: país, pos: noun, gender: m, en: [country], rank: 374}
+        examples:
+          - {id: 1, target: "Me gusta viajar.", en: ["I like travelling.", "I like to travel."]}
+          - {id: 2, target: "Estoy de vacaciones.", en: ["I'm on holiday.", "I'm on vacation."]}
+          - {id: 3, target: "Su pasaporte, por favor.", en: ["Your passport, please."]}
+          - {id: 4, target: "¿Cuánto cuesta el billete?", en: ["How much is the ticket?", "How much does the ticket cost?"]}
+          - {id: 5, target: "¿Dónde están mis maletas?", en: ["Where are my suitcases?", "Where is my luggage?"]}
+          - {id: 6, target: "¿Cómo llego al aeropuerto?", en: ["How do I get to the airport?"]}
+          - {id: 7, target: "Mi avión sale a las seis.", en: ["My plane leaves at six.", "My plane leaves at six o'clock."]}
+          - {id: 8, target: "Se habla español en veinte países.", en: ["Spanish is spoken in twenty countries."]}
+      - id: es.a1.u08.s02
+        kind: grammar
+        title: Holiday plans
+        cefr: A1
+        can_do: I can say what I am going to do on holiday.
+        requires: [es.a1.u08.s01]
+        grammar_note: >-
+          Ir a plus an infinitive talks about plans and the near future: voy a visitar
+          Madrid (I am going to visit Madrid), ¿qué vas a hacer? Only ir changes: voy a
+          ver, vas a ver, vamos a ver. Próximo agrees with its noun: el próximo lunes,
+          la próxima semana. Conocer has an irregular yo form, conozco, and means to
+          know a person or place, or to meet someone for the first time: encantada de
+          conocerte. When the object is a person, add a: voy a ver a mi madre.
+        lemmas:
+          - {lemma: visitar, pos: verb, en: [to visit], rank: 430}
+          - {lemma: conocer, pos: verb, en: [to know, to get to know, to meet], rank: 198}
+          - {lemma: ver, pos: verb, en: [to see, to watch], rank: 82}
+          - {lemma: próximo, pos: adj, en: [next], rank: 621}
+          - {lemma: playa, pos: noun, gender: f, en: [beach], rank: 1010}
+          - {lemma: montaña, pos: noun, gender: f, en: [mountain], rank: 983}
+          - {lemma: foto, pos: noun, gender: f, en: [photo, picture], rank: 638}
+        examples:
+          - {id: 1, target: "Hoy la voy a ver.", en: ["I'm going to see her today.", "I am going to see her today."]}
+          - {id: 2, target: "¿Vas a visitar a tus padres?", en: ["Are you going to visit your parents?", "Are you going to visit your mum and dad?"]}
+          - {id: 3, target: "¿Cuándo vas a venir a visitarme?", en: ["When are you coming to visit me?", "When are you going to come and see me?"]}
+          - {id: 4, target: "Voy a estar en casa el próximo lunes.", en: ["I'm going to be at home next Monday.", "I'm going to be home next Monday.", "I will be at home next Monday."]}
+          - {id: 5, target: "La próxima semana vamos a la montaña.", en: ["Next week we're going to the mountains.", "Next week we are going to the mountains."]}
+          - {id: 6, target: "Vamos a la playa.", en: ["Let's go to the beach.", "We're going to the beach."]}
+          - {id: 7, target: "Encantada de conocerte.", en: ["Pleased to meet you.", "Nice to meet you."]}
+          - {id: 8, target: "¿Puedo tomar una foto?", en: ["May I take a photo?", "Can I take a picture?"]}
+      - id: es.a1.u08.s03
+        kind: function
+        title: At the hotel
+        cefr: A1
+        can_do: I can check in at a hotel and ask about the room and breakfast.
+        requires: [es.a1.u08.s02]
+        grammar_note: >-
+          At reception, say tengo una reserva (I have a booking) and give the name it is
+          under: a nombre de followed by your name. A double room is una habitación
+          doble. In Spain the floors of a building are plantas: la planta baja is the
+          ground floor and la primera planta the floor above it. Incluido agrees with
+          what is included: ¿el desayuno está incluido? Necesitar is regular: necesito
+          una habitación para dos noches.
+        lemmas:
+          - {lemma: reserva, pos: noun, gender: f, en: [booking, reservation], rank: 3892}
+          - {lemma: reservar, pos: verb, en: [to book, to reserve], rank: 2046}
+          - {lemma: llave, pos: noun, gender: f, en: [key], rank: 686}
+          - {lemma: ascensor, pos: noun, gender: m, en: [lift, elevator], rank: 2257}
+          - {lemma: planta, pos: noun, gender: f, en: [floor, plant], rank: 1510}
+          - {lemma: doble, pos: adj, en: [double], rank: 2486}
+          - {lemma: toalla, pos: noun, gender: f, en: [towel], rank: 2528}
+          - {lemma: incluir, pos: verb, en: [to include], rank: 2638}
+          - {lemma: necesitar, pos: verb, en: [to need], rank: 135}
+        examples:
+          - {id: 1, target: "Tengo una reserva.", en: ["I have a booking.", "I've got a reservation."]}
+          - {id: 2, target: "Quiero reservar una habitación.", en: ["I want to book a room.", "I'd like to book a room."]}
+          - {id: 3, target: "¿Tiene una habitación doble?", en: ["Do you have a double room?"]}
+          - {id: 4, target: "Necesito una habitación para seis noches.", en: ["I need a room for six nights."]}
+          - {id: 5, target: "¿El desayuno está incluido en el precio?", en: ["Is breakfast included in the price?"]}
+          - {id: 6, target: "Las llaves, por favor.", en: ["The keys, please."]}
+          - {id: 7, target: "¿Dónde está el ascensor?", en: ["Where is the lift?", "Where is the elevator?"]}
+          - {id: 8, target: "Está en la planta baja.", en: ["It's on the ground floor.", "It is on the ground floor."]}
+      - id: es.a1.u08.s04
+        kind: function
+        title: Problems and requests
+        cefr: A1
+        can_do: I can say that something does not work and ask someone to repeat or speak slowly.
+        requires: [es.a1.u08.s03]
+        grammar_note: >-
+          To ask a receptionist, a waiter or a stranger to do something, use the usted
+          command: espere (wait), hable (speak), repita (repeat). A pronoun joins the
+          end of the command: repítalo (repeat it). Add por favor to sound polite.
+          Entender changes e to ie: entiendo, entiendes, entiende, so no entiendo means
+          I don't understand. Funcionar is to work, for machines and plans: el ascensor
+          no funciona. Problema ends in -a but is masculine: un problema, no hay
+          problema.
+        lemmas:
+          - {lemma: funcionar, pos: verb, en: [to work, to function], rank: 791}
+          - {lemma: problema, pos: noun, gender: m, en: [problem], rank: 238}
+          - {lemma: entender, pos: verb, en: [to understand], rank: 285}
+          - {lemma: repetir, pos: verb, en: [to repeat], rank: 1675}
+          - {lemma: despacio, pos: adv, en: [slowly], rank: 1834}
+          - {lemma: esperar, pos: verb, en: [to wait, to hope, to expect], rank: 148}
+          - {lemma: momento, pos: noun, gender: m, en: [moment], rank: 478}
+        examples:
+          - {id: 1, target: "No le entiendo.", en: ["I don't understand you.", "I do not understand you."]}
+          - {id: 2, target: "Hable más despacio.", en: ["Speak more slowly.", "Please speak more slowly."]}
+          - {id: 3, target: "Repítalo, por favor.", en: ["Could you repeat that, please?", "Say it again, please."]}
+          - {id: 4, target: "Espere un momento.", en: ["Wait a moment.", "Wait a minute."]}
+          - {id: 5, target: "Tengo un problema.", en: ["I have a problem.", "I've got a problem."]}
+          - {id: 6, target: "¡Esto no funciona!", en: ["This doesn't work!", "This isn't working!"]}
+          - {id: 7, target: "¡No hay problema!", en: ["No problem!"]}
+          - {id: 8, target: "El ascensor no funciona.", en: ["The lift isn't working.", "The elevator doesn't work."]}
+  - id: es.a2.u01
+    title: What I did
+    cefr: A2
+    skills:
+      - id: es.a2.u01.s01
+        kind: grammar
+        title: Yesterday
+        cefr: A2
+        can_do: I can say what I did yesterday and last week.
+        requires: [es.a1.u08.s04]
+        grammar_note: >-
+          The preterite tells what happened at a particular time in the past: ayer
+          trabajé, el año pasado viajamos. Regular -ar verbs take -é, -aste, -ó, -amos,
+          -asteis, -aron: hablé, hablaste, habló, hablamos, hablasteis, hablaron. The
+          written accent matters: hablo is I speak, habló is he or she spoke. The
+          nosotros form is the same as in the present, so the context tells you the
+          time. In the yo form, verbs in -gar, -car and -zar change their spelling:
+          llegué, busqué, empecé. Pasado agrees with its noun: el año pasado, la semana
+          pasada. After no, nada means anything: no compré nada.
+        lemmas:
+          - {lemma: ayer, pos: adv, en: [yesterday], rank: 269}
+          - {lemma: anoche, pos: adv, en: [last night], rank: 615}
+          - {lemma: pasado, pos: adj, en: [last, past], rank: 302}
+          - {lemma: escuchar, pos: verb, en: [to listen, to listen to, to hear], rank: 331}
+          - {lemma: mirar, pos: verb, en: [to look, to look at, to watch], rank: 291}
+          - {lemma: pasar, pos: verb, en: [to happen, to spend, to pass], rank: 111}
+          - {lemma: olvidar, pos: verb, en: [to forget], rank: 317}
+          - {lemma: encontrar, pos: verb, en: [to find], rank: 181}
+          - {lemma: algo, pos: pron, en: [something, anything], rank: 143}
+          - {lemma: nada, pos: pron, en: [nothing, anything], rank: 137}
+        examples:
+          - {id: 1, target: "Ayer estudiamos inglés.", en: ["Yesterday we studied English.", "We studied English yesterday."]}
+          - {id: 2, target: "Anoche llegué tarde.", en: ["I arrived late last night.", "Last night I got in late."]}
+          - {id: 3, target: "¿Anoche escuchaste música?", en: ["Did you listen to music last night?"]}
+          - {id: 4, target: "¿Qué pasó anoche?", en: ["What happened last night?"]}
+          - {id: 5, target: "Encontré mis zapatos.", en: ["I found my shoes."]}
+          - {id: 6, target: "No olvidé nada.", en: ["I didn't forget anything.", "I did not forget anything."]}
+          - {id: 7, target: "Lo compré la semana pasada.", en: ["I bought it last week."]}
+          - {id: 8, target: "Ella me miró.", en: ["She looked at me."]}
+      - id: es.a2.u01.s02
+        kind: grammar
+        title: Writing, learning, losing
+        cefr: A2
+        can_do: I can say what I wrote, received, learnt or lost.
+        requires: [es.a2.u01.s01]
+        grammar_note: >-
+          Regular -er and -ir verbs share one set of preterite endings: -í, -iste, -ió,
+          -imos, -isteis, -ieron. So comer gives comí, comiste, comió, comimos,
+          comisteis, comieron, and escribir gives escribí, escribiste, escribió,
+          escribimos, escribisteis, escribieron. For -ir verbs the nosotros form is the
+          same as in the present (vivimos); for -er verbs it is not (comemos, comimos).
+          Stem-changing -er verbs such as volver and perder keep their stem in the
+          preterite: volví, perdí. Nacer, to be born, is used in the preterite: nací en
+          1990. Perder also means to miss a train or a bus.
+        lemmas:
+          - {lemma: escribir, pos: verb, en: [to write], rank: 233}
+          - {lemma: recibir, pos: verb, en: [to receive, to get], rank: 620}
+          - {lemma: aprender, pos: verb, en: [to learn], rank: 251}
+          - {lemma: perder, pos: verb, en: [to lose, to miss], rank: 225}
+          - {lemma: decidir, pos: verb, en: [to decide], rank: 564}
+          - {lemma: nacer, pos: verb, en: [to be born], rank: 688}
+          - {lemma: mensaje, pos: noun, gender: m, en: [message], rank: 1293}
+        examples:
+          - {id: 1, target: "Escribí una carta.", en: ["I wrote a letter."]}
+          - {id: 2, target: "Recibí tu mensaje.", en: ["I got your message.", "I received your message."]}
+          - {id: 3, target: "Perdieron el tren.", en: ["They missed the train."]}
+          - {id: 4, target: "¿Dónde aprendiste alemán?", en: ["Where did you learn German?"]}
+          - {id: 5, target: "¿Dónde nació usted?", en: ["Where were you born?"]}
+          - {id: 6, target: "Ella decidió ir.", en: ["She decided to go."]}
+          - {id: 7, target: "No aprendimos nada.", en: ["We didn't learn anything.", "We did not learn anything."]}
+          - {id: 8, target: "Perdí mi llave.", en: ["I lost my key.", "I've lost my key."]}
+      - id: es.a2.u01.s03
+        kind: grammar
+        title: Where I went
+        cefr: A2
+        can_do: I can say where I went, what I did and what someone said, using the common irregular verbs.
+        requires: [es.a2.u01.s02]
+        grammar_note: >-
+          The most common verbs are irregular in the preterite. Ir and ser share the
+          same forms: fui, fuiste, fue, fuimos, fuisteis, fueron, so fui a Madrid is I
+          went to Madrid and fue una fiesta is it was a party. Many others take a new
+          stem and the endings -e, -iste, -o, -imos, -isteis, -ieron, with no written
+          accent: estar gives estuve, tener tuve, hacer hice (but hizo), poder pude,
+          poner puse, venir vine, querer quise. Decir and traer drop the i in the ellos
+          form: dijeron, trajeron. Dar and ver are short: di, dio; vi, vio.
+        lemmas:
+          - {lemma: decir, pos: verb, en: [to say, to tell], rank: 79}
+          - {lemma: dar, pos: verb, en: [to give], rank: 101}
+          - {lemma: fiesta, pos: noun, gender: f, en: [party, holiday], rank: 484}
+          - {lemma: verdad, pos: noun, gender: f, en: [truth], rank: 200}
+          - {lemma: gente, pos: noun, gender: f, en: [people], rank: 273}
+        examples:
+          - {id: 1, target: "Fui a su fiesta.", en: ["I went to her party.", "I went to his party."]}
+          - {id: 2, target: "¿Cómo estuvo la fiesta?", en: ["How was the party?", "How did the party go?"]}
+          - {id: 3, target: "Anoche tuvimos una fiesta.", en: ["We had a party last night."]}
+          - {id: 4, target: "¿Qué te dijo?", en: ["What did he say to you?", "What did she tell you?"]}
+          - {id: 5, target: "Te dije la verdad.", en: ["I told you the truth."]}
+          - {id: 6, target: "Me dio una manzana.", en: ["She gave me an apple.", "He gave me an apple."]}
+          - {id: 7, target: "Vino mucha gente.", en: ["A lot of people came.", "Lots of people came."]}
+          - {id: 8, target: "Fue una gran fiesta.", en: ["It was a great party.", "That was a great party."]}
+      - id: es.a2.u01.s04
+        kind: function
+        title: Telling a story
+        cefr: A2
+        can_do: I can tell a short story in order and say what happened in the end.
+        requires: [es.a2.u01.s03]
+        grammar_note: >-
+          To tell a story in order, use primero (first), luego or después (then,
+          afterwards), entonces (then, at that moment, or so) and al final (in the
+          end). Por fin means at last, after a wait: por fin llegó. De repente means
+          suddenly. Contar changes o to ue in the present: cuento, cuentas, cuenta; it
+          means to tell a story and also to count. A pronoun joins the end of a
+          command: cuéntame (tell me). Alguien means someone; nadie means no one, and
+          after the verb it needs no in front: no vino nadie, but nadie vino.
+        lemmas:
+          - {lemma: luego, pos: adv, en: [then, later, afterwards], rank: 1519}
+          - {lemma: entonces, pos: adv, en: [then, so], rank: 779}
+          - {lemma: al final, pos: expr, en: [in the end, at the end], rank: null}
+          - {lemma: por fin, pos: expr, en: [at last, finally], rank: null}
+          - {lemma: de repente, pos: expr, en: [suddenly], rank: null}
+          - {lemma: contar, pos: verb, en: [to tell, to count], rank: 249}
+          - {lemma: historia, pos: noun, gender: f, en: [story, history], rank: 463}
+          - {lemma: alguien, pos: pron, en: [someone, somebody, anyone], rank: 287}
+          - {lemma: nadie, pos: pron, en: [no one, nobody, anyone], rank: 205}
+        examples:
+          - {id: 1, target: "Primero fui al banco y luego al museo.", en: ["First I went to the bank and then to the museum."]}
+          - {id: 2, target: "¿Entonces qué pasó?", en: ["Then what happened?", "So what happened?"]}
+          - {id: 3, target: "Pasó de repente.", en: ["It happened suddenly."]}
+          - {id: 4, target: "Por fin llegó el autobús.", en: ["At last the bus arrived.", "The bus finally came."]}
+          - {id: 5, target: "Al final no fuimos a la playa.", en: ["In the end we didn't go to the beach.", "In the end we did not go to the beach."]}
+          - {id: 6, target: "Cuéntame la historia.", en: ["Tell me the story."]}
+          - {id: 7, target: "No vino nadie.", en: ["Nobody came.", "No one came."]}
+          - {id: 8, target: "¿Me llamó alguien?", en: ["Did anyone call me?", "Did somebody call me?"]}
+  - id: es.a2.u02
+    title: Health
+    cefr: A2
+    skills:
+      - id: es.a2.u02.s01
+        kind: vocab
+        title: Where it hurts
+        cefr: A2
+        can_do: I can name the parts of the body and say where it hurts.
+        requires: [es.a2.u01.s04]
+        grammar_note: >-
+          Doler (to hurt) works like gustar: the part of the body is the subject, so me
+          duele la cabeza is literally the head hurts me. One thing takes duele and
+          several take duelen: me duelen los pies. Doler changes o to ue: duele,
+          duelen. Spanish uses the article, not a possessive, for parts of your own
+          body: me duele el brazo (my arm hurts). Tener dolor de is another way to say
+          it: tengo dolor de cabeza (I have a headache). Mano ends in -o but is
+          feminine: la mano.
+        lemmas:
+          - {lemma: doler, pos: verb, en: [to hurt, to ache], rank: 863}
+          - {lemma: dolor, pos: noun, gender: m, en: [pain, ache], rank: 793}
+          - {lemma: cabeza, pos: noun, gender: f, en: [head], rank: 724}
+          - {lemma: brazo, pos: noun, gender: m, en: [arm], rank: 1150}
+          - {lemma: pierna, pos: noun, gender: f, en: [leg], rank: 1278}
+          - {lemma: mano, pos: noun, gender: f, en: [hand], rank: 375}
+          - {lemma: pie, pos: noun, gender: m, en: [foot], rank: 734}
+          - {lemma: espalda, pos: noun, gender: f, en: [back], rank: 1627}
+          - {lemma: estómago, pos: noun, gender: m, en: [stomach], rank: 2205}
+          - {lemma: diente, pos: noun, gender: m, en: [tooth], rank: 1073}
+          - {lemma: garganta, pos: noun, gender: f, en: [throat], rank: 3670}
+          - {lemma: dedo, pos: noun, gender: m, en: [finger, toe], rank: 1314}
+        examples:
+          - {id: 1, target: "Me duele la cabeza.", en: ["I have a headache.", "My head hurts."]}
+          - {id: 2, target: "¿Dónde le duele?", en: ["Where does it hurt?"]}
+          - {id: 3, target: "Me duelen los pies.", en: ["My feet hurt.", "I have sore feet."]}
+          - {id: 4, target: "Tengo dolor de espalda.", en: ["I have a backache.", "I have a pain in my back."]}
+          - {id: 5, target: "¿Te duele el estómago?", en: ["Does your stomach hurt?"]}
+          - {id: 6, target: "Me duele la garganta.", en: ["I have a sore throat.", "My throat hurts."]}
+          - {id: 7, target: "Me duele la pierna.", en: ["My leg hurts.", "My leg is aching."]}
+          - {id: 8, target: "Levante los brazos.", en: ["Lift up your arms.", "Raise your arms."]}
+      - id: es.a2.u02.s02
+        kind: grammar
+        title: How I feel
+        cefr: A2
+        can_do: I can say how I feel and describe a small accident.
+        requires: [es.a2.u02.s01]
+        grammar_note: >-
+          Reflexive verbs are common when you talk about health. Sentirse (to feel)
+          changes e to ie: me siento mal, ¿cómo te sientes? In the preterite it is me
+          sentí, se sintió. With a part of the body, the reflexive pronoun shows whose
+          it is and the body part takes the article: me rompí la pierna (I broke my
+          leg), me corté el dedo (I cut my finger). Caerse (to fall over) has a y in
+          some forms: se cayó. Hacerse daño means to hurt yourself. Use estar for how
+          someone is now: estoy enfermo, está mejor.
+        lemmas:
+          - {lemma: sentir, pos: verb, en: [to feel, to be sorry], rank: 192}
+          - {lemma: romper, pos: verb, en: [to break], rank: 493}
+          - {lemma: cortar, pos: verb, en: [to cut], rank: 549}
+          - {lemma: caer, pos: verb, en: [to fall], rank: 472}
+          - {lemma: daño, pos: noun, gender: m, en: [harm, damage, hurt], rank: 1363}
+          - {lemma: enfermo, pos: adj, en: [ill, sick], rank: 630}
+          - {lemma: mal, pos: adv, en: [bad, badly, ill], rank: 272}
+          - {lemma: mejor, pos: adj, en: [better, best], rank: 184}
+        examples:
+          - {id: 1, target: "Me siento mal.", en: ["I feel ill.", "I feel bad.", "I feel sick."]}
+          - {id: 2, target: "¿Cómo te sientes?", en: ["How do you feel?", "How are you feeling?"]}
+          - {id: 3, target: "¿Te sientes mejor?", en: ["Are you feeling better?", "Do you feel better?"]}
+          - {id: 4, target: "Ella está enferma.", en: ["She is ill.", "She is sick."]}
+          - {id: 5, target: "Me rompí la pierna.", en: ["I broke my leg."]}
+          - {id: 6, target: "Me corté el dedo.", en: ["I cut my finger.", "I've cut my finger."]}
+          - {id: 7, target: "El niño se cayó.", en: ["The child fell.", "The boy fell over."]}
+          - {id: 8, target: "¿Alguien se hizo daño?", en: ["Did anybody get hurt?", "Did anyone get hurt?"]}
+      - id: es.a2.u02.s03
+        kind: grammar
+        title: Since when
+        cefr: A2
+        can_do: I can say how long ago something happened and how long I have been ill.
+        requires: [es.a2.u02.s02]
+        grammar_note: >-
+          Hace with a length of time after a past tense means ago: se fue hace un
+          minuto. For something that started in the past and is still going on,
+          Spanish uses the present tense, not a past one, with desde (since) or desde
+          hace (for): está enfermo desde el domingo, trabajo aquí desde hace un año.
+          Hace ... que at the start of the sentence works the same way: hace tres días
+          que tengo tos. Ask ¿desde cuándo...? (since when?). Tener goes with fiebre,
+          tos and gripe, often with no article: tengo fiebre; a cold is un resfriado.
+        lemmas:
+          - {lemma: desde, pos: prep, en: [since, from], rank: 368}
+          - {lemma: minuto, pos: noun, gender: m, en: [minute], rank: 531}
+          - {lemma: fiebre, pos: noun, gender: f, en: [fever, temperature], rank: 2514}
+          - {lemma: tos, pos: noun, gender: f, en: [cough], rank: 4205}
+          - {lemma: gripe, pos: noun, gender: f, en: [flu, influenza], rank: 4950}
+          - {lemma: resfriado, pos: noun, gender: m, en: [cold], rank: 2100}
+        examples:
+          - {id: 1, target: "Él se fue hace un minuto.", en: ["He left a minute ago."]}
+          - {id: 2, target: "Mi hermano está enfermo desde ayer.", en: ["My brother has been ill since yesterday.", "My brother has been sick since yesterday."]}
+          - {id: 3, target: "Tiene fiebre desde hace días.", en: ["He has had a fever for days.", "She has had a temperature for days."]}
+          - {id: 4, target: "Trabajo aquí desde hace un año.", en: ["I have been working here for a year.", "I've worked here for a year."]}
+          - {id: 5, target: "¿Desde cuándo hablas francés?", en: ["How long have you been speaking French?", "How long have you spoken French?"]}
+          - {id: 6, target: "Tengo un resfriado.", en: ["I have a cold.", "I've got a cold."]}
+          - {id: 7, target: "Tengo gripe y estoy cansado.", en: ["I have the flu and I'm tired.", "I've got flu and I'm tired."]}
+          - {id: 8, target: "Hace tres días que tengo tos.", en: ["I have had a cough for three days.", "I've had a cough for three days."]}
+      - id: es.a2.u02.s04
+        kind: function
+        title: The doctor's advice
+        cefr: A2
+        can_do: I can understand and give simple advice about health.
+        requires: [es.a2.u02.s03]
+        grammar_note: >-
+          Advice often comes as a command. The tú command looks like the él form of the
+          present: descansa, toma, bebe. The usted command swaps the vowel: descanse,
+          tome, beba. Negative commands always use the swapped vowel, and tú adds -s:
+          no fumes, no bebas; for usted, no fume, no beba. A pronoun joins the end of a
+          positive command (cuídate, cuídese) but goes before a negative one (no te
+          levantes). Softer advice uses deberías (you should) or tener que (to have
+          to): deberías descansar, tienes que descansar. Demasiado means too much.
+        lemmas:
+          - {lemma: deber, pos: verb, en: [must, should, to owe], rank: 89}
+          - {lemma: descansar, pos: verb, en: [to rest], rank: 1214}
+          - {lemma: cuidar, pos: verb, en: [to look after, to take care of], rank: 441}
+          - {lemma: fumar, pos: verb, en: [to smoke], rank: 582}
+          - {lemma: demasiado, pos: adv, en: [too much, too], rank: 234}
+          - {lemma: medicina, pos: noun, gender: f, en: [medicine], rank: 1591}
+          - {lemma: farmacia, pos: noun, gender: f, en: [chemist's, pharmacy], rank: 4630}
+        examples:
+          - {id: 1, target: "Descansa un poco.", en: ["Get some rest.", "Rest a little."]}
+          - {id: 2, target: "Cuídese, por favor.", en: ["Please take care of yourself.", "Take care of yourself, please."]}
+          - {id: 3, target: "Toma la medicina.", en: ["Take the medicine.", "Take your medicine."]}
+          - {id: 4, target: "No fume demasiado.", en: ["Don't smoke too much.", "Do not smoke too much."]}
+          - {id: 5, target: "No bebas demasiado café.", en: ["Don't drink too much coffee.", "Do not drink too much coffee."]}
+          - {id: 6, target: "Deberías fumar menos.", en: ["You should smoke less."]}
+          - {id: 7, target: "¿Hay una farmacia cerca?", en: ["Is there a chemist's nearby?", "Is there a pharmacy nearby?"]}
+          - {id: 8, target: "Tengo que descansar.", en: ["I have to rest.", "I must rest."]}
+  - id: es.a2.u03
+    title: Work
+    cefr: A2
+    skills:
+      - id: es.a2.u03.s01
+        kind: vocab
+        title: At work
+        cefr: A2
+        can_do: I can name common jobs and talk about the people I work with.
+        requires: [es.a2.u02.s04]
+        grammar_note: >-
+          Most job names have a feminine form: cocinero, cocinera; enfermero,
+          enfermera; abogado, abogada; jefe, jefa. As with profesor and médico, a job
+          after ser takes no article: soy enfermera, mi tío es abogado. Trabajar como
+          means to work as: trabajo como cocinero. Compañero is a colleague or a
+          classmate: mis compañeros de trabajo. Una empresa is a company or firm, and in
+          Spain a computer is un ordenador. Trabajador describes someone who works hard:
+          es muy trabajadora.
+        lemmas:
+          - {lemma: jefe, pos: noun, gender: m, en: [boss, manager], rank: 1200}
+          - {lemma: compañero, pos: noun, gender: m, en: [colleague, classmate, companion], rank: 2020}
+          - {lemma: empresa, pos: noun, gender: f, en: [company, firm, business], rank: 1709}
+          - {lemma: cliente, pos: noun, gender: m, en: [customer, client], rank: 2203}
+          - {lemma: abogado, pos: noun, gender: m, en: [lawyer], rank: 1222}
+          - {lemma: cocinero, pos: noun, gender: m, en: [cook, chef], rank: 2611}
+          - {lemma: enfermero, pos: noun, gender: m, en: [nurse], rank: 2249}
+          - {lemma: ingeniero, pos: noun, gender: m, en: [engineer], rank: 4009}
+          - {lemma: reunión, pos: noun, gender: f, en: [meeting], rank: 776}
+          - {lemma: ordenador, pos: noun, gender: m, en: [computer], rank: 1203}
+          - {lemma: trabajador, pos: adj, en: [hard-working], rank: 1875}
+        examples:
+          - {id: 1, target: "¿Te gusta tu jefe?", en: ["Do you like your boss?"]}
+          - {id: 2, target: "Trabajo como cocinero.", en: ["I work as a cook.", "I work as a chef."]}
+          - {id: 3, target: "Mi tío es abogado.", en: ["My uncle is a lawyer."]}
+          - {id: 4, target: "Quiero ser enfermera.", en: ["I want to be a nurse."]}
+          - {id: 5, target: "Ella es ingeniera.", en: ["She is an engineer.", "She's an engineer."]}
+          - {id: 6, target: "Hoy tengo una reunión.", en: ["I have a meeting today."]}
+          - {id: 7, target: "Mi ordenador no funciona.", en: ["My computer isn't working.", "My computer doesn't work."]}
+          - {id: 8, target: "Mis compañeros son muy trabajadores.", en: ["My colleagues are very hard-working."]}
+      - id: es.a2.u03.s02
+        kind: grammar
+        title: What I have done
+        cefr: A2
+        can_do: I can talk about my experience and what has changed up to now.
+        requires: [es.a2.u03.s01]
+        grammar_note: >-
+          The present perfect is haber plus a past participle: he trabajado, has
+          trabajado, ha trabajado, hemos trabajado, habéis trabajado, han trabajado.
+          Participles end in -ado for -ar verbs and -ido for -er and -ir verbs:
+          cambiado, aprendido, vivido. In Spain it is used for a period that is not over
+          (hoy, esta semana, hasta ahora) and for experience with no time given: he
+          trabajado en un hotel. With a finished time such as ayer, use the preterite.
+          The participle never changes, and nothing comes between haber and it: no he
+          terminado. Dejar de means to stop doing something.
+        lemmas:
+          - {lemma: experiencia, pos: noun, gender: f, en: [experience], rank: 1354}
+          - {lemma: ahora, pos: adv, en: [now], rank: 173}
+          - {lemma: hasta, pos: prep, en: [until, up to, as far as], rank: 279}
+          - {lemma: cambiar, pos: verb, en: [to change], rank: 340}
+          - {lemma: dejar, pos: verb, en: [to leave, to let, to stop], rank: 123}
+        examples:
+          - {id: 1, target: "He cambiado mucho.", en: ["I've changed a lot.", "I have changed a lot."]}
+          - {id: 2, target: "No has cambiado nada.", en: ["You haven't changed at all.", "You have not changed at all."]}
+          - {id: 3, target: "Yo he dejado de fumar.", en: ["I've given up smoking.", "I have stopped smoking."]}
+          - {id: 4, target: "¿Dónde has dejado el coche?", en: ["Where have you left the car?", "Where did you leave the car?"]}
+          - {id: 5, target: "Tengo mucha experiencia.", en: ["I have a lot of experience."]}
+          - {id: 6, target: "Hasta ahora he trabajado en dos hoteles.", en: ["Up to now I have worked in two hotels.", "So far I've worked in two hotels."]}
+          - {id: 7, target: "¿Dónde trabaja ahora?", en: ["Where does he work now?", "Where do you work now?"]}
+      - id: es.a2.u03.s03
+        kind: function
+        title: What I can do
+        cefr: A2
+        can_do: I can say what I know how to do and what I do well.
+        requires: [es.a2.u03.s02]
+        grammar_note: >-
+          Saber means to know a fact and, with an infinitive, to know how to do
+          something: sé cocinar, ¿sabes conducir? Its yo form is irregular: sé, sabes,
+          sabe, sabemos, sabéis, saben. Conocer is to know a person or a place, and
+          poder is to be able to in a given situation: hoy no puedo trabajar.
+          Conducir, the usual verb for to drive in Spain, has the yo form conduzco.
+          Rápido works as an adverb as well as an adjective: aprendo rápido (I learn
+          quickly). Trabajar en equipo means to work in a team.
+        lemmas:
+          - {lemma: saber, pos: verb, en: [to know, to know how to], rank: 81}
+          - {lemma: conducir, pos: verb, en: [to drive], rank: 586}
+          - {lemma: fácil, pos: adj, en: [easy], rank: 452}
+          - {lemma: difícil, pos: adj, en: [difficult, hard], rank: 345}
+          - {lemma: rápido, pos: adj, en: [fast, quick, quickly], rank: 448}
+          - {lemma: importante, pos: adj, en: [important], rank: 505}
+          - {lemma: equipo, pos: noun, gender: m, en: [team, equipment], rank: 932}
+        examples:
+          - {id: 1, target: "Sabe hablar inglés.", en: ["He can speak English.", "She knows how to speak English."]}
+          - {id: 2, target: "No sé cocinar.", en: ["I can't cook.", "I don't know how to cook."]}
+          - {id: 3, target: "¿Sabes conducir?", en: ["Can you drive?", "Do you know how to drive?"]}
+          - {id: 4, target: "Aprendo rápido.", en: ["I learn quickly.", "I'm a quick learner."]}
+          - {id: 5, target: "No fue fácil.", en: ["It wasn't easy.", "It was not easy."]}
+          - {id: 6, target: "Esto es difícil.", en: ["This is difficult.", "This is hard."]}
+          - {id: 7, target: "Es muy importante.", en: ["It's very important.", "It is very important."]}
+          - {id: 8, target: "Trabajo bien en equipo.", en: ["I work well in a team.", "I'm good at working in a team."]}
+      - id: es.a2.u03.s04
+        kind: function
+        title: Asking about the job
+        cefr: A2
+        can_do: I can ask about the hours and pay and say when I can start.
+        requires: [es.a2.u03.s03]
+        grammar_note: >-
+          Interesar works like gustar: me interesa el puesto (the job interests me),
+          me interesan los idiomas. Una pregunta is a question and preguntar is to ask
+          a question; ganar means both to earn and to win. El puesto is the post you
+          apply for, el sueldo is your pay, and el horario is the working hours or a
+          timetable. Ask about them with ¿cuál es...? A job interview is usually formal,
+          so use usted: ¿cuándo puede empezar? Disponible means available: estoy
+          disponible desde el lunes.
+        lemmas:
+          - {lemma: puesto, pos: noun, gender: m, en: [job, post, position], rank: 843}
+          - {lemma: horario, pos: noun, gender: m, en: [hours, timetable, schedule], rank: 3935}
+          - {lemma: sueldo, pos: noun, gender: m, en: [pay, salary, wages], rank: 3138}
+          - {lemma: ganar, pos: verb, en: [to earn, to win], rank: 294}
+          - {lemma: interesar, pos: verb, en: [to interest], rank: 825}
+          - {lemma: pregunta, pos: noun, gender: f, en: [question], rank: 403}
+          - {lemma: preguntar, pos: verb, en: [to ask], rank: 199}
+          - {lemma: disponible, pos: adj, en: [available], rank: 2807}
+        examples:
+          - {id: 1, target: "Me interesa mucho este puesto.", en: ["I'm very interested in this job.", "This post interests me a lot."]}
+          - {id: 2, target: "¿Qué te interesa?", en: ["What are you interested in?", "What interests you?"]}
+          - {id: 3, target: "Tengo una pregunta.", en: ["I have a question.", "I've got a question."]}
+          - {id: 4, target: "¿Cuál es el horario?", en: ["What are the hours?", "What is the timetable?"]}
+          - {id: 5, target: "¿Cuál es el sueldo?", en: ["What is the pay?", "What's the salary?"]}
+          - {id: 6, target: "Quiero ganar mucho.", en: ["I want to earn a lot."]}
+          - {id: 7, target: "Estoy disponible desde el lunes.", en: ["I'm available from Monday.", "I am available from Monday."]}
+          - {id: 8, target: "Gracias por preguntar.", en: ["Thanks for asking.", "Thank you for asking."]}
+  - id: es.a2.u04
+    title: Plans
+    cefr: A2
+    skills:
+      - id: es.a2.u04.s01
+        kind: grammar
+        title: Making plans
+        cefr: A2
+        can_do: I can say what I plan to do and arrange to meet someone.
+        requires: [es.a2.u03.s04]
+        grammar_note: >-
+          Ir a plus an infinitive is the usual way to talk about plans: voy a estar
+          ocupado. Pensar plus an infinitive means to intend to: pienso ir (I'm planning
+          to go); pensar changes e to ie: pienso, piensas, piensa. Quedar has several
+          uses: quedar, often with con, is to arrange to meet (¿quedamos para mañana?,
+          he quedado con Ana), and quedarse is to stay (hoy me quedo en casa). Estar
+          libre and estar ocupado say whether you have time. Juntos agrees with the
+          people: vamos juntas.
+        lemmas:
+          - {lemma: plan, pos: noun, gender: m, en: [plan], rank: 553}
+          - {lemma: pensar, pos: verb, en: [to think, to intend], rank: 133}
+          - {lemma: quedar, pos: verb, en: [to arrange to meet, to stay, to be left], rank: 154}
+          - {lemma: libre, pos: adj, en: [free], rank: 839}
+          - {lemma: ocupado, pos: adj, en: [busy], rank: 500}
+          - {lemma: juntos, pos: adj, en: [together], rank: 834}
+          - {lemma: idea, pos: noun, gender: f, en: [idea], rank: 393}
+        examples:
+          - {id: 1, target: "¿Tienes planes para el fin de semana?", en: ["Do you have any plans for the weekend?", "Have you got plans for the weekend?"]}
+          - {id: 2, target: "Pienso ir allí.", en: ["I'm planning to go there.", "I intend to go there."]}
+          - {id: 3, target: "¿Quedamos para mañana?", en: ["Shall we meet tomorrow?", "Are we meeting tomorrow?"]}
+          - {id: 4, target: "Hoy me quedo en casa.", en: ["I'm staying at home today.", "Today I'm staying in."]}
+          - {id: 5, target: "¿Estás libre ahora?", en: ["Are you free now?"]}
+          - {id: 6, target: "Voy a estar demasiado ocupado.", en: ["I'm going to be too busy."]}
+          - {id: 7, target: "Podemos ir juntos.", en: ["We can go together."]}
+          - {id: 8, target: "¡Qué buena idea!", en: ["What a good idea!", "What a nice idea!"]}
+      - id: es.a2.u04.s02
+        kind: grammar
+        title: The future
+        cefr: A2
+        can_do: I can make promises and predictions about the future.
+        requires: [es.a2.u04.s01]
+        grammar_note: >-
+          The simple future adds -é, -ás, -á, -emos, -éis, -án to the whole infinitive:
+          llamaré, comerás, vivirá. Some common verbs change the stem but keep the
+          endings: tener tendré, venir vendré, poder podré, salir saldré, hacer haré,
+          decir diré, saber sabré, querer querré, poner pondré. For plans, ir a plus an
+          infinitive is more usual in speech; the simple future is used for promises
+          and predictions: te veré pronto, algún día lo entenderás. Dentro de with a
+          length of time means in: vuelvo dentro de una semana.
+        lemmas:
+          - {lemma: pronto, pos: adv, en: [soon, early], rank: 407}
+          - {lemma: futuro, pos: noun, gender: m, en: [future], rank: 1134}
+          - {lemma: seguro, pos: adj, en: [sure, safe], rank: 322}
+          - {lemma: algún día, pos: expr, en: [some day, one day], rank: null}
+          - {lemma: dentro de, pos: expr, en: [in, inside], rank: null}
+        examples:
+          - {id: 1, target: "Te veré pronto.", en: ["I'll see you soon.", "See you soon!"]}
+          - {id: 2, target: "Ella vendrá pronto.", en: ["She will come soon.", "She'll be here soon."]}
+          - {id: 3, target: "¿Cómo será nuestro futuro?", en: ["What will our future be like?"]}
+          - {id: 4, target: "Algún día entenderás todo.", en: ["Some day you will understand everything.", "One day you'll understand everything."]}
+          - {id: 5, target: "Empezaremos dentro de poco.", en: ["We'll begin shortly.", "We will start soon."]}
+          - {id: 6, target: "Volveré dentro de una semana.", en: ["I'll be back in a week.", "I will come back in a week."]}
+          - {id: 7, target: "¿Seguro que nos ayudará?", en: ["Are you sure he'll help us?", "Is it certain that she will help us?"]}
+      - id: es.a2.u04.s03
+        kind: function
+        title: Invitations
+        cefr: A2
+        can_do: I can invite someone and accept or refuse an invitation politely.
+        requires: [es.a2.u04.s02]
+        grammar_note: >-
+          To invite, ask ¿quieres...? or, very often in Spain, ¿te apetece...? (do you
+          fancy...?), which works like gustar: ¿te apetece ir al cine? Encantar also
+          works like gustar and means to love: me encanta la idea. Me encantaría (I
+          would love to) accepts an invitation; lo siento, no puedo refuses one
+          politely. Con with mí and ti becomes conmigo and contigo. Vale is the
+          everyday Spanish word for OK, and de acuerdo means agreed: estoy de acuerdo
+          (I agree).
+        lemmas:
+          - {lemma: invitar, pos: verb, en: [to invite], rank: 735}
+          - {lemma: apetecer, pos: verb, en: [to fancy, to feel like], rank: 2868}
+          - {lemma: encantar, pos: verb, en: [to love, to delight], rank: 422}
+          - {lemma: claro, pos: adv, en: [of course, clearly], rank: 963}
+          - {lemma: lo siento, pos: expr, en: [I'm sorry, sorry], rank: null}
+          - {lemma: vale, pos: intj, en: [OK, all right], rank: 1018}
+          - {lemma: de acuerdo, pos: expr, en: [agreed, all right, in agreement], rank: null}
+          - {lemma: conmigo, pos: pron, en: [with me], rank: 437}
+          - {lemma: contigo, pos: pron, en: [with you], rank: 439}
+        examples:
+          - {id: 1, target: "¿Quieres venir conmigo?", en: ["Do you want to come with me?", "Would you like to come with me?"]}
+          - {id: 2, target: "Gracias por invitarme.", en: ["Thanks for inviting me.", "Thank you for inviting me."]}
+          - {id: 3, target: "¡Claro que sí!", en: ["Of course!", "Yes, of course!"]}
+          - {id: 4, target: "Lo siento, no puedo.", en: ["I'm sorry, I can't.", "Sorry, I can't."]}
+          - {id: 5, target: "¿Te apetece ir al cine?", en: ["Do you fancy going to the cinema?", "Would you like to go to the movies?"]}
+          - {id: 6, target: "Me encantaría ir contigo.", en: ["I would love to go with you.", "I'd love to go with you."]}
+          - {id: 7, target: "Vale, nos vemos mañana.", en: ["OK, see you tomorrow."]}
+          - {id: 8, target: "Estoy de acuerdo.", en: ["I agree."]}
+      - id: es.a2.u04.s04
+        kind: grammar
+        title: Por and para
+        cefr: A2
+        can_do: I can say what something is for, who it is for and why something happened.
+        requires: [es.a2.u04.s03]
+        grammar_note: >-
+          Por and para can both mean for, but they are not the same. Para looks ahead to
+          a goal: a purpose (estudio para el examen, para comprar un regalo, ¿para qué
+          sirve?), the person who receives something (es para ti) or a deadline (para
+          el lunes). Por gives a cause or a route: a reason (gracias por tu ayuda, por
+          esa razón), a means (por correo, por teléfono), movement through or along a
+          place (paseamos por el parque) and a part of the day (por la tarde). Servir
+          para means to be useful for.
+        lemmas:
+          - {lemma: ayuda, pos: noun, gender: f, en: [help], rank: 449}
+          - {lemma: razón, pos: noun, gender: f, en: [reason], rank: 568}
+          - {lemma: examen, pos: noun, gender: m, en: [exam, test], rank: 674}
+          - {lemma: regalo, pos: noun, gender: m, en: [present, gift], rank: 804}
+          - {lemma: correo, pos: noun, gender: m, en: [post, mail], rank: 1132}
+          - {lemma: enviar, pos: verb, en: [to send], rank: 845}
+          - {lemma: servir, pos: verb, en: [to serve, to be useful], rank: 1057}
+          - {lemma: pasear, pos: verb, en: [to go for a walk, to stroll], rank: 1320}
+        examples:
+          - {id: 1, target: "Gracias por tu ayuda.", en: ["Thanks for your help.", "Thank you for your help."]}
+          - {id: 2, target: "Envíalo por correo.", en: ["Send it by post.", "Send it by mail."]}
+          - {id: 3, target: "Este regalo es para ti.", en: ["This present is for you.", "This gift is for you."]}
+          - {id: 4, target: "Tengo que estudiar para el examen.", en: ["I have to study for the exam.", "I have to study for the test."]}
+          - {id: 5, target: "¿Para qué sirve esto?", en: ["What is this for?", "What is this used for?"]}
+          - {id: 6, target: "Por la tarde paseamos por el parque.", en: ["In the afternoon we walk in the park.", "In the evening we go for a walk through the park."]}
+          - {id: 7, target: "Por esa razón no fui.", en: ["For that reason I didn't go.", "That's why I didn't go."]}
+          - {id: 8, target: "Fuimos al centro para comprar un regalo.", en: ["We went into town to buy a present.", "We went downtown to buy a gift."]}
+  - id: es.a2.u05
+    title: Weather and seasons
+    cefr: A2
+    skills:
+      - id: es.a2.u05.s01
+        kind: vocab
+        title: What's the weather like?
+        cefr: A2
+        can_do: I can ask about the weather and say whether it is hot, cold, sunny or windy.
+        requires: [es.a2.u04.s04]
+        grammar_note: >-
+          Weather uses hacer in the él form: hace calor, hace frío, hace sol, hace
+          viento, hace fresco. Bueno and malo shorten to buen and mal before a
+          masculine singular noun: hace buen tiempo, hace mal tiempo. Add mucho for a
+          lot: hace mucho calor. For how a person feels, use tener instead: tengo frío
+          (I'm cold), ¿no tienes calor? Tiempo means both weather and time: ¿qué tiempo
+          hace? asks about the weather, but no tengo tiempo means I have no time. In the
+          past: ayer hizo calor (it was hot yesterday).
+        lemmas:
+          - {lemma: tiempo, pos: noun, gender: m, en: [weather, time], rank: 128}
+          - {lemma: calor, pos: noun, gender: m, article: el, en: [heat, warmth], rank: 848}
+          - {lemma: frío, pos: noun, gender: m, en: [cold], rank: 489}
+          - {lemma: sol, pos: noun, gender: m, en: [sun], rank: 623}
+          - {lemma: viento, pos: noun, gender: m, en: [wind], rank: 1352}
+          - {lemma: fresco, pos: adj, en: [cool, fresh], rank: 1761}
+          - {lemma: buen, pos: adj, en: [good], rank: 221}
+          - {lemma: nube, pos: noun, gender: f, en: [cloud], rank: 1736}
+          - {lemma: cielo, pos: noun, gender: m, en: [sky], rank: 898}
+        examples:
+          - {id: 1, target: "¿Qué tiempo hace hoy?", en: ["What's the weather like today?", "What is the weather like today?"]}
+          - {id: 2, target: "Hace mucho frío.", en: ["It's very cold.", "It is really cold."]}
+          - {id: 3, target: "Hoy hace calor.", en: ["It's hot today.", "It's warm today."]}
+          - {id: 4, target: "Hoy hace sol.", en: ["It's sunny today."]}
+          - {id: 5, target: "Hace mucho viento.", en: ["It's very windy."]}
+          - {id: 6, target: "Hace buen tiempo.", en: ["The weather is good.", "It's nice weather."]}
+          - {id: 7, target: "¿No tienes frío?", en: ["Aren't you cold?"]}
+          - {id: 8, target: "Mira esas nubes.", en: ["Look at those clouds."]}
+      - id: es.a2.u05.s02
+        kind: vocab
+        title: Rain, snow and the seasons
+        cefr: A2
+        can_do: I can talk about rain and snow and name the seasons.
+        requires: [es.a2.u05.s01]
+        grammar_note: >-
+          Llover (to rain) and nevar (to snow) are used only in the él form: llueve,
+          with o to ue, and nieva, with e to ie; in the past, llovió and nevó. To say it
+          is raining or snowing right now, use estar with the -ando form: está
+          lloviendo, está nevando. The nouns are la lluvia and la nieve. The seasons
+          take the article: la primavera, el verano, el otoño, el invierno; en invierno
+          means in winter. Many people in Spain take their summer holidays in August.
+        lemmas:
+          - {lemma: llover, pos: verb, en: [to rain], rank: 421}
+          - {lemma: nevar, pos: verb, en: [to snow], rank: 607}
+          - {lemma: lluvia, pos: noun, gender: f, en: [rain], rank: 879}
+          - {lemma: nieve, pos: noun, gender: f, en: [snow], rank: 895}
+          - {lemma: primavera, pos: noun, gender: f, en: [spring], rank: 1561}
+          - {lemma: verano, pos: noun, gender: m, en: [summer], rank: 729}
+          - {lemma: otoño, pos: noun, gender: m, en: [autumn, fall], rank: 2211}
+          - {lemma: invierno, pos: noun, gender: m, en: [winter], rank: 1104}
+        examples:
+          - {id: 1, target: "Llueve mucho aquí.", en: ["It rains a lot here."]}
+          - {id: 2, target: "¿Nieva mucho aquí?", en: ["Does it snow a lot here?"]}
+          - {id: 3, target: "¿Está lloviendo ahora?", en: ["Is it raining now?"]}
+          - {id: 4, target: "Llegó la primavera.", en: ["Spring has come.", "Spring is here."]}
+          - {id: 5, target: "Nací en invierno.", en: ["I was born in winter.", "I was born in the winter."]}
+          - {id: 6, target: "El verano terminó.", en: ["Summer is over.", "The summer is over."]}
+          - {id: 7, target: "Ahora es otoño.", en: ["It's autumn now.", "It's fall now."]}
+          - {id: 8, target: "Necesitamos la lluvia.", en: ["We need the rain.", "We need rain."]}
+      - id: es.a2.u05.s03
+        kind: grammar
+        title: How it was
+        cefr: A2
+        can_do: I can describe the weather, a place or how people felt at a time in the past.
+        requires: [es.a2.u05.s02]
+        grammar_note: >-
+          The imperfect describes how things were: the weather, the scene, feelings and
+          states. Regular -ar verbs take -aba: estaba, estabas, estaba, estábamos,
+          estabais, estaban; -er and -ir verbs take -ía: hacía, tenía, vivía, parecía.
+          Only three verbs are irregular: ser (era), ir (iba) and ver (veía). Use it for
+          the background and the preterite for what happened against it: estaba
+          lloviendo cuando llegué. Hay becomes había (there was, there were). Parecer
+          (to seem) has the yo form parezco, and feliz has the plural felices.
+        lemmas:
+          - {lemma: cuando, pos: conj, en: [when], rank: 130}
+          - {lemma: parecer, pos: verb, en: [to seem, to look], rank: 182}
+          - {lemma: feliz, pos: adj, en: [happy], rank: 362}
+          - {lemma: triste, pos: adj, en: [sad], rank: 1085}
+          - {lemma: solo, pos: adj, en: [alone, lonely], rank: 112}
+          - {lemma: oscuro, pos: adj, en: [dark], rank: 1468}
+          - {lemma: tranquilo, pos: adj, en: [quiet, calm], rank: 1934}
+        examples:
+          - {id: 1, target: "Estaba lloviendo cuando llegué.", en: ["It was raining when I arrived.", "When I arrived, it was raining."]}
+          - {id: 2, target: "Ella parecía triste.", en: ["She looked sad.", "She seemed sad."]}
+          - {id: 3, target: "Todos parecían felices.", en: ["Everyone looked happy.", "Everybody seemed happy."]}
+          - {id: 4, target: "Él estaba muy feliz.", en: ["He was very happy."]}
+          - {id: 5, target: "No estaba solo.", en: ["I wasn't alone.", "He wasn't alone."]}
+          - {id: 6, target: "Estaba muy oscuro.", en: ["It was very dark."]}
+          - {id: 7, target: "Todo estaba tranquilo.", en: ["Everything was quiet.", "All was still."]}
+          - {id: 8, target: "Era un día tranquilo y hacía sol.", en: ["It was a quiet day and it was sunny.", "It was a calm, sunny day."]}
+      - id: es.a2.u05.s04
+        kind: function
+        title: If it rains
+        cefr: A2
+        can_do: I can say what we will do if the weather is good or bad.
+        requires: [es.a2.u05.s03]
+        grammar_note: >-
+          Si (if, with no accent) followed by the present talks about a real
+          possibility. The other half can be in the present, the future or a command:
+          si llueve, nos quedamos en casa; si hace buen tiempo, iremos a la playa; si
+          llueve, llámame. Do not confuse si with sí (yes). In Spain coger is the
+          everyday verb for to take or to catch: coge un paraguas, coger el autobús.
+          Paraguas is the same in the singular and the plural: un paraguas, dos
+          paraguas. Fuera and dentro mean outside and inside.
+        lemmas:
+          - {lemma: si, pos: conj, en: [if], rank: 96}
+          - {lemma: paraguas, pos: noun, gender: m, en: [umbrella], rank: 1236}
+          - {lemma: coger, pos: verb, en: [to take, to catch, to get], rank: 730}
+          - {lemma: fuera, pos: adv, en: [outside, out], rank: 379}
+          - {lemma: dentro, pos: adv, en: [inside, in], rank: 1049}
+        examples:
+          - {id: 1, target: "Si llueve, llámame.", en: ["If it rains, call me.", "Call me if it rains."]}
+          - {id: 2, target: "Coge un paraguas.", en: ["Take an umbrella.", "Grab an umbrella."]}
+          - {id: 3, target: "Fuera está lloviendo.", en: ["It's raining outside.", "It is raining outside."]}
+          - {id: 4, target: "Si quieres, puedes ir.", en: ["You can go if you want.", "If you want, you can go."]}
+          - {id: 5, target: "Puedo coger el autobús.", en: ["I can take the bus.", "I can catch the bus."]}
+          - {id: 6, target: "Si hace buen tiempo, iremos a la playa.", en: ["If the weather is good, we'll go to the beach.", "If it's nice, we will go to the beach."]}
+          - {id: 7, target: "Si llueve, nos quedamos en casa.", en: ["If it rains, we stay at home.", "If it rains, we'll stay in."]}
+          - {id: 8, target: "¿Hay alguien ahí dentro?", en: ["Is anybody in there?", "Is someone in there?"]}
+  - id: es.a2.u06
+    title: Free time
+    cefr: A2
+    skills:
+      - id: es.a2.u06.s01
+        kind: vocab
+        title: Free time
+        cefr: A2
+        can_do: I can say what I do in my free time and what I like doing.
+        requires: [es.a2.u05.s04]
+        grammar_note: >-
+          Jugar (to play a game or a sport) changes u to ue: juego, juegas, juega,
+          jugamos, jugáis, juegan. In Spain it takes a and the article before the
+          sport: juego al fútbol, jugamos al tenis. Tocar is to play an instrument, and
+          also to touch: toco la guitarra. Ver la televisión means to watch television.
+          With gustar and encantar an activity is an infinitive and the verb stays
+          singular: me encanta leer, nos gusta bailar. Leer has a y in the preterite:
+          leyó, leyeron.
+        lemmas:
+          - {lemma: tiempo libre, pos: expr, en: [free time, spare time], rank: null}
+          - {lemma: jugar, pos: verb, en: [to play], rank: 226}
+          - {lemma: nadar, pos: verb, en: [to swim], rank: 118}
+          - {lemma: correr, pos: verb, en: [to run], rank: 424}
+          - {lemma: bailar, pos: verb, en: [to dance], rank: 876}
+          - {lemma: cantar, pos: verb, en: [to sing], rank: 485}
+          - {lemma: leer, pos: verb, en: [to read], rank: 206}
+          - {lemma: tocar, pos: verb, en: [to play, to touch], rank: 369}
+          - {lemma: guitarra, pos: noun, gender: f, en: [guitar], rank: 1186}
+          - {lemma: canción, pos: noun, gender: f, en: [song], rank: 699}
+          - {lemma: película, pos: noun, gender: f, en: [film, movie], rank: 473}
+          - {lemma: televisión, pos: noun, gender: f, en: [television, TV], rank: 745}
+        examples:
+          - {id: 1, target: "¿Qué haces en tu tiempo libre?", en: ["What do you do in your free time?", "What do you do in your spare time?"]}
+          - {id: 2, target: "Me encanta leer.", en: ["I love reading.", "I love to read."]}
+          - {id: 3, target: "¿Te gusta bailar?", en: ["Do you like dancing?", "Do you like to dance?"]}
+          - {id: 4, target: "No sé cantar.", en: ["I can't sing.", "I don't know how to sing."]}
+          - {id: 5, target: "¿Tocas la guitarra?", en: ["Do you play the guitar?"]}
+          - {id: 6, target: "¿Juegas al fútbol?", en: ["Do you play football?", "Do you play soccer?"]}
+          - {id: 7, target: "Veo la televisión.", en: ["I watch television.", "I'm watching TV."]}
+          - {id: 8, target: "Conozco esta canción.", en: ["I know this song."]}
+      - id: es.a2.u06.s02
+        kind: grammar
+        title: How often
+        cefr: A2
+        can_do: I can say how often I do things, from always to hardly ever.
+        requires: [es.a2.u06.s01]
+        grammar_note: >-
+          From most to least often: siempre, casi siempre, normalmente, a menudo
+          (often), a veces, de vez en cuando (from time to time), rara vez (rarely),
+          casi nunca, nunca. Most go at the start or straight after the verb: viajo a
+          menudo, a menudo vengo aquí. Casi means almost: casi cada día. Soler with an
+          infinitive means to usually do something: suelo comer en casa; it changes o
+          to ue: suelo, sueles, suele. With a number, use vez: una vez a la semana, dos
+          veces al mes.
+        lemmas:
+          - {lemma: a menudo, pos: expr, en: [often], rank: null}
+          - {lemma: de vez en cuando, pos: expr, en: [from time to time, now and then], rank: null}
+          - {lemma: rara vez, pos: expr, en: [rarely, seldom], rank: null}
+          - {lemma: casi, pos: adv, en: [almost, nearly], rank: 419}
+          - {lemma: soler, pos: verb, en: [to usually do, to tend to], rank: 380}
+        examples:
+          - {id: 1, target: "¿Nadas a menudo?", en: ["Do you swim often?", "Do you often swim?"]}
+          - {id: 2, target: "Viajo a menudo.", en: ["I travel often.", "I often travel."]}
+          - {id: 3, target: "Rara vez tomo café.", en: ["I rarely drink coffee.", "I seldom have coffee."]}
+          - {id: 4, target: "Nado casi cada día.", en: ["I swim almost every day."]}
+          - {id: 5, target: "Esto casi nunca pasa.", en: ["This almost never happens.", "This hardly ever happens."]}
+          - {id: 6, target: "Suelo levantarme tarde.", en: ["I usually get up late."]}
+          - {id: 7, target: "¿Qué sueles desayunar?", en: ["What do you usually have for breakfast?", "What do you usually eat for breakfast?"]}
+          - {id: 8, target: "Voy al cine de vez en cuando.", en: ["I go to the cinema from time to time.", "I go to the movies now and then."]}
+      - id: es.a2.u06.s03
+        kind: grammar
+        title: When I was a child
+        cefr: A2
+        can_do: I can say what I used to do and what life was like when I was young.
+        requires: [es.a2.u06.s02]
+        grammar_note: >-
+          The imperfect also tells what used to happen again and again: cuando era
+          pequeño, iba al colegio a pie; jugaba con mis vecinos. Soler in the imperfect
+          says the same: solía jugar. Recordar (o to ue) and acordarse de both mean to
+          remember: recuerdo aquellos tiempos, me acuerdo de aquel día. Aquel, aquella,
+          aquellos and aquellas mean that or those, for things far away in space or in
+          time: en aquella época (at that time). In Spain el colegio is a school for
+          children.
+        lemmas:
+          - {lemma: aquel, pos: det, en: [that, those], rank: 24}
+          - {lemma: época, pos: noun, gender: f, en: [time, period], rank: 3186}
+          - {lemma: recordar, pos: verb, en: [to remember, to remind], rank: 442}
+          - {lemma: acordar, pos: verb, en: [to remember, to agree], rank: 412}
+          - {lemma: colegio, pos: noun, gender: m, en: [school], rank: 861}
+          - {lemma: vecino, pos: noun, gender: m, en: [neighbour, neighbor], rank: 1177}
+        examples:
+          - {id: 1, target: "Cuando era pequeño, iba al colegio a pie.", en: ["When I was little, I walked to school.", "When I was a child, I went to school on foot."]}
+          - {id: 2, target: "Recuerdo aquellos tiempos.", en: ["I remember those times.", "I remember those days."]}
+          - {id: 3, target: "Me acuerdo de aquel día.", en: ["I remember that day."]}
+          - {id: 4, target: "¿No te acuerdas?", en: ["Don't you remember?"]}
+          - {id: 5, target: "Estaba lloviendo aquel día.", en: ["It was raining that day."]}
+          - {id: 6, target: "Cuando era niña, jugaba con mis vecinos.", en: ["When I was a girl, I used to play with my neighbours.", "When I was a child, I played with my neighbors."]}
+          - {id: 7, target: "Recuerdo cómo era él.", en: ["I remember how he used to be.", "I remember what he was like."]}
+          - {id: 8, target: "En aquella época vivíamos en un pueblo.", en: ["At that time we lived in a village.", "Back then we lived in a small town."]}
+      - id: es.a2.u06.s04
+        kind: grammar
+        title: Giving and lending
+        cefr: A2
+        can_do: I can talk about giving, lending and showing things to people without repeating their names.
+        requires: [es.a2.u06.s03]
+        grammar_note: >-
+          Object pronouns go before a conjugated verb. Direct objects are lo, la, los,
+          las (it, him, her, them); indirect objects, to or for someone, are me, te,
+          le, nos, os, les: le pedí ayuda. When both appear, the indirect one comes
+          first: me lo prestaron. Le and les become se before lo, la, los and las: se
+          lo regalé (I gave it to him or her). With an infinitive or a positive
+          command the pronouns join the end: quiero mostrarte algo, dámelo. In Spain le
+          is also used for him as a direct object: le vi.
+        lemmas:
+          - {lemma: regalar, pos: verb, en: [to give as a present], rank: 725}
+          - {lemma: prestar, pos: verb, en: [to lend], rank: 682}
+          - {lemma: enseñar, pos: verb, en: [to teach, to show], rank: 459}
+          - {lemma: mostrar, pos: verb, en: [to show], rank: 700}
+          - {lemma: devolver, pos: verb, en: [to give back, to return], rank: 1289}
+          - {lemma: pedir, pos: verb, en: [to ask for, to order], rank: 281}
+        examples:
+          - {id: 1, target: "Se lo regalé.", en: ["I gave it to him as a present.", "I gave it to her as a gift."]}
+          - {id: 2, target: "¿Qué le regalaste?", en: ["What did you give him?", "What did you get her as a present?"]}
+          - {id: 3, target: "Me lo prestaron.", en: ["They lent it to me."]}
+          - {id: 4, target: "¿Me prestas tu bicicleta?", en: ["Will you lend me your bicycle?", "Can I borrow your bike?"]}
+          - {id: 5, target: "Te enseñaré francés.", en: ["I'll teach you French.", "I will teach you French."]}
+          - {id: 6, target: "Le pedí ayuda.", en: ["I asked him for help.", "I asked her for help."]}
+          - {id: 7, target: "Nos lo devolvieron.", en: ["They gave it back to us.", "They returned it to us."]}
+          - {id: 8, target: "Quiero mostrarte algo.", en: ["I want to show you something."]}
+  - id: es.a2.u07
+    title: Comparing and describing
+    cefr: A2
+    skills:
+      - id: es.a2.u07.s01
+        kind: grammar
+        title: Comparing
+        cefr: A2
+        can_do: I can compare people and things and say that they are the same or different.
+        requires: [es.a2.u06.s04]
+        grammar_note: >-
+          To compare, use más ... que (more ... than) and menos ... que (less ...
+          than): soy más alto que tú, trabajas menos que yo. Tan ... como means as ...
+          as: soy tan viejo como tú. Four adjectives have their own forms: bueno gives
+          mejor, malo gives peor, and for age grande gives mayor and pequeño gives
+          menor, so mi hermano menor is my younger brother. El mismo (the same) agrees
+          with its noun and lo mismo means the same thing; igual and diferente change
+          only for number: son iguales.
+        lemmas:
+          - {lemma: tan, pos: adv, en: [so, as], rank: 131}
+          - {lemma: como, pos: conj, en: [as, like], rank: 104}
+          - {lemma: peor, pos: adj, en: [worse, worst], rank: 1119}
+          - {lemma: menor, pos: adj, en: [younger, smaller], rank: 1630}
+          - {lemma: mismo, pos: adj, en: [same], rank: 227}
+          - {lemma: igual, pos: adj, en: [the same, equal], rank: 1106}
+          - {lemma: diferente, pos: adj, en: [different], rank: 931}
+        examples:
+          - {id: 1, target: "Soy tan viejo como tú.", en: ["I'm as old as you.", "I am as old as you are."]}
+          - {id: 2, target: "Mi hermana es menor que yo.", en: ["My sister is younger than me.", "My sister is younger than I am."]}
+          - {id: 3, target: "Mañana será peor.", en: ["It will be worse tomorrow.", "Tomorrow will be worse."]}
+          - {id: 4, target: "¿Tienes hermanos menores?", en: ["Do you have younger brothers?", "Do you have any younger brothers or sisters?"]}
+          - {id: 5, target: "Tenemos el mismo problema.", en: ["We have the same problem."]}
+          - {id: 6, target: "Todos son iguales.", en: ["They are all the same.", "They're all the same."]}
+          - {id: 7, target: "Esta vez es diferente.", en: ["This time is different.", "This time it's different."]}
+          - {id: 8, target: "Sé tan poco como tú.", en: ["I know as little as you do.", "I know as little as you."]}
+      - id: es.a2.u07.s02
+        kind: vocab
+        title: Describing things
+        cefr: A2
+        can_do: I can describe what people, places and things are like.
+        requires: [es.a2.u07.s01]
+        grammar_note: >-
+          Some adjectives change their meaning with ser and estar: ser aburrido is to be
+          boring, estar aburrido is to be bored; ser rico is to be rich, but la comida
+          está rica means the food tastes good. Antiguo means old in the sense of from
+          long ago: una ciudad antigua, un edificio antiguo. Fuerte is strong and also
+          loud: habla más fuerte. ¡Qué! with an adjective makes an exclamation: ¡qué
+          bonito! (how pretty!), ¡qué gato tan feo! (what an ugly cat!).
+        lemmas:
+          - {lemma: fuerte, pos: adj, en: [strong, loud], rank: 597}
+          - {lemma: rico, pos: adj, en: [rich, tasty], rank: 628}
+          - {lemma: bonito, pos: adj, en: [pretty, nice, beautiful], rank: 744}
+          - {lemma: feo, pos: adj, en: [ugly], rank: 2250}
+          - {lemma: limpio, pos: adj, en: [clean], rank: 1360}
+          - {lemma: sucio, pos: adj, en: [dirty], rank: 1614}
+          - {lemma: moderno, pos: adj, en: [modern], rank: 2112}
+          - {lemma: antiguo, pos: adj, en: [old, ancient, antique], rank: 1264}
+          - {lemma: cómodo, pos: adj, en: [comfortable], rank: 2037}
+          - {lemma: interesante, pos: adj, en: [interesting], rank: 770}
+          - {lemma: aburrido, pos: adj, en: [boring, bored], rank: 1430}
+        examples:
+          - {id: 1, target: "Es muy bonito.", en: ["It's very beautiful.", "It's very pretty."]}
+          - {id: 2, target: "¡Qué gato feo!", en: ["What an ugly cat!"]}
+          - {id: 3, target: "Está muy limpio.", en: ["It's very clean."]}
+          - {id: 4, target: "¿Está usted cómodo?", en: ["Are you comfortable?"]}
+          - {id: 5, target: "Es muy interesante.", en: ["It's very interesting.", "This is very interesting."]}
+          - {id: 6, target: "Él está aburrido.", en: ["He is bored.", "He's bored."]}
+          - {id: 7, target: "Mi tío es rico.", en: ["My uncle is rich."]}
+          - {id: 8, target: "Estás más fuerte hoy.", en: ["You're stronger today.", "You are stronger today."]}
+      - id: es.a2.u07.s03
+        kind: grammar
+        title: The best in the world
+        cefr: A2
+        can_do: I can say which is the biggest, the best or the most famous.
+        requires: [es.a2.u07.s02]
+        grammar_note: >-
+          The superlative puts the article before the noun and más or menos after it:
+          el edificio más alto (the tallest building), la persona más amable. After a
+          superlative, in or of is de: el mejor trabajo del mundo, el museo más famoso
+          de Madrid. Mejor and peor usually go before the noun: el mejor restaurante.
+          For very or extremely, add -ísimo after dropping a final vowel: alto,
+          altísimo; caro, carísimo; it agrees like any adjective: una casa grandísima.
+          Persona is always feminine, even for a man.
+        lemmas:
+          - {lemma: mundo, pos: noun, gender: m, en: [world], rank: 275}
+          - {lemma: lugar, pos: noun, gender: m, en: [place], rank: 418}
+          - {lemma: edificio, pos: noun, gender: m, en: [building], rank: 956}
+          - {lemma: persona, pos: noun, gender: f, en: [person], rank: 244}
+          - {lemma: famoso, pos: adj, en: [famous], rank: 1025}
+        examples:
+          - {id: 1, target: "¡Es el mejor trabajo del mundo!", en: ["It's the best job in the world!"]}
+          - {id: 2, target: "Es el edificio más alto de la ciudad.", en: ["It's the tallest building in the city.", "It is the tallest building in town."]}
+          - {id: 3, target: "Es el lugar más bonito del mundo.", en: ["It's the most beautiful place in the world."]}
+          - {id: 4, target: "Es la persona más amable que conozco.", en: ["She's the kindest person I know.", "He's the kindest person I know."]}
+          - {id: 5, target: "Es el museo más famoso de Madrid.", en: ["It's the most famous museum in Madrid."]}
+          - {id: 6, target: "Me gusta este lugar.", en: ["I like this place.", "I like it here."]}
+          - {id: 7, target: "¿Qué es aquel edificio?", en: ["What's that building?", "What is that building over there?"]}
+          - {id: 8, target: "Este edificio es altísimo.", en: ["This building is extremely tall.", "This building is very tall."]}
+      - id: es.a2.u07.s04
+        kind: grammar
+        title: Mine and yours
+        cefr: A2
+        can_do: I can say who things belong to without repeating the noun.
+        requires: [es.a2.u07.s03]
+        grammar_note: >-
+          Possessive pronouns stand in for a noun: el mío (mine), el tuyo (yours), el
+          suyo (his, hers, theirs, or yours with usted), el nuestro, el vuestro. They
+          agree with the thing owned, not the owner: mi móvil, el mío; mis gafas, las
+          mías. After ser the article is usually left out: es mío, ¿esto es tuyo?
+          Because suyo can mean several things, Spanish often says de él, de ella or de
+          usted to be clear. In Spain a mobile phone is un móvil, and glasses are las
+          gafas, always plural.
+        lemmas:
+          - {lemma: mío, pos: pron, en: [mine], rank: 429}
+          - {lemma: tuyo, pos: pron, en: [yours], rank: 884}
+          - {lemma: suyo, pos: pron, en: [his, hers, theirs, yours], rank: 1386}
+          - {lemma: móvil, pos: noun, gender: m, en: [mobile phone, cell phone], rank: 2645}
+          - {lemma: gafas, pos: noun, gender: f, article: las, en: [glasses, spectacles], rank: 1603}
+        examples:
+          - {id: 1, target: "¿Esto es tuyo?", en: ["Is this yours?"]}
+          - {id: 2, target: "No es mío.", en: ["It isn't mine.", "It's not mine."]}
+          - {id: 3, target: "Esos son míos.", en: ["Those are mine."]}
+          - {id: 4, target: "Esta es tuya.", en: ["This one's yours.", "This one is yours."]}
+          - {id: 5, target: "¿Cuál es suyo?", en: ["Which one is yours?", "Which is theirs?"]}
+          - {id: 6, target: "Coge el mío.", en: ["Take mine."]}
+          - {id: 7, target: "Estas gafas no son mías.", en: ["These glasses aren't mine.", "These glasses are not mine."]}
+          - {id: 8, target: "Mi móvil no funciona. ¿Me prestas el tuyo?", en: ["My mobile isn't working. Can I borrow yours?", "My phone doesn't work. Will you lend me yours?"]}
+  - id: es.a2.u08
+    title: Experiences
+    cefr: A2
+    skills:
+      - id: es.a2.u08.s01
+        kind: grammar
+        title: Have you ever...?
+        cefr: A2
+        can_do: I can ask people about their experiences and talk about mine.
+        requires: [es.a2.u07.s04]
+        grammar_note: >-
+          The present perfect asks about experiences in your life so far: ¿has estado
+          alguna vez en el extranjero? (have you ever been abroad?). Alguna vez means
+          ever; nunca and jamás mean never, and jamás is stronger. Some common
+          participles are irregular: hacer hecho, ver visto, decir dicho, escribir
+          escrito, poner puesto, volver vuelto, abrir abierto, romper roto. Volar (to
+          fly) changes o to ue: vuelo, vuelas. Use al extranjero with verbs of
+          movement and en el extranjero with verbs of being: vivo en el extranjero.
+        lemmas:
+          - {lemma: alguna vez, pos: expr, en: [ever, sometime], rank: null}
+          - {lemma: jamás, pos: adv, en: [never, ever], rank: 914}
+          - {lemma: extranjero, pos: noun, gender: m, en: [abroad, foreigner], rank: 649}
+          - {lemma: mar, pos: noun, gender: m, en: [sea], rank: 961}
+          - {lemma: volar, pos: verb, en: [to fly], rank: 701}
+          - {lemma: vida, pos: noun, gender: f, en: [life], rank: 223}
+        examples:
+          - {id: 1, target: "¿Has volado alguna vez?", en: ["Have you ever flown?", "Have you flown before?"]}
+          - {id: 2, target: "¿Has estado alguna vez en el extranjero?", en: ["Have you ever been abroad?"]}
+          - {id: 3, target: "Nunca he visto el mar.", en: ["I've never seen the sea.", "I have never seen the sea."]}
+          - {id: 4, target: "Nunca he estado tan feliz en mi vida.", en: ["I've never been so happy in my life.", "I have never been this happy in my life."]}
+          - {id: 5, target: "Jamás he dicho eso.", en: ["I've never said that.", "I have never said that."]}
+          - {id: 6, target: "He vuelto del extranjero.", en: ["I've come back from abroad.", "I have returned from abroad."]}
+          - {id: 7, target: "¿Has escrito alguna vez un libro?", en: ["Have you ever written a book?"]}
+          - {id: 8, target: "Vivo cerca del mar.", en: ["I live near the sea.", "I live close to the sea."]}
+      - id: es.a2.u08.s02
+        kind: grammar
+        title: Already, still, not yet
+        cefr: A2
+        can_do: I can say what I have already done, what I have not done yet and what I have just done.
+        requires: [es.a2.u08.s01]
+        grammar_note: >-
+          Ya means already: ¿ya has comido? (have you eaten yet?), ya he terminado.
+          With no it means no longer: ya no trabajo (I don't work any more). Todavía
+          and aún mean still: todavía estoy aquí. Todavía no and aún no mean not yet:
+          todavía no estoy listo. In the present perfect, ya and todavía no usually go
+          before haber: todavía no he comido. Acabar de plus an infinitive means to have just
+          done something: acabo de llegar (I've just arrived). Listo with estar means
+          ready.
+        lemmas:
+          - {lemma: ya, pos: adv, en: [already, yet, now], rank: 142}
+          - {lemma: todavía, pos: adv, en: [still, yet], rank: 280}
+          - {lemma: aún, pos: adv, en: [still, yet], rank: 480}
+          - {lemma: acabar, pos: verb, en: [to finish, to have just], rank: 350}
+          - {lemma: listo, pos: adj, en: [ready, clever], rank: 488}
+        examples:
+          - {id: 1, target: "¿Ya has comido?", en: ["Have you eaten yet?", "Have you already eaten?"]}
+          - {id: 2, target: "Ya he terminado.", en: ["I've already finished.", "I'm already done."]}
+          - {id: 3, target: "Todavía estoy aquí.", en: ["I'm still here.", "I am still here."]}
+          - {id: 4, target: "No, aún no.", en: ["No, not yet."]}
+          - {id: 5, target: "Acabo de llegar.", en: ["I've just arrived.", "I just got here."]}
+          - {id: 6, target: "Ya no trabajo.", en: ["I don't work any more.", "I no longer work."]}
+          - {id: 7, target: "Todavía tenemos tiempo.", en: ["We still have time.", "We've still got time."]}
+          - {id: 8, target: "Todavía no estoy listo.", en: ["I'm not ready yet.", "I am not ready yet."]}
+      - id: es.a2.u08.s03
+        kind: grammar
+        title: What was happening
+        cefr: A2
+        can_do: I can say what was happening when something else happened.
+        requires: [es.a2.u08.s02]
+        grammar_note: >-
+          The preterite and the imperfect often appear together. The imperfect sets the
+          scene or says what was going on (estaba comiendo, corría); the preterite says
+          what happened, often cutting into it (sonó el teléfono, me hice daño).
+          Mientras (while) usually takes the imperfect: leí un libro mientras comía.
+          In estaba comiendo cuando sonó el teléfono, cuando brings in the event.
+          A finished event takes the preterite even when it lasted a long time: viví en
+          Madrid tres años. Haber in the preterite is hubo: hubo un accidente.
+        lemmas:
+          - {lemma: mientras, pos: conj, en: [while], rank: 593}
+          - {lemma: ocurrir, pos: verb, en: [to happen, to occur], rank: 565}
+          - {lemma: accidente, pos: noun, gender: m, en: [accident], rank: 507}
+          - {lemma: sonar, pos: verb, en: [to ring, to sound], rank: 706}
+          - {lemma: ruido, pos: noun, gender: m, en: [noise], rank: 939}
+        examples:
+          - {id: 1, target: "Estaba comiendo cuando sonó el teléfono.", en: ["I was eating when the phone rang.", "I was having lunch when the phone rang."]}
+          - {id: 2, target: "Me hice daño mientras corría.", en: ["I got hurt while running.", "I hurt myself while I was running."]}
+          - {id: 3, target: "Ella tuvo un accidente mientras trabajaba.", en: ["She had an accident while working.", "She had an accident while she was working."]}
+          - {id: 4, target: "Leí un libro mientras comía.", en: ["I read a book while eating.", "I read a book while I was eating."]}
+          - {id: 5, target: "Ocurrió cuando no estaba mirando.", en: ["It happened while I wasn't looking.", "It happened when I was not looking."]}
+          - {id: 6, target: "Escuché un ruido.", en: ["I heard a noise."]}
+          - {id: 7, target: "Hubo un accidente.", en: ["There was an accident."]}
+          - {id: 8, target: "¿Qué pasó mientras yo no estaba?", en: ["What happened while I was away?", "What happened while I wasn't here?"]}
+      - id: es.a2.u08.s04
+        kind: function
+        title: Reacting to news
+        cefr: A2
+        can_do: I can react to good and bad news and show surprise.
+        requires: [es.a2.u08.s03]
+        grammar_note: >-
+          React to news with ¡qué! and a noun or an adjective: ¡qué suerte! (how
+          lucky!), ¡qué pena! (what a shame!), ¡qué sorpresa!, ¡qué bien! ¡No me digas!
+          means you don't say! or really? Una noticia is one piece of news, and las
+          noticias are the news. Preocupar works like gustar: me preocupa (it worries
+          me); no te preocupes (don't worry) is the negative tú command of
+          preocuparse. Contento (pleased, happy) goes with estar: estoy muy contento.
+        lemmas:
+          - {lemma: noticia, pos: noun, gender: f, en: [news, piece of news], rank: 765}
+          - {lemma: suerte, pos: noun, gender: f, en: [luck], rank: 924}
+          - {lemma: pena, pos: noun, gender: f, en: [shame, pity, sorrow], rank: 1042}
+          - {lemma: sorpresa, pos: noun, gender: f, en: [surprise], rank: 2048}
+          - {lemma: increíble, pos: adj, en: [incredible, amazing], rank: 3002}
+          - {lemma: preocupar, pos: verb, en: [to worry], rank: 513}
+          - {lemma: contento, pos: adj, en: [pleased, happy, glad], rank: 1216}
+          - {lemma: no me digas, pos: expr, en: [you don't say, really], rank: null}
+        examples:
+          - {id: 1, target: "Tengo buenas noticias.", en: ["I've got some good news.", "I have good news."]}
+          - {id: 2, target: "¡Qué suerte tienes!", en: ["How lucky you are!", "You're so lucky!"]}
+          - {id: 3, target: "¡Qué pena! Lo siento mucho.", en: ["What a shame! I'm very sorry.", "What a pity! I'm so sorry."]}
+          - {id: 4, target: "¡Eso es increíble!", en: ["That's incredible!", "That's amazing!"]}
+          - {id: 5, target: "¡Qué sorpresa verte aquí!", en: ["What a surprise to see you here!"]}
+          - {id: 6, target: "No te preocupes.", en: ["Don't worry.", "Don't worry about it."]}
+          - {id: 7, target: "Estoy muy contento.", en: ["I'm very pleased.", "I am very happy."]}
+          - {id: 8, target: "¡No me digas!", en: ["You don't say!", "Really?"]}

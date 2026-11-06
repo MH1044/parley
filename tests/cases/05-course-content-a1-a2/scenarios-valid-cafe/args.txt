@@ -1,0 +1,5 @@
+content
+scenarios
+tests/fixtures/scenarios/valid-cafe.yaml
+--content
+tests/fixtures/scenarios/content

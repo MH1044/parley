@@ -1,0 +1,16 @@
+schema: parley.scenario/1
+id: shop
+cefr: A1
+title_en: At the corner shop
+partner_role_en: the shopkeeper
+learner_role_en: a customer
+turn_cap: 5
+goals:
+  - {id: greet, text_en: Greet the shopkeeper}
+  - {id: buy_water, text_en: Ask for water}
+languages:
+  es:
+    setting_en: a corner shop in Madrid
+    opening: "¡Hola! ¿Quiere agua?"
+    opening_en: "Hello! Would you like water?"
+    skills: [es.a1.u02.s01]

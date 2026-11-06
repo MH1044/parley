@@ -1,0 +1,4 @@
+content
+validate
+tests/fixtures/course05/bad-V22
+--json

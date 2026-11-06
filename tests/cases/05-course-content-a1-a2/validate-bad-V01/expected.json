@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/course05/bad-V01/es/syllabus.yaml: /: lang is required",
+    "tests/fixtures/course05/bad-V01/es/checklist.yaml: duplicate entry a1.f.greet",
+    "tests/fixtures/course05/bad-V01/es/review.yaml: unit es.a1.u01 is listed twice"
+  ],
+  "warnings": []
+}

@@ -1,0 +1,19 @@
+schema: parley.review/1
+lang: de
+units:
+  - {unit: de.a1.u01, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u02, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u03, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u04, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u05, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u06, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u07, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a1.u08, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u01, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u02, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u03, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u04, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u05, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u06, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u07, status: unreviewed, date: "2026-11-05"}
+  - {unit: de.a2.u08, status: unreviewed, date: "2026-11-05"}

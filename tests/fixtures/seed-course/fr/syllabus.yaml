@@ -1,0 +1,145 @@
+schema: parley.syllabus/1
+lang: fr
+name: French for English speakers
+variety: Standard French of France; tu and vous both taught
+version: 1
+function_words: [le, la, les, "l'", un, une, des, du, de, "d'", au, aux, à, et, ou, mais, en,
+  dans, sur, sous, avec, sans, pour, chez, ne, "n'", pas, je, "j'", tu, il, elle, "on", nous,
+  vous, ils, elles, me, "m'", te, "t'", se, "s'", moi, toi, lui, ce, "c'", ça, "qu'", que, qui,
+  quoi, quel, quelle, quels, quelles, où, comment, combien, pourquoi, mon, ma, mes, ton, ta,
+  tes, son, sa, ses, notre, votre, oui, non, si, "y"]
+names: [Marie, Paul, Lyon, Paris, France]
+units:
+  - id: fr.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: fr.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye and ask how someone is.
+        requires: []
+        grammar_note: >-
+          Bonjour works all day until the evening, when people switch to bonsoir; salut
+          is the informal hello and goodbye between friends. Ask how someone is with ça
+          va ? and answer ça va or ça va bien, merci. Tu is for friends, family and
+          children; vous is for anyone else and for more than one person. A space goes
+          before a question mark or an exclamation mark.
+        lemmas:
+          - {lemma: bonjour, pos: intj, en: [hello, good morning], rank: null}
+          - {lemma: bonsoir, pos: intj, en: [good evening], rank: null}
+          - {lemma: salut, pos: intj, en: [hi, bye], rank: null}
+          - {lemma: au revoir, pos: expr, en: [goodbye], rank: null}
+          - {lemma: merci, pos: intj, en: [thank you, thanks], rank: null}
+          - {lemma: aller, pos: verb, en: [to go], rank: null}
+          - {lemma: bien, pos: adv, en: [well, fine], rank: null}
+          - {lemma: très, pos: adv, en: [very], rank: null}
+          - {lemma: s'il vous plaît, pos: expr, en: [please], rank: null}
+        examples:
+          - {id: 1, target: "Bonjour, ça va ?", en: ["Hello, how are you?", "Hi, how is it going?"]}
+          - {id: 2, target: "Salut, Marie !", en: ["Hi, Marie!"]}
+          - {id: 3, target: "Ça va bien, merci. Et toi ?", en: ["I am fine, thank you. And you?", "Fine, thanks. And you?"]}
+          - {id: 4, target: "Bonsoir, Paul.", en: ["Good evening, Paul."]}
+          - {id: 5, target: "Au revoir et merci !", en: ["Goodbye and thank you!"]}
+          - {id: 6, target: "Très bien, merci.", en: ["Very well, thank you.", "Very good, thanks."]}
+          - {id: 7, target: "Comment allez-vous ?", en: ["How are you?"]}
+          - {id: 8, target: "Oui, s'il vous plaît.", en: ["Yes, please."]}
+          - {id: 9, target: "Salut ! Comment ça va ?", en: ["Hi! How are you?", "Hi! How is it going?"]}
+      - id: fr.a1.u01.s02
+        kind: function
+        title: Names
+        cefr: A1
+        can_do: I can say my name and ask someone their name.
+        requires: [fr.a1.u01.s01]
+        grammar_note: >-
+          S'appeler means to call oneself, so the small pronoun in front changes with the
+          person: je m'appelle, tu t'appelles, il or elle s'appelle, vous vous appelez.
+          Before a vowel, je, me, te and se lose their final e and take an apostrophe:
+          j'habite, m'appelle. Monsieur and madame are used on their own, without a name,
+          when you speak to someone politely.
+        lemmas:
+          - {lemma: "s'appeler", pos: verb, en: [to be called], rank: null}
+          - {lemma: nom, pos: noun, gender: m, en: [name], rank: null}
+          - {lemma: madame, pos: noun, gender: f, en: [madam, Mrs], rank: null}
+          - {lemma: monsieur, pos: noun, gender: m, en: [sir, Mr], rank: null}
+          - {lemma: enchanté, pos: adj, en: [pleased to meet you, delighted], rank: null}
+          - {lemma: pardon, pos: intj, en: [sorry, excuse me], rank: null}
+        examples:
+          - {id: 1, target: "Je m'appelle Marie.", en: ["My name is Marie.", "I am called Marie."]}
+          - {id: 2, target: "Comment tu t'appelles ?", en: ["What is your name?", "What are you called?"]}
+          - {id: 3, target: "Comment vous appelez-vous ?", en: ["What is your name?"]}
+          - {id: 4, target: "Il s'appelle Paul.", en: ["His name is Paul.", "He is called Paul."]}
+          - {id: 5, target: "Enchantée, monsieur.", en: ["Pleased to meet you, sir."]}
+          - {id: 6, target: "Pardon, madame. Vous vous appelez comment ?", en: ["Excuse me, madam. What is your name?"]}
+          - {id: 7, target: "Et ton nom ?", en: ["And your name?", "And what is your name?"]}
+          - {id: 8, target: "Bonjour, je m'appelle Paul. Enchanté.", en: ["Hello, my name is Paul. Pleased to meet you."]}
+      - id: fr.a1.u01.s03
+        kind: grammar
+        title: Where you are from
+        cefr: A1
+        can_do: I can say where I am from and which languages I speak.
+        requires: [fr.a1.u01.s02]
+        grammar_note: >-
+          Être is the verb to be: je suis, tu es, il est, nous sommes, vous êtes, ils
+          sont. Regular -er verbs like parler and habiter follow one pattern: je parle,
+          tu parles, il parle, nous parlons, vous parlez, ils parlent. Say where you are
+          from with de (d' before a vowel): je suis de Lyon, tu es d'où ? Language names
+          are not capitalised: français, anglais.
+        lemmas:
+          - {lemma: être, pos: verb, en: [to be], rank: null}
+          - {lemma: habiter, pos: verb, en: [to live], rank: null}
+          - {lemma: parler, pos: verb, en: [to speak, to talk], rank: null}
+          - {lemma: français, pos: noun, gender: m, en: [French], rank: null}
+          - {lemma: anglais, pos: noun, gender: m, en: [English], rank: null}
+          - {lemma: espagnol, pos: noun, gender: m, en: [Spanish], rank: null}
+          - {lemma: allemand, pos: noun, gender: m, en: [German], rank: null}
+          - {lemma: aussi, pos: adv, en: [also, too], rank: null}
+          - {lemma: un peu, pos: expr, en: [a little, a bit], rank: null}
+        examples:
+          - {id: 1, target: "Je suis de Lyon.", en: ["I am from Lyon."]}
+          - {id: 2, target: "Tu es d'où ?", en: ["Where are you from?"]}
+          - {id: 3, target: "Marie est de Paris.", en: ["Marie is from Paris."]}
+          - {id: 4, target: "J'habite à Lyon.", en: ["I live in Lyon."]}
+          - {id: 5, target: "Je parle français et un peu anglais.", en: ["I speak French and a little English."]}
+          - {id: 6, target: "Vous parlez anglais ?", en: ["Do you speak English?"]}
+          - {id: 7, target: "Paul parle aussi l'allemand.", en: ["Paul also speaks German.", "Paul speaks German too."]}
+          - {id: 8, target: "Vous êtes de Paris ?", en: ["Are you from Paris?"]}
+          - {id: 9, target: "Elle parle espagnol.", en: ["She speaks Spanish."]}
+          - {id: 10, target: "Nous sommes de France.", en: ["We are from France."]}
+      - id: fr.a1.u01.s04
+        kind: grammar
+        title: Numbers and age
+        cefr: A1
+        can_do: I can count to twenty and say how old I am.
+        requires: [fr.a1.u01.s03]
+        grammar_note: >-
+          Age uses avoir (to have): j'ai vingt ans is literally I have twenty years. Avoir
+          in the present: j'ai, tu as, il a, nous avons, vous avez, ils ont. Ask with tu
+          as quel âge ? or, politely, quel âge avez-vous ? Seventy is soixante-dix
+          (sixty-ten), eighty is quatre-vingts (four twenties) and ninety is
+          quatre-vingt-dix.
+        lemmas:
+          - {lemma: avoir, pos: verb, en: [to have], rank: null}
+          - {lemma: an, pos: noun, gender: m, en: [year], rank: null}
+          - {lemma: âge, pos: noun, gender: m, en: [age], rank: null}
+          - {lemma: numéro, pos: noun, gender: m, en: [number], rank: null}
+          - {lemma: téléphone, pos: noun, gender: m, en: [telephone, phone], rank: null}
+          - {lemma: deux, pos: num, en: [two], rank: null}
+          - {lemma: trois, pos: num, en: [three], rank: null}
+          - {lemma: quatre, pos: num, en: [four], rank: null}
+          - {lemma: cinq, pos: num, en: [five], rank: null}
+          - {lemma: six, pos: num, en: [six], rank: null}
+          - {lemma: sept, pos: num, en: [seven], rank: null}
+          - {lemma: huit, pos: num, en: [eight], rank: null}
+          - {lemma: neuf, pos: num, en: [nine], rank: null}
+          - {lemma: dix, pos: num, en: [ten], rank: null}
+        examples:
+          - {id: 1, target: "J'ai vingt ans.", en: ["I am twenty years old.", "I am twenty."]}
+          - {id: 2, target: "Tu as quel âge ?", en: ["How old are you?"]}
+          - {id: 3, target: "Quel âge avez-vous ?", en: ["How old are you?"]}
+          - {id: 4, target: "Marie a trente-deux ans.", en: ["Marie is thirty-two years old.", "Marie is thirty-two."]}
+          - {id: 5, target: "Un, deux, trois, quatre, cinq.", en: ["One, two, three, four, five."]}
+          - {id: 6, target: "Six, sept, huit, neuf et dix.", en: ["Six, seven, eight, nine and ten."]}
+          - {id: 7, target: "C'est quoi, ton numéro de téléphone ?", en: ["What is your phone number?"]}
+          - {id: 8, target: "Il a dix ans.", en: ["He is ten years old.", "He is ten."]}

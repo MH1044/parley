@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/course05/bad-RV/es/review.yaml: unit es.a1.u01 is listed twice",
+    "tests/fixtures/course05/bad-RV/es/review.yaml: unit es.a1.u05 is not in the syllabus",
+    "tests/fixtures/course05/bad-RV/es/review.yaml: unit es.a2.u01 is missing"
+  ],
+  "warnings": []
+}

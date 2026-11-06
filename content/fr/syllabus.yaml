@@ -7,7 +7,7 @@ function_words: [le, la, les, "l'", un, une, des, du, de, "d'", au, aux, à, et,
   dans, sur, sous, avec, sans, pour, chez, ne, "n'", pas, je, "j'", tu, il, elle, "on", nous,
   vous, ils, elles, me, "m'", te, "t'", se, "s'", moi, toi, lui, ce, "c'", ça, "qu'", que, qui,
   quoi, quel, quelle, quels, quelles, où, comment, combien, pourquoi, mon, ma, mes, ton, ta,
-  tes, son, sa, ses, notre, votre, oui, non, si, "y"]
+  tes, son, sa, ses, notre, votre, nos, vos, leur, leurs, cet, cette, ces, oui, non, si, "y"]
 names: [Marie, Paul, Lyon, Paris, France]
 units:
   - id: fr.a1.u01
@@ -27,14 +27,14 @@ units:
           children; vous is for anyone else and for more than one person. A space goes
           before a question mark or an exclamation mark.
         lemmas:
-          - {lemma: bonjour, pos: intj, en: [hello, good morning], rank: null}
-          - {lemma: bonsoir, pos: intj, en: [good evening], rank: null}
-          - {lemma: salut, pos: intj, en: [hi, bye], rank: null}
+          - {lemma: bonjour, pos: intj, en: [hello, good morning], rank: 1809}
+          - {lemma: bonsoir, pos: intj, en: [good evening], rank: 10442}
+          - {lemma: salut, pos: intj, en: [hi, bye], rank: 3108}
           - {lemma: au revoir, pos: expr, en: [goodbye], rank: null}
-          - {lemma: merci, pos: intj, en: [thank you, thanks], rank: null}
-          - {lemma: aller, pos: verb, en: [to go], rank: null}
-          - {lemma: bien, pos: adv, en: [well, fine], rank: null}
-          - {lemma: très, pos: adv, en: [very], rank: null}
+          - {lemma: merci, pos: intj, en: [thank you, thanks], rank: 476}
+          - {lemma: aller, pos: verb, en: [to go], rank: 50}
+          - {lemma: bien, pos: adv, en: [well, fine], rank: 86}
+          - {lemma: très, pos: adv, en: [very], rank: 95}
           - {lemma: s'il vous plaît, pos: expr, en: [please], rank: null}
         examples:
           - {id: 1, target: "Bonjour, ça va ?", en: ["Hello, how are you?", "Hi, how is it going?"]}
@@ -46,6 +46,11 @@ units:
           - {id: 7, target: "Comment allez-vous ?", en: ["How are you?"]}
           - {id: 8, target: "Oui, s'il vous plaît.", en: ["Yes, please."]}
           - {id: 9, target: "Salut ! Comment ça va ?", en: ["Hi! How are you?", "Hi! How is it going?"]}
+          - {id: 10, target: "Comment ça va ?", en: ["How are you?", "How is it going?"]}
+          - {id: 11, target: "Je vais bien.", en: ["I am fine.", "I am doing fine."]}
+          - {id: 12, target: "Comment vas-tu ?", en: ["How are you?", "How are you doing?"]}
+          - {id: 13, target: "Vous allez bien ?", en: ["Are you well?", "Are you OK?"]}
+          - {id: 14, target: "Elle va bien.", en: ["She is fine.", "She is well."]}
       - id: fr.a1.u01.s02
         kind: function
         title: Names
@@ -59,12 +64,13 @@ units:
           j'habite, m'appelle. Monsieur and madame are used on their own, without a name,
           when you speak to someone politely.
         lemmas:
-          - {lemma: "s'appeler", pos: verb, en: [to be called], rank: null}
-          - {lemma: nom, pos: noun, gender: m, en: [name], rank: null}
-          - {lemma: madame, pos: noun, gender: f, en: [madam, Mrs], rank: null}
-          - {lemma: monsieur, pos: noun, gender: m, en: [sir, Mr], rank: null}
-          - {lemma: enchanté, pos: adj, en: [pleased to meet you, delighted], rank: null}
-          - {lemma: pardon, pos: intj, en: [sorry, excuse me], rank: null}
+          - {lemma: "s'appeler", pos: verb, en: [to be called], rank: 875}
+          - {lemma: nom, pos: noun, gender: m, en: [name], rank: 371}
+          - {lemma: madame, pos: noun, gender: f, en: [madam, Mrs], rank: 3443}
+          - {lemma: monsieur, pos: noun, gender: m, en: [sir, Mr], rank: 1299}
+          - {lemma: enchanté, pos: adj, en: [pleased to meet you, delighted], rank: 5399}
+          - {lemma: pardon, pos: intj, en: [sorry, excuse me], rank: 3095}
+          - {lemma: appeler, pos: verb, en: [to call], rank: 256}
         examples:
           - {id: 1, target: "Je m'appelle Marie.", en: ["My name is Marie.", "I am called Marie."]}
           - {id: 2, target: "Comment tu t'appelles ?", en: ["What is your name?", "What are you called?"]}
@@ -74,6 +80,10 @@ units:
           - {id: 6, target: "Pardon, madame. Vous vous appelez comment ?", en: ["Excuse me, madam. What is your name?"]}
           - {id: 7, target: "Et ton nom ?", en: ["And your name?", "And what is your name?"]}
           - {id: 8, target: "Bonjour, je m'appelle Paul. Enchanté.", en: ["Hello, my name is Paul. Pleased to meet you."]}
+          - {id: 9, target: "Votre nom, s'il vous plaît.", en: ["Your name, please."]}
+          - {id: 10, target: "Comment s'appelle-t-elle ?", en: ["What is her name?"]}
+          - {id: 11, target: "Comment ça s'appelle ?", en: ["What is this called?", "What is it called?"]}
+          - {id: 12, target: "Comment tu t'appelles, s'il te plaît ?", en: ["What's your name, please?", "What is your name, please?"]}
       - id: fr.a1.u01.s03
         kind: grammar
         title: Where you are from
@@ -87,14 +97,14 @@ units:
           from with de (d' before a vowel): je suis de Lyon, tu es d'où ? Language names
           are not capitalised: français, anglais.
         lemmas:
-          - {lemma: être, pos: verb, en: [to be], rank: null}
-          - {lemma: habiter, pos: verb, en: [to live], rank: null}
-          - {lemma: parler, pos: verb, en: [to speak, to talk], rank: null}
-          - {lemma: français, pos: noun, gender: m, en: [French], rank: null}
-          - {lemma: anglais, pos: noun, gender: m, en: [English], rank: null}
-          - {lemma: espagnol, pos: noun, gender: m, en: [Spanish], rank: null}
-          - {lemma: allemand, pos: noun, gender: m, en: [German], rank: null}
-          - {lemma: aussi, pos: adv, en: [also, too], rank: null}
+          - {lemma: être, pos: verb, en: [to be], rank: 3}
+          - {lemma: habiter, pos: verb, en: [to live], rank: 644}
+          - {lemma: parler, pos: verb, en: [to speak, to talk], rank: 89}
+          - {lemma: français, pos: noun, gender: m, en: [French], rank: 253}
+          - {lemma: anglais, pos: noun, gender: m, en: [English], rank: 350}
+          - {lemma: espagnol, pos: noun, gender: m, en: [Spanish], rank: 1652}
+          - {lemma: allemand, pos: noun, gender: m, en: [German], rank: 924}
+          - {lemma: aussi, pos: adv, en: [also, too], rank: 239}
           - {lemma: un peu, pos: expr, en: [a little, a bit], rank: null}
         examples:
           - {id: 1, target: "Je suis de Lyon.", en: ["I am from Lyon."]}
@@ -107,6 +117,10 @@ units:
           - {id: 8, target: "Vous êtes de Paris ?", en: ["Are you from Paris?"]}
           - {id: 9, target: "Elle parle espagnol.", en: ["She speaks Spanish."]}
           - {id: 10, target: "Nous sommes de France.", en: ["We are from France."]}
+          - {id: 11, target: "J'habite en France.", en: ["I live in France."]}
+          - {id: 12, target: "Je parle un peu espagnol.", en: ["I speak a little Spanish."]}
+          - {id: 13, target: "Je parle anglais, français et espagnol.", en: ["I speak English, French and Spanish."]}
+          - {id: 14, target: "Je suis français.", en: ["I am French."]}
       - id: fr.a1.u01.s04
         kind: grammar
         title: Numbers and age
@@ -120,20 +134,20 @@ units:
           (sixty-ten), eighty is quatre-vingts (four twenties) and ninety is
           quatre-vingt-dix.
         lemmas:
-          - {lemma: avoir, pos: verb, en: [to have], rank: null}
-          - {lemma: an, pos: noun, gender: m, en: [year], rank: null}
-          - {lemma: âge, pos: noun, gender: m, en: [age], rank: null}
-          - {lemma: numéro, pos: noun, gender: m, en: [number], rank: null}
-          - {lemma: téléphone, pos: noun, gender: m, en: [telephone, phone], rank: null}
-          - {lemma: deux, pos: num, en: [two], rank: null}
-          - {lemma: trois, pos: num, en: [three], rank: null}
-          - {lemma: quatre, pos: num, en: [four], rank: null}
-          - {lemma: cinq, pos: num, en: [five], rank: null}
-          - {lemma: six, pos: num, en: [six], rank: null}
-          - {lemma: sept, pos: num, en: [seven], rank: null}
-          - {lemma: huit, pos: num, en: [eight], rank: null}
-          - {lemma: neuf, pos: num, en: [nine], rank: null}
-          - {lemma: dix, pos: num, en: [ten], rank: null}
+          - {lemma: avoir, pos: verb, en: [to have], rank: 8}
+          - {lemma: an, pos: noun, gender: m, en: [year], rank: 316}
+          - {lemma: âge, pos: noun, gender: m, en: [age], rank: 677}
+          - {lemma: numéro, pos: noun, gender: m, en: [number], rank: 1121}
+          - {lemma: téléphone, pos: noun, gender: m, en: [telephone, phone], rank: 530}
+          - {lemma: deux, pos: num, en: [two], rank: 173}
+          - {lemma: trois, pos: num, en: [three], rank: 308}
+          - {lemma: quatre, pos: num, en: [four], rank: 770}
+          - {lemma: cinq, pos: num, en: [five], rank: 714}
+          - {lemma: six, pos: num, en: [six], rank: 1013}
+          - {lemma: sept, pos: num, en: [seven], rank: 1256}
+          - {lemma: huit, pos: num, en: [eight], rank: 1297}
+          - {lemma: neuf, pos: num, en: [nine], rank: 1145}
+          - {lemma: dix, pos: num, en: [ten], rank: 522}
         examples:
           - {id: 1, target: "J'ai vingt ans.", en: ["I am twenty years old.", "I am twenty."]}
           - {id: 2, target: "Tu as quel âge ?", en: ["How old are you?"]}
@@ -143,3 +157,1943 @@ units:
           - {id: 6, target: "Six, sept, huit, neuf et dix.", en: ["Six, seven, eight, nine and ten."]}
           - {id: 7, target: "C'est quoi, ton numéro de téléphone ?", en: ["What is your phone number?"]}
           - {id: 8, target: "Il a dix ans.", en: ["He is ten years old.", "He is ten."]}
+          - {id: 9, target: "Quel est ton numéro de téléphone ?", en: ["What is your phone number?"]}
+          - {id: 10, target: "J'ai son numéro de téléphone.", en: ["I have his phone number.", "I have her phone number."]}
+          - {id: 11, target: "Tu es de mon âge.", en: ["You are my age.", "You are the same age as me."]}
+  - id: fr.a1.u02
+    title: Day to day
+    cefr: A1
+    skills:
+      - id: fr.a1.u02.s01
+        kind: grammar
+        title: People and things
+        cefr: A1
+        can_do: I can name people, animals and everyday things with the right article.
+        requires: [fr.a1.u01.s04]
+        grammar_note: >-
+          Every French noun is masculine or feminine. A or an is un before a masculine
+          noun and une before a feminine one; the is le or la, and l' before a vowel or a
+          silent h: l'ami, l'homme. In the plural, the is les and some is des: des
+          enfants. Most nouns add an -s in writing, which is not pronounced. Learn each
+          noun with its article, because the ending rarely shows the gender. Before a
+          vowel, my is mon even for a feminine noun: mon amie. Femme means woman and wife,
+          fille girl and daughter.
+        lemmas:
+          - {lemma: homme, pos: noun, gender: m, en: [man], rank: 242}
+          - {lemma: femme, pos: noun, gender: f, en: [woman, wife], rank: 279}
+          - {lemma: enfant, pos: noun, gender: m, en: [child], rank: 204}
+          - {lemma: ami, pos: noun, gender: m, en: [friend], rank: 181}
+          - {lemma: garçon, pos: noun, gender: m, en: [boy], rank: 436}
+          - {lemma: fille, pos: noun, gender: f, en: [girl, daughter], rank: 286}
+          - {lemma: chien, pos: noun, gender: m, en: [dog], rank: 269}
+          - {lemma: chat, pos: noun, gender: m, en: [cat], rank: 357}
+          - {lemma: livre, pos: noun, gender: m, en: [book], rank: 202}
+          - {lemma: voiture, pos: noun, gender: f, en: [car], rank: 221}
+        examples:
+          - {id: 1, target: "J'ai un chat et un chien.", en: ["I have a cat and a dog."]}
+          - {id: 2, target: "C'est mon livre.", en: ["This is my book.", "That is my book.", "It is my book."]}
+          - {id: 3, target: "C'est mon amie.", en: ["She is my friend.", "She's my friend."]}
+          - {id: 4, target: "Avez-vous une voiture ?", en: ["Do you have a car?", "Have you got a car?"]}
+          - {id: 5, target: "Nous avons deux filles.", en: ["We have two daughters.", "We've got two daughters."]}
+          - {id: 6, target: "Qui sont vos amis ?", en: ["Who are your friends?"]}
+          - {id: 7, target: "Les enfants parlent.", en: ["The children are talking.", "The children are speaking."]}
+          - {id: 8, target: "J'ai une femme et trois enfants.", en: ["I have a wife and three children."]}
+      - id: fr.a1.u02.s02
+        kind: grammar
+        title: Everyday verbs
+        cefr: A1
+        can_do: I can say what I do every day and what I do not do.
+        requires: [fr.a1.u02.s01]
+        grammar_note: >-
+          Most verbs end in -er and follow parler: drop -er and add -e, -es, -e, -ons,
+          -ez, -ent. Only -ons and -ez are heard, so je travaille, tu travailles and ils
+          travaillent sound the same. Je becomes j' before a vowel: j'écoute. To say not,
+          put ne before the verb and pas after it: je ne travaille pas; ne becomes n'
+          before a vowel. After a negative, un, une and des become de: vous n'avez pas de
+          télévision ? The French present covers both I work and I am working.
+        lemmas:
+          - {lemma: travailler, pos: verb, en: [to work], rank: 245}
+          - {lemma: étudier, pos: verb, en: [to study], rank: 345}
+          - {lemma: regarder, pos: verb, en: [to watch, to look at], rank: 241}
+          - {lemma: écouter, pos: verb, en: [to listen, to listen to], rank: 449}
+          - {lemma: jouer, pos: verb, en: [to play], rank: 264}
+          - {lemma: chanter, pos: verb, en: [to sing], rank: 500}
+          - {lemma: télévision, pos: noun, gender: f, en: [television, TV], rank: 1034}
+          - {lemma: musique, pos: noun, gender: f, en: [music], rank: 687}
+          - {lemma: beaucoup, pos: adv, en: [a lot, much], rank: 135}
+        examples:
+          - {id: 1, target: "J'étudie le français.", en: ["I study French.", "I am studying French."]}
+          - {id: 2, target: "Il regarde la télévision.", en: ["He is watching TV.", "He watches television."]}
+          - {id: 3, target: "J'écoute de la musique.", en: ["I am listening to music.", "I listen to music."]}
+          - {id: 4, target: "Il travaille beaucoup.", en: ["He works a lot.", "He works hard."]}
+          - {id: 5, target: "Vous n'avez pas de télévision ?", en: ["Don't you have a television?", "You do not have a TV?"]}
+          - {id: 6, target: "Le chat joue avec les enfants.", en: ["The cat is playing with the children."]}
+          - {id: 7, target: "Elle chante très bien.", en: ["She sings very well."]}
+          - {id: 8, target: "Où travaillez-vous ?", en: ["Where do you work?"]}
+      - id: fr.a1.u02.s03
+        kind: function
+        title: Likes and dislikes
+        cefr: A1
+        can_do: I can say what I like, love, prefer and hate.
+        requires: [fr.a1.u02.s02]
+        grammar_note: >-
+          Aimer means to like, and with people to love; adorer is to love something and
+          détester to hate it. After these verbs French keeps the article where English
+          has none: j'aime le sport, I like sport; je préfère les chiens, I prefer dogs.
+          Add an infinitive to talk about an activity: j'aime lire. Préférer changes its
+          accent where the ending is silent: je préfère, but nous préférons. Jouer à is to
+          play a sport or a game, and à le becomes au: je joue au football.
+        lemmas:
+          - {lemma: aimer, pos: verb, en: [to like, to love], rank: 72}
+          - {lemma: adorer, pos: verb, en: [to love, to adore], rank: 454}
+          - {lemma: détester, pos: verb, en: [to hate], rank: 492}
+          - {lemma: préférer, pos: verb, en: [to prefer], rank: 467}
+          - {lemma: sport, pos: noun, gender: m, en: [sport, sports], rank: 1533}
+          - {lemma: football, pos: noun, gender: m, en: [football, soccer], rank: 1487}
+          - {lemma: film, pos: noun, gender: m, en: [film, movie], rank: 511}
+          - {lemma: lire, pos: verb, en: [to read], rank: 207}
+        examples:
+          - {id: 1, target: "J'aime le sport.", en: ["I like sport.", "I like sports."]}
+          - {id: 2, target: "J'adore la musique.", en: ["I love music."]}
+          - {id: 3, target: "Je n'aime pas la musique.", en: ["I do not like music."]}
+          - {id: 4, target: "Je déteste le football.", en: ["I hate football.", "I hate soccer."]}
+          - {id: 5, target: "Je préfère les chiens.", en: ["I prefer dogs."]}
+          - {id: 6, target: "J'aime lire.", en: ["I like reading.", "I like to read."]}
+          - {id: 7, target: "Quel sport préfères-tu ?", en: ["Which sport do you prefer?", "Which sport do you like best?"]}
+          - {id: 8, target: "J'aime ce film.", en: ["I like this film.", "I like this movie."]}
+      - id: fr.a1.u02.s04
+        kind: grammar
+        title: Asking what people do
+        cefr: A1
+        can_do: I can ask and say what someone is doing today or now.
+        requires: [fr.a1.u02.s03]
+        grammar_note: >-
+          Faire (to do, to make) is irregular: je fais, tu fais, il fait, nous faisons,
+          vous faites, ils font. A yes or no question can be asked three ways: raise your
+          voice at the end (vous travaillez ici ?), put est-ce que in front (est-ce que
+          vous travaillez ici ?), or, more formally, put the pronoun after the verb with a
+          hyphen (travaillez-vous ici ?). For what, use que before a verb with the pronoun
+          after it (que fais-tu ?) and qu'est-ce que otherwise (qu'est-ce que tu fais ?).
+        lemmas:
+          - {lemma: faire, pos: verb, en: [to do, to make], rank: 31}
+          - {lemma: travail, pos: noun, gender: m, en: [work, job], rank: 254}
+          - {lemma: école, pos: noun, gender: f, en: [school], rank: 311}
+          - {lemma: ici, pos: adv, en: [here], rank: 114}
+          - {lemma: maintenant, pos: adv, en: [now], rank: 249}
+          - {lemma: "aujourd'hui", pos: adv, en: [today], rank: 238}
+        examples:
+          - {id: 1, target: "Que faites-vous aujourd'hui ?", en: ["What are you doing today?"]}
+          - {id: 2, target: "Qu'est-ce que tu fais maintenant ?", en: ["What are you doing now?"]}
+          - {id: 3, target: "Est-ce que vous travaillez ici ?", en: ["Do you work here?"]}
+          - {id: 4, target: "Je ne travaille pas aujourd'hui.", en: ["I am not working today.", "I don't work today."]}
+          - {id: 5, target: "J'aime mon travail.", en: ["I like my job.", "I like my work."]}
+          - {id: 6, target: "Aimes-tu l'école ?", en: ["Do you like school?"]}
+          - {id: 7, target: "Je fais du sport.", en: ["I do sport.", "I play sports."]}
+          - {id: 8, target: "Que fais-tu ?", en: ["What are you doing?", "What do you do?"]}
+  - id: fr.a1.u03
+    title: Food and drink
+    cefr: A1
+    skills:
+      - id: fr.a1.u03.s01
+        kind: vocab
+        title: Food and drink
+        cefr: A1
+        can_do: I can name common food and drinks and say which I like.
+        requires: [fr.a1.u02.s04]
+        grammar_note: >-
+          Learn each word with its article: le café, le thé, le lait, le vin, le pain, le
+          fromage, le gâteau, le chocolat, but la bière and l'eau, which is feminine. Un
+          café is a coffee and also a café. To talk about what you like in general, use
+          le, la or les: j'aime le fromage. J'aimerais (I would like) is a polite way to
+          ask for something: j'aimerais une bière.
+        lemmas:
+          - {lemma: café, pos: noun, gender: m, en: [coffee, café], rank: 491}
+          - {lemma: thé, pos: noun, gender: m, en: [tea], rank: 849}
+          - {lemma: eau, pos: noun, gender: f, en: [water], rank: 319}
+          - {lemma: lait, pos: noun, gender: m, en: [milk], rank: 892}
+          - {lemma: vin, pos: noun, gender: m, en: [wine], rank: 783}
+          - {lemma: bière, pos: noun, gender: f, en: [beer], rank: 961}
+          - {lemma: pain, pos: noun, gender: m, en: [bread], rank: 874}
+          - {lemma: fromage, pos: noun, gender: m, en: [cheese], rank: 2010}
+          - {lemma: gâteau, pos: noun, gender: m, en: [cake], rank: 886}
+          - {lemma: chocolat, pos: noun, gender: m, en: [chocolate, hot chocolate], rank: 1586}
+        examples:
+          - {id: 1, target: "Café ou thé ?", en: ["Coffee or tea?"]}
+          - {id: 2, target: "J'aime le fromage.", en: ["I like cheese."]}
+          - {id: 3, target: "Avez-vous du vin ?", en: ["Do you have any wine?", "Have you got any wine?"]}
+          - {id: 4, target: "J'aimerais une bière.", en: ["I would like a beer."]}
+          - {id: 5, target: "Où est le pain ?", en: ["Where is the bread?"]}
+          - {id: 6, target: "Les enfants adorent les gâteaux.", en: ["Children love cakes.", "Children love cake."]}
+          - {id: 7, target: "Nous n'avons pas de lait.", en: ["We do not have any milk.", "We have no milk."]}
+          - {id: 8, target: "Aimeriez-vous de l'eau ?", en: ["Would you like some water?"]}
+      - id: fr.a1.u03.s02
+        kind: grammar
+        title: Some and any
+        cefr: A1
+        can_do: I can say what I eat and drink and ask if there is any.
+        requires: [fr.a1.u03.s01]
+        grammar_note: >-
+          For an amount you do not count, French uses de with the article: du pain (de +
+          le), de la viande, de l'eau, des fruits. English often says some or nothing at
+          all: je mange de la viande, I eat meat. After a negative or beaucoup, use de
+          alone: nous n'avons pas de sucre, beaucoup de légumes. Boire is irregular: je
+          bois, tu bois, il boit, nous buvons, vous buvez, ils boivent. Manger keeps an e
+          before -ons: nous mangeons.
+        lemmas:
+          - {lemma: manger, pos: verb, en: [to eat], rank: 154}
+          - {lemma: boire, pos: verb, en: [to drink], rank: 208}
+          - {lemma: viande, pos: noun, gender: f, en: [meat], rank: 1207}
+          - {lemma: poisson, pos: noun, gender: m, en: [fish], rank: 797}
+          - {lemma: légume, pos: noun, gender: m, en: [vegetable], rank: 1859}
+          - {lemma: fruit, pos: noun, gender: m, en: [fruit], rank: 1101}
+          - {lemma: œuf, pos: noun, gender: m, en: [egg], rank: 1118}
+          - {lemma: sucre, pos: noun, gender: m, en: [sugar], rank: 1469}
+          - {lemma: pomme, pos: noun, gender: f, en: [apple], rank: 711}
+        examples:
+          - {id: 1, target: "Je bois du café.", en: ["I drink coffee.", "I am drinking coffee."]}
+          - {id: 2, target: "Je mange de la viande.", en: ["I eat meat."]}
+          - {id: 3, target: "Je mange des fruits.", en: ["I eat fruit.", "I am eating fruit."]}
+          - {id: 4, target: "Mangez-vous du poisson ?", en: ["Do you eat fish?"]}
+          - {id: 5, target: "Nous n'avons pas de sucre.", en: ["We have no sugar.", "We do not have any sugar."]}
+          - {id: 6, target: "Je mange une pomme.", en: ["I am eating an apple.", "I eat an apple."]}
+          - {id: 7, target: "Mangez beaucoup de légumes.", en: ["Eat a lot of vegetables.", "Eat plenty of vegetables."]}
+          - {id: 8, target: "As-tu des œufs ?", en: ["Do you have any eggs?", "Have you got eggs?"]}
+      - id: fr.a1.u03.s03
+        kind: function
+        title: At the café
+        cefr: A1
+        can_do: I can order a drink, ask how much it costs and ask for the bill.
+        requires: [fr.a1.u03.s02]
+        grammar_note: >-
+          Je voudrais (I would like) is the polite way to order: je voudrais un café.
+          Vouloir in the present is je veux, tu veux, il veut, nous voulons, vous voulez,
+          ils veulent; je veux can sound blunt. Prendre (to take, to have) is irregular: je
+          prends, tu prends, il prend, nous prenons, vous prenez, ils prennent. Ask the
+          price with combien coûte...? or c'est combien ? The answer is often ça fait plus
+          the amount: ça fait vingt euros. To get the bill, ask for l'addition.
+        lemmas:
+          - {lemma: vouloir, pos: verb, en: [to want], rank: 46}
+          - {lemma: prendre, pos: verb, en: [to take, to have], rank: 105}
+          - {lemma: addition, pos: noun, gender: f, en: [bill, check], rank: 4371}
+          - {lemma: euro, pos: noun, gender: m, en: [euro], rank: 2789}
+          - {lemma: coûter, pos: verb, en: [to cost], rank: 764}
+          - {lemma: payer, pos: verb, en: [to pay, to pay for], rank: 452}
+          - {lemma: verre, pos: noun, gender: m, en: [glass, drink], rank: 735}
+          - {lemma: tasse, pos: noun, gender: f, en: [cup], rank: 1188}
+          - {lemma: bouteille, pos: noun, gender: f, en: [bottle], rank: 1415}
+          - {lemma: voilà, pos: adv, en: [here is, there you are], rank: 1445}
+          - {lemma: bien sûr, pos: expr, en: [of course], rank: null}
+        examples:
+          - {id: 1, target: "Je voudrais une tasse de café.", en: ["I would like a cup of coffee."]}
+          - {id: 2, target: "Je voudrais un verre d'eau.", en: ["I would like a glass of water."]}
+          - {id: 3, target: "Qu'est-ce que vous prenez ?", en: ["What will you have?", "What are you having?"]}
+          - {id: 4, target: "L'addition, s'il vous plaît.", en: ["The bill, please.", "The check, please."]}
+          - {id: 5, target: "Combien coûte une bière ?", en: ["How much does a beer cost?", "How much is a beer?"]}
+          - {id: 6, target: "Ça fait vingt euros.", en: ["That is twenty euros.", "That comes to twenty euros."]}
+          - {id: 7, target: "Je voudrais payer.", en: ["I would like to pay."]}
+          - {id: 8, target: "Voilà votre café.", en: ["Here is your coffee.", "Here's your coffee."]}
+      - id: fr.a1.u03.s04
+        kind: grammar
+        title: Hungry and thirsty
+        cefr: A1
+        can_do: I can say that I am hungry, thirsty, hot or cold and talk about meals.
+        requires: [fr.a1.u03.s03]
+        grammar_note: >-
+          French uses avoir, not être, for hunger, thirst, heat and cold: j'ai faim (I am
+          hungry), j'ai soif, j'ai chaud, j'ai froid. For food and drink, use être: le café
+          est froid. Bon (good) becomes bonne before a feminine noun. The meals are le
+          petit déjeuner (breakfast), le déjeuner (lunch) and le dîner (dinner);
+          déjeuner and dîner are also verbs, to have lunch and to have dinner. To have a
+          meal is prendre: prendre le petit déjeuner.
+        lemmas:
+          - {lemma: faim, pos: noun, gender: f, en: [hunger], rank: 857}
+          - {lemma: soif, pos: noun, gender: f, en: [thirst], rank: 2052}
+          - {lemma: chaud, pos: adj, en: [hot, warm], rank: 604}
+          - {lemma: froid, pos: adj, en: [cold], rank: 513}
+          - {lemma: bon, pos: adj, en: [good], rank: 109}
+          - {lemma: petit déjeuner, pos: noun, gender: m, en: [breakfast], rank: null}
+          - {lemma: déjeuner, pos: noun, gender: m, en: [lunch], rank: 484}
+          - {lemma: dîner, pos: noun, gender: m, en: [dinner], rank: 678}
+          - {lemma: restaurant, pos: noun, gender: m, en: [restaurant], rank: 982}
+        examples:
+          - {id: 1, target: "J'ai faim !", en: ["I am hungry!"]}
+          - {id: 2, target: "Avez-vous faim ?", en: ["Are you hungry?"]}
+          - {id: 3, target: "J'ai soif.", en: ["I am thirsty."]}
+          - {id: 4, target: "Le café est froid.", en: ["The coffee is cold."]}
+          - {id: 5, target: "Ce vin est très bon.", en: ["This wine is very good."]}
+          - {id: 6, target: "Je veux prendre mon petit déjeuner.", en: ["I want to have my breakfast.", "I want to have breakfast."]}
+          - {id: 7, target: "Merci pour le dîner.", en: ["Thank you for dinner.", "Thanks for dinner."]}
+          - {id: 8, target: "J'aime beaucoup ce restaurant.", en: ["I really like this restaurant.", "I like this restaurant a lot."]}
+  - id: fr.a1.u04
+    title: Around town
+    cefr: A1
+    skills:
+      - id: fr.a1.u04.s01
+        kind: vocab
+        title: Places in town
+        cefr: A1
+        can_do: I can name places in town and say where I am going.
+        requires: [fr.a1.u03.s04]
+        grammar_note: >-
+          Aller (to go) is irregular: je vais, tu vas, il va, nous allons, vous allez, ils
+          vont. To or at a place is à, and à le becomes au, à les becomes aux: au cinéma,
+          au marché, but à la banque and à l'hôpital. En ville means in town or into town.
+          The nous form without its pronoun means let's: allons au cinéma ! (let's go to
+          the cinema!).
+        lemmas:
+          - {lemma: ville, pos: noun, gender: f, en: [town, city], rank: 374}
+          - {lemma: rue, pos: noun, gender: f, en: [street], rank: 732}
+          - {lemma: gare, pos: noun, gender: f, en: [station, railway station], rank: 844}
+          - {lemma: banque, pos: noun, gender: f, en: [bank], rank: 1321}
+          - {lemma: musée, pos: noun, gender: m, en: [museum], rank: 1731}
+          - {lemma: parc, pos: noun, gender: m, en: [park], rank: 989}
+          - {lemma: hôpital, pos: noun, gender: m, en: [hospital], rank: 993}
+          - {lemma: cinéma, pos: noun, gender: m, en: [cinema, movie theater], rank: 1517}
+          - {lemma: marché, pos: noun, gender: m, en: [market], rank: 919}
+          - {lemma: centre, pos: noun, gender: m, en: [centre, center], rank: 1637}
+        examples:
+          - {id: 1, target: "Je vais à la banque.", en: ["I am going to the bank.", "I go to the bank."]}
+          - {id: 2, target: "Où est l'hôpital ?", en: ["Where is the hospital?"]}
+          - {id: 3, target: "Allons au cinéma !", en: ["Let's go to the cinema!", "Let's go to the movies!"]}
+          - {id: 4, target: "Je vais en ville.", en: ["I am going into town.", "I am going downtown."]}
+          - {id: 5, target: "Nous aimons aller au musée.", en: ["We like going to the museum.", "We like to go to the museum."]}
+          - {id: 6, target: "Les enfants jouent dans la rue.", en: ["The children play in the street.", "The children are playing in the street."]}
+          - {id: 7, target: "J'habite au centre-ville.", en: ["I live in the town centre.", "I live downtown."]}
+          - {id: 8, target: "Je vais au marché.", en: ["I am going to the market.", "I go to the market."]}
+      - id: fr.a1.u04.s02
+        kind: grammar
+        title: Where things are
+        cefr: A1
+        can_do: I can ask if there is a place nearby and say where it is.
+        requires: [fr.a1.u04.s01]
+        grammar_note: >-
+          Il y a means there is and there are; the question is y a-t-il...? or il y a...?
+          with a rising voice. Près de (near), loin de (far from), à côté de (next to) and
+          en face de (opposite) end in de, which joins le and les: à côté du parc, en face
+          de la gare. Devant (in front of), derrière (behind) and entre (between) take no
+          de. Près d'ici means near here.
+        lemmas:
+          - {lemma: près, pos: adv, en: [near, close], rank: 718}
+          - {lemma: loin, pos: adv, en: [far, far away], rank: 680}
+          - {lemma: devant, pos: prep, en: [in front of], rank: 827}
+          - {lemma: derrière, pos: prep, en: [behind], rank: 793}
+          - {lemma: entre, pos: prep, en: [between], rank: 475}
+          - {lemma: à côté de, pos: expr, en: [next to, beside], rank: null}
+          - {lemma: en face de, pos: expr, en: [opposite, across from], rank: null}
+          - {lemma: là, pos: adv, en: [there, here], rank: 172}
+        examples:
+          - {id: 1, target: "Y a-t-il une banque près d'ici ?", en: ["Is there a bank near here?", "Is there a bank around here?"]}
+          - {id: 2, target: "La gare est loin d'ici.", en: ["The station is far from here."]}
+          - {id: 3, target: "Ce n'est pas loin.", en: ["It is not far."]}
+          - {id: 4, target: "Y a-t-il un cinéma près d'ici ?", en: ["Is there a cinema near here?", "Is there a cinema nearby?", "Is there a movie theater near here?"]}
+          - {id: 5, target: "Il habite à côté de moi.", en: ["He lives next to me.", "He lives next door to me."]}
+          - {id: 6, target: "Regarde derrière toi.", en: ["Look behind you."]}
+          - {id: 7, target: "Nous sommes maintenant devant le musée.", en: ["We are now in front of the museum.", "We're in front of the museum now."]}
+          - {id: 8, target: "Il y a un marché devant la gare.", en: ["There is a market in front of the station."]}
+      - id: fr.a1.u04.s03
+        kind: function
+        title: Asking the way
+        cefr: A1
+        can_do: I can ask the way politely and understand simple directions.
+        requires: [fr.a1.u04.s02]
+        grammar_note: >-
+          Start with excusez-moi or pardon, then say what you are looking for: je cherche
+          la gare. Pouvoir (can) is irregular: je peux, tu peux, il peut, nous pouvons,
+          vous pouvez, ils peuvent, and it is followed by an infinitive: pouvez-vous
+          m'aider ? Directions are usually given with the vous form of the verb and no
+          pronoun: tournez à gauche (turn left), prenez à droite (take a right), continuez
+          tout droit (keep going straight on).
+        lemmas:
+          - {lemma: excuser, pos: verb, en: [to excuse], rank: 639}
+          - {lemma: chercher, pos: verb, en: [to look for], rank: 366}
+          - {lemma: trouver, pos: verb, en: [to find], rank: 147}
+          - {lemma: pouvoir, pos: verb, en: [can, to be able to], rank: 43}
+          - {lemma: aider, pos: verb, en: [to help], rank: 139}
+          - {lemma: tourner, pos: verb, en: [to turn], rank: 898}
+          - {lemma: gauche, pos: noun, gender: f, en: [left], rank: 1317}
+          - {lemma: droite, pos: noun, gender: f, en: [right], rank: 1587}
+          - {lemma: tout droit, pos: expr, en: [straight on, straight ahead], rank: null}
+          - {lemma: continuer, pos: verb, en: [to continue, to keep going], rank: 652}
+        examples:
+          - {id: 1, target: "Excusez-moi, je cherche la gare.", en: ["Excuse me, I am looking for the station."]}
+          - {id: 2, target: "Pouvez-vous m'aider, s'il vous plaît ?", en: ["Can you help me, please?"]}
+          - {id: 3, target: "Tournez à gauche.", en: ["Turn left."]}
+          - {id: 4, target: "Prenez à droite.", en: ["Turn right.", "Take a right."]}
+          - {id: 5, target: "Continuez tout droit !", en: ["Keep going straight on!", "Go straight ahead!"]}
+          - {id: 6, target: "Je cherche mon chien.", en: ["I am looking for my dog."]}
+          - {id: 7, target: "Je ne peux pas vous aider.", en: ["I cannot help you."]}
+          - {id: 8, target: "Je ne trouve pas la gare.", en: ["I cannot find the station.", "I can't find the station."]}
+      - id: fr.a1.u04.s04
+        kind: grammar
+        title: Getting around
+        cefr: A1
+        can_do: I can say how I travel around town and where I come from.
+        requires: [fr.a1.u04.s03]
+        grammar_note: >-
+          To say how you travel, use en for vehicles you get into, en bus, en train, en
+          voiture, en taxi, and à for your feet and a bike: à pied, à vélo. Prendre is
+          also to take a bus or train: prenons le train. Venir (to come) is irregular: je
+          viens, tu viens, il vient, nous venons, vous venez, ils viennent. Venir de is to
+          come from: je viens de France, d'où venez-vous ?
+        lemmas:
+          - {lemma: venir, pos: verb, en: [to come], rank: 117}
+          - {lemma: bus, pos: noun, gender: m, en: [bus], rank: 575}
+          - {lemma: train, pos: noun, gender: m, en: [train], rank: 224}
+          - {lemma: pied, pos: noun, gender: m, en: [foot], rank: 681}
+          - {lemma: vélo, pos: noun, gender: m, en: [bike, bicycle], rank: 749}
+          - {lemma: taxi, pos: noun, gender: m, en: [taxi], rank: 1421}
+          - {lemma: arrêt, pos: noun, gender: m, en: [stop], rank: 2122}
+        examples:
+          - {id: 1, target: "Je vais à l'école en bus.", en: ["I go to school by bus."]}
+          - {id: 2, target: "Je vais au travail à pied.", en: ["I walk to work.", "I go to work on foot."]}
+          - {id: 3, target: "Il va à l'école à vélo.", en: ["He cycles to school.", "He goes to school by bike."]}
+          - {id: 4, target: "Prenons le train.", en: ["Let's take the train."]}
+          - {id: 5, target: "Où est l'arrêt de bus ?", en: ["Where is the bus stop?"]}
+          - {id: 6, target: "Prenons un taxi.", en: ["Let's take a taxi."]}
+          - {id: 7, target: "D'où venez-vous ?", en: ["Where do you come from?", "Where are you from?"]}
+          - {id: 8, target: "Je viens de France.", en: ["I come from France.", "I am from France."]}
+  - id: fr.a1.u05
+    title: Shopping
+    cefr: A1
+    skills:
+      - id: fr.a1.u05.s01
+        kind: vocab
+        title: Clothes
+        cefr: A1
+        can_do: I can name clothes and say what someone is wearing.
+        requires: [fr.a1.u04.s04]
+        grammar_note: >-
+          Ce, cet, cette and ces mean this or that, these or those: ce sac, cet homme
+          (before a vowel), cette chemise, ces chaussures. Porter means to wear as well as
+          to carry: il porte un chapeau. Un pantalon (trousers) is singular in French, and
+          un vêtement is one item: clothes are des vêtements.
+        lemmas:
+          - {lemma: vêtement, pos: noun, gender: m, en: [item of clothing, clothes], rank: 864}
+          - {lemma: chemise, pos: noun, gender: f, en: [shirt], rank: 1179}
+          - {lemma: pantalon, pos: noun, gender: m, en: [trousers, pants], rank: 2025}
+          - {lemma: robe, pos: noun, gender: f, en: [dress], rank: 908}
+          - {lemma: jupe, pos: noun, gender: f, en: [skirt], rank: 2862}
+          - {lemma: veste, pos: noun, gender: f, en: [jacket], rank: 2336}
+          - {lemma: manteau, pos: noun, gender: m, en: [coat], rank: 1276}
+          - {lemma: chaussure, pos: noun, gender: f, en: [shoe], rank: 885}
+          - {lemma: chapeau, pos: noun, gender: m, en: [hat], rank: 1040}
+          - {lemma: sac, pos: noun, gender: m, en: [bag], rank: 903}
+          - {lemma: porter, pos: verb, en: [to wear, to carry], rank: 205}
+        examples:
+          - {id: 1, target: "J'aime cette chemise.", en: ["I like this shirt.", "I like that shirt."]}
+          - {id: 2, target: "Il porte un chapeau.", en: ["He is wearing a hat."]}
+          - {id: 3, target: "Où sont mes chaussures ?", en: ["Where are my shoes?"]}
+          - {id: 4, target: "J'adore ta robe.", en: ["I love your dress."]}
+          - {id: 5, target: "Ce manteau est chaud.", en: ["This coat is warm."]}
+          - {id: 6, target: "Je veux ce sac.", en: ["I want this bag.", "I want that bag."]}
+          - {id: 7, target: "J'aime tes chaussures.", en: ["I like your shoes.", "I love your shoes."]}
+          - {id: 8, target: "Je n'aime pas cette veste.", en: ["I do not like this jacket."]}
+      - id: fr.a1.u05.s02
+        kind: grammar
+        title: Colours and sizes
+        cefr: A1
+        can_do: I can describe things by their colour and size.
+        requires: [fr.a1.u05.s01]
+        grammar_note: >-
+          Adjectives agree with their noun: add -e for a feminine noun and -s for a
+          plural: un sac noir, une robe noire, des chaussures noires. An adjective that
+          already ends in -e, like rouge or jaune, does not change for a feminine noun.
+          Blanc becomes blanche. Colours come after the noun: une voiture rouge. A few
+          short, common adjectives such as grand and petit come before it: un petit
+          chien. Grand means tall as well as big. Préféré (favourite) agrees too: ma
+          couleur préférée.
+        lemmas:
+          - {lemma: couleur, pos: noun, gender: f, en: [colour, color], rank: 1009}
+          - {lemma: rouge, pos: adj, en: [red], rank: 684}
+          - {lemma: bleu, pos: adj, en: [blue], rank: 1093}
+          - {lemma: vert, pos: adj, en: [green], rank: 1439}
+          - {lemma: jaune, pos: adj, en: [yellow], rank: 2012}
+          - {lemma: noir, pos: adj, en: [black], rank: 757}
+          - {lemma: blanc, pos: adj, en: [white], rank: 790}
+          - {lemma: gris, pos: adj, en: [grey, gray], rank: 2980}
+          - {lemma: grand, pos: adj, en: [big, tall], rank: 190}
+          - {lemma: petit, pos: adj, en: [small, little], rank: 210}
+          - {lemma: préféré, pos: adj, en: [favourite, favorite], rank: 939}
+        examples:
+          - {id: 1, target: "Elle porte une robe bleue.", en: ["She is wearing a blue dress."]}
+          - {id: 2, target: "Il porte un chapeau noir.", en: ["He is wearing a black hat."]}
+          - {id: 3, target: "J'ai une voiture rouge.", en: ["I have a red car."]}
+          - {id: 4, target: "J'ai un petit chien.", en: ["I have a small dog.", "I have a little dog."]}
+          - {id: 5, target: "Quelle est ta couleur préférée ?", en: ["What is your favourite colour?", "What is your favorite color?"]}
+          - {id: 6, target: "La pomme est verte.", en: ["The apple is green."]}
+          - {id: 7, target: "Le noir te va bien.", en: ["Black suits you.", "Black looks good on you."]}
+          - {id: 8, target: "Je cherche une chemise blanche.", en: ["I am looking for a white shirt."]}
+      - id: fr.a1.u05.s03
+        kind: function
+        title: Buying things
+        cefr: A1
+        can_do: I can ask about the price and size, try something on and pay.
+        requires: [fr.a1.u05.s02]
+        grammar_note: >-
+          Acheter (to buy) takes a grave accent where the ending is silent: j'achète, tu
+          achètes, il achète, ils achètent, but nous achetons, vous achetez. Essayer is to
+          try and also to try on: je peux essayer ? Cher means expensive, and trop means
+          too: c'est trop cher. You pay par carte (by card). L'argent is money as well as
+          silver.
+        lemmas:
+          - {lemma: acheter, pos: verb, en: [to buy], rank: 223}
+          - {lemma: magasin, pos: noun, gender: m, en: [shop, store], rank: 861}
+          - {lemma: prix, pos: noun, gender: m, en: [price], rank: 694}
+          - {lemma: cher, pos: adj, en: [expensive, dear], rank: 710}
+          - {lemma: trop, pos: adv, en: [too, too much], rank: 191}
+          - {lemma: argent, pos: noun, gender: m, en: [money, silver], rank: 228}
+          - {lemma: carte, pos: noun, gender: f, en: [card, map, menu], rank: 804}
+          - {lemma: par, pos: prep, en: [by, through], rank: 119}
+          - {lemma: taille, pos: noun, gender: f, en: [size], rank: 1552}
+          - {lemma: essayer, pos: verb, en: [to try, to try on], rank: 232}
+        examples:
+          - {id: 1, target: "C'est trop cher !", en: ["It is too expensive!", "That is too expensive!"]}
+          - {id: 2, target: "Ce n'est pas cher.", en: ["It is not expensive.", "That is not expensive."]}
+          - {id: 3, target: "Je peux essayer ?", en: ["Can I try it on?", "Can I try it?"]}
+          - {id: 4, target: "Quelle est votre taille ?", en: ["What is your size?", "What size are you?"]}
+          - {id: 5, target: "Je n'ai pas d'argent.", en: ["I do not have any money.", "I have no money."]}
+          - {id: 6, target: "Je vais au magasin.", en: ["I am going to the shop.", "I am going to the store."]}
+          - {id: 7, target: "Je peux payer par carte ?", en: ["Can I pay by card?"]}
+          - {id: 8, target: "Regardez le prix.", en: ["Look at the price."]}
+      - id: fr.a1.u05.s04
+        kind: function
+        title: Choosing
+        cefr: A1
+        can_do: I can say what I think of something and ask for something else.
+        requires: [fr.a1.u05.s03]
+        grammar_note: >-
+          Beau (beautiful, nice), joli (pretty) and nouveau (new) usually come before the
+          noun. Beau and nouveau are irregular: belle and nouvelle for a feminine noun,
+          and bel and nouvel before a masculine noun that starts with a vowel. Autre means
+          other or another: une autre bière. To ask for something cheaper, say quelque
+          chose de moins cher: after quelque chose, an adjective needs de.
+        lemmas:
+          - {lemma: quelque chose, pos: expr, en: [something, anything], rank: null}
+          - {lemma: autre, pos: adj, en: [other, another], rank: 186}
+          - {lemma: moins, pos: adv, en: [less], rank: 509}
+          - {lemma: beau, pos: adj, en: [beautiful, nice, handsome], rank: 285}
+          - {lemma: joli, pos: adj, en: [pretty, nice], rank: 1025}
+          - {lemma: nouveau, pos: adj, en: [new], rank: 192}
+        examples:
+          - {id: 1, target: "Cherchez-vous quelque chose ?", en: ["Are you looking for something?"]}
+          - {id: 2, target: "Avez-vous quelque chose de moins cher ?", en: ["Do you have anything cheaper?", "Have you got anything less expensive?"]}
+          - {id: 3, target: "Je voudrais une autre bière.", en: ["I would like another beer."]}
+          - {id: 4, target: "C'est une belle robe.", en: ["That is a beautiful dress.", "It is a beautiful dress."]}
+          - {id: 5, target: "C'est un beau manteau.", en: ["That is a nice coat."]}
+          - {id: 6, target: "J'ai une nouvelle voiture.", en: ["I have a new car."]}
+          - {id: 7, target: "Elle porte une jolie robe.", en: ["She is wearing a pretty dress."]}
+          - {id: 8, target: "Vous l'avez dans une autre couleur ?", en: ["Do you have it in another colour?", "Do you have it in another color?"]}
+  - id: fr.a1.u06
+    title: Home and family
+    cefr: A1
+    skills:
+      - id: fr.a1.u06.s01
+        kind: vocab
+        title: Family
+        cefr: A1
+        can_do: I can talk about the people in my family and say whose they are.
+        requires: [fr.a1.u05.s04]
+        grammar_note: >-
+          My, your and his or her agree with the noun that follows, not with the owner:
+          mon frère, ma sœur, mes parents; ton, ta, tes; son, sa, ses. So sa mère can
+          mean his mother or her mother. Our is notre and nos, your (vous) is votre and
+          vos, their is leur and leurs: notre fils, nos enfants, leur fils. Before a vowel,
+          use mon, ton or son even for a feminine noun: mon amie.
+        lemmas:
+          - {lemma: famille, pos: noun, gender: f, en: [family], rank: 512}
+          - {lemma: père, pos: noun, gender: m, en: [father], rank: 259}
+          - {lemma: mère, pos: noun, gender: f, en: [mother], rank: 303}
+          - {lemma: frère, pos: noun, gender: m, en: [brother], rank: 392}
+          - {lemma: sœur, pos: noun, gender: f, en: [sister], rank: 428}
+          - {lemma: fils, pos: noun, gender: m, en: [son], rank: 519}
+          - {lemma: parent, pos: noun, gender: m, en: [parent, relative], rank: 395}
+          - {lemma: mari, pos: noun, gender: m, en: [husband], rank: 1088}
+          - {lemma: oncle, pos: noun, gender: m, en: [uncle], rank: 1243}
+          - {lemma: tante, pos: noun, gender: f, en: [aunt], rank: 1954}
+          - {lemma: cousin, pos: noun, gender: m, en: [cousin], rank: 2044}
+          - {lemma: bébé, pos: noun, gender: m, en: [baby], rank: 904}
+        examples:
+          - {id: 1, target: "J'ai un frère.", en: ["I have a brother.", "I have one brother."]}
+          - {id: 2, target: "Comment va ta famille ?", en: ["How is your family?"]}
+          - {id: 3, target: "Mon père travaille ici.", en: ["My father works here."]}
+          - {id: 4, target: "Comment s'appelle ta sœur ?", en: ["What is your sister's name?", "What is your sister called?"]}
+          - {id: 5, target: "J'habite avec mes parents.", en: ["I live with my parents."]}
+          - {id: 6, target: "Mon oncle a trois enfants.", en: ["My uncle has three children."]}
+          - {id: 7, target: "J'aime ma mère.", en: ["I love my mother."]}
+          - {id: 8, target: "Quel âge a leur fils ?", en: ["How old is their son?"]}
+      - id: fr.a1.u06.s02
+        kind: grammar
+        title: Describing people
+        cefr: A1
+        can_do: I can describe what people look like and what they are like.
+        requires: [fr.a1.u06.s01]
+        grammar_note: >-
+          Adjectives for people agree like other adjectives: il est marié, elle est
+          mariée. Some have a special feminine form: heureux becomes heureuse, gentil
+          becomes gentille and vieux becomes vieille. For hair and eyes, French uses avoir
+          and les: elle a les yeux bleus (she has blue eyes). Un œil is one eye and des
+          yeux is the plural. Les cheveux (hair) is plural, so the verb is too: ses
+          cheveux sont gris.
+        lemmas:
+          - {lemma: jeune, pos: adj, en: [young], rank: 393}
+          - {lemma: vieux, pos: adj, en: [old], rank: 373}
+          - {lemma: gentil, pos: adj, en: [kind, nice], rank: 960}
+          - {lemma: heureux, pos: adj, en: [happy], rank: 295}
+          - {lemma: intelligent, pos: adj, en: [intelligent, clever], rank: 1052}
+          - {lemma: marié, pos: adj, en: [married], rank: 806}
+          - {lemma: cheveu, pos: noun, gender: m, en: [hair], rank: 661}
+          - {lemma: œil, pos: noun, gender: m, en: [eye], rank: 380}
+        examples:
+          - {id: 1, target: "Mon père est jeune.", en: ["My father is young."]}
+          - {id: 2, target: "Mes parents sont vieux.", en: ["My parents are old."]}
+          - {id: 3, target: "Il est très gentil.", en: ["He is very kind.", "He is very nice."]}
+          - {id: 4, target: "Ma sœur est mariée.", en: ["My sister is married."]}
+          - {id: 5, target: "Je suis très heureux.", en: ["I am very happy."]}
+          - {id: 6, target: "Elle a les yeux bleus.", en: ["She has blue eyes."]}
+          - {id: 7, target: "Ses cheveux sont gris.", en: ["His hair is grey.", "Her hair is grey."]}
+          - {id: 8, target: "Ce garçon est intelligent.", en: ["That boy is intelligent.", "This boy is clever."]}
+      - id: fr.a1.u06.s03
+        kind: vocab
+        title: At home
+        cefr: A1
+        can_do: I can name the rooms and things in a home and say where someone is.
+        requires: [fr.a1.u06.s02]
+        grammar_note: >-
+          A home is a maison (house) or an appartement (flat, apartment). Une chambre is a
+          bedroom, and in a hotel a room. La cuisine is the kitchen and also cooking. At
+          home is à la maison or chez moi; chez works with any person: chez toi, chez nous,
+          chez Paul. Dans means in or into: je suis dans la cuisine. Je vais au lit means I
+          am going to bed.
+        lemmas:
+          - {lemma: maison, pos: noun, gender: f, en: [house, home], rank: 179}
+          - {lemma: appartement, pos: noun, gender: m, en: [flat, apartment], rank: 1315}
+          - {lemma: chambre, pos: noun, gender: f, en: [bedroom, room], rank: 396}
+          - {lemma: cuisine, pos: noun, gender: f, en: [kitchen, cooking], rank: 891}
+          - {lemma: salle de bains, pos: noun, gender: f, en: [bathroom], rank: null}
+          - {lemma: jardin, pos: noun, gender: m, en: [garden], rank: 899}
+          - {lemma: table, pos: noun, gender: f, en: [table], rank: 612}
+          - {lemma: lit, pos: noun, gender: m, en: [bed], rank: 514}
+          - {lemma: porte, pos: noun, gender: f, en: [door], rank: 275}
+          - {lemma: fenêtre, pos: noun, gender: f, en: [window], rank: 642}
+        examples:
+          - {id: 1, target: "Ma maison est grande.", en: ["My house is big."]}
+          - {id: 2, target: "J'habite en appartement.", en: ["I live in a flat.", "I live in an apartment."]}
+          - {id: 3, target: "Ma chambre a deux fenêtres.", en: ["My room has two windows.", "My bedroom has two windows."]}
+          - {id: 4, target: "La cuisine est grande.", en: ["The kitchen is big.", "The kitchen is large."]}
+          - {id: 5, target: "Je suis dans la salle de bains.", en: ["I am in the bathroom."]}
+          - {id: 6, target: "Ils sont au jardin.", en: ["They are in the garden."]}
+          - {id: 7, target: "Je vais au lit.", en: ["I am going to bed."]}
+          - {id: 8, target: "Cette table est blanche.", en: ["This table is white."]}
+      - id: fr.a1.u06.s04
+        kind: grammar
+        title: Floors and neighbours
+        cefr: A1
+        can_do: I can say which floor I live on and put things in order.
+        requires: [fr.a1.u06.s03]
+        grammar_note: >-
+          Ordinal numbers add -ième to the number: deuxième, troisième, quatrième; a final
+          e is dropped (quatre, quatrième), cinq becomes cinquième and neuf neuvième.
+          First is premier, or première before a feminine noun. Le premier étage is the
+          floor above the ground floor (le rez-de-chaussée), so French floors are counted
+          as in British English. Une pièce is any room; une chambre is a bedroom. Dernier
+          (last) usually comes before its noun.
+        lemmas:
+          - {lemma: étage, pos: noun, gender: m, en: [floor, storey], rank: 1736}
+          - {lemma: premier, pos: adj, en: [first], rank: 391}
+          - {lemma: deuxième, pos: adj, en: [second], rank: 2353}
+          - {lemma: troisième, pos: adj, en: [third], rank: 2995}
+          - {lemma: dernier, pos: adj, en: [last], rank: 287}
+          - {lemma: pièce, pos: noun, gender: f, en: [room], rank: 502}
+          - {lemma: voisin, pos: noun, gender: m, en: [neighbour, neighbor], rank: 1043}
+        examples:
+          - {id: 1, target: "Nous habitons au deuxième étage.", en: ["We live on the second floor.", "We live on the third floor."]}
+          - {id: 2, target: "Mon appartement est au troisième étage.", en: ["My flat is on the third floor.", "My apartment is on the fourth floor."]}
+          - {id: 3, target: "À quel étage habite-t-il ?", en: ["What floor does he live on?", "Which floor does he live on?"]}
+          - {id: 4, target: "Cette maison a six pièces.", en: ["This house has six rooms."]}
+          - {id: 5, target: "C'est mon voisin.", en: ["He is my neighbour.", "He is my neighbor."]}
+          - {id: 6, target: "Ma voisine est gentille.", en: ["My neighbour is nice.", "My neighbor is kind."]}
+          - {id: 7, target: "Tournez à la deuxième à gauche.", en: ["Take the second turning on the left.", "Take the second left."]}
+          - {id: 8, target: "Suis-je le premier ?", en: ["Am I first?", "Am I the first?"]}
+  - id: fr.a1.u07
+    title: Time and routine
+    cefr: A1
+    skills:
+      - id: fr.a1.u07.s01
+        kind: vocab
+        title: Days of the week
+        cefr: A1
+        can_do: I can name the days of the week and say what day it is.
+        requires: [fr.a1.u06.s04]
+        grammar_note: >-
+          The days are masculine and take no capital letter. Samedi on its own means on
+          Saturday (this coming one); le samedi means on Saturdays, every Saturday. Ask
+          the day with quel jour sommes-nous ? and answer c'est lundi or nous sommes
+          lundi. Demain is tomorrow, and the week starts on lundi.
+        lemmas:
+          - {lemma: lundi, pos: noun, gender: m, en: [Monday], rank: 1000}
+          - {lemma: mardi, pos: noun, gender: m, en: [Tuesday], rank: 4627}
+          - {lemma: mercredi, pos: noun, gender: m, en: [Wednesday], rank: 4175}
+          - {lemma: jeudi, pos: noun, gender: m, en: [Thursday], rank: 4730}
+          - {lemma: vendredi, pos: noun, gender: m, en: [Friday], rank: 2279}
+          - {lemma: samedi, pos: noun, gender: m, en: [Saturday], rank: 2031}
+          - {lemma: dimanche, pos: noun, gender: m, en: [Sunday], rank: 1020}
+          - {lemma: semaine, pos: noun, gender: f, en: [week], rank: 375}
+          - {lemma: jour, pos: noun, gender: m, en: [day], rank: 206}
+          - {lemma: demain, pos: adv, en: [tomorrow], rank: 281}
+        examples:
+          - {id: 1, target: "Aujourd'hui, c'est lundi.", en: ["Today is Monday.", "It is Monday today."]}
+          - {id: 2, target: "Demain, c'est dimanche.", en: ["Tomorrow is Sunday."]}
+          - {id: 3, target: "Quel jour sommes-nous ?", en: ["What day is it?", "What day is it today?"]}
+          - {id: 4, target: "La semaine a sept jours.", en: ["A week has seven days.", "The week has seven days."]}
+          - {id: 5, target: "Que fais-tu samedi ?", en: ["What are you doing on Saturday?"]}
+          - {id: 6, target: "Le jeudi, nous allons au cinéma.", en: ["On Thursdays we go to the cinema.", "On Thursdays we go to the movies."]}
+          - {id: 7, target: "Que faites-vous le vendredi ?", en: ["What do you do on Fridays?"]}
+          - {id: 8, target: "On va au marché le mardi.", en: ["We go to the market on Tuesdays."]}
+      - id: fr.a1.u07.s02
+        kind: grammar
+        title: Telling the time
+        cefr: A1
+        can_do: I can ask and tell the time and say when something starts.
+        requires: [fr.a1.u07.s01]
+        grammar_note: >-
+          Ask the time with quelle heure est-il ? and answer il est ... heure(s): il est
+          une heure, il est trois heures. Add et quart for a quarter past, et demie for
+          half past and moins le quart for a quarter to: il est huit heures et quart. Midi
+          is noon and minuit midnight. At a time is à: à huit heures. Le matin,
+          l'après-midi and le soir are the morning, the afternoon and the evening.
+          Timetables use the 24-hour clock: vingt heures (8 pm).
+        lemmas:
+          - {lemma: heure, pos: noun, gender: f, en: [hour, o'clock, time], rank: 194}
+          - {lemma: minute, pos: noun, gender: f, en: [minute], rank: 533}
+          - {lemma: midi, pos: noun, gender: m, en: [midday, noon], rank: 716}
+          - {lemma: minuit, pos: noun, gender: m, en: [midnight], rank: 2951}
+          - {lemma: demi, pos: adj, en: [half], rank: 1518}
+          - {lemma: quart, pos: noun, gender: m, en: [quarter], rank: 4346}
+          - {lemma: matin, pos: noun, gender: m, en: [morning], rank: 423}
+          - {lemma: soir, pos: noun, gender: m, en: [evening], rank: 336}
+          - {lemma: après, pos: prep, en: [after], rank: 272}
+          - {lemma: commencer, pos: verb, en: [to start, to begin], rank: 284}
+          - {lemma: finir, pos: verb, en: [to finish, to end], rank: 424}
+        examples:
+          - {id: 1, target: "Quelle heure est-il ?", en: ["What time is it?"]}
+          - {id: 2, target: "Il est une heure.", en: ["It is one o'clock."]}
+          - {id: 3, target: "Il est huit heures et quart.", en: ["It is a quarter past eight.", "It is eight fifteen."]}
+          - {id: 4, target: "Il est trois heures et demie.", en: ["It is half past three.", "It is three thirty."]}
+          - {id: 5, target: "Le film commence à huit heures.", en: ["The film starts at eight o'clock.", "The movie starts at eight."]}
+          - {id: 6, target: "Je travaille le matin.", en: ["I work in the morning.", "I work in the mornings."]}
+          - {id: 7, target: "Que faites-vous cet après-midi ?", en: ["What are you doing this afternoon?"]}
+          - {id: 8, target: "Je dîne après le travail.", en: ["I have dinner after work.", "I eat dinner after work."]}
+      - id: fr.a1.u07.s03
+        kind: grammar
+        title: Daily routine
+        cefr: A1
+        can_do: I can describe my day from getting up to going to bed.
+        requires: [fr.a1.u07.s02]
+        grammar_note: >-
+          Many routine verbs are reflexive: a small pronoun that matches the subject goes
+          before the verb: je me lève, tu te lèves, il se lève, nous nous levons, vous vous
+          levez, ils se lèvent. Me, te and se become m', t' and s' before a vowel: je
+          m'habille. Se lever is to get up, se réveiller to wake up, se coucher to go to
+          bed, se laver to wash and s'habiller to get dressed. Without the pronoun the
+          verb acts on someone else: elle couche les enfants.
+        lemmas:
+          - {lemma: lever, pos: verb, en: [to raise, to get up], rank: 562}
+          - {lemma: réveiller, pos: verb, en: [to wake, to wake up], rank: 809}
+          - {lemma: laver, pos: verb, en: [to wash], rank: 673}
+          - {lemma: habiller, pos: verb, en: [to dress, to get dressed], rank: 1589}
+          - {lemma: coucher, pos: verb, en: [to put to bed, to go to bed], rank: 871}
+          - {lemma: douche, pos: noun, gender: f, en: [shower], rank: 1988}
+          - {lemma: dormir, pos: verb, en: [to sleep], rank: 356}
+          - {lemma: tôt, pos: adv, en: [early], rank: 431}
+          - {lemma: tard, pos: adv, en: [late], rank: 485}
+        examples:
+          - {id: 1, target: "Je me réveille à sept heures.", en: ["I wake up at seven o'clock.", "I wake up at seven."]}
+          - {id: 2, target: "Je me lève tôt le matin.", en: ["I get up early in the morning."]}
+          - {id: 3, target: "À quelle heure tu te lèves ?", en: ["What time do you get up?", "What time are you getting up?"]}
+          - {id: 4, target: "Je m'habille.", en: ["I am getting dressed.", "I get dressed."]}
+          - {id: 5, target: "Je prends une douche.", en: ["I am having a shower.", "I am taking a shower."]}
+          - {id: 6, target: "Le bébé dort.", en: ["The baby is sleeping.", "The baby is asleep."]}
+          - {id: 7, target: "Il est trop tard.", en: ["It is too late."]}
+          - {id: 8, target: "Je me couche à onze heures.", en: ["I go to bed at eleven o'clock.", "I go to bed at eleven."]}
+      - id: fr.a1.u07.s04
+        kind: function
+        title: How often
+        cefr: A1
+        can_do: I can say how often I do things.
+        requires: [fr.a1.u07.s03]
+        grammar_note: >-
+          Words for how often usually come straight after the verb: je vais souvent au
+          cinéma, je me lève toujours tôt. Jamais (never) works like pas, with ne before
+          the verb: je ne mange jamais de viande. Tous les jours means every day, and tout
+          agrees with its noun: tous les lundis, toutes les semaines. Une fois is once,
+          deux fois twice, and the first time is la première fois. Toujours also means
+          still.
+        lemmas:
+          - {lemma: toujours, pos: adv, en: [always, still], rank: 160}
+          - {lemma: souvent, pos: adv, en: [often], rank: 398}
+          - {lemma: parfois, pos: adv, en: [sometimes], rank: 883}
+          - {lemma: jamais, pos: adv, en: [never, ever], rank: 123}
+          - {lemma: tout, pos: det, en: [all, every], rank: 44}
+          - {lemma: fois, pos: noun, gender: f, en: [time, occasion], rank: 262}
+          - {lemma: rentrer, pos: verb, en: [to go home, to come back], rank: 133}
+        examples:
+          - {id: 1, target: "Je vais souvent au cinéma.", en: ["I often go to the cinema.", "I often go to the movies."]}
+          - {id: 2, target: "Je me lève toujours tôt.", en: ["I always get up early."]}
+          - {id: 3, target: "Je ne mange jamais de viande.", en: ["I never eat meat."]}
+          - {id: 4, target: "Je regarde parfois la télévision.", en: ["I sometimes watch television.", "I sometimes watch TV."]}
+          - {id: 5, target: "Je viens tous les jours.", en: ["I come every day."]}
+          - {id: 6, target: "À quelle heure rentres-tu ?", en: ["What time are you coming home?", "What time do you get back?"]}
+          - {id: 7, target: "C'est la première fois.", en: ["It is the first time.", "This is the first time."]}
+          - {id: 8, target: "Ils vont travailler tous les jours.", en: ["They go to work every day."]}
+  - id: fr.a1.u08
+    title: Travel and hotel
+    cefr: A1
+    skills:
+      - id: fr.a1.u08.s01
+        kind: vocab
+        title: Travel
+        cefr: A1
+        can_do: I can talk about trips, tickets and holidays.
+        requires: [fr.a1.u07.s04]
+        grammar_note: >-
+          Les vacances (the holidays) is always plural in this sense: je suis en vacances
+          (I am on holiday). Voyager (to travel) keeps an e before -ons: nous voyageons.
+          Travel by plane is en avion, like en train. Most country names take le or la, and
+          to or in a country is en for a feminine one and au for a masculine one: en
+          France, au Canada. Faites un bon voyage ! wishes someone a good trip.
+        lemmas:
+          - {lemma: voyage, pos: noun, gender: m, en: [trip, journey], rank: 725}
+          - {lemma: voyager, pos: verb, en: [to travel], rank: 470}
+          - {lemma: avion, pos: noun, gender: m, en: [plane, aeroplane], rank: 584}
+          - {lemma: billet, pos: noun, gender: m, en: [ticket], rank: 1486}
+          - {lemma: valise, pos: noun, gender: f, en: [suitcase], rank: 1689}
+          - {lemma: aéroport, pos: noun, gender: m, en: [airport], rank: 1497}
+          - {lemma: passeport, pos: noun, gender: m, en: [passport], rank: 2331}
+          - {lemma: vacances, pos: noun, gender: f, en: [holidays, vacation], rank: 941}
+          - {lemma: pays, pos: noun, gender: m, en: [country], rank: 433}
+          - {lemma: mer, pos: noun, gender: f, en: [sea], rank: 1026}
+          - {lemma: plage, pos: noun, gender: f, en: [beach], rank: 1133}
+        examples:
+          - {id: 1, target: "Faites un bon voyage !", en: ["Have a good trip!", "Have a nice trip!"]}
+          - {id: 2, target: "Je suis en vacances.", en: ["I am on holiday.", "I am on vacation."]}
+          - {id: 3, target: "Combien coûte le billet ?", en: ["How much is the ticket?", "How much does the ticket cost?"]}
+          - {id: 4, target: "Où est ma valise ?", en: ["Where is my suitcase?"]}
+          - {id: 5, target: "Je vais à l'aéroport.", en: ["I am going to the airport."]}
+          - {id: 6, target: "J'aime voyager en train.", en: ["I like travelling by train.", "I like to travel by train."]}
+          - {id: 7, target: "Allons à la plage.", en: ["Let's go to the beach."]}
+          - {id: 8, target: "J'aime ton pays.", en: ["I like your country.", "I love your country."]}
+      - id: fr.a1.u08.s02
+        kind: grammar
+        title: Plans
+        cefr: A1
+        can_do: I can say what I am going to do and when I leave or arrive.
+        requires: [fr.a1.u08.s01]
+        grammar_note: >-
+          For plans, use aller in the present plus an infinitive: je vais partir demain (I
+          am going to leave tomorrow), que vas-tu faire ce soir ? The present also works
+          with a time word: je pars la semaine prochaine. Partir (to leave) is irregular:
+          je pars, tu pars, il part, nous partons, vous partez, ils partent. Prochain
+          (next) follows semaine, mois and an, but comes before most other nouns: le
+          prochain train. Quand means when.
+        lemmas:
+          - {lemma: partir, pos: verb, en: [to leave, to go away], rank: 87}
+          - {lemma: arriver, pos: verb, en: [to arrive], rank: 153}
+          - {lemma: rester, pos: verb, en: [to stay], rank: 203}
+          - {lemma: visiter, pos: verb, en: [to visit], rank: 553}
+          - {lemma: prochain, pos: adj, en: [next], rank: 488}
+          - {lemma: bientôt, pos: adv, en: [soon], rank: 737}
+          - {lemma: quand, pos: adv, en: [when], rank: 188}
+        examples:
+          - {id: 1, target: "Je vais partir demain.", en: ["I am going to leave tomorrow."]}
+          - {id: 2, target: "À la semaine prochaine.", en: ["See you next week."]}
+          - {id: 3, target: "Je vais rester ici.", en: ["I am going to stay here."]}
+          - {id: 4, target: "Je pars la semaine prochaine.", en: ["I am leaving next week."]}
+          - {id: 5, target: "Voulez-vous visiter la ville ?", en: ["Do you want to visit the town?", "Would you like to visit the city?"]}
+          - {id: 6, target: "Quand part ton avion ?", en: ["When does your plane leave?"]}
+          - {id: 7, target: "Le train arrive à midi.", en: ["The train arrives at noon."]}
+          - {id: 8, target: "Il va bientôt finir.", en: ["He is going to finish soon.", "He will be done soon."]}
+      - id: fr.a1.u08.s03
+        kind: function
+        title: At the hotel
+        cefr: A1
+        can_do: I can check in at a hotel, ask for a room and understand where it is.
+        requires: [fr.a1.u08.s02]
+        grammar_note: >-
+          To check in, say j'ai une réservation and give your name: au nom de Paul. Ask
+          for a room with je voudrais une chambre pour deux personnes, and say how long
+          with pour trois nuits. Voici (here is) points to something close, voilà to
+          something a little further off, but both are used when handing something over.
+          Une personne is always feminine, even for a man. Libre means free or available:
+          une chambre libre.
+        lemmas:
+          - {lemma: hôtel, pos: noun, gender: m, en: [hotel], rank: 932}
+          - {lemma: réservation, pos: noun, gender: f, en: [booking, reservation], rank: 4126}
+          - {lemma: réserver, pos: verb, en: [to book, to reserve], rank: 1927}
+          - {lemma: nuit, pos: noun, gender: f, en: [night], rank: 332}
+          - {lemma: personne, pos: noun, gender: f, en: [person], rank: 130}
+          - {lemma: clé, pos: noun, gender: f, en: [key], rank: 664}
+          - {lemma: ascenseur, pos: noun, gender: m, en: [lift, elevator], rank: 2367}
+          - {lemma: libre, pos: adj, en: [free, available], rank: 1017}
+          - {lemma: voici, pos: adv, en: [here is, here are], rank: 966}
+        examples:
+          - {id: 1, target: "J'ai une réservation pour deux nuits.", en: ["I have a reservation for two nights.", "I have a booking for two nights."]}
+          - {id: 2, target: "Je voudrais réserver une chambre.", en: ["I would like to book a room."]}
+          - {id: 3, target: "Voici votre clé.", en: ["Here is your key."]}
+          - {id: 4, target: "C'est pour combien de nuits ?", en: ["For how many nights?", "How many nights is it for?"]}
+          - {id: 5, target: "Avez-vous une chambre libre ?", en: ["Do you have a room available?", "Do you have a free room?"]}
+          - {id: 6, target: "Je vais prendre l'ascenseur.", en: ["I am going to take the lift.", "I am going to take the elevator."]}
+          - {id: 7, target: "Avez-vous les clés ?", en: ["Do you have the keys?", "Have you got the keys?"]}
+          - {id: 8, target: "Je reste dans cet hôtel.", en: ["I am staying at this hotel.", "I'm staying in this hotel."]}
+      - id: fr.a1.u08.s04
+        kind: grammar
+        title: Needs and musts
+        cefr: A1
+        can_do: I can say what I need, what I have to do and that I do not know.
+        requires: [fr.a1.u08.s03]
+        grammar_note: >-
+          Devoir (must, to have to) is irregular: je dois, tu dois, il doit, nous devons,
+          vous devez, ils doivent, and takes an infinitive: je dois partir. Il faut plus an
+          infinitive (from falloir) means it is necessary, one must; its subject is always
+          il: il faut réserver. Avoir besoin de is to need: j'ai besoin d'un taxi. Savoir
+          is to know a fact: je sais, tu sais, il sait; je ne sais pas (I do not know).
+          Attendre means to wait for, with no word for for: attendez-moi.
+        lemmas:
+          - {lemma: devoir, pos: verb, en: [must, to have to], rank: 57}
+          - {lemma: falloir, pos: verb, en: [to be necessary, must], rank: 187}
+          - {lemma: besoin, pos: noun, gender: m, en: [need], rank: 155}
+          - {lemma: savoir, pos: verb, en: [to know], rank: 63}
+          - {lemma: oublier, pos: verb, en: [to forget], rank: 320}
+          - {lemma: attendre, pos: verb, en: [to wait, to wait for], rank: 229}
+        examples:
+          - {id: 1, target: "J'ai besoin d'un taxi.", en: ["I need a taxi."]}
+          - {id: 2, target: "J'ai besoin d'une chambre.", en: ["I need a room."]}
+          - {id: 3, target: "Je dois partir maintenant.", en: ["I have to leave now.", "I must leave now."]}
+          - {id: 4, target: "Il faut réserver.", en: ["You have to book.", "You need to book in advance."]}
+          - {id: 5, target: "Il faut payer.", en: ["You have to pay.", "You must pay."]}
+          - {id: 6, target: "Je ne sais pas.", en: ["I do not know.", "I don't know."]}
+          - {id: 7, target: "N'oublie pas ton passeport.", en: ["Don't forget your passport.", "Do not forget your passport."]}
+          - {id: 8, target: "Attendez-moi ici.", en: ["Wait for me here."]}
+  - id: fr.a2.u01
+    title: What I did
+    cefr: A2
+    skills:
+      - id: fr.a2.u01.s01
+        kind: grammar
+        title: Yesterday
+        cefr: A2
+        can_do: I can say what I did yesterday and last week.
+        requires: [fr.a1.u08.s04]
+        grammar_note: >-
+          The passé composé tells what happened: the present of avoir plus a past
+          participle. Regular -er verbs end in -é (j'ai parlé), -ir verbs in -i (j'ai
+          choisi) and -re verbs in -u (j'ai perdu, j'ai répondu). It covers both I spoke
+          and I have spoken. In the negative, ne and pas go around avoir: elle n'a pas
+          répondu. Hier soir means last night or yesterday evening, and passer is to
+          spend time: j'ai passé une bonne soirée.
+        lemmas:
+          - {lemma: hier, pos: adv, en: [yesterday], rank: 276}
+          - {lemma: passer, pos: verb, en: [to spend, to pass, to drop in], rank: 88}
+          - {lemma: téléphoner, pos: verb, en: [to phone, to call], rank: 448}
+          - {lemma: rencontrer, pos: verb, en: [to meet], rank: 388}
+          - {lemma: perdre, pos: verb, en: [to lose], rank: 288}
+          - {lemma: choisir, pos: verb, en: [to choose], rank: 774}
+          - {lemma: répondre, pos: verb, en: [to answer, to reply], rank: 507}
+          - {lemma: soirée, pos: noun, gender: f, en: [evening, party], rank: 1599}
+        examples:
+          - {id: 1, target: "Hier, j'ai rencontré Marie.", en: ["Yesterday I met Marie.", "I met Marie yesterday."]}
+          - {id: 2, target: "Nous avons travaillé hier.", en: ["We worked yesterday."]}
+          - {id: 3, target: "J'ai étudié hier soir.", en: ["I studied last night.", "I studied yesterday evening."]}
+          - {id: 4, target: "Je lui ai téléphoné hier.", en: ["I phoned him yesterday.", "I called her yesterday."]}
+          - {id: 5, target: "Tu as passé une bonne soirée ?", en: ["Did you have a nice evening?", "Did you have a good evening?"]}
+          - {id: 6, target: "J'ai perdu mon téléphone.", en: ["I lost my phone.", "I have lost my phone."]}
+          - {id: 7, target: "Tu as choisi ?", en: ["Have you chosen?", "Have you decided?"]}
+          - {id: 8, target: "Elle n'a pas répondu.", en: ["She didn't answer.", "She did not reply."]}
+      - id: fr.a2.u01.s02
+        kind: grammar
+        title: Seen, said and done
+        cefr: A2
+        can_do: I can say what I saw, said, wrote and did.
+        requires: [fr.a2.u01.s01]
+        grammar_note: >-
+          Many common verbs have an irregular past participle: faire becomes fait, prendre
+          pris, mettre mis, dire dit, écrire écrit, ouvrir ouvert, voir vu, lire lu, boire
+          bu, recevoir reçu, avoir eu and être été. They still take avoir: j'ai vu, nous
+          avons pris. When the pronoun comes after the verb in a question, it goes after
+          avoir: as-tu vu ce film ? Prendre une photo is to take a picture, and mettre
+          also means to put on clothes.
+        lemmas:
+          - {lemma: voir, pos: verb, en: [to see], rank: 83}
+          - {lemma: dire, pos: verb, en: [to say, to tell], rank: 59}
+          - {lemma: mettre, pos: verb, en: [to put, to put on], rank: 217}
+          - {lemma: écrire, pos: verb, en: [to write], rank: 289}
+          - {lemma: ouvrir, pos: verb, en: [to open], rank: 409}
+          - {lemma: recevoir, pos: verb, en: [to receive, to get], rank: 646}
+          - {lemma: lettre, pos: noun, gender: f, en: [letter], rank: 441}
+          - {lemma: photo, pos: noun, gender: f, en: [photo, picture], rank: 515}
+        examples:
+          - {id: 1, target: "Vous avez vu ça ?", en: ["Did you see that?"]}
+          - {id: 2, target: "As-tu vu ce film ?", en: ["Have you seen this film?", "Have you seen that movie?"]}
+          - {id: 3, target: "Qu'est-ce que tu as dit ?", en: ["What did you say?"]}
+          - {id: 4, target: "Où as-tu mis mes clés ?", en: ["Where did you put my keys?"]}
+          - {id: 5, target: "J'ai écrit une lettre.", en: ["I wrote a letter.", "I have written a letter."]}
+          - {id: 6, target: "Il a ouvert la fenêtre.", en: ["He opened the window."]}
+          - {id: 7, target: "J'ai reçu ta lettre hier.", en: ["I received your letter yesterday.", "I got your letter yesterday."]}
+          - {id: 8, target: "Nous avons pris beaucoup de photos.", en: ["We took a lot of photos.", "We took lots of pictures."]}
+      - id: fr.a2.u01.s03
+        kind: grammar
+        title: Went, came and stayed
+        cefr: A2
+        can_do: I can say where I went, when I arrived and where I was born.
+        requires: [fr.a2.u01.s02]
+        grammar_note: >-
+          A small group of verbs, mostly about coming and going, form the passé composé
+          with être instead of avoir: aller, venir, arriver, partir, rester, rentrer,
+          sortir, entrer, monter, descendre, tomber, naître and mourir, and every
+          reflexive verb. With être the participle agrees with the subject like an
+          adjective: il est allé, elle est allée, ils sont allés, elles sont allées. Je
+          suis né means I was born. Y (there) goes before the verb: j'y suis allé.
+        lemmas:
+          - {lemma: allé, pos: verb, en: [gone, went], rank: 318}
+          - {lemma: venu, pos: verb, en: [come, came], rank: 403}
+          - {lemma: arrivé, pos: verb, en: [arrived], rank: 341}
+          - {lemma: parti, pos: verb, en: [left, gone], rank: 343}
+          - {lemma: resté, pos: verb, en: [stayed], rank: 921}
+          - {lemma: rentré, pos: verb, en: [come home, returned], rank: 1318}
+          - {lemma: né, pos: verb, en: [born], rank: 788}
+        examples:
+          - {id: 1, target: "Où es-tu allé ?", en: ["Where did you go?"]}
+          - {id: 2, target: "Elles y sont allées.", en: ["They went there."]}
+          - {id: 3, target: "Pourquoi êtes-vous venus ?", en: ["Why did you come?"]}
+          - {id: 4, target: "Nous sommes arrivés.", en: ["We have arrived.", "We arrived."]}
+          - {id: 5, target: "Elle est partie.", en: ["She left.", "She has left."]}
+          - {id: 6, target: "Je suis restée à la maison.", en: ["I stayed at home.", "I stayed home."]}
+          - {id: 7, target: "Il est rentré tard hier.", en: ["He came home late yesterday.", "He got back late yesterday."]}
+          - {id: 8, target: "Où es-tu née ?", en: ["Where were you born?"]}
+      - id: fr.a2.u01.s04
+        kind: function
+        title: First, then, already
+        cefr: A2
+        can_do: I can tell what happened in order and say what I have already done.
+        requires: [fr.a2.u01.s03]
+        grammar_note: >-
+          Déjà (already) and pas encore (not yet) go between avoir or être and the
+          participle: j'ai déjà dîné, elle n'est pas encore arrivée. Encore on its own
+          means still or again. To tell a story in order, use tout d'abord or d'abord
+          (first), puis or ensuite (then) and enfin (finally, at last). Avant de plus an
+          infinitive means before doing something: mangeons avant de partir. Raconter is
+          to tell a story or what happened.
+        lemmas:
+          - {lemma: déjà, pos: adv, en: [already, ever], rank: 261}
+          - {lemma: encore, pos: adv, en: [still, yet, again], rank: 209}
+          - {lemma: tout d'abord, pos: expr, en: [first of all, first], rank: null}
+          - {lemma: puis, pos: adv, en: [then], rank: 410}
+          - {lemma: ensuite, pos: adv, en: [then, next], rank: 2467}
+          - {lemma: enfin, pos: adv, en: [finally, at last], rank: 1235}
+          - {lemma: avant, pos: prep, en: [before], rank: 305}
+          - {lemma: raconter, pos: verb, en: [to tell, to recount], rank: 1027}
+        examples:
+          - {id: 1, target: "J'ai déjà dîné.", en: ["I have already had dinner.", "I already ate dinner."]}
+          - {id: 2, target: "Je n'ai pas encore mangé.", en: ["I haven't eaten yet.", "I have not eaten yet."]}
+          - {id: 3, target: "Elle n'est pas encore arrivée.", en: ["She hasn't arrived yet.", "She still hasn't arrived."]}
+          - {id: 4, target: "Tout d'abord, écrivez votre nom.", en: ["First of all, write your name."]}
+          - {id: 5, target: "Qu'as-tu fait, ensuite ?", en: ["What did you do then?", "What did you do next?"]}
+          - {id: 6, target: "Il est enfin arrivé.", en: ["He finally arrived.", "At last he arrived."]}
+          - {id: 7, target: "Mangeons avant de partir.", en: ["Let's eat before we go.", "Let's eat before leaving."]}
+          - {id: 8, target: "Je veux tout te raconter.", en: ["I want to tell you everything."]}
+  - id: fr.a2.u02
+    title: Health
+    cefr: A2
+    skills:
+      - id: fr.a2.u02.s01
+        kind: vocab
+        title: The body
+        cefr: A2
+        can_do: I can name parts of the body and say where it hurts.
+        requires: [fr.a2.u01.s04]
+        grammar_note: >-
+          To say where it hurts, use avoir mal à with the article, not my: j'ai mal à la tête
+          (I have a headache), j'ai mal au dos, à l'oreille, aux dents. You can also make the
+          body part the subject of faire mal: mon bras me fait mal (my arm hurts). Ask where
+          it hurts with où as-tu mal ? or où avez-vous mal ? When it is clear whose body it
+          is, French uses le, la or les rather than mon or ma: lève la main. Un bras is an arm
+          and des bras the plural.
+        lemmas:
+          - {lemma: corps, pos: noun, gender: m, en: [body], rank: 1220}
+          - {lemma: tête, pos: noun, gender: f, en: [head], rank: 558}
+          - {lemma: bras, pos: noun, gender: m, en: [arm], rank: 1048}
+          - {lemma: main, pos: noun, gender: f, en: [hand], rank: 372}
+          - {lemma: jambe, pos: noun, gender: f, en: [leg], rank: 1275}
+          - {lemma: dos, pos: noun, gender: m, en: [back], rank: 1285}
+          - {lemma: ventre, pos: noun, gender: m, en: [stomach, belly], rank: 3615}
+          - {lemma: gorge, pos: noun, gender: f, en: [throat], rank: 3439}
+          - {lemma: dent, pos: noun, gender: f, en: [tooth], rank: 1058}
+          - {lemma: oreille, pos: noun, gender: f, en: [ear], rank: 1407}
+          - {lemma: mal, pos: noun, gender: m, en: [pain, ache, harm], rank: 293}
+        examples:
+          - {id: 1, target: "J'ai mal à la tête.", en: ["I have a headache.", "My head hurts."]}
+          - {id: 2, target: "Où as-tu mal ?", en: ["Where does it hurt?", "Where do you have pain?"]}
+          - {id: 3, target: "J'ai mal au dos.", en: ["My back hurts.", "I have a pain in my back."]}
+          - {id: 4, target: "J'ai mal à la gorge.", en: ["I have a sore throat.", "My throat hurts."]}
+          - {id: 5, target: "As-tu mal aux dents ?", en: ["Do you have a toothache?", "Do your teeth hurt?"]}
+          - {id: 6, target: "Avez-vous mal au ventre ?", en: ["Do you have a stomach ache?", "Does your stomach hurt?"]}
+          - {id: 7, target: "Mon bras gauche me fait mal.", en: ["My left arm hurts."]}
+          - {id: 8, target: "Lave-toi les mains.", en: ["Wash your hands."]}
+      - id: fr.a2.u02.s02
+        kind: grammar
+        title: Feeling ill
+        cefr: A2
+        can_do: I can say how I feel and what is wrong with me.
+        requires: [fr.a2.u02.s01]
+        grammar_note: >-
+          Many verbs about health are pronominal: a pronoun that matches the subject comes
+          before the verb. Je me sens mal is I feel unwell, il se sent mieux he feels better.
+          In the passé composé they take être, and the participle agrees as with être (elle
+          s'est blessée), except when a body part follows: je me suis cassé la jambe, elle
+          s'est cassé le bras. Malade (ill) and fatigué (tired) agree like adjectives: elle
+          est fatiguée. Avoir de la fièvre is to have a temperature, and avoir un rhume to
+          have a cold.
+        lemmas:
+          - {lemma: sentir, pos: verb, en: [to feel, to smell], rank: 246}
+          - {lemma: malade, pos: adj, en: [ill, sick], rank: 571}
+          - {lemma: fatigué, pos: adj, en: [tired], rank: 505}
+          - {lemma: fièvre, pos: noun, gender: f, en: [fever, temperature], rank: 3046}
+          - {lemma: rhume, pos: noun, gender: m, en: [cold], rank: 1836}
+          - {lemma: casser, pos: verb, en: [to break], rank: 843}
+          - {lemma: blesser, pos: verb, en: [to hurt, to injure], rank: 853}
+          - {lemma: mieux, pos: adv, en: [better], rank: 304}
+        examples:
+          - {id: 1, target: "Je me sens malade.", en: ["I feel ill.", "I feel sick."]}
+          - {id: 2, target: "Il se sent fatigué.", en: ["He feels tired.", "He is feeling tired."]}
+          - {id: 3, target: "Je me sens beaucoup mieux.", en: ["I feel much better.", "I'm feeling a lot better."]}
+          - {id: 4, target: "Vous sentez-vous mieux ?", en: ["Do you feel better?", "Are you feeling better?"]}
+          - {id: 5, target: "J'ai de la fièvre.", en: ["I have a fever.", "I have a temperature."]}
+          - {id: 6, target: "J'ai un rhume.", en: ["I have a cold.", "I've got a cold."]}
+          - {id: 7, target: "Je me suis cassé la jambe.", en: ["I broke my leg.", "I have broken my leg."]}
+          - {id: 8, target: "Je me suis blessé.", en: ["I hurt myself.", "I got hurt."]}
+      - id: fr.a2.u02.s03
+        kind: grammar
+        title: Since when
+        cefr: A2
+        can_do: I can say how long something has lasted and when it started.
+        requires: [fr.a2.u02.s02]
+        grammar_note: >-
+          Depuis with the present says how long something has been going on and is still true:
+          il est malade depuis une semaine (he has been ill for a week), je suis ici depuis
+          samedi. English uses have been, French the present. Ask depuis quand ? (since when?)
+          or depuis combien de temps ? (for how long?). Pendant is for a period that is over:
+          il a été malade pendant une semaine. Il y a with an amount of time means ago: je
+          l'ai acheté il y a un mois. Temps is time, and also the weather.
+        lemmas:
+          - {lemma: depuis, pos: prep, en: [since, for], rank: 340}
+          - {lemma: pendant, pos: prep, en: [during, for], rank: 434}
+          - {lemma: longtemps, pos: adv, en: [a long time, long], rank: 474}
+          - {lemma: temps, pos: noun, gender: m, en: [time, weather], rank: 118}
+          - {lemma: mois, pos: noun, gender: m, en: [month], rank: 618}
+          - {lemma: il y a, pos: expr, en: [ago, there is], rank: null}
+        examples:
+          - {id: 1, target: "Depuis combien de temps êtes-vous malade ?", en: ["How long have you been ill?", "How long have you been sick?"]}
+          - {id: 2, target: "Il est malade depuis une semaine.", en: ["He has been ill for a week.", "He's been sick for a week."]}
+          - {id: 3, target: "J'ai mal à la tête depuis hier.", en: ["I have had a headache since yesterday.", "My head has been hurting since yesterday."]}
+          - {id: 4, target: "J'habite ici depuis longtemps.", en: ["I have lived here for a long time."]}
+          - {id: 5, target: "Je suis ici depuis samedi.", en: ["I have been here since Saturday."]}
+          - {id: 6, target: "Il a été malade pendant une semaine.", en: ["He was ill for a week.", "He was sick for a week."]}
+          - {id: 7, target: "Je l'ai acheté il y a un mois.", en: ["I bought it a month ago."]}
+          - {id: 8, target: "Ça fait longtemps.", en: ["It's been a long time.", "Long time no see."]}
+      - id: fr.a2.u02.s04
+        kind: function
+        title: At the doctor's
+        cefr: A2
+        can_do: I can understand a doctor's questions and advice and say what I should do.
+        requires: [fr.a2.u02.s03]
+        grammar_note: >-
+          A doctor gives advice with the imperative, the vous form without its pronoun: prenez
+          ce médicament, buvez beaucoup d'eau, restez au lit. With a reflexive verb the
+          pronoun follows with a hyphen and te becomes toi: reposez-vous, repose-toi; in the
+          negative it goes back in front: ne vous inquiétez pas. Tu devrais and vous devriez
+          (you should) make advice softer: vous devriez arrêter de fumer. Arrêter de with an
+          infinitive is to stop doing something. Ce n'est pas grave means it is nothing
+          serious, or never mind.
+        lemmas:
+          - {lemma: médecin, pos: noun, gender: m, en: [doctor], rank: 625}
+          - {lemma: médicament, pos: noun, gender: m, en: [medicine, drug], rank: 1204}
+          - {lemma: reposer, pos: verb, en: [to rest, to put back], rank: 1263}
+          - {lemma: arrêter, pos: verb, en: [to stop], rank: 240}
+          - {lemma: fumer, pos: verb, en: [to smoke], rank: 617}
+          - {lemma: grave, pos: adj, en: [serious], rank: 1991}
+          - {lemma: inquiéter, pos: verb, en: [to worry], rank: 832}
+          - {lemma: conseil, pos: noun, gender: m, en: [advice, piece of advice], rank: 851}
+        examples:
+          - {id: 1, target: "Tu devrais voir un médecin.", en: ["You should see a doctor."]}
+          - {id: 2, target: "Prenez vos médicaments.", en: ["Take your medicine.", "Take your medication."]}
+          - {id: 3, target: "Vous devez vous reposer.", en: ["You have to rest.", "You need to get some rest."]}
+          - {id: 4, target: "Reposez-vous bien.", en: ["Get some good rest.", "Rest well."]}
+          - {id: 5, target: "Vous devriez arrêter de fumer.", en: ["You should stop smoking.", "You should quit smoking."]}
+          - {id: 6, target: "Est-ce grave ?", en: ["Is it serious?"]}
+          - {id: 7, target: "Ne vous inquiétez pas.", en: ["Don't worry."]}
+          - {id: 8, target: "Merci pour vos conseils.", en: ["Thank you for your advice.", "Thanks for your advice."]}
+  - id: fr.a2.u03
+    title: Work
+    cefr: A2
+    skills:
+      - id: fr.a2.u03.s01
+        kind: vocab
+        title: Jobs
+        cefr: A2
+        can_do: I can say what job I do and ask others about theirs.
+        requires: [fr.a2.u02.s04]
+        grammar_note: >-
+          A job takes no article after être: je suis professeur, elle est avocate. Use un or
+          une after c'est, or when there is an adjective: c'est un avocat, je suis un bon
+          cuisinier. Most job nouns have a feminine form: avocat, avocate; étudiant,
+          étudiante; infirmier, infirmière; cuisinier, cuisinière; serveur, serveuse.
+          Journaliste does not change, and professeur is also written professeure for a woman.
+          Devenir (to become) goes like venir and takes être in the passé composé: il est
+          devenu policier. Un métier is a trade or profession.
+        lemmas:
+          - {lemma: métier, pos: noun, gender: m, en: [job, trade, profession], rank: 4959}
+          - {lemma: professeur, pos: noun, gender: m, en: [teacher, professor], rank: 658}
+          - {lemma: avocat, pos: noun, gender: m, en: [lawyer], rank: 1156}
+          - {lemma: infirmier, pos: noun, gender: m, en: [nurse], rank: 2472}
+          - {lemma: policier, pos: noun, gender: m, en: [police officer], rank: 1362}
+          - {lemma: cuisinier, pos: noun, gender: m, en: [cook, chef], rank: 2605}
+          - {lemma: serveur, pos: noun, gender: m, en: [waiter], rank: 3461}
+          - {lemma: journaliste, pos: noun, gender: m, en: [journalist], rank: 3324}
+          - {lemma: étudiant, pos: noun, gender: m, en: [student], rank: 564}
+          - {lemma: devenir, pos: verb, en: [to become], rank: 349}
+        examples:
+          - {id: 1, target: "C'est mon métier.", en: ["It's my job.", "This is my job."]}
+          - {id: 2, target: "Je suis professeur.", en: ["I am a teacher."]}
+          - {id: 3, target: "Êtes-vous avocat ?", en: ["Are you a lawyer?"]}
+          - {id: 4, target: "Ma sœur est infirmière.", en: ["My sister is a nurse."]}
+          - {id: 5, target: "Il est devenu policier.", en: ["He became a police officer.", "He became a policeman."]}
+          - {id: 6, target: "Je suis un bon cuisinier.", en: ["I am a good cook."]}
+          - {id: 7, target: "Elle est journaliste.", en: ["She is a journalist."]}
+          - {id: 8, target: "Je suis étudiante.", en: ["I am a student."]}
+      - id: fr.a2.u03.s02
+        kind: vocab
+        title: At work
+        cefr: A2
+        can_do: I can talk about where I work, who I work with and what I earn.
+        requires: [fr.a2.u03.s01]
+        grammar_note: >-
+          Au bureau means at the office, en réunion in a meeting and en équipe as a team. You
+          work dans or pour une entreprise. Gagner means to earn as well as to win: il gagne
+          bien (he earns well). Un collègue and une collègue are a male and a female
+          colleague, and the boss is le patron or la patronne. Un projet is a project at work
+          and also a plan: j'ai des projets. A client is a customer in a shop as well as a
+          client.
+        lemmas:
+          - {lemma: bureau, pos: noun, gender: m, en: [office, desk], rank: 545}
+          - {lemma: entreprise, pos: noun, gender: f, en: [company, business], rank: 999}
+          - {lemma: collègue, pos: noun, gender: m, en: [colleague], rank: 3005}
+          - {lemma: patron, pos: noun, gender: m, en: [boss], rank: 1238}
+          - {lemma: réunion, pos: noun, gender: f, en: [meeting], rank: 803}
+          - {lemma: projet, pos: noun, gender: m, en: [project, plan], rank: 955}
+          - {lemma: équipe, pos: noun, gender: f, en: [team], rank: 930}
+          - {lemma: client, pos: noun, gender: m, en: [customer, client], rank: 1944}
+          - {lemma: salaire, pos: noun, gender: m, en: [salary, wage], rank: 1697}
+          - {lemma: gagner, pos: verb, en: [to earn, to win], rank: 455}
+        examples:
+          - {id: 1, target: "Elle est au bureau.", en: ["She is at the office."]}
+          - {id: 2, target: "Pour quelle entreprise travaillez-vous ?", en: ["What company do you work for?", "Which company do you work for?"]}
+          - {id: 3, target: "Marie est ma collègue.", en: ["Marie is my colleague."]}
+          - {id: 4, target: "C'est mon patron.", en: ["He is my boss.", "This is my boss."]}
+          - {id: 5, target: "Je suis en réunion.", en: ["I am in a meeting."]}
+          - {id: 6, target: "Comment va le projet ?", en: ["How is the project going?"]}
+          - {id: 7, target: "J'attends un client aujourd'hui.", en: ["I am expecting a customer today.", "I am expecting a client today."]}
+          - {id: 8, target: "Il gagne deux fois mon salaire.", en: ["He earns twice my salary.", "He earns twice as much as I do."]}
+      - id: fr.a2.u03.s03
+        kind: grammar
+        title: Skills and experience
+        cefr: A2
+        can_do: I can say what I know how to do, what I have learnt and what experience I have.
+        requires: [fr.a2.u03.s02]
+        grammar_note: >-
+          French has two verbs for to know. Savoir is to know a fact or how to do something,
+          with an infinitive: je sais nager (I can swim), savez-vous conduire ? Connaître is
+          to know a person, a place or a language well: je ne connais personne ici. Apprendre
+          (to learn) goes like prendre: j'apprends, nous apprenons, j'ai appris; apprendre
+          quelque chose à quelqu'un is to teach it. Expérience takes du, de la or de l' like
+          other amounts: avez-vous de l'expérience ? Capable de is able to.
+        lemmas:
+          - {lemma: connaître, pos: verb, en: [to know, to be familiar with], rank: 214}
+          - {lemma: apprendre, pos: verb, en: [to learn, to teach], rank: 263}
+          - {lemma: expérience, pos: noun, gender: f, en: [experience], rank: 1157}
+          - {lemma: langue, pos: noun, gender: f, en: [language, tongue], rank: 387}
+          - {lemma: conduire, pos: verb, en: [to drive], rank: 479}
+          - {lemma: ordinateur, pos: noun, gender: m, en: [computer], rank: 709}
+          - {lemma: capable, pos: adj, en: [able, capable], rank: 1195}
+        examples:
+          - {id: 1, target: "Avez-vous de l'expérience ?", en: ["Do you have any experience?"]}
+          - {id: 2, target: "Il a beaucoup d'expérience.", en: ["He has a lot of experience."]}
+          - {id: 3, target: "Je ne sais pas conduire.", en: ["I can't drive.", "I don't know how to drive."]}
+          - {id: 4, target: "Savez-vous conduire ?", en: ["Can you drive?", "Do you know how to drive?"]}
+          - {id: 5, target: "Où as-tu appris le français ?", en: ["Where did you learn French?"]}
+          - {id: 6, target: "J'ai appris le français à l'école.", en: ["I learned French at school.", "I learnt French at school."]}
+          - {id: 7, target: "Quelles langues connaissez-vous ?", en: ["What languages do you know?", "Which languages do you know?"]}
+          - {id: 8, target: "Je ne connais personne ici.", en: ["I don't know anyone here.", "I don't know anybody here."]}
+      - id: fr.a2.u03.s04
+        kind: function
+        title: The job interview
+        cefr: A2
+        can_do: I can answer simple questions in a job interview and ask about the job.
+        requires: [fr.a2.u03.s03]
+        grammar_note: >-
+          In an interview both people say vous. Pourquoi ? (why?) is answered with parce que
+          (because), which becomes parce qu' before a vowel. Intéresser works like English
+          interest: ce poste m'intéresse (this job interests me). Sérieux, said of a person,
+          means reliable and hard-working. Je suis disponible means I am available, and
+          quelles sont vos qualités ? asks about your strengths. To thank someone politely,
+          say je vous remercie.
+        lemmas:
+          - {lemma: poste, pos: noun, gender: m, en: [job, position], rank: 1074}
+          - {lemma: parce que, pos: expr, en: [because], rank: null}
+          - {lemma: intéresser, pos: verb, en: [to interest], rank: 544}
+          - {lemma: question, pos: noun, gender: f, en: [question], rank: 314}
+          - {lemma: disponible, pos: adj, en: [available], rank: 2542}
+          - {lemma: sérieux, pos: adj, en: [serious, reliable], rank: 1086}
+          - {lemma: qualité, pos: noun, gender: f, en: [quality, strength], rank: 2617}
+          - {lemma: remercier, pos: verb, en: [to thank], rank: 1154}
+        examples:
+          - {id: 1, target: "Pourquoi voulez-vous ce poste ?", en: ["Why do you want this job?", "Why do you want this position?"]}
+          - {id: 2, target: "Ce poste m'intéresse beaucoup.", en: ["I am very interested in this job.", "This job interests me a lot."]}
+          - {id: 3, target: "Parce que j'aime travailler en équipe.", en: ["Because I like working in a team.", "Because I like teamwork."]}
+          - {id: 4, target: "Quelles sont vos qualités ?", en: ["What are your strengths?", "What are your good qualities?"]}
+          - {id: 5, target: "Je suis sérieux et je travaille bien.", en: ["I am reliable and I work well.", "I am serious and I do good work."]}
+          - {id: 6, target: "Je suis disponible maintenant.", en: ["I am available now."]}
+          - {id: 7, target: "Avez-vous des questions ?", en: ["Do you have any questions?"]}
+          - {id: 8, target: "Je vous remercie.", en: ["Thank you.", "I thank you."]}
+  - id: fr.a2.u04
+    title: Plans
+    cefr: A2
+    skills:
+      - id: fr.a2.u04.s01
+        kind: vocab
+        title: Parties and presents
+        cefr: A2
+        can_do: I can talk about a party or celebration I am going to have.
+        requires: [fr.a2.u03.s04]
+        grammar_note: >-
+          To talk about plans, use aller with an infinitive (the futur proche): nous allons
+          faire une fête samedi, les enfants vont ouvrir leurs cadeaux. In the negative, ne
+          and pas go around aller: je ne vais pas venir. Faire la fête is to party, and fêter
+          is to celebrate something: fêter un anniversaire. Bon anniversaire ! means happy
+          birthday. Inviter is to invite and also to treat someone: je t'invite (it's on me).
+        lemmas:
+          - {lemma: fête, pos: noun, gender: f, en: [party, celebration, holiday], rank: 550}
+          - {lemma: anniversaire, pos: noun, gender: m, en: [birthday, anniversary], rank: 1005}
+          - {lemma: cadeau, pos: noun, gender: m, en: [present, gift], rank: 698}
+          - {lemma: inviter, pos: verb, en: [to invite], rank: 1033}
+          - {lemma: fêter, pos: verb, en: [to celebrate], rank: 525}
+          - {lemma: préparer, pos: verb, en: [to prepare, to get ready], rank: 817}
+          - {lemma: mariage, pos: noun, gender: m, en: [wedding, marriage], rank: 1090}
+        examples:
+          - {id: 1, target: "Nous allons faire une fête samedi soir.", en: ["We are going to have a party on Saturday evening.", "We're going to have a party on Saturday night."]}
+          - {id: 2, target: "Est-ce que vous allez l'inviter à la fête ?", en: ["Are you going to invite her to the party?", "Are you going to invite him to the party?"]}
+          - {id: 3, target: "C'est quand ton anniversaire ?", en: ["When is your birthday?"]}
+          - {id: 4, target: "C'est bientôt mon anniversaire.", en: ["My birthday is coming soon.", "It's my birthday soon."]}
+          - {id: 5, target: "Merci pour le cadeau.", en: ["Thank you for the present.", "Thanks for the gift."]}
+          - {id: 6, target: "Nous préparons une fête.", en: ["We are preparing a party.", "We're planning a party."]}
+          - {id: 7, target: "Nous devrions fêter ça.", en: ["We should celebrate that.", "We should celebrate."]}
+          - {id: 8, target: "Les enfants vont ouvrir leurs cadeaux.", en: ["The children are going to open their presents."]}
+      - id: fr.a2.u04.s02
+        kind: grammar
+        title: The future
+        cefr: A2
+        can_do: I can say what will happen and what I hope to do one day.
+        requires: [fr.a2.u04.s01]
+        grammar_note: >-
+          The futur simple says what will happen. For most verbs, add -ai, -as, -a, -ons, -ez,
+          -ont to the infinitive: je parlerai, tu finiras; verbs in -re drop the final e: il
+          prendra. Common verbs have an irregular stem with the same endings: être gives je
+          serai, avoir j'aurai, aller j'irai, faire je ferai, venir je viendrai, pouvoir je
+          pourrai and voir je verrai. After espérer que and je suis sûr que, French uses the
+          future where English often has the present: j'espère que tu gagneras. Tout le monde
+          (everyone) takes a singular verb.
+        lemmas:
+          - {lemma: avenir, pos: noun, gender: m, en: [future], rank: 1360}
+          - {lemma: espérer, pos: verb, en: [to hope], rank: 337}
+          - {lemma: vie, pos: noun, gender: f, en: [life], rank: 252}
+          - {lemma: changer, pos: verb, en: [to change], rank: 385}
+          - {lemma: monde, pos: noun, gender: m, en: [world, people], rank: 196}
+          - {lemma: sûr, pos: adj, en: [sure, safe], rank: 297}
+        examples:
+          - {id: 1, target: "J'espère qu'il viendra.", en: ["I hope he will come.", "I hope he comes."]}
+          - {id: 2, target: "J'espère que tu gagneras !", en: ["I hope you win!", "I hope you will win!"]}
+          - {id: 3, target: "Je suis sûr que tu aimeras ça.", en: ["I'm sure you will like it.", "I am sure you'll like that."]}
+          - {id: 4, target: "Tout le monde sera heureux.", en: ["Everyone will be happy.", "Everybody will be happy."]}
+          - {id: 5, target: "Ça ne changera jamais.", en: ["That will never change.", "It'll never change."]}
+          - {id: 6, target: "Nous espérons vous revoir à l'avenir.", en: ["We hope to see you again in the future."]}
+          - {id: 7, target: "Bien sûr que j'irai.", en: ["Of course I will go.", "Of course I'll go."]}
+          - {id: 8, target: "Ça va changer ma vie.", en: ["This is going to change my life.", "It will change my life."]}
+      - id: fr.a2.u04.s03
+        kind: grammar
+        title: Me, him, her, them
+        cefr: A2
+        can_do: I can use small words for me, him, her and them instead of repeating a name.
+        requires: [fr.a2.u04.s02]
+        grammar_note: >-
+          Object pronouns replace a noun and go before the verb. Direct: me, te, le, la (l'
+          before a vowel), nous, vous, les: je le connais. Indirect, for à and a person: me,
+          te, lui, nous, vous, leur: je lui ai demandé (I asked him or her). Donner, montrer,
+          envoyer, demander, prêter and offrir take à before the person, so they use lui and
+          leur. In the passé composé the pronoun goes before avoir. In a positive command it
+          follows with a hyphen and me becomes moi: montrez-moi. With two pronouns, me, te,
+          nous and vous come first: je te le donnerai.
+        lemmas:
+          - {lemma: donner, pos: verb, en: [to give], rank: 193}
+          - {lemma: montrer, pos: verb, en: [to show], rank: 368}
+          - {lemma: envoyer, pos: verb, en: [to send], rank: 596}
+          - {lemma: demander, pos: verb, en: [to ask, to ask for], rank: 180}
+          - {lemma: rappeler, pos: verb, en: [to call back, to remind], rank: 601}
+          - {lemma: prêter, pos: verb, en: [to lend], rank: 595}
+          - {lemma: offrir, pos: verb, en: [to give, to offer], rank: 867}
+        examples:
+          - {id: 1, target: "Je lui ai demandé.", en: ["I asked him.", "I asked her."]}
+          - {id: 2, target: "Je te le donnerai.", en: ["I will give it to you.", "I'll give it to you."]}
+          - {id: 3, target: "Veuillez me montrer votre passeport.", en: ["Please show me your passport."]}
+          - {id: 4, target: "Je leur ai envoyé une lettre.", en: ["I sent them a letter."]}
+          - {id: 5, target: "Pouvez-vous me l'envoyer ?", en: ["Can you send it to me?", "Could you send it to me?"]}
+          - {id: 6, target: "Je te prêterai ce livre.", en: ["I will lend you this book.", "I'll lend you that book."]}
+          - {id: 7, target: "Il m'a offert un cadeau.", en: ["He gave me a present.", "He gave me a gift."]}
+          - {id: 8, target: "Je te rappelle.", en: ["I'll call you back.", "I will call you back."]}
+      - id: fr.a2.u04.s04
+        kind: function
+        title: Making arrangements
+        cefr: A2
+        can_do: I can invite someone, accept or refuse, and agree when and where to meet.
+        requires: [fr.a2.u04.s03]
+        grammar_note: >-
+          To invite someone, ask tu veux ... ? or vous voulez ... ?, or suggest with the nous
+          form: allons manger ensemble. Accept with oui, avec plaisir ! or d'accord (OK); être
+          d'accord is to agree. Say no politely with désolé (sorry), which agrees like an
+          adjective: désolée, je suis occupée. C'est dommage means that's a pity. Se retrouver
+          is to meet up: on se retrouve devant la gare ? À plus tard means see you later.
+        lemmas:
+          - {lemma: accord, pos: noun, gender: m, en: [agreement], rank: 602}
+          - {lemma: désolé, pos: adj, en: [sorry], rank: 382}
+          - {lemma: occupé, pos: adj, en: [busy], rank: 429}
+          - {lemma: avec plaisir, pos: expr, en: [with pleasure, I'd love to], rank: null}
+          - {lemma: retrouver, pos: verb, en: [to meet up with, to find again], rank: 1664}
+          - {lemma: dommage, pos: noun, gender: m, en: [pity, shame], rank: 2302}
+          - {lemma: à plus tard, pos: expr, en: [see you later], rank: null}
+          - {lemma: ensemble, pos: adv, en: [together], rank: 578}
+        examples:
+          - {id: 1, target: "Allons manger ensemble.", en: ["Let's go and eat together.", "Let's eat together."]}
+          - {id: 2, target: "Oui, avec plaisir !", en: ["Yes, I'd love to!", "Yes, with pleasure!"]}
+          - {id: 3, target: "Ce serait avec plaisir, mais je ne peux pas.", en: ["I'd love to, but I can't."]}
+          - {id: 4, target: "Désolée, je suis occupée samedi.", en: ["Sorry, I'm busy on Saturday.", "Sorry, I am busy on Saturday."]}
+          - {id: 5, target: "Retrouvons-nous demain.", en: ["Let's meet tomorrow.", "Let's get together tomorrow."]}
+          - {id: 6, target: "On se retrouve devant la gare ?", en: ["Shall we meet in front of the station?", "Shall we meet outside the station?"]}
+          - {id: 7, target: "C'est dommage.", en: ["That's a pity.", "It's a shame."]}
+          - {id: 8, target: "D'accord, à plus tard !", en: ["OK, see you later!", "All right, see you later!"]}
+  - id: fr.a2.u05
+    title: Weather and seasons
+    cefr: A2
+    skills:
+      - id: fr.a2.u05.s01
+        kind: vocab
+        title: The weather
+        cefr: A2
+        can_do: I can say what the weather is like and understand a simple forecast.
+        requires: [fr.a2.u04.s04]
+        grammar_note: >-
+          Most weather phrases start with il, which here means it: il pleut (it is raining),
+          il neige, il fait beau, il fait mauvais, il fait froid. Il y a du soleil, du vent or
+          des nuages says that it is sunny, windy or cloudy. Pleuvoir and neiger have only an
+          il form: il a plu, il va pleuvoir, il neigera. Quel temps fait-il ? asks what the
+          weather is like; le temps is the weather here.
+        lemmas:
+          - {lemma: soleil, pos: noun, gender: m, en: [sun], rank: 701}
+          - {lemma: pluie, pos: noun, gender: f, en: [rain], rank: 920}
+          - {lemma: neige, pos: noun, gender: f, en: [snow], rank: 796}
+          - {lemma: vent, pos: noun, gender: m, en: [wind], rank: 1138}
+          - {lemma: nuage, pos: noun, gender: m, en: [cloud], rank: 1936}
+          - {lemma: pleuvoir, pos: verb, en: [to rain], rank: 541}
+          - {lemma: neiger, pos: verb, en: [to snow], rank: 645}
+          - {lemma: ciel, pos: noun, gender: m, en: [sky], rank: 968}
+          - {lemma: mauvais, pos: adj, en: [bad], rank: 329}
+          - {lemma: parapluie, pos: noun, gender: m, en: [umbrella], rank: 1113}
+        examples:
+          - {id: 1, target: "Il fait mauvais temps.", en: ["The weather is bad."]}
+          - {id: 2, target: "Il y a du soleil.", en: ["It is sunny."]}
+          - {id: 3, target: "Il pleut aujourd'hui.", en: ["It is raining today."]}
+          - {id: 4, target: "Il va pleuvoir.", en: ["It is going to rain."]}
+          - {id: 5, target: "Il neige maintenant.", en: ["It is snowing now."]}
+          - {id: 6, target: "Il y a du vent aujourd'hui.", en: ["It is windy today."]}
+          - {id: 7, target: "Le ciel est bleu.", en: ["The sky is blue."]}
+          - {id: 8, target: "Prends un parapluie.", en: ["Take an umbrella."]}
+      - id: fr.a2.u05.s02
+        kind: vocab
+        title: Seasons
+        cefr: A2
+        can_do: I can talk about the seasons and the temperature.
+        requires: [fr.a2.u05.s01]
+        grammar_note: >-
+          The seasons are masculine: le printemps, l'été, l'automne, l'hiver. In a season is
+          en été, en automne and en hiver, but au printemps. Faire is used for temperature
+          too: il fait frais (it is cool), il fait doux (it is mild), il fait vingt degrés.
+          French temperatures are in degrees Celsius. Préféré (favourite) follows its noun and
+          agrees: ma saison préférée.
+        lemmas:
+          - {lemma: saison, pos: noun, gender: f, en: [season], rank: 2363}
+          - {lemma: printemps, pos: noun, gender: m, en: [spring], rank: 1704}
+          - {lemma: été, pos: noun, gender: m, en: [summer], rank: 101}
+          - {lemma: automne, pos: noun, gender: m, en: [autumn, fall], rank: 2462}
+          - {lemma: hiver, pos: noun, gender: m, en: [winter], rank: 1211}
+          - {lemma: température, pos: noun, gender: f, en: [temperature], rank: 2262}
+          - {lemma: degré, pos: noun, gender: m, en: [degree], rank: 3690}
+          - {lemma: doux, pos: adj, en: [mild, soft, sweet], rank: 1785}
+          - {lemma: frais, pos: adj, en: [cool, fresh], rank: 1418}
+        examples:
+          - {id: 1, target: "Quelle saison préférez-vous ?", en: ["Which season do you like best?", "What season do you prefer?"]}
+          - {id: 2, target: "Le printemps est ma saison préférée.", en: ["Spring is my favourite season.", "Spring is my favorite season."]}
+          - {id: 3, target: "Il fait très chaud ici en été.", en: ["It is very hot here in summer.", "It's very hot here in the summer."]}
+          - {id: 4, target: "Nous avons beaucoup de neige en hiver.", en: ["We have a lot of snow in winter.", "We get a lot of snow in the winter."]}
+          - {id: 5, target: "Il y a du vent en automne.", en: ["It is windy in autumn.", "It's windy in the fall."]}
+          - {id: 6, target: "Ils iront en France au printemps.", en: ["They will go to France in the spring."]}
+          - {id: 7, target: "Il fait frais aujourd'hui.", en: ["It is cool today."]}
+          - {id: 8, target: "Il fait vingt degrés.", en: ["It is twenty degrees."]}
+      - id: fr.a2.u05.s03
+        kind: vocab
+        title: Months and dates
+        cefr: A2
+        can_do: I can say the date and in which month something happens.
+        requires: [fr.a2.u05.s02]
+        grammar_note: >-
+          The months are masculine and take no capital letter. In a month is en or au mois de:
+          en juillet, au mois d'août. A date uses le and an ordinary number, except for the
+          first of the month: le trois octobre, le 14 juillet, but le premier septembre. Ask
+          the date with quelle est la date ? or nous sommes le combien ?, and answer nous
+          sommes le cinq mars or c'est le cinq mars.
+        lemmas:
+          - {lemma: janvier, pos: noun, gender: m, en: [January], rank: 4333}
+          - {lemma: février, pos: noun, gender: m, en: [February], rank: 4328}
+          - {lemma: mars, pos: noun, gender: m, en: [March], rank: 2949}
+          - {lemma: avril, pos: noun, gender: m, en: [April], rank: 4776}
+          - {lemma: mai, pos: noun, gender: m, en: [May], rank: 234}
+          - {lemma: juin, pos: noun, gender: m, en: [June], rank: 4420}
+          - {lemma: juillet, pos: noun, gender: m, en: [July], rank: 5651}
+          - {lemma: août, pos: noun, gender: m, en: [August], rank: 5725}
+          - {lemma: septembre, pos: noun, gender: m, en: [September], rank: 4665}
+          - {lemma: octobre, pos: noun, gender: m, en: [October], rank: 2551}
+          - {lemma: novembre, pos: noun, gender: m, en: [November], rank: 7348}
+          - {lemma: décembre, pos: noun, gender: m, en: [December], rank: 7060}
+        examples:
+          - {id: 1, target: "Nous sommes le trois octobre.", en: ["It's the third of October.", "It is October the third."]}
+          - {id: 2, target: "Aujourd'hui, c'est le premier septembre.", en: ["Today is the first of September.", "Today is September first."]}
+          - {id: 3, target: "Mon anniversaire est en juillet.", en: ["My birthday is in July."]}
+          - {id: 4, target: "Elle est née en février.", en: ["She was born in February."]}
+          - {id: 5, target: "Il pleut beaucoup en juin.", en: ["It rains a lot in June."]}
+          - {id: 6, target: "Décembre a 31 jours.", en: ["December has 31 days.", "There are 31 days in December."]}
+          - {id: 7, target: "Je vais partir en vacances au mois d'août.", en: ["I am going on holiday in August.", "I'm going on vacation in August."]}
+          - {id: 8, target: "Mai vient après avril.", en: ["May comes after April."]}
+      - id: fr.a2.u05.s04
+        kind: grammar
+        title: When I was a child
+        cefr: A2
+        can_do: I can describe what things were like and what I used to do.
+        requires: [fr.a2.u05.s03]
+        grammar_note: >-
+          The imparfait describes how things were and what used to happen. Take the nous form
+          of the present, drop -ons and add -ais, -ais, -ait, -ions, -iez, -aient: nous
+          parlons gives je parlais, nous faisons gives je faisais. Être is the one exception:
+          j'étais. It is used for the background, the weather and habits in the past: il
+          pleuvait, quand j'étais petite, j'habitais à la campagne. Autrefois (in the past),
+          d'habitude (usually) and chaque jour often go with it.
+        lemmas:
+          - {lemma: vivre, pos: verb, en: [to live], rank: 211}
+          - {lemma: chaque, pos: det, en: [each, every], rank: 459}
+          - {lemma: habitude, pos: noun, gender: f, en: [habit], rank: 865}
+          - {lemma: enfance, pos: noun, gender: f, en: [childhood], rank: 2304}
+          - {lemma: campagne, pos: noun, gender: f, en: [countryside, country], rank: 2056}
+          - {lemma: village, pos: noun, gender: m, en: [village], rank: 1357}
+          - {lemma: autrefois, pos: adv, en: [in the past, once], rank: 3003}
+        examples:
+          - {id: 1, target: "Quand j'étais étudiant, je vivais à Paris.", en: ["When I was a student, I lived in Paris."]}
+          - {id: 2, target: "Il pleuvait chaque jour.", en: ["It was raining every day.", "It rained every day."]}
+          - {id: 3, target: "Il habitait ici autrefois.", en: ["He used to live here."]}
+          - {id: 4, target: "Autrefois, nous jouions dans le parc.", en: ["We used to play in the park."]}
+          - {id: 5, target: "D'habitude il se levait tôt.", en: ["He usually got up early.", "He used to get up early."]}
+          - {id: 6, target: "Ça me rappelle mon enfance.", en: ["It reminds me of my childhood.", "That reminds me of my childhood."]}
+          - {id: 7, target: "Le village avait une petite école.", en: ["The village had a small school."]}
+          - {id: 8, target: "Quand j'étais petite, j'habitais à la campagne.", en: ["When I was little, I lived in the countryside.", "When I was a child, I lived in the country."]}
+  - id: fr.a2.u06
+    title: Free time
+    cefr: A2
+    skills:
+      - id: fr.a2.u06.s01
+        kind: vocab
+        title: Hobbies
+        cefr: A2
+        can_do: I can say what I do in my free time and which instrument or sport I play.
+        requires: [fr.a2.u05.s04]
+        grammar_note: >-
+          Jouer à is to play a sport or a game: jouer au tennis. Jouer de is to play an
+          instrument: je joue du piano, elle joue de la guitare. Faire de is used for many
+          activities: faire du sport, faire du vélo, faire de la natation. After aimer, adorer
+          and préférer, an activity is an infinitive: j'aime cuisiner, aimez-vous danser ?
+          Courir (to run) is irregular: je cours, nous courons, j'ai couru.
+        lemmas:
+          - {lemma: nager, pos: verb, en: [to swim], rank: 568}
+          - {lemma: danser, pos: verb, en: [to dance], rank: 869}
+          - {lemma: cuisiner, pos: verb, en: [to cook], rank: 641}
+          - {lemma: courir, pos: verb, en: [to run], rank: 307}
+          - {lemma: jeu, pos: noun, gender: m, en: [game], rank: 800}
+          - {lemma: chanson, pos: noun, gender: f, en: [song], rank: 777}
+          - {lemma: guitare, pos: noun, gender: f, en: [guitar], rank: 1703}
+          - {lemma: piano, pos: noun, gender: m, en: [piano], rank: 1483}
+          - {lemma: tennis, pos: noun, gender: m, en: [tennis], rank: 1116}
+          - {lemma: concert, pos: noun, gender: m, en: [concert], rank: 1370}
+        examples:
+          - {id: 1, target: "Il nage bien.", en: ["He swims well.", "He is a good swimmer."]}
+          - {id: 2, target: "Aimez-vous danser ?", en: ["Do you like dancing?", "Do you like to dance?"]}
+          - {id: 3, target: "J'aime cuisiner.", en: ["I like cooking.", "I like to cook."]}
+          - {id: 4, target: "Je vais courir.", en: ["I'm going for a run.", "I am going to run."]}
+          - {id: 5, target: "Je joue du piano.", en: ["I play the piano."]}
+          - {id: 6, target: "Elle joue de la guitare.", en: ["She plays the guitar."]}
+          - {id: 7, target: "J'aime jouer au tennis.", en: ["I like playing tennis.", "I like to play tennis."]}
+          - {id: 8, target: "Je vais au concert.", en: ["I am going to the concert."]}
+      - id: fr.a2.u06.s02
+        kind: grammar
+        title: There and some of it
+        cefr: A2
+        can_do: I can use y for places and en for amounts instead of repeating a word.
+        requires: [fr.a2.u06.s01]
+        grammar_note: >-
+          Y replaces à or en and a place, and means there: tu vas à la piscine ? oui, j'y
+          vais. En replaces de and a noun, and often means some, of it or of them; an amount
+          stays at the end: des pommes ? j'en voudrais un kilo. Both go before the verb, or
+          before avoir in the passé composé: j'y suis allé, j'en ai mangé. J'en ai assez means
+          I've had enough. Quelques (a few), plusieurs (several), assez de (enough) and peu de
+          (little, few) give an amount.
+        lemmas:
+          - {lemma: quelques, pos: adj, en: [a few, some], rank: 384}
+          - {lemma: plusieurs, pos: adj, en: [several], rank: 835}
+          - {lemma: assez, pos: adv, en: [enough, quite], rank: 328}
+          - {lemma: peu, pos: adv, en: [little, not much], rank: 141}
+          - {lemma: piscine, pos: noun, gender: f, en: [swimming pool, pool], rank: 2399}
+          - {lemma: montagne, pos: noun, gender: f, en: [mountain, mountains], rank: 1080}
+          - {lemma: kilo, pos: noun, gender: m, en: [kilo], rank: 3484}
+        examples:
+          - {id: 1, target: "J'y suis allé plusieurs fois.", en: ["I have been there several times.", "I went there several times."]}
+          - {id: 2, target: "Je vais y rester quelques jours.", en: ["I am going to stay there for a few days."]}
+          - {id: 3, target: "J'en ai assez !", en: ["I've had enough!", "I'm fed up!"]}
+          - {id: 4, target: "En avez-vous assez ?", en: ["Do you have enough?"]}
+          - {id: 5, target: "Il en reste encore un peu.", en: ["There is still a little left."]}
+          - {id: 6, target: "La montagne ? J'y vais chaque hiver.", en: ["The mountains? I go there every winter."]}
+          - {id: 7, target: "Des pommes ? J'en voudrais un kilo.", en: ["Apples? I would like a kilo.", "Apples? I'd like a kilo of them."]}
+          - {id: 8, target: "Tu vas à la piscine ? Oui, j'y vais.", en: ["Are you going to the pool? Yes, I am.", "Are you going to the swimming pool? Yes, I'm going there."]}
+      - id: fr.a2.u06.s03
+        kind: grammar
+        title: Going out
+        cefr: A2
+        can_do: I can say how I enjoy myself and suggest going out.
+        requires: [fr.a2.u06.s02]
+        grammar_note: >-
+          Many verbs about free time are pronominal: s'amuser (to have fun), s'ennuyer (to be
+          bored), se promener (to go for a walk) and se dépêcher (to hurry). In the imperative
+          the pronoun follows and te becomes toi: amuse-toi bien !, dépêche-toi ! Sortir (to
+          go out) goes like partir: je sors, nous sortons, and takes être in the passé
+          composé: elle est sortie. On sort ce soir ? is a casual way to suggest going out.
+          Marcher is to walk, and also to work, of a machine or a plan.
+        lemmas:
+          - {lemma: amuser, pos: verb, en: [to amuse, to have fun], rank: 713}
+          - {lemma: ennuyer, pos: verb, en: [to bore, to be bored], rank: 1201}
+          - {lemma: promener, pos: verb, en: [to walk, to go for a walk], rank: 1680}
+          - {lemma: promenade, pos: noun, gender: f, en: [walk, stroll], rank: 2165}
+          - {lemma: sortir, pos: verb, en: [to go out, to come out], rank: 107}
+          - {lemma: dépêcher, pos: verb, en: [to hurry], rank: 1304}
+          - {lemma: marcher, pos: verb, en: [to walk, to work], rank: 348}
+        examples:
+          - {id: 1, target: "Amusez-vous bien !", en: ["Have fun!", "Enjoy yourselves!"]}
+          - {id: 2, target: "Je m'ennuie.", en: ["I am bored.", "I'm getting bored."]}
+          - {id: 3, target: "On sort ce soir ?", en: ["Shall we go out tonight?", "Are we going out tonight?"]}
+          - {id: 4, target: "Allons nous promener.", en: ["Let's go for a walk."]}
+          - {id: 5, target: "J'aime faire des promenades.", en: ["I like going for walks.", "I like taking walks."]}
+          - {id: 6, target: "Je vais sortir.", en: ["I am going out."]}
+          - {id: 7, target: "Allez, dépêche-toi.", en: ["Come on, hurry up."]}
+          - {id: 8, target: "Je préfère marcher.", en: ["I prefer to walk.", "I prefer walking."]}
+      - id: fr.a2.u06.s04
+        kind: function
+        title: What I think of it
+        cefr: A2
+        can_do: I can say what I think of an activity and ask someone's opinion.
+        requires: [fr.a2.u06.s03]
+        grammar_note: >-
+          To ask someone's opinion, say qu'est-ce que tu en penses ? or tu trouves ça drôle ?
+          Give yours with je pense que or je crois que (I think that), je trouve ça génial (I
+          think it's great), or just je pense que oui (I think so) and je ne crois pas (I
+          don't think so). C'était (it was) looks back on something: c'était très amusant.
+          Ennuyeux (boring) becomes ennuyeuse with a feminine noun. Pendant mon temps libre
+          means in my free time.
+        lemmas:
+          - {lemma: temps libre, pos: noun, gender: m, en: [free time, spare time], rank: null}
+          - {lemma: penser, pos: verb, en: [to think], rank: 79}
+          - {lemma: croire, pos: verb, en: [to believe, to think], rank: 215}
+          - {lemma: intéressant, pos: adj, en: [interesting], rank: 779}
+          - {lemma: ennuyeux, pos: adj, en: [boring], rank: 1960}
+          - {lemma: génial, pos: adj, en: [great, brilliant], rank: 2039}
+          - {lemma: drôle, pos: adj, en: [funny], rank: 1372}
+          - {lemma: amusant, pos: adj, en: [fun, amusing], rank: 1388}
+        examples:
+          - {id: 1, target: "Que faites-vous pendant votre temps libre ?", en: ["What do you do in your free time?", "How do you spend your free time?"]}
+          - {id: 2, target: "J'ai très peu de temps libre.", en: ["I have very little free time."]}
+          - {id: 3, target: "Qu'est-ce que tu en penses ?", en: ["What do you think about it?", "What do you think of it?"]}
+          - {id: 4, target: "Je pense que oui.", en: ["I think so."]}
+          - {id: 5, target: "Je ne crois pas.", en: ["I don't think so."]}
+          - {id: 6, target: "Je trouve ça génial.", en: ["I think it's great.", "I think this is great."]}
+          - {id: 7, target: "Ce film est ennuyeux.", en: ["This film is boring.", "This movie is boring."]}
+          - {id: 8, target: "C'était très amusant.", en: ["It was a lot of fun.", "It was great fun."]}
+  - id: fr.a2.u07
+    title: Comparing and describing
+    cefr: A2
+    skills:
+      - id: fr.a2.u07.s01
+        kind: vocab
+        title: Character
+        cefr: A2
+        can_do: I can describe what people are like.
+        requires: [fr.a2.u06.s04]
+        grammar_note: >-
+          Adjectives of character agree like other adjectives: il est content, elle est
+          contente; méchant, méchante; patient, patiente. Paresseux becomes paresseuse.
+          Adjectives that already end in -e do not change for a feminine noun: timide, calme,
+          triste, honnête. Sympa (nice, friendly), short for sympathique, is very common in
+          speech and only adds -s in the plural. Être sympa avec or poli avec quelqu'un is to
+          be nice or polite to someone.
+        lemmas:
+          - {lemma: sympa, pos: adj, en: [nice, friendly], rank: 2276}
+          - {lemma: timide, pos: adj, en: [shy], rank: 2216}
+          - {lemma: calme, pos: adj, en: [calm, quiet], rank: 1289}
+          - {lemma: triste, pos: adj, en: [sad], rank: 1171}
+          - {lemma: content, pos: adj, en: [happy, pleased], rank: 615}
+          - {lemma: méchant, pos: adj, en: [nasty, mean], rank: 2435}
+          - {lemma: paresseux, pos: adj, en: [lazy], rank: 2476}
+          - {lemma: patient, pos: adj, en: [patient], rank: 1300}
+          - {lemma: honnête, pos: adj, en: [honest], rank: 1354}
+          - {lemma: poli, pos: adj, en: [polite], rank: 2345}
+        examples:
+          - {id: 1, target: "Elle est sympa avec moi.", en: ["She is nice to me."]}
+          - {id: 2, target: "Elle est un peu timide.", en: ["She is a little shy.", "She's a bit shy."]}
+          - {id: 3, target: "Sois poli avec tes parents.", en: ["Be polite to your parents."]}
+          - {id: 4, target: "Parfois je me sens triste.", en: ["Sometimes I feel sad.", "I sometimes feel sad."]}
+          - {id: 5, target: "Tout le monde est content.", en: ["Everybody is happy.", "Everyone is pleased."]}
+          - {id: 6, target: "Il est très méchant avec moi.", en: ["He is very mean to me.", "He is very nasty to me."]}
+          - {id: 7, target: "Ne sois pas si paresseux !", en: ["Don't be so lazy!"]}
+          - {id: 8, target: "Je suis une personne honnête.", en: ["I am an honest person."]}
+      - id: fr.a2.u07.s02
+        kind: grammar
+        title: More than, as ... as
+        cefr: A2
+        can_do: I can compare two people or things.
+        requires: [fr.a2.u07.s01]
+        grammar_note: >-
+          To compare, put plus (more), moins (less) or aussi (as) before an adjective and que
+          after it: il est plus grand que moi, aussi grand que toi. Que becomes qu' before a
+          vowel, and is followed by moi, toi, lui, elle, nous, vous, eux or elles. Bon has its
+          own form, meilleur (better): le livre était meilleur que le film; bien becomes
+          mieux, and mauvais is often pire (worse). With a verb, use plus, moins or autant (as
+          much): mangez autant que vous voulez. Le même ... que is the same ... as, and comme
+          is like.
+        lemmas:
+          - {lemma: plus, pos: adv, en: [more], rank: 62}
+          - {lemma: meilleur, pos: adj, en: [better, best], rank: 369}
+          - {lemma: pire, pos: adj, en: [worse, worst], rank: 1250}
+          - {lemma: autant, pos: adv, en: [as much, as many], rank: 733}
+          - {lemma: comme, pos: conj, en: [like, as], rank: 150}
+          - {lemma: même, pos: adj, en: [same], rank: 195}
+          - {lemma: différent, pos: adj, en: [different], rank: 801}
+        examples:
+          - {id: 1, target: "Il est plus grand que moi.", en: ["He is taller than me.", "He's taller than I am."]}
+          - {id: 2, target: "Elle est plus jeune que moi.", en: ["She is younger than me.", "She's younger than I am."]}
+          - {id: 3, target: "Paul est aussi grand que Marie, mais plus jeune.", en: ["Paul is as tall as Marie, but younger."]}
+          - {id: 4, target: "Le livre était meilleur que le film.", en: ["The book was better than the film.", "The book was better than the movie."]}
+          - {id: 5, target: "C'est encore pire !", en: ["It's even worse!", "This is even worse!"]}
+          - {id: 6, target: "Mangez autant que vous voulez.", en: ["Eat as much as you like.", "Eat as much as you want."]}
+          - {id: 7, target: "Nous avons le même âge.", en: ["We are the same age."]}
+          - {id: 8, target: "Faites comme chez vous.", en: ["Make yourself at home.", "Make yourselves at home."]}
+      - id: fr.a2.u07.s03
+        kind: grammar
+        title: The best and the most
+        cefr: A2
+        can_do: I can say which is the best, the fastest or the most important.
+        requires: [fr.a2.u07.s02]
+        grammar_note: >-
+          The superlative is le, la or les with plus or moins: le plus rapide, la moins chère.
+          An adjective that comes after its noun stays there and the article is repeated: le
+          train le plus rapide. One that comes before its noun stays before it: la plus longue
+          rue. In or of after a superlative is de: le plus célèbre de Paris, le plus rapide du
+          monde. Le meilleur is the best and le pire the worst. Facile and difficile take à
+          before an infinitive: la langue la plus facile à apprendre.
+        lemmas:
+          - {lemma: rapide, pos: adj, en: [fast, quick], rank: 1355}
+          - {lemma: lent, pos: adj, en: [slow], rank: 2407}
+          - {lemma: long, pos: adj, en: [long], rank: 538}
+          - {lemma: court, pos: adj, en: [short], rank: 933}
+          - {lemma: facile, pos: adj, en: [easy], rank: 589}
+          - {lemma: difficile, pos: adj, en: [difficult, hard], rank: 367}
+          - {lemma: important, pos: adj, en: [important], rank: 540}
+          - {lemma: célèbre, pos: adj, en: [famous], rank: 1474}
+        examples:
+          - {id: 1, target: "C'est le train le plus rapide du monde.", en: ["It's the fastest train in the world.", "That is the fastest train in the world."]}
+          - {id: 2, target: "C'est la plus longue rue de la ville.", en: ["This is the longest street in town.", "This is the longest street in the city."]}
+          - {id: 3, target: "Février est le mois le plus court.", en: ["February is the shortest month."]}
+          - {id: 4, target: "Quelle est la langue la plus facile à apprendre ?", en: ["What is the easiest language to learn?", "Which language is the easiest to learn?"]}
+          - {id: 5, target: "Le premier pas est le plus difficile.", en: ["The first step is the hardest.", "The first step is the most difficult."]}
+          - {id: 6, target: "C'est la chose la plus importante.", en: ["That's the most important thing.", "It is the most important thing."]}
+          - {id: 7, target: "C'est le musée le plus célèbre de Paris.", en: ["It's the most famous museum in Paris."]}
+          - {id: 8, target: "Le bus est plus lent que le train.", en: ["The bus is slower than the train."]}
+      - id: fr.a2.u07.s04
+        kind: function
+        title: Saying more about it
+        cefr: A2
+        can_do: I can describe people, places and things in more detail with who and which.
+        requires: [fr.a2.u07.s03]
+        grammar_note: >-
+          Qui and que join two sentences about the same person or thing. Qui (who, which,
+          that) is the subject of the verb that follows it: je connais quelqu'un qui peut
+          t'aider. Que (who, whom, which, that) is the object, so a new subject follows it:
+          l'endroit que j'aime, le roman qu'il a écrit. Que becomes qu' before a vowel, but
+          qui never changes. English often leaves that out; French never drops qui or que. Les
+          gens (people) is always plural.
+        lemmas:
+          - {lemma: chose, pos: noun, gender: f, en: [thing], rank: 106}
+          - {lemma: "quelqu'un", pos: pron, en: [someone, somebody, anyone], rank: 310}
+          - {lemma: gens, pos: noun, gender: m, article: les, en: [people], rank: 321}
+          - {lemma: endroit, pos: noun, gender: m, en: [place, spot], rank: 683}
+          - {lemma: histoire, pos: noun, gender: f, en: [story, history], rank: 450}
+          - {lemma: roman, pos: noun, gender: m, en: [novel], rank: 1108}
+          - {lemma: acteur, pos: noun, gender: m, en: [actor], rank: 2111}
+        examples:
+          - {id: 1, target: "Je connais quelqu'un qui peut t'aider.", en: ["I know someone who can help you.", "I know somebody who can help you."]}
+          - {id: 2, target: "Les gens qui vivent ici sont nos amis.", en: ["The people who live here are our friends."]}
+          - {id: 3, target: "Il y a un endroit que j'aimerais te montrer.", en: ["There's a place I'd like to show you.", "There is a place that I would like to show you."]}
+          - {id: 4, target: "Tu trouveras quelque chose qui t'intéresse.", en: ["You will find something that interests you.", "You'll find something that interests you."]}
+          - {id: 5, target: "C'est le roman qu'il a écrit.", en: ["This is the novel he wrote.", "That's the novel that he wrote."]}
+          - {id: 6, target: "Tu me rappelles quelqu'un que je connaissais.", en: ["You remind me of someone I used to know.", "You remind me of somebody I used to know."]}
+          - {id: 7, target: "C'est une histoire que tout le monde connaît.", en: ["It's a story that everyone knows.", "It is a story everybody knows."]}
+          - {id: 8, target: "C'est un acteur que j'aime beaucoup.", en: ["He is an actor I like a lot.", "He's an actor that I really like."]}
+  - id: fr.a2.u08
+    title: Experiences
+    cefr: A2
+    skills:
+      - id: fr.a2.u08.s01
+        kind: grammar
+        title: Have you ever ...?
+        cefr: A2
+        can_do: I can ask and say what I have done, or never done, in my life.
+        requires: [fr.a2.u07.s04]
+        grammar_note: >-
+          To ask about experiences, use the passé composé with déjà (ever, already): êtes-vous
+          déjà allé à l'étranger ? (have you ever been abroad?). Answer with ne ... jamais
+          (never) around avoir or être: je ne suis jamais monté à cheval. Monter à cheval is
+          to ride a horse and prendre le bateau to take the boat. Monter takes être when it
+          means to go up or get on: je suis monté. Goûter is to taste or try a food. Combien
+          de fois ? means how many times?
+        lemmas:
+          - {lemma: "à l'étranger", pos: expr, en: [abroad], rank: null}
+          - {lemma: goûter, pos: verb, en: [to taste, to try], rank: 3015}
+          - {lemma: monter, pos: verb, en: [to go up, to get on, to ride], rank: 143}
+          - {lemma: cheval, pos: noun, gender: m, en: [horse], rank: 926}
+          - {lemma: bateau, pos: noun, gender: m, en: [boat, ship], rank: 1039}
+          - {lemma: île, pos: noun, gender: f, en: [island], rank: 1750}
+          - {lemma: rêver, pos: verb, en: [to dream], rank: 583}
+        examples:
+          - {id: 1, target: "Êtes-vous déjà allé à l'étranger ?", en: ["Have you ever been abroad?"]}
+          - {id: 2, target: "Je n'ai jamais été à l'étranger.", en: ["I have never been abroad.", "I've never been abroad."]}
+          - {id: 3, target: "Je ne suis jamais monté à cheval.", en: ["I have never ridden a horse.", "I've never ridden a horse."]}
+          - {id: 4, target: "Je suis monté à cheval pour la première fois hier.", en: ["I rode a horse for the first time yesterday."]}
+          - {id: 5, target: "Combien de fois as-tu voyagé à l'étranger ?", en: ["How many times have you travelled abroad?", "How many times have you traveled abroad?"]}
+          - {id: 6, target: "As-tu déjà goûté ce fromage ?", en: ["Have you ever tasted this cheese?", "Have you tried this cheese yet?"]}
+          - {id: 7, target: "Nous avons pris le bateau pour aller sur l'île.", en: ["We took the boat to go to the island.", "We took the boat to the island."]}
+          - {id: 8, target: "J'ai toujours rêvé de voir la mer.", en: ["I have always dreamed of seeing the sea.", "I've always dreamt of seeing the sea."]}
+      - id: fr.a2.u08.s02
+        kind: grammar
+        title: What happened
+        cefr: A2
+        can_do: I can tell a short story about something that happened, with the background and the events.
+        requires: [fr.a2.u08.s01]
+        grammar_note: >-
+          In a story, the imparfait sets the scene and says what was going on, and the passé
+          composé tells the events: pendant que j'attendais le bus, j'ai vu un accident.
+          Pendant que (while) and lorsque or quand (when) link the two. Tout à coup (suddenly)
+          usually brings in an event in the passé composé. Tomber, entrer and descendre take
+          être: il est tombé de cheval, je suis descendu du train (I got off the train).
+        lemmas:
+          - {lemma: tout à coup, pos: expr, en: [suddenly, all of a sudden], rank: null}
+          - {lemma: moment, pos: noun, gender: m, en: [moment, time], rank: 400}
+          - {lemma: accident, pos: noun, gender: m, en: [accident], rank: 637}
+          - {lemma: tomber, pos: verb, en: [to fall], rank: 124}
+          - {lemma: entrer, pos: verb, en: [to come in, to go in, to enter], rank: 312}
+          - {lemma: descendre, pos: verb, en: [to go down, to get off], rank: 145}
+          - {lemma: lorsque, pos: conj, en: [when], rank: 472}
+          - {lemma: pendant que, pos: expr, en: [while], rank: null}
+        examples:
+          - {id: 1, target: "Pendant que j'attendais le bus, j'ai vu un accident.", en: ["While I was waiting for the bus, I saw an accident."]}
+          - {id: 2, target: "Elle a appelé pendant que j'étais sorti.", en: ["She called while I was out."]}
+          - {id: 3, target: "Il était occupé lorsque je l'ai appelé.", en: ["He was busy when I called him.", "He was busy when I phoned him."]}
+          - {id: 4, target: "Je l'ai rencontré lorsque j'étais à Paris.", en: ["I met him when I was in Paris.", "I met him while I was in Paris."]}
+          - {id: 5, target: "Il est tombé de cheval.", en: ["He fell off his horse.", "He fell off the horse."]}
+          - {id: 6, target: "Je suis descendu du train.", en: ["I got off the train."]}
+          - {id: 7, target: "Tout à coup, il a commencé à pleuvoir.", en: ["Suddenly it started to rain.", "All of a sudden it began to rain."]}
+          - {id: 8, target: "Quand je suis entré, tout le monde dormait.", en: ["When I came in, everyone was asleep.", "When I went in, everybody was sleeping."]}
+      - id: fr.a2.u08.s03
+        kind: grammar
+        title: Nothing, nobody, no longer
+        cefr: A2
+        can_do: I can say that I no longer do something, or that there is nothing or nobody.
+        requires: [fr.a2.u08.s02]
+        grammar_note: >-
+          These negatives work like ne ... pas, with ne before the verb: ne ... plus (no
+          longer, not any more), ne ... rien (nothing), ne ... personne (nobody), ne ...
+          jamais (never), ne ... aucun (no, not any) and ne ... nulle part (nowhere). In the
+          passé composé, rien, plus and jamais come before the participle (je n'ai rien dit),
+          but personne and nulle part after it (je n'ai vu personne). Rien and personne can
+          also be the subject: personne ne sait. Aucun agrees with its noun: aucune idée.
+        lemmas:
+          - {lemma: rien, pos: pron, en: [nothing, anything], rank: 151}
+          - {lemma: aucun, pos: det, en: [no, not any, none], rank: 290}
+          - {lemma: nulle part, pos: expr, en: [nowhere, anywhere], rank: null}
+          - {lemma: quelque part, pos: expr, en: [somewhere], rank: null}
+          - {lemma: partout, pos: adv, en: [everywhere], rank: 1386}
+          - {lemma: tout le monde, pos: pron, en: [everyone, everybody], rank: null}
+        examples:
+          - {id: 1, target: "Je n'ai rien dit.", en: ["I didn't say anything.", "I said nothing."]}
+          - {id: 2, target: "Je n'ai plus rien.", en: ["I have nothing left.", "I've got nothing left."]}
+          - {id: 3, target: "Je ne vois plus rien.", en: ["I can't see anything any more.", "I can't see anything anymore."]}
+          - {id: 4, target: "Il n'a aucun ami.", en: ["He doesn't have any friends.", "He has no friends."]}
+          - {id: 5, target: "Je ne vais nulle part.", en: ["I'm not going anywhere.", "I am not going anywhere."]}
+          - {id: 6, target: "Tu veux aller quelque part ?", en: ["Do you want to go somewhere?", "Do you want to go anywhere?"]}
+          - {id: 7, target: "Je te cherche partout.", en: ["I've been looking for you everywhere.", "I'm looking for you everywhere."]}
+          - {id: 8, target: "Tout le monde est parti, il n'y a plus personne.", en: ["Everyone has left; there is nobody here any more.", "Everybody has gone; there's no one left."]}
+      - id: fr.a2.u08.s04
+        kind: function
+        title: How it felt
+        cefr: A2
+        can_do: I can say how I felt about an experience and react to someone else's news.
+        requires: [fr.a2.u08.s03]
+        grammar_note: >-
+          To react, use c'est or c'était with an adjective: c'était incroyable, c'est génial.
+          Adjectives of feeling agree: je suis surprise, il était déçu, elle est fière de toi.
+          Avoir peur is to be afraid and avoir de la chance to be lucky; bonne chance ! means
+          good luck. Un souvenir is a memory, and also a souvenir: ça rappelle des souvenirs
+          (it brings back memories). Vraiment (really) adds weight: c'était vraiment génial.
+        lemmas:
+          - {lemma: chance, pos: noun, gender: f, en: [luck, chance], rank: 586}
+          - {lemma: peur, pos: noun, gender: f, en: [fear], rank: 358}
+          - {lemma: surpris, pos: adj, en: [surprised], rank: 647}
+          - {lemma: incroyable, pos: adj, en: [incredible, amazing], rank: 2518}
+          - {lemma: fier, pos: adj, en: [proud], rank: 670}
+          - {lemma: déçu, pos: adj, en: [disappointed], rank: 1295}
+          - {lemma: vraiment, pos: adv, en: [really, truly], rank: 152}
+          - {lemma: souvenir, pos: noun, gender: m, en: [memory, souvenir], rank: 1364}
+        examples:
+          - {id: 1, target: "Tu as de la chance.", en: ["You're lucky.", "You are lucky."]}
+          - {id: 2, target: "J'avais peur.", en: ["I was afraid.", "I was scared."]}
+          - {id: 3, target: "Êtes-vous surpris ?", en: ["Are you surprised?"]}
+          - {id: 4, target: "C'était incroyable.", en: ["It was amazing.", "That was incredible."]}
+          - {id: 5, target: "C'était vraiment génial.", en: ["That was really great.", "It was really great."]}
+          - {id: 6, target: "Je suis très fier de toi.", en: ["I'm very proud of you.", "I am very proud of you."]}
+          - {id: 7, target: "J'étais un peu déçu.", en: ["I was a little disappointed.", "I was a bit disappointed."]}
+          - {id: 8, target: "Ça rappelle des souvenirs.", en: ["It brings back memories.", "That brings back memories."]}

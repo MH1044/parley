@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "errors": [
+    "bad-SC05: es: skill es.a1.u09.s01 does not exist",
+    "bad-SC05: es: skill es.a1.u01.s07 does not exist",
+    "bad-SC05: fr: skill fr.a1.u03.s01 does not exist"
+  ],
+  "warnings": []
+}

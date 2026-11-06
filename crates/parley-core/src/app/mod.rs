@@ -28,7 +28,7 @@ mod pack;
 mod placement;
 mod stats;
 
-pub use pack::{PackSentence, attributions};
+pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
 
 /// The learner's data file, under the data directory.
 pub const STORE_FILE: &str = "parley.sqlite3";

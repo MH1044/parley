@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: doctor
+cefr: A2
+title_en: "At the doctor's"
+partner_role_en: "the doctor"
+learner_role_en: "a patient"
+turn_cap: 14
+goals:
+  - {id: problem, text_en: "Say what is wrong"}
+  - {id: where_hurts, text_en: "Say where it hurts"}
+  - {id: since_when, text_en: "Say since when you have felt ill"}
+  - {id: answer, text_en: "Answer the doctor's questions about your health"}
+  - {id: advice, text_en: "Repeat what you should do"}
+languages:
+  es: {setting_en: "the doctor's surgery at a health centre in Madrid on a weekday morning", opening: "Buenos días. ¿Qué le pasa?", opening_en: "Good morning. What seems to be the problem?", skills: [es.a2.u01.s03, es.a2.u02.s01, es.a2.u02.s02, es.a2.u02.s03, es.a2.u02.s04]}
+  fr: {setting_en: a doctor's surgery in Lyon on a weekday morning, opening: "Bonjour ! Qu'est-ce qui ne va pas ?", opening_en: "Hello! What seems to be the matter?", skills: [fr.a2.u02.s01, fr.a2.u02.s02, fr.a2.u02.s03, fr.a2.u02.s04]}
+  de: {setting_en: a doctor's surgery in Cologne on a weekday morning, opening: "Guten Morgen, bitte setzen Sie sich. Wie fühlen Sie sich?", opening_en: "Good morning, please sit down. How are you feeling?", skills: [de.a2.u02.s01, de.a2.u02.s02, de.a2.u02.s03, de.a2.u02.s04]}

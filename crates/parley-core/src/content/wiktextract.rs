@@ -8,6 +8,12 @@
 //! one for the headword with tags `canonical`, then one per `forms` entry whose `form` differs
 //! from the headword, with that entry's tags joined by single spaces. Rows are sorted by
 //! (form, lemma, pos) in byte order; a repeated (form, lemma, pos) keeps the first tags.
+//!
+//! Real extracts also list the inflection table's metadata among `forms`: entries tagged
+//! `table-tags` (such as `irregular`), `inflection-template` (such as `es-conj`), `class` (such as
+//! `7 strong`) or `auxiliary` (the `haben` or `sein` of a German conjugation table) are not word
+//! forms and give no row (docs/modules/05-course-content-a1-a2.md, Design notes). Kept, `haben`
+//! would be a form of thousands of German verbs.
 
 use std::collections::HashSet;
 use std::io::{self, BufRead, Write};
@@ -46,6 +52,17 @@ struct FormEntry {
     form: Option<String>,
     #[serde(default)]
     tags: Vec<String>,
+}
+
+/// The tags that mark a `forms` entry as the inflection table's metadata, not a word form.
+const TABLE_METADATA_TAGS: [&str; 4] = ["table-tags", "inflection-template", "class", "auxiliary"];
+
+impl FormEntry {
+    fn is_table_metadata(&self) -> bool {
+        self.tags
+            .iter()
+            .any(|tag| TABLE_METADATA_TAGS.contains(&tag.as_str()))
+    }
 }
 
 #[derive(Deserialize)]
@@ -120,7 +137,7 @@ pub fn read_wiktextract(
         });
         for form in &entry.forms {
             let Some(text) = &form.form else { continue };
-            if text == word {
+            if text == word || form.is_table_metadata() {
                 continue;
             }
             rows.push(FormRow {
@@ -284,6 +301,55 @@ mod tests {
         assert!(text.contains("buenas\tbueno\tadj\t\tfeminine plural\n"));
         let forms = Forms::load_tsv(text.as_bytes()).unwrap();
         assert_eq!(forms.rows(), &extract.rows[..]);
+    }
+
+    #[test]
+    fn table_metadata_among_the_forms_gives_no_row() {
+        let line = r#"{"word":"ir","pos":"verb","lang_code":"es","forms":[{"form":"irregular","tags":["table-tags"]},{"form":"es-conj","tags":["inflection-template"]},{"form":"voy","tags":["first-person","singular","present"]}]}"#;
+        let extract = read_wiktextract(line.as_bytes(), Lang::Es, None).unwrap();
+        let rows: Vec<(&str, &str)> = extract
+            .rows
+            .iter()
+            .map(|r| (r.form.as_str(), r.tags.as_str()))
+            .collect();
+        assert_eq!(
+            rows,
+            [
+                ("ir", "canonical"),
+                ("voy", "first-person singular present")
+            ]
+        );
+    }
+
+    #[test]
+    fn a_class_or_an_auxiliary_among_the_forms_gives_no_row() {
+        let lines = concat!(
+            r#"{"word":"schlafen","pos":"verb","lang_code":"de","forms":[{"form":"7 strong","tags":["class"]},{"form":"haben","tags":["auxiliary"]},{"form":"strong","tags":["table-tags"]},{"form":"schläft","tags":["present","singular","third-person"]}]}"#,
+            "\n",
+            r#"{"word":"fahren","pos":"verb","lang_code":"de","forms":[{"form":"sein","tags":["auxiliary"]},{"form":"haben","tags":["auxiliary"]},{"form":"fährt","tags":["present","singular","third-person"]}]}"#,
+            "\n",
+        );
+        let extract = read_wiktextract(lines.as_bytes(), Lang::De, None).unwrap();
+        let rows: Vec<(&str, &str)> = extract
+            .rows
+            .iter()
+            .map(|r| (r.form.as_str(), r.lemma.as_str()))
+            .collect();
+        assert_eq!(
+            rows,
+            [
+                ("fahren", "fahren"),
+                ("fährt", "fahren"),
+                ("schlafen", "schlafen"),
+                ("schläft", "schlafen")
+            ]
+        );
+        let forms = Forms::from_rows(extract.rows);
+        assert!(
+            forms.lemmas_of("haben").is_empty(),
+            "haben is no form of either verb"
+        );
+        assert!(forms.lemmas_of("sein").is_empty());
     }
 
     #[test]

@@ -4,9 +4,10 @@
 //! 01 (`content validate`, `content lock`, `forms extract`, `pack build`, `pack info`), the
 //! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`), the
 //! grading, lesson and streak commands of module 03 (`grade`, `lesson template`,
-//! `streak simulate`) and, from later modules, the others (docs/ARCHITECTURE.md §2). Every
-//! command prints one JSON object on standard output, exits 0 on success, 1 on a content error
-//! and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
+//! `streak simulate`), the course commands of module 05 (`content scenarios`, `content report`,
+//! `freq check`, `pack install`) and, from later modules, the others (docs/ARCHITECTURE.md §2).
+//! Every command prints one JSON object on standard output, exits 0 on success, 1 on a content
+//! error and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
 
 #![forbid(unsafe_code)]
 
@@ -30,11 +31,22 @@ Parley's command-line tool. Every command prints one JSON object on standard out
   content validate <file-or-dir> [--forms <forms.tsv>] [--json]
       Check a syllabus, or every <dir>/<lang>/syllabus.yaml (es, fr, de). The forms table is
       --forms, else forms.tsv beside the syllabus; numbers.yaml, exclude.txt and ids.lock are
-      read from beside it when present. Without --json: one line per error and warning, then
-      ok. Exit 1 on any error; warnings are allowed.
+      read from beside it when present, and review.yaml beside it adds the rank rule (V22). A
+      directory also checks each language's checklist.yaml and review.yaml when present, then
+      every <dir>/scenarios/*.yaml against the syllabi. Without --json: one line per error and
+      warning, then ok. Exit 1 on any error; warnings are allowed.
   content lock --lang <es|fr|de> [--content <dir>]
       Record every item id of <dir>/<lang>/syllabus.yaml in <dir>/<lang>/ids.lock (default
       dir: content), retiring the ids that left; prints {\"added\":[...],\"retired\":[...]}.
+  content scenarios <file-or-dir> [--content <dir>]
+      Check a role-play scenario, or every *.yaml of a directory, against the syllabi of <dir>
+      (default: content); prints {\"ok\":...,\"errors\":[...],\"warnings\":[]}. Exit 1 on any
+      error.
+  content report --lang <l> [--content <dir>] [--pack <file>] --json
+      Summarise a course that validates: units and lemmas per level, skills, skills per unit,
+      examples, checklist entries no skill covers and units awaiting review; with --pack, the
+      share of examples that are pack sentences and of single-word A1 lemmas the pack ranks
+      within 2,000 (null without). Exit 1 with the validate report on a course with errors.
   forms extract --lang <l> --wiktextract <file.jsonl> (--syllabus <file> | --lemma <lemma>...)
                 [--date <YYYY-MM-DD>] --out <forms.tsv>
       Write a forms table for the syllabus's lemmas (or the given ones) from a wiktextract
@@ -45,6 +57,14 @@ Parley's command-line tool. Every command prints one JSON object on standard out
       count per drop reason. --built-at defaults to today.
   pack info <file.sqlite3>
       Describe a pack: its meta rows, row counts, size and hashes.
+  pack install <file> --data-dir <dir> [--lock <file>]
+      For development, until packs are published: install a pack into the started course of
+      its language in the app data folder <dir>. The file must be the one the lock (default
+      content/packs.lock.toml) pins; prints {\"lang\":...,\"version\":...,\"path\":...}.
+  freq check --lang <l> --pack <file> [--content <dir>]
+      Compare the rank of every single-word lemma of <dir>/<l>/syllabus.yaml (default dir:
+      content) with the pack's frequency table; prints the lemmas checked, those whose rank
+      differs and those the pack does not rank. Exit 1 when any differs or is missing.
   srs replay <log.json> [--retention <r>] [--json]
       Rebuild the FSRS cards of a review log (schema parley.review-log/1) by scheduling its
       entries in order; prints {\"cards\":[...]}. --retention is the desired retention from
@@ -86,6 +106,7 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
     match args.first().map(String::as_str) {
         Some("content") => return cmd::content::run(&args[1..], out, err),
         Some("forms") => return cmd::forms::run(&args[1..], out, err),
+        Some("freq") => return cmd::freq::run(&args[1..], out, err),
         Some("grade") => return cmd::grade::run(&args[1..], out, err),
         Some("lesson") => return cmd::lesson::run(&args[1..], out, err),
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
@@ -186,6 +207,12 @@ mod tests {
             assert!(out.contains("grade --lang <l> --type <t>"));
             assert!(out.contains("lesson template --lang <l> --skill <id>"));
             assert!(out.contains("streak simulate <days.json>"));
+            assert!(out.contains("content scenarios <file-or-dir> [--content <dir>]"));
+            assert!(
+                out.contains("content report --lang <l> [--content <dir>] [--pack <file>] --json")
+            );
+            assert!(out.contains("freq check --lang <l> --pack <file> [--content <dir>]"));
+            assert!(out.contains("pack install <file> --data-dir <dir> [--lock <file>]"));
         }
     }
 
@@ -279,9 +306,13 @@ mod tests {
     #[test]
     fn a_command_group_without_its_subcommand_names_the_choices() {
         for (args, choices) in [
-            (&["content"][..], "content validate or content lock"),
+            (
+                &["content"][..],
+                "content validate, content lock, content scenarios or content report",
+            ),
             (&["forms"][..], "forms extract"),
-            (&["pack"][..], "pack build or pack info"),
+            (&["freq"][..], "freq check"),
+            (&["pack"][..], "pack build, pack info or pack install"),
             (&["srs"][..], "srs replay"),
             (&["placement"][..], "placement simulate"),
             (&["lesson"][..], "lesson template"),

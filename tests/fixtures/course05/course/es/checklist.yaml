@@ -1,0 +1,13 @@
+schema: parley.checklist/1
+lang: es
+entries:
+  - {id: a1.g.ser_present, cefr: A1, kind: grammar, text_en: The present tense of ser,
+     skills: [es.a1.u01.s01]}
+  - {id: a1.g.plural_nouns, cefr: A1, kind: grammar, text_en: Plural nouns, skills: []}
+  - {id: a1.f.greet, cefr: A1, kind: function, text_en: Greet people and say goodbye,
+     skills: [es.a1.u01.s01]}
+  - {id: a1.f.food, cefr: A1, kind: function, text_en: Say what people eat and drink,
+     skills: [es.a1.u02.s01]}
+  - {id: a2.f.directions, cefr: A2, kind: function, text_en: Say where you are going, skills: []}
+  - {id: a2.g.contractions, cefr: A2, kind: grammar, text_en: "The contractions al and del",
+     skills: [es.a2.u01.s01]}

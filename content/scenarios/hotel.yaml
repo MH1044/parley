@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: hotel
+cefr: A1
+title_en: "At the hotel reception"
+partner_role_en: "the receptionist"
+learner_role_en: "a guest"
+turn_cap: 12
+goals:
+  - {id: greet, text_en: "Greet the receptionist"}
+  - {id: booking, text_en: "Say you have a booking and give your name"}
+  - {id: nights, text_en: "Say how many nights you are staying"}
+  - {id: breakfast, text_en: "Ask what time breakfast is"}
+  - {id: room, text_en: "Ask for your room number or key"}
+languages:
+  es: {setting_en: "the reception desk of a small hotel in Valencia in the afternoon", opening: "Buenas tardes. ¿Tiene usted una reserva?", opening_en: "Good afternoon. Do you have a booking?", skills: [es.a1.u03.s03, es.a1.u06.s01, es.a1.u08.s01, es.a1.u08.s02, es.a1.u08.s03, es.a1.u08.s04]}
+  fr: {setting_en: the reception of a small hotel in Lyon in the evening, opening: "Bonsoir ! Vous avez une réservation ?", opening_en: "Good evening! Do you have a reservation?", skills: [fr.a1.u08.s01, fr.a1.u08.s02, fr.a1.u08.s03, fr.a1.u08.s04]}
+  de: {setting_en: the reception of a small hotel in Berlin in the evening, opening: "Guten Abend! Wie ist Ihr Name, bitte?", opening_en: "Good evening! What is your name, please?", skills: [de.a1.u07.s02, de.a1.u08.s01, de.a1.u08.s02, de.a1.u08.s03, de.a1.u08.s04]}

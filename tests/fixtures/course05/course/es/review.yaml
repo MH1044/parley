@@ -1,0 +1,6 @@
+schema: parley.review/1
+lang: es
+units:
+  - {unit: es.a2.u01, status: unreviewed, date: "2026-11-04"}
+  - {unit: es.a1.u01, status: reviewed, date: "2026-11-04"}
+  - {unit: es.a1.u02, status: unreviewed, date: "2026-11-04"}

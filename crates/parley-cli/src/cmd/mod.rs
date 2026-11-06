@@ -1,6 +1,6 @@
 //! The subcommands of `parley` (docs/modules/01-content-model-and-syllabus.md,
-//! docs/modules/02-srs-and-learner-model.md and docs/modules/03-exercise-engine-and-grading.md,
-//! Interfaces).
+//! docs/modules/02-srs-and-learner-model.md, docs/modules/03-exercise-engine-and-grading.md and
+//! docs/modules/05-course-content-a1-a2.md, Interfaces).
 //!
 //! Arguments are parsed by hand. Every command prints one JSON object on standard output and
 //! exits 0 on success, 1 on content errors (the JSON report is still printed) or 2 on usage
@@ -11,10 +11,12 @@
 
 pub mod content;
 pub mod forms;
+pub mod freq;
 pub mod grade;
 pub mod lesson;
 pub mod pack;
 pub mod placement;
+pub mod report;
 pub mod srs;
 pub mod streak;
 

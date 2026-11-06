@@ -13,7 +13,9 @@ Publik listing, made by the maintainer's setup run after module 06, picks up the
 maintainer has done it: pushing the release tag; publishing the packs release; the Apple developer
 account for signing and notarisation (ADR-0010); the Android signing key; the Publik setup run of
 `docs/PUBLIK-INTEGRATION.md` §2, if it has not been done since module 06 (Publik picks up each new
-release within a day); whether units still marked `unreviewed` may ship.
+release within a day). Whether units still marked `unreviewed` may ship was decided on 2026-11-04
+(module 05's Design notes): yes, as a labelled beta, the About page listing them and the release
+notes saying the course awaits native-speaker review.
 
 ## Scope
 
@@ -22,6 +24,13 @@ release within a day); whether units still marked `unreviewed` may ship.
 - `release.yml` on a `v*` tag: `scripts/check-release-notes`, `scripts/verify`, the build matrix,
   a draft release with `docs/releases/<version>.md` as notes, uploads, publish only when every job
   is green; an Android APK only when the signing secrets exist.
+- Smaller sentence packs, before any pack is published: module 05 pinned packs of 247 MB (es),
+  175 MB (fr) and 401 MB (de), most of it the whole Wiktionary forms table and, for German, the
+  lemma keys of personal pronouns that the extract lists as forms of one another. Each pack is
+  brought to at most 60 MB (for example: keep only the forms of lemmas the pack's sentences use,
+  drop the pronoun cross-listing, and compress the download), as a new version of the pack format
+  with module 01's reader, `pack info` and checksums kept consistent; the packs are rebuilt and
+  `content/packs.lock.toml` re-pinned.
 - `packs.yml`: on a `packs-<YYYY-MM-DD>` tag, uploads the three packs of `data-cache/packs/`
   (built by module 05's command in the job) and checks their SHA-256 against `content/packs.lock.toml`,
   whose URLs point at that release.
@@ -83,6 +92,9 @@ YAML files; the release run itself is the evidence for the bundles.
     steps (System Settings > Privacy & Security > "Open Anyway").
 11. `release.yml` attaches an APK only when the signing secrets are set, and otherwise the notes
     contain "Android: build from source for now."
+12. Every pack named in `content/packs.lock.toml` has `bytes` of at most 60,000,000, and the built
+    file in `data-cache/packs/` has exactly that size (measured from the file; skipped with module
+    05's message when the pack is not built).
 
 ## Status
 

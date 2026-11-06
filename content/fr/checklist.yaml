@@ -1,0 +1,192 @@
+schema: parley.checklist/1
+lang: fr
+entries:
+  - {id: a1.g.etre_avoir, cefr: A1, kind: grammar,
+     text_en: "The present tense of être and avoir", skills: [fr.a1.u01.s03, fr.a1.u01.s04]}
+  - {id: a1.g.present_er, cefr: A1, kind: grammar,
+     text_en: "The present tense of regular -er verbs", skills: [fr.a1.u01.s03, fr.a1.u02.s02, fr.a1.u02.s03]}
+  - {id: a1.g.present_irregular, cefr: A1, kind: grammar,
+     text_en: "The present tense of common irregular verbs such as aller, faire, prendre, boire, venir and partir",
+     skills: [fr.a1.u02.s04, fr.a1.u03.s02, fr.a1.u03.s03, fr.a1.u04.s01, fr.a1.u04.s04, fr.a1.u08.s02]}
+  - {id: a1.g.gender_articles, cefr: A1, kind: grammar,
+     text_en: "Masculine and feminine nouns with the definite and indefinite articles, and l' before a vowel",
+     skills: [fr.a1.u02.s01, fr.a1.u03.s01]}
+  - {id: a1.g.plurals, cefr: A1, kind: grammar,
+     text_en: "Plural nouns and adjectives, and the plural articles les and des", skills: [fr.a1.u02.s01, fr.a1.u05.s02]}
+  - {id: a1.g.negation, cefr: A1, kind: grammar,
+     text_en: "Saying not and never with ne ... pas and ne ... jamais, and de after a negative",
+     skills: [fr.a1.u02.s02, fr.a1.u07.s04]}
+  - {id: a1.g.questions, cefr: A1, kind: grammar,
+     text_en: "Questions by intonation, with est-ce que and with the verb first, and question words",
+     skills: [fr.a1.u02.s04, fr.a1.u08.s02]}
+  - {id: a1.g.partitive, cefr: A1, kind: grammar,
+     text_en: "Some and any with du, de la, de l' and des", skills: [fr.a1.u03.s02]}
+  - {id: a1.g.contractions, cefr: A1, kind: grammar,
+     text_en: "À and de joined with le and les: au, aux, du, des", skills: [fr.a1.u04.s01, fr.a1.u04.s02]}
+  - {id: a1.g.adjectives, cefr: A1, kind: grammar,
+     text_en: "Adjective agreement and position, including beau, nouveau and vieux",
+     skills: [fr.a1.u05.s02, fr.a1.u05.s04, fr.a1.u06.s02]}
+  - {id: a1.g.demonstratives, cefr: A1, kind: grammar,
+     text_en: "This and that with ce, cet, cette and ces", skills: [fr.a1.u05.s01]}
+  - {id: a1.g.possessives, cefr: A1, kind: grammar,
+     text_en: "My, your, his, her, our and their: mon, ton, son, notre, votre, leur and their forms",
+     skills: [fr.a1.u06.s01]}
+  - {id: a1.g.place, cefr: A1, kind: grammar,
+     text_en: "Il y a and prepositions of place such as près de, devant and entre", skills: [fr.a1.u04.s02]}
+  - {id: a1.g.reflexive, cefr: A1, kind: grammar,
+     text_en: "Reflexive verbs in the present", skills: [fr.a1.u01.s02, fr.a1.u07.s03]}
+  - {id: a1.g.near_future, cefr: A1, kind: grammar,
+     text_en: "Plans with aller plus an infinitive", skills: [fr.a1.u08.s02]}
+  - {id: a1.g.modals, cefr: A1, kind: grammar,
+     text_en: "Vouloir, pouvoir and devoir with an infinitive, and il faut",
+     skills: [fr.a1.u03.s03, fr.a1.u04.s03, fr.a1.u08.s04]}
+  - {id: a1.g.imperative, cefr: A1, kind: grammar,
+     text_en: "Instructions and suggestions with the imperative: tournez, allons",
+     skills: [fr.a1.u04.s01, fr.a1.u04.s03]}
+  - {id: a1.g.avoir_phrases, cefr: A1, kind: grammar,
+     text_en: "Phrases with avoir for age, hunger, thirst, heat, cold and need",
+     skills: [fr.a1.u01.s04, fr.a1.u03.s04, fr.a1.u08.s04]}
+  - {id: a1.g.numbers, cefr: A1, kind: grammar,
+     text_en: "Numbers, ordinal numbers and prices", skills: [fr.a1.u01.s04, fr.a1.u03.s03, fr.a1.u06.s04]}
+  - {id: a1.g.time, cefr: A1, kind: grammar,
+     text_en: "Telling the time and saying on which day", skills: [fr.a1.u07.s01, fr.a1.u07.s02]}
+  - {id: a1.g.frequency, cefr: A1, kind: grammar,
+     text_en: "Where words for how often go in the sentence", skills: [fr.a1.u07.s04]}
+  - {id: a1.g.transport_countries, cefr: A1, kind: grammar,
+     text_en: "En and à with ways of travelling and with countries", skills: [fr.a1.u04.s04, fr.a1.u08.s01]}
+  - {id: a1.f.greet, cefr: A1, kind: function,
+     text_en: "Greet people, ask how they are and say goodbye", skills: [fr.a1.u01.s01]}
+  - {id: a1.f.introduce, cefr: A1, kind: function,
+     text_en: "Introduce yourself and ask someone's name", skills: [fr.a1.u01.s02]}
+  - {id: a1.f.origin, cefr: A1, kind: function,
+     text_en: "Say where you are from and which languages you speak", skills: [fr.a1.u01.s03, fr.a1.u04.s04]}
+  - {id: a1.f.personal_details, cefr: A1, kind: function,
+     text_en: "Give your age and your phone number", skills: [fr.a1.u01.s04]}
+  - {id: a1.f.identify, cefr: A1, kind: function,
+     text_en: "Name and point out people, animals and everyday things", skills: [fr.a1.u02.s01]}
+  - {id: a1.f.likes, cefr: A1, kind: function,
+     text_en: "Say what you like, love, prefer and hate", skills: [fr.a1.u02.s03, fr.a1.u03.s01]}
+  - {id: a1.f.activities, cefr: A1, kind: function,
+     text_en: "Say what you do and ask others what they do", skills: [fr.a1.u02.s02, fr.a1.u02.s04]}
+  - {id: a1.f.order, cefr: A1, kind: function,
+     text_en: "Order food and drink, ask the price and ask for the bill", skills: [fr.a1.u03.s03]}
+  - {id: a1.f.hunger_meals, cefr: A1, kind: function,
+     text_en: "Say that you are hungry, thirsty, hot or cold and talk about meals",
+     skills: [fr.a1.u03.s02, fr.a1.u03.s04]}
+  - {id: a1.f.directions, cefr: A1, kind: function,
+     text_en: "Ask where a place is and understand simple directions",
+     skills: [fr.a1.u04.s01, fr.a1.u04.s02, fr.a1.u04.s03]}
+  - {id: a1.f.shopping, cefr: A1, kind: function,
+     text_en: "Say what you are looking for in a shop, ask the price and pay",
+     skills: [fr.a1.u05.s03, fr.a1.u05.s04]}
+  - {id: a1.f.describe_things, cefr: A1, kind: function,
+     text_en: "Describe clothes and other things by colour and size", skills: [fr.a1.u05.s01, fr.a1.u05.s02]}
+  - {id: a1.f.family, cefr: A1, kind: function,
+     text_en: "Talk about the members of your family", skills: [fr.a1.u06.s01]}
+  - {id: a1.f.describe_people, cefr: A1, kind: function,
+     text_en: "Describe what people look like and what they are like", skills: [fr.a1.u06.s02]}
+  - {id: a1.f.home, cefr: A1, kind: function,
+     text_en: "Describe your home and say where you live", skills: [fr.a1.u06.s03, fr.a1.u06.s04]}
+  - {id: a1.f.days_time, cefr: A1, kind: function,
+     text_en: "Say what day and what time it is", skills: [fr.a1.u07.s01, fr.a1.u07.s02]}
+  - {id: a1.f.routine, cefr: A1, kind: function,
+     text_en: "Describe your daily routine and how often you do things", skills: [fr.a1.u07.s03, fr.a1.u07.s04]}
+  - {id: a1.f.travel_plans, cefr: A1, kind: function,
+     text_en: "Talk about a trip and say what you are going to do", skills: [fr.a1.u08.s01, fr.a1.u08.s02]}
+  - {id: a1.f.hotel, cefr: A1, kind: function,
+     text_en: "Check in at a hotel and ask about the room", skills: [fr.a1.u08.s03]}
+  - {id: a1.f.needs, cefr: A1, kind: function,
+     text_en: "Say what you need, what you have to do and that you do not know",
+     skills: [fr.a1.u08.s04]}
+  - {id: a2.g.passe_compose_avoir, cefr: A2, kind: grammar,
+     text_en: "The passé composé with avoir, with regular and common irregular past participles",
+     skills: [fr.a2.u01.s01, fr.a2.u01.s02, fr.a2.u08.s01]}
+  - {id: a2.g.passe_compose_etre, cefr: A2, kind: grammar,
+     text_en: "The passé composé with être, and agreement of the past participle with the subject",
+     skills: [fr.a2.u01.s03, fr.a2.u02.s02, fr.a2.u08.s02]}
+  - {id: a2.g.imparfait, cefr: A2, kind: grammar,
+     text_en: "The imparfait for descriptions, the weather and habits in the past", skills: [fr.a2.u05.s04]}
+  - {id: a2.g.imparfait_passe_compose, cefr: A2, kind: grammar,
+     text_en: "Choosing between the imparfait and the passé composé when telling a story",
+     skills: [fr.a2.u05.s04, fr.a2.u08.s02]}
+  - {id: a2.g.futur_proche, cefr: A2, kind: grammar,
+     text_en: "Plans with the futur proche: aller with an infinitive, also in the negative", skills: [fr.a2.u04.s01]}
+  - {id: a2.g.futur_simple, cefr: A2, kind: grammar,
+     text_en: "The futur simple of regular verbs and of common irregular verbs", skills: [fr.a2.u04.s02]}
+  - {id: a2.g.pronominal_verbs, cefr: A2, kind: grammar,
+     text_en: "Pronominal verbs for routine, health and free time, in the present, the imperative and the passé composé",
+     skills: [fr.a2.u02.s02, fr.a2.u02.s04, fr.a2.u06.s03]}
+  - {id: a2.g.object_pronouns, cefr: A2, kind: grammar,
+     text_en: "Direct and indirect object pronouns (me, te, le, la, les, lui, leur) and their place",
+     skills: [fr.a2.u04.s03]}
+  - {id: a2.g.y_en, cefr: A2, kind: grammar,
+     text_en: "The pronouns y for places and en for amounts", skills: [fr.a2.u01.s03, fr.a2.u06.s02]}
+  - {id: a2.g.comparatives, cefr: A2, kind: grammar,
+     text_en: "Comparing with plus, moins, aussi and autant ... que, and the forms meilleur, mieux and pire",
+     skills: [fr.a2.u07.s02]}
+  - {id: a2.g.superlatives, cefr: A2, kind: grammar,
+     text_en: "Superlatives with le plus, le moins and le meilleur, and de after them", skills: [fr.a2.u07.s03]}
+  - {id: a2.g.imperative_advice, cefr: A2, kind: grammar,
+     text_en: "The imperative for advice and instructions, with reflexive verbs and object pronouns",
+     skills: [fr.a2.u02.s04, fr.a2.u04.s03, fr.a2.u06.s03]}
+  - {id: a2.g.depuis_il_y_a, cefr: A2, kind: grammar,
+     text_en: "How long and how long ago: depuis with the present, pendant, and il y a", skills: [fr.a2.u02.s03]}
+  - {id: a2.g.deja_pas_encore, cefr: A2, kind: grammar,
+     text_en: "Already and not yet: déjà and pas encore, and their place in the passé composé",
+     skills: [fr.a2.u01.s04, fr.a2.u08.s01]}
+  - {id: a2.g.negatives, cefr: A2, kind: grammar,
+     text_en: "Other negatives: ne ... plus, ne ... jamais, ne ... rien, ne ... personne, ne ... aucun and ne ... nulle part",
+     skills: [fr.a2.u08.s01, fr.a2.u08.s03]}
+  - {id: a2.g.relatives, cefr: A2, kind: grammar,
+     text_en: "The relative pronouns qui and que", skills: [fr.a2.u07.s04]}
+  - {id: a2.g.savoir_connaitre, cefr: A2, kind: grammar,
+     text_en: "Savoir and connaître, and savoir with an infinitive for what you can do", skills: [fr.a2.u03.s03]}
+  - {id: a2.g.avoir_mal, cefr: A2, kind: grammar,
+     text_en: "Saying where it hurts with avoir mal à and faire mal", skills: [fr.a2.u02.s01]}
+  - {id: a2.g.jobs, cefr: A2, kind: grammar,
+     text_en: "Jobs without an article after être, and the feminine forms of job nouns", skills: [fr.a2.u03.s01]}
+  - {id: a2.g.weather_dates, cefr: A2, kind: grammar,
+     text_en: "Weather with il and faire, seasons and months with en and au, and dates with le",
+     skills: [fr.a2.u05.s01, fr.a2.u05.s02, fr.a2.u05.s03]}
+  - {id: a2.g.jouer_faire, cefr: A2, kind: grammar,
+     text_en: "Jouer à, jouer de and faire de for sports, games and instruments", skills: [fr.a2.u06.s01]}
+  - {id: a2.f.past_events, cefr: A2, kind: function,
+     text_en: "Say what you did, saw and where you went yesterday or last week",
+     skills: [fr.a2.u01.s01, fr.a2.u01.s02, fr.a2.u01.s03]}
+  - {id: a2.f.tell_story, cefr: A2, kind: function,
+     text_en: "Tell what happened in order and give the background to a short story",
+     skills: [fr.a2.u01.s04, fr.a2.u08.s02]}
+  - {id: a2.f.symptoms, cefr: A2, kind: function,
+     text_en: "Say what is wrong, where it hurts and since when", skills: [fr.a2.u02.s01, fr.a2.u02.s02, fr.a2.u02.s03]}
+  - {id: a2.f.doctor_advice, cefr: A2, kind: function,
+     text_en: "Understand a doctor's questions and advice and say what you should do", skills: [fr.a2.u02.s04]}
+  - {id: a2.f.work, cefr: A2, kind: function,
+     text_en: "Talk about your job, where you work and the people you work with",
+     skills: [fr.a2.u03.s01, fr.a2.u03.s02]}
+  - {id: a2.f.interview, cefr: A2, kind: function,
+     text_en: "Answer simple questions about your skills and experience in an interview and ask about the job",
+     skills: [fr.a2.u03.s03, fr.a2.u03.s04]}
+  - {id: a2.f.plans, cefr: A2, kind: function,
+     text_en: "Talk about plans, celebrations and what will happen", skills: [fr.a2.u04.s01, fr.a2.u04.s02]}
+  - {id: a2.f.invitations, cefr: A2, kind: function,
+     text_en: "Invite someone, accept or refuse politely, and agree when and where to meet",
+     skills: [fr.a2.u04.s04]}
+  - {id: a2.f.weather, cefr: A2, kind: function,
+     text_en: "Talk about the weather, the seasons and the date", skills: [fr.a2.u05.s01, fr.a2.u05.s02, fr.a2.u05.s03]}
+  - {id: a2.f.childhood, cefr: A2, kind: function,
+     text_en: "Describe what things were like and what you used to do", skills: [fr.a2.u05.s04]}
+  - {id: a2.f.free_time, cefr: A2, kind: function,
+     text_en: "Talk about hobbies and free time and suggest going out", skills: [fr.a2.u06.s01, fr.a2.u06.s03]}
+  - {id: a2.f.opinions, cefr: A2, kind: function,
+     text_en: "Give your opinion of an activity, a film or a book and ask for someone else's",
+     skills: [fr.a2.u06.s04]}
+  - {id: a2.f.describe_people, cefr: A2, kind: function,
+     text_en: "Describe what people are like", skills: [fr.a2.u07.s01]}
+  - {id: a2.f.compare, cefr: A2, kind: function,
+     text_en: "Compare people, places and things and say which is the best", skills: [fr.a2.u07.s02, fr.a2.u07.s03]}
+  - {id: a2.f.describe_detail, cefr: A2, kind: function,
+     text_en: "Describe people, places and things in more detail", skills: [fr.a2.u07.s04]}
+  - {id: a2.f.experiences, cefr: A2, kind: function,
+     text_en: "Ask and say what you have done, or never done, in your life", skills: [fr.a2.u08.s01]}
+  - {id: a2.f.feelings, cefr: A2, kind: function,
+     text_en: "Say how you felt about an experience and react to someone else's news", skills: [fr.a2.u08.s04]}

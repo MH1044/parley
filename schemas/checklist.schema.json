@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley grammar and functions checklist",
+  "description": "The grammar points and communicative functions of each level and the skills that teach them (content/<lang>/checklist.yaml). The schema checks types, required fields, enumerations, the id shape and the schema constant; duplicates and the skills are rules CL02 to CL04.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "lang", "entries"],
+  "properties": {
+    "schema": { "const": "parley.checklist/1" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cefr", "kind", "text_en", "skills"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^a[12]\\.[gf]\\.[a-z0-9_]+$" },
+        "cefr": { "enum": ["A1", "A2"] },
+        "kind": { "enum": ["grammar", "function"] },
+        "text_en": { "type": "string" },
+        "skills": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

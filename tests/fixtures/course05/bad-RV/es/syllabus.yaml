@@ -1,0 +1,47 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish mini course with ranks
+variety: Spain Spanish
+version: 1
+function_words: [el, la, los, las, un, una, "y", de, a, en, con, "no", que, qué]
+names: [Ana, Luis, Carmen, Pablo, Madrid]
+units:
+  - id: es.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and say who I am.
+        requires: []
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: 24}
+          - {lemma: bueno, pos: adj, en: [good], rank: 3}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: 21}
+          - {lemma: ser, pos: verb, en: [to be], rank: 1}
+        examples:
+          - {id: 1, target: "Hola, soy Ana.", en: ["Hello, I am Ana."]}
+          - {id: 2, target: "Buenos días, Luis.", en: ["Good morning, Luis."]}
+          - {id: 3, target: "Hola, Luis.", en: ["Hello, Luis."]}
+          - {id: 4, target: "Buenos días, Ana.", en: ["Good morning, Ana."]}
+  - id: es.a2.u01
+    title: Around town
+    cefr: A2
+    skills:
+      - id: es.a2.u01.s01
+        kind: vocab
+        title: Around town
+        cefr: A2
+        can_do: I can say where people go.
+        requires: []
+        lemmas:
+          - {lemma: mercado, pos: noun, gender: m, en: [market], rank: 13}
+          - {lemma: pueblo, pos: noun, gender: m, en: [village, town], rank: 17}
+          - {lemma: ir, pos: verb, en: [to go], rank: 5}
+        examples:
+          - {id: 1, target: "Voy al mercado del pueblo.", en: ["I am going to the village market."]}
+          - {id: 2, target: "Ana va al mercado.", en: ["Ana is going to the market."]}
+          - {id: 3, target: "Luis va al pueblo.", en: ["Luis is going to the village."]}
+          - {id: 4, target: "Voy al pueblo.", en: ["I am going to the village."]}

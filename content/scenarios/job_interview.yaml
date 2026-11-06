@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: job_interview
+cefr: A2
+title_en: "A job interview"
+partner_role_en: "the interviewer"
+learner_role_en: "a candidate"
+turn_cap: 16
+goals:
+  - {id: introduce, text_en: "Introduce yourself"}
+  - {id: experience, text_en: "Say where you have worked before"}
+  - {id: strengths, text_en: "Say what you do well"}
+  - {id: start, text_en: "Say when you can start"}
+  - {id: ask, text_en: "Ask a question about the job"}
+languages:
+  es: {setting_en: "an office of a hotel company in Barcelona, at an interview for a job at reception", opening: "Buenos días y gracias por venir. Hábleme un poco de usted.", opening_en: "Good morning and thank you for coming. Tell me a little about yourself.", skills: [es.a2.u01.s01, es.a2.u01.s02, es.a2.u03.s01, es.a2.u03.s02, es.a2.u03.s03, es.a2.u03.s04]}
+  fr: {setting_en: an office in Paris where a small company is interviewing for a job in its team, opening: "Bonjour ! Je vous remercie d'être là. Parlez-moi un peu de vous.", opening_en: "Hello! Thank you for coming. Tell me a little about yourself.", skills: [fr.a2.u03.s01, fr.a2.u03.s02, fr.a2.u03.s03, fr.a2.u03.s04]}
+  de: {setting_en: the office of a small company in Hamburg, opening: "Guten Tag, danke, dass Sie gekommen sind! Erzählen Sie bitte etwas von sich.", opening_en: "Hello, thank you for coming! Please tell me a little about yourself.", skills: [de.a2.u01.s01, de.a2.u03.s01, de.a2.u03.s02, de.a2.u03.s03, de.a2.u03.s04]}

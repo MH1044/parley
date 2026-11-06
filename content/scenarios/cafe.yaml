@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: cafe
+cefr: A1
+title_en: "At a café"
+partner_role_en: "the waiter"
+learner_role_en: "a customer"
+turn_cap: 12
+goals:
+  - {id: greet, text_en: "Greet the waiter"}
+  - {id: order_drink, text_en: "Order a drink"}
+  - {id: order_food, text_en: "Order something to eat"}
+  - {id: ask_price, text_en: "Ask how much it costs"}
+  - {id: pay_leave, text_en: "Pay and say goodbye"}
+languages:
+  es: {setting_en: "a small café in Madrid in the morning", opening: "¡Buenos días! ¿Qué le pongo?", opening_en: "Good morning! What can I get you?", skills: [es.a1.u02.s02, es.a1.u03.s01, es.a1.u03.s02, es.a1.u03.s03, es.a1.u03.s04]}
+  fr: {setting_en: a small café in Lyon in the morning, opening: "Bonjour ! Qu'est-ce que vous prenez ?", opening_en: "Hello! What will you have?", skills: [fr.a1.u03.s01, fr.a1.u03.s02, fr.a1.u03.s03, fr.a1.u03.s04]}
+  de: {setting_en: a café in Berlin in the morning, opening: "Guten Morgen! Was möchten Sie trinken?", opening_en: "Good morning! What would you like to drink?", skills: [de.a1.u03.s01, de.a1.u03.s02, de.a1.u03.s03, de.a1.u03.s04]}

@@ -1,0 +1,21 @@
+schema: parley.scenario/1
+id: bad-SC03
+cefr: A1
+title_en: At a café
+partner_role_en: the waiter
+learner_role_en: a customer
+turn_cap: 12
+goals:
+  - {id: greet, text_en: Greet the waiter}
+  - {id: order_drink, text_en: Order a drink}
+  - {id: order_food, text_en: Order something to eat}
+  - {id: ask_price, text_en: Ask how much it costs}
+  - {id: thank, text_en: Thank the waiter}
+  - {id: pay, text_en: Pay}
+  - {id: leave, text_en: Say goodbye}
+languages:
+  es:
+    setting_en: a small café in Madrid in the morning
+    opening: "¡Buenos días! ¿Qué le pongo?"
+    opening_en: "Good morning! What can I get you?"
+    skills: [es.a1.u02.s01, es.a1.u02.s02]

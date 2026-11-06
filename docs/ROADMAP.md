@@ -7,7 +7,7 @@
 | 02 | srs-and-learner-model | FSRS cards and review log, mastery, skill states, adaptive placement, CEFR estimate | load-bearing (learner data) | 01 | Done (2026-11-03) |
 | 03 | exercise-engine-and-grading | Exercise types, normaliser, accent and typo grading, template lessons, composer, XP, streaks and freezes | load-bearing (grading) | 01, 02 | Done (2026-11-03) |
 | 04 | app-shell-and-offline-course | The whole offline app: onboarding, path, lesson player, reviews, stats, settings, backup | interface (backup is load-bearing) | 03 | Done (2026-11-03) |
-| 05 | course-content-a1-a2 | Complete A1 and A2 syllabi for es, fr, de; scenarios; content reports; packs pinned | load-bearing (what learners are taught) | 01, 04 | Planned |
+| 05 | course-content-a1-a2 | Complete A1 and A2 syllabi for es, fr, de; scenarios; content reports; packs pinned | load-bearing (what learners are taught) | 01, 04 | Done (2026-11-06) |
 | 06 | publik-and-providers | The Publik contract in full, own key, local model, consent, status, errors, the AI client | load-bearing (money path) | 04 | Planned |
 | 07 | lesson-generation | Fresh AI lessons and stories with validators and template fill; course pack export and import | load-bearing (what learners see) | 03, 06 | Planned |
 | 08 | judging-and-explanations | AI judge for free translations, cached and learned; Explain my answer | load-bearing (grading) | 03, 06 | Planned |

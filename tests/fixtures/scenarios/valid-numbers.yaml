@@ -1,0 +1,17 @@
+schema: parley.scenario/1
+id: valid-numbers
+cefr: A1
+title_en: Ordering for friends
+partner_role_en: the waiter
+learner_role_en: a customer
+turn_cap: 8
+goals:
+  - {id: greet, text_en: Greet the waiter}
+  - {id: order_drinks, text_en: Order drinks for the table}
+  - {id: check_order, text_en: Check the order}
+languages:
+  es:
+    setting_en: a busy café in Madrid at lunchtime
+    opening: "¡Hola! ¿Quiere dos con leche y 3 con agua?"
+    opening_en: "Hello! Would you like two with milk and 3 with water?"
+    skills: [es.a1.u02.s01]

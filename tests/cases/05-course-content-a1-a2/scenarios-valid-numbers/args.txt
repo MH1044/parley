@@ -1,0 +1,5 @@
+content
+scenarios
+tests/fixtures/scenarios/valid-numbers.yaml
+--content
+tests/fixtures/scenarios/content

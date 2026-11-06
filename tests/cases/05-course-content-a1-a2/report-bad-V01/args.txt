@@ -1,0 +1,7 @@
+content
+report
+--lang
+es
+--content
+tests/fixtures/course05/bad-V01
+--json

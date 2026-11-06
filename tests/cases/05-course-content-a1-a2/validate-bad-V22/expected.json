@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "errors": [
+    "es.a1.u01.s01: gato needs a rank",
+    "es.a2.u01.s01: pueblo needs a rank"
+  ],
+  "warnings": [
+    "warning: ser is taught in es.a1.u01.s01 and es.a2.u01.s01",
+    "warning: mesa has rank 3500; check that it belongs at A1"
+  ]
+}

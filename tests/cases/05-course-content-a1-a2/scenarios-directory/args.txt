@@ -1,0 +1,5 @@
+content
+scenarios
+tests/fixtures/scenarios
+--content
+tests/fixtures/scenarios/content

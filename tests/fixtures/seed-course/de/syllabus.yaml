@@ -1,0 +1,152 @@
+schema: parley.syllabus/1
+lang: de
+name: German for English speakers
+variety: Standard German of Germany; du and Sie both taught
+version: 1
+function_words: [der, die, das, den, dem, des, ein, eine, einen, einem, einer, kein, keine,
+  keinen, und, oder, aber, in, an, auf, aus, bei, mit, nach, von, zu, für, um, bis, nicht, ja,
+  nein, ich, du, er, sie, es, wir, ihr, mich, dich, sich, uns, euch, mir, dir, ihm, ihnen,
+  mein, meine, meinen, dein, deine, deinen, unser, unsere, wie, wo, was, wer, woher, wohin,
+  wann, warum, da]
+names: [Anna, Paul, Lukas, Berlin, Hamburg, Deutschland]
+units:
+  - id: de.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: de.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye and ask how someone is.
+        requires: []
+        grammar_note: >-
+          Guten Morgen is for the morning, guten Tag for the rest of the day and guten
+          Abend for the evening; gute Nacht is only for bedtime. Hallo and tschüss work at
+          any time with people you know. Ask how someone is with wie geht es dir? (du) or
+          wie geht es Ihnen? (Sie) and answer gut, danke. Every noun starts with a capital
+          letter: Tag, Nacht.
+        lemmas:
+          - {lemma: hallo, pos: intj, en: [hello, hi], rank: null}
+          - {lemma: gut, pos: adj, en: [good], rank: null}
+          - {lemma: Tag, pos: noun, gender: m, en: [day], rank: null}
+          - {lemma: Morgen, pos: noun, gender: m, en: [morning], rank: null}
+          - {lemma: Abend, pos: noun, gender: m, en: [evening], rank: null}
+          - {lemma: Nacht, pos: noun, gender: f, en: [night], rank: null}
+          - {lemma: tschüss, pos: intj, en: [bye], rank: null}
+          - {lemma: danke, pos: intj, en: [thank you, thanks], rank: null}
+          - {lemma: bitte, pos: intj, en: [please, you are welcome], rank: null}
+          - {lemma: auf Wiedersehen, pos: expr, en: [goodbye], rank: null}
+          - {lemma: gehen, pos: verb, en: [to go], rank: null}
+        examples:
+          - {id: 1, target: "Hallo, wie geht es dir?", en: ["Hello, how are you?", "Hi, how are you doing?"]}
+          - {id: 2, target: "Guten Morgen, Anna!", en: ["Good morning, Anna!"]}
+          - {id: 3, target: "Guten Tag! Wie geht es Ihnen?", en: ["Hello! How are you?", "Good day! How are you?"]}
+          - {id: 4, target: "Gut, danke. Und dir?", en: ["Fine, thanks. And you?", "Good, thank you. And you?"]}
+          - {id: 5, target: "Guten Abend, Paul.", en: ["Good evening, Paul."]}
+          - {id: 6, target: "Gute Nacht und tschüss!", en: ["Good night and bye!"]}
+          - {id: 7, target: "Mir geht es gut, danke.", en: ["I am fine, thank you.", "I am well, thanks."]}
+          - {id: 8, target: "Auf Wiedersehen und danke!", en: ["Goodbye and thank you!"]}
+          - {id: 9, target: "Danke. Bitte.", en: ["Thank you. You are welcome."]}
+      - id: de.a1.u01.s02
+        kind: grammar
+        title: Names
+        cefr: A1
+        can_do: I can say my name and ask someone their name.
+        requires: [de.a1.u01.s01]
+        grammar_note: >-
+          Two verbs introduce you: heißen (to be called) and sein (to be). Ich heiße Anna,
+          du heißt, er or sie heißt, Sie heißen; ich bin, du bist, er or sie ist, wir sind,
+          Sie sind. Sie with a capital letter is the polite you, for adults you do not
+          know; du is for friends, family and children. Herr and Frau go before a surname
+          when you address someone politely.
+        lemmas:
+          - {lemma: heißen, pos: verb, en: [to be called], rank: null}
+          - {lemma: sein, pos: verb, en: [to be], rank: null}
+          - {lemma: Name, pos: noun, gender: m, en: [name], rank: null}
+          - {lemma: Herr, pos: noun, gender: m, en: [Mr, gentleman], rank: null}
+          - {lemma: Frau, pos: noun, gender: f, en: [Mrs, Ms, woman], rank: null}
+          - {lemma: freut mich, pos: expr, en: [nice to meet you, pleased to meet you], rank: null}
+          - {lemma: Entschuldigung, pos: intj, en: [excuse me, sorry], rank: null}
+        examples:
+          - {id: 1, target: "Ich heiße Anna.", en: ["My name is Anna.", "I am called Anna."]}
+          - {id: 2, target: "Wie heißt du?", en: ["What is your name?", "What are you called?"]}
+          - {id: 3, target: "Wie heißen Sie?", en: ["What is your name?"]}
+          - {id: 4, target: "Mein Name ist Lukas.", en: ["My name is Lukas."]}
+          - {id: 5, target: "Ich bin Paul. Freut mich.", en: ["I am Paul. Nice to meet you."]}
+          - {id: 6, target: "Wer bist du?", en: ["Who are you?"]}
+          - {id: 7, target: "Das ist Anna.", en: ["This is Anna.", "That is Anna."]}
+          - {id: 8, target: "Entschuldigung, wie heißen Sie?", en: ["Excuse me, what is your name?"]}
+          - {id: 9, target: "Wer ist die Frau da?", en: ["Who is that woman?", "Who is the woman there?"]}
+          - {id: 10, target: "Der Herr heißt Paul.", en: ["The gentleman is called Paul.", "The man's name is Paul."]}
+      - id: de.a1.u01.s03
+        kind: grammar
+        title: Where you are from
+        cefr: A1
+        can_do: I can say where I am from and which languages I speak.
+        requires: [de.a1.u01.s02]
+        grammar_note: >-
+          Regular verbs in the present take -e, -st, -t and -en: ich komme, du kommst, er
+          kommt, wir kommen, Sie kommen; wohnen works the same way. Sprechen changes its
+          vowel in two forms: du sprichst, er spricht. Say where you are from with aus and
+          where you live with in: ich komme aus Berlin, ich wohne in Hamburg. Ask with
+          woher? (from where) and wo? (where). Language names are capitalised: Deutsch,
+          Englisch.
+        lemmas:
+          - {lemma: kommen, pos: verb, en: [to come], rank: null}
+          - {lemma: wohnen, pos: verb, en: [to live], rank: null}
+          - {lemma: sprechen, pos: verb, en: [to speak], rank: null}
+          - {lemma: Deutsch, pos: noun, gender: "n", en: [German], rank: null}
+          - {lemma: Englisch, pos: noun, gender: "n", en: [English], rank: null}
+          - {lemma: Spanisch, pos: noun, gender: "n", en: [Spanish], rank: null}
+          - {lemma: Französisch, pos: noun, gender: "n", en: [French], rank: null}
+          - {lemma: auch, pos: adv, en: [also, too], rank: null}
+          - {lemma: ein bisschen, pos: expr, en: [a little, a bit], rank: null}
+        examples:
+          - {id: 1, target: "Ich komme aus Deutschland.", en: ["I come from Germany.", "I am from Germany."]}
+          - {id: 2, target: "Woher kommst du?", en: ["Where are you from?", "Where do you come from?"]}
+          - {id: 3, target: "Anna kommt aus Berlin.", en: ["Anna comes from Berlin.", "Anna is from Berlin."]}
+          - {id: 4, target: "Ich wohne in Hamburg.", en: ["I live in Hamburg."]}
+          - {id: 5, target: "Wo wohnen Sie?", en: ["Where do you live?"]}
+          - {id: 6, target: "Ich spreche Deutsch und ein bisschen Englisch.", en: ["I speak German and a little English."]}
+          - {id: 7, target: "Sprechen Sie Englisch?", en: ["Do you speak English?"]}
+          - {id: 8, target: "Paul spricht auch Spanisch.", en: ["Paul also speaks Spanish.", "Paul speaks Spanish too."]}
+          - {id: 9, target: "Sie spricht Französisch.", en: ["She speaks French."]}
+      - id: de.a1.u01.s04
+        kind: grammar
+        title: Numbers and age
+        cefr: A1
+        can_do: I can count to twenty and say how old I am.
+        requires: [de.a1.u01.s03]
+        grammar_note: >-
+          Age uses sein and alt: ich bin zwanzig Jahre alt is literally I am twenty years
+          old; ask with wie alt bist du? or wie alt sind Sie? Haben (to have) is irregular
+          in two forms: ich habe, du hast, er hat, wir haben. From twenty-one on, the units
+          come first and the tens last, joined by und, all in one word: einundzwanzig,
+          zweiunddreißig.
+        lemmas:
+          - {lemma: haben, pos: verb, en: [to have], rank: null}
+          - {lemma: Jahr, pos: noun, gender: "n", en: [year], rank: null}
+          - {lemma: alt, pos: adj, en: [old], rank: null}
+          - {lemma: Nummer, pos: noun, gender: f, en: [number], rank: null}
+          - {lemma: Telefonnummer, pos: noun, gender: f, en: [phone number, telephone number], rank: null}
+          - {lemma: eins, pos: num, en: [one], rank: null}
+          - {lemma: zwei, pos: num, en: [two], rank: null}
+          - {lemma: drei, pos: num, en: [three], rank: null}
+          - {lemma: vier, pos: num, en: [four], rank: null}
+          - {lemma: fünf, pos: num, en: [five], rank: null}
+          - {lemma: sechs, pos: num, en: [six], rank: null}
+          - {lemma: sieben, pos: num, en: [seven], rank: null}
+          - {lemma: acht, pos: num, en: [eight], rank: null}
+          - {lemma: neun, pos: num, en: [nine], rank: null}
+          - {lemma: zehn, pos: num, en: [ten], rank: null}
+        examples:
+          - {id: 1, target: "Ich bin zwanzig Jahre alt.", en: ["I am twenty years old.", "I am twenty."]}
+          - {id: 2, target: "Wie alt bist du?", en: ["How old are you?"]}
+          - {id: 3, target: "Wie alt sind Sie?", en: ["How old are you?"]}
+          - {id: 4, target: "Anna ist dreißig Jahre alt.", en: ["Anna is thirty years old.", "Anna is thirty."]}
+          - {id: 5, target: "Eins, zwei, drei, vier, fünf.", en: ["One, two, three, four, five."]}
+          - {id: 6, target: "Sechs, sieben, acht, neun und zehn.", en: ["Six, seven, eight, nine and ten."]}
+          - {id: 7, target: "Wie ist deine Telefonnummer?", en: ["What is your phone number?"]}
+          - {id: 8, target: "Hast du meine Nummer?", en: ["Do you have my number?"]}
+          - {id: 9, target: "Paul hat meine Telefonnummer.", en: ["Paul has my phone number."]}

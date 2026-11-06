@@ -31,8 +31,9 @@ Everything below works with no network and no AI; nothing asks about AI yet.
 **First launch.** One step at a time: *Welcome to Parley* ("Learn by speaking. No hearts, no ads,
 nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
 English); *Course pack*, which offers the language's sentence pack with its size first
-("Download the Spanish course pack (8.2 MB)?") or, as now, says "No course pack is published for
-Spanish yet. Parley works without it, with fewer example sentences."; *Daily goal* (10, 20, 30 or
+("Download the Spanish course pack (246.8 MB)?"; for a language with no pack in
+`content/packs.lock.toml` it says "No course pack is published for Spanish yet. Parley works
+without it, with fewer example sentences." instead); *Daily goal* (10, 20, 30 or
 50 XP a day, 20 by default); and *Where to start*: **Take the placement test (about 5 minutes)**
 or **Start from the beginning**. The placement test asks you to translate a word of one skill
 after another into English (**I don't know** is always fine) and ends with where you start, such
@@ -102,8 +103,18 @@ language (`es`, `fr`, `de`) has a folder with:
   Wiktionary.
 - `numbers.yaml`: the words for 0 to 100.
 - `exclude.txt`: lemmas never taught or shown, one per line.
+- `checklist.yaml`: the grammar points (`a1.g.present_regular`) and communicative functions
+  (`a1.f.greet`) of A1 and A2, in the project's own words, each with the skills that teach it.
+- `review.yaml`: every unit, `unreviewed` or `reviewed` by a native speaker, with the day the
+  status was last set; no names.
 
-`content/packs.lock.toml` pins the published sentence packs (URL, SHA-256, size) per language.
+`content/scenarios/` holds the role-play scenarios (`cafe.yaml`, `shop.yaml`, …): the roles, the
+goals, a turn cap and, per language, the setting, the partner's opening line and the skills it
+builds on. `content/packs.lock.toml` pins the published sentence packs (URL, SHA-256, size) per
+language.
+
+Units still marked `unreviewed` ship as a labelled beta: they are on the path like any other,
+and the release notes say the course awaits native-speaker review.
 
 ### Checking a syllabus: `parley content validate`
 
@@ -133,8 +144,11 @@ skills; `can_do` reads "I can ... ."; a grammar note has at most 120 words; a sk
 lemmas and 4 to 15 examples; nouns have a gender; every word of every example is a function word,
 a name, a number or a form of a lemma this or an earlier skill teaches; every example uses one of
 its skill's lemmas; no sentence repeats another; every example has an English translation; no
-lemma is on the exclude list; text is Unicode NFC; example ids are unique; and the id lock agrees
-with the syllabus. A lemma taught twice is a warning, not an error. For example, the example
+lemma is on the exclude list; text is Unicode NFC; example ids are unique; the id lock agrees
+with the syllabus; and, in a course folder (one with `review.yaml` beside the syllabus), every
+single-word lemma has its frequency rank (`es.a1.u01.s01: gato needs a rank`). A lemma taught
+twice is a warning, not an error, and so is an A1 lemma ranked above 3,000
+(`warning: mesa has rank 3500; check that it belongs at A1`). For example, the example
 syllabus in `tests/fixtures/syllabus/valid-es.yaml` checked against a forms table that holds only
 its header line:
 
@@ -149,6 +163,22 @@ es.a1.u01.s01: example 3 uses none of this skill's lemmas
 ```
 
 and the exit code is 1.
+
+A directory is checked one language at a time: the syllabus, then its `checklist.yaml` (every
+entry once, every skill it names existing at the entry's level) and its `review.yaml` (every
+unit of the syllabus exactly once), then every scenario in `<dir>/scenarios/`, in the order of
+their file names. For example, a fixture course whose checklist repeats an entry, names a skill
+that does not exist and maps an A1 entry to an A2 skill:
+
+```
+parley content validate tests/fixtures/course05/bad-CL
+tests/fixtures/course05/bad-CL/es/checklist.yaml: duplicate entry a1.f.greet
+tests/fixtures/course05/bad-CL/es/checklist.yaml: a1.g.ser_present: skill es.a1.u03.s01 does not exist
+tests/fixtures/course05/bad-CL/es/checklist.yaml: a1.f.directions: skill es.a2.u01.s01 is A2, but the entry is A1
+```
+
+A review file says `unit es.a1.u01 is listed twice`, `unit es.a1.u05 is not in the syllabus` or
+`unit es.a2.u01 is missing` in the same way.
 
 ### Recording item ids: `parley content lock`
 
@@ -181,7 +211,9 @@ parley forms extract --lang es --wiktextract tests/fixtures/forms-mini.jsonl --s
 `parley forms extract --lang es --wiktextract data-cache/es.jsonl --syllabus content/es/syllabus.yaml --out content/es/forms.tsv`
 with a real extract.) `lemmas` counts the syllabus lemmas the extract has an entry for, `missing` lists the others.
 `--lemma <lemma>` (repeatable) extracts the given lemmas instead; `--date <YYYY-MM-DD>` sets the
-date in the table's header line, which also carries the extract's SHA-256:
+date in the table's header line, which also carries the extract's SHA-256. The inflection
+table's own labels that real extracts list among the forms (`irregular`, `es-conj`, `7 strong`,
+or the `haben` of a German verb table) are left out:
 
 ```
 # source: forms-mini.jsonl; sha256: bdd2092585e56451edb8e59e844bfca7a0659c3cc5cf51c3716430dea3b33919; date: 2026-10-01
@@ -215,6 +247,78 @@ parley pack info es-2026-10-01.sqlite3
 (This run used the small test inputs under `tests/fixtures/`; a real export gives thousands of
 sentences.) The app downloads a published pack from the URL in `content/packs.lock.toml` and
 refuses one whose SHA-256 differs with "The download was damaged. Try again."
+
+### Checking scenarios: `parley content scenarios`
+
+```
+parley content scenarios tests/fixtures/scenarios/bad-SC06.yaml --content tests/fixtures/scenarios/content
+{"ok":false,"errors":["bad-SC06: es: opening uses \"pongo\", which the listed skills do not teach","bad-SC06: es: opening uses \"Café\", which the listed skills do not teach"],"warnings":[]}
+```
+
+checks one scenario, or every `*.yaml` of a folder, against the syllabi of the `--content`
+folder (default `content`) and exits 1 on any error. The rules, in order: the file is YAML and
+matches `schemas/scenario.schema.json`; its `id` is its file name; it has 3 to 6 goals and a
+turn cap of 6 to 20; every skill it lists for a language exists in that language's syllabus;
+and every word of the opening is a function word, a name, a number or a form of a lemma of a
+skill up to the latest listed one, so a learner who has done those skills can read it. Here
+`pongo` and `café` are taught only by later skills. A valid scenario gives
+`{"ok":true,"errors":[],"warnings":[]}`.
+
+### A course report: `parley content report`
+
+```
+parley content report --lang es --content tests/fixtures/course05/course --pack es-2026-11-05.sqlite3 --json
+{"lang":"es","units":{"A1":2,"A2":1},"skills":4,"skills_per_unit":{"min":1,"max":2},"lemmas":{"A1":18,"A2":5},"examples":16,"attested_share":0.5625,"a1_rank_le_2000_share":0.8235,"checklist_uncovered":["a1.g.plural_nouns","a2.f.directions"],"unreviewed_units":["es.a1.u02","es.a2.u01"]}
+```
+
+(The pack is the small one of the previous section, built with `--built-at 2026-11-05`.) It
+counts the units per level, the skills, the smallest and largest unit, the distinct lemmas of A1
+and those A2 adds, and the examples; `attested_share` is the share of examples that are, word
+for word, sentences of the pack, and `a1_rank_le_2000_share` the share of single-word A1 lemmas
+among the pack's 2,000 most frequent. Both are null without `--pack`. `checklist_uncovered`
+lists the checklist entries no skill teaches yet, and `unreviewed_units` the units awaiting
+native-speaker review. A course with errors gives the validate report instead, with exit code 1.
+
+### Frequency ranks: `parley freq check`
+
+A lemma's `rank` is its rank in the pack's frequency table. `freq check` compares them:
+
+```
+parley freq check --lang es --pack es-2026-11-05.sqlite3 --content tests/fixtures/course05/course
+{"lang":"es","lemmas":23,"differs":[{"skill":"es.a1.u01.s02","lemma":"casa","rank":9,"pack_rank":7},{"skill":"es.a2.u01.s01","lemma":"amigo","rank":30,"pack_rank":9}],"missing":[{"skill":"es.a1.u01.s01","lemma":"adiós"},{"skill":"es.a1.u01.s02","lemma":"perro"},{"skill":"es.a1.u02.s01","lemma":"leche"}]}
+```
+
+`lemmas` counts the single-word lemmas checked (a lemma with a space has no rank), `differs`
+those whose rank is not the pack's, and `missing` those the pack never ranks: such a word cannot
+be taught, so the author picks another or a multi-word lemma. The exit code is 1 until both
+lists are empty; the command reports, and the author edits the ranks.
+
+### Installing a pack for development: `parley pack install`
+
+The app cannot download a pack yet: until it gets its network connection (with the AI providers),
+**Download** says "You're offline. Parley works without the pack, with fewer example sentences.",
+and once it has one, until the packs are published as release assets, "The course pack could not
+be downloaded. Try again later." A pack built with `parley pack build` and pinned in
+`content/packs.lock.toml` can be installed by hand instead:
+
+1. Start the course in the app (choose the language in onboarding), then close the app.
+2. Install the pack into the app data folder:
+
+```
+parley pack install data-cache/packs/es-2026-11-05.sqlite3 --data-dir <app data folder>
+{"lang":"es","version":"2026-11-05","path":"packs/es-2026-11-05.sqlite3"}
+```
+
+The app data folder is `%APPDATA%\org.parley.app` on Windows (`AppData\Roaming\org.parley.app`
+in your user folder), `~/Library/Application Support/org.parley.app` on macOS and
+`~/.local/share/org.parley.app` on Linux; Settings > About shows it too.
+
+The file must be exactly the one the lock pins for its language (`--lock <file>` names another
+lock), else `error: This pack does not match packs.lock.toml.` and nothing is written; without a
+started course, `error: Start the Spanish course in Parley first.` The pack is installed the way
+a download is: written beside its place, then moved into it, with the course's previous pack
+removed. The next launch shows the pack as installed, and lessons take example sentences from
+it.
 
 ### Reviews and the scheduler: `parley srs replay`
 
@@ -414,5 +518,7 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: the complete A1 and A2 courses for Spanish, French and German
-with their sentence packs, then AI through publik API, your own key or a local model.
+In the order of `docs/ROADMAP.md`: AI through publik API, your own key or a local model, then
+fresh AI lessons and stories. The sentence packs are published as release assets before the first
+release; until then the app's Download button cannot fetch them, and `parley pack install` puts a
+locally built pack in place.

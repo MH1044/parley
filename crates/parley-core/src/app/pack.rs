@@ -1,21 +1,25 @@
 //! Course packs: `pack_status`, `pack_download`, the sentences a lesson takes from an installed
-//! pack, and their attribution (docs/modules/04-app-shell-and-offline-course.md, Design notes).
+//! pack, and their attribution (docs/modules/04-app-shell-and-offline-course.md, Design notes);
+//! and `parley pack install`, which installs a locally built pack for development until packs
+//! are published (docs/modules/05-course-content-a1-a2.md).
 //!
 //! A download is checked against the SHA-256 in `content/packs.lock.toml` before anything is
 //! written; it is written as `packs/<lang>-<version>.sqlite3.part` and renamed into place, so a
-//! damaged or partial download never becomes the pack. The app works without a pack, with fewer
-//! example sentences.
+//! damaged or partial download never becomes the pack. An installed file takes the same path.
+//! The app works without a pack, with fewer example sentences.
 
 use std::collections::HashSet;
+use std::fmt;
 use std::path::{Path, PathBuf};
 
 use rusqlite::{Connection, OpenFlags, params};
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 
 use super::{Parley, not_started, open_store};
 use crate::api::{Attribution, PackProgress, PackState, PackStatus, language_name, megabytes};
 use crate::content::{Lang, PackEntry, Syllabus, nfc, nfc_lower, parse_packs_lock};
-use crate::env::HttpRequest;
+use crate::env::{Fs, HttpRequest};
 use crate::error::{AppError, ErrorCode};
 use crate::exercise::{Body, Lesson};
 use crate::store::Store;
@@ -265,21 +269,157 @@ impl Parley {
                 "The download was damaged. Try again.",
             ));
         }
-        let target = pack_file(lang, &entry.version);
-        let part = format!("{target}.part");
-        let fs = &*self.env.fs;
-        let written = fs
-            .write(Path::new(&part), &response.body)
-            .and_then(|()| fs.rename(Path::new(&part), Path::new(&target)));
-        if written.is_err() {
-            let _ = fs.remove(Path::new(&part));
-            return Err(super::cannot_write());
-        }
-        if let Some(previous) = course.pack_version.filter(|v| *v != entry.version) {
-            let _ = fs.remove(Path::new(&pack_file(lang, &previous)));
-        }
-        store.set_pack_version(lang, Some(&entry.version))?;
+        write_pack(
+            &*self.env.fs,
+            store,
+            lang,
+            course.pack_version.as_deref(),
+            &entry.version,
+            &response.body,
+        )?;
         self.pack_status(lang.as_str())
+    }
+}
+
+/// Puts a checked pack in place, the one way every pack is installed: the bytes go to
+/// `packs/<lang>-<version>.sqlite3.part` through the data directory's [`Fs`] and are renamed
+/// into place, so a failed write never leaves a partial pack; the new version is recorded; only
+/// then is the course's previous pack, when its version differs, removed. If the version cannot
+/// be recorded, the new file is removed (unless it has the recorded version's own name) and the
+/// old pack and the store stay as they were, so the store never names a pack that is gone.
+/// Returns the pack's path relative to the data directory.
+fn write_pack(
+    fs: &dyn Fs,
+    store: &mut Store,
+    lang: Lang,
+    previous: Option<&str>,
+    version: &str,
+    bytes: &[u8],
+) -> Result<String, AppError> {
+    let target = pack_file(lang, version);
+    let part = format!("{target}.part");
+    let written = fs
+        .write(Path::new(&part), bytes)
+        .and_then(|()| fs.rename(Path::new(&part), Path::new(&target)));
+    if written.is_err() {
+        let _ = fs.remove(Path::new(&part));
+        return Err(super::cannot_write());
+    }
+    let replaced = previous.filter(|v| *v != version);
+    if let Err(e) = store.set_pack_version(lang, Some(version)) {
+        if previous != Some(version) {
+            let _ = fs.remove(Path::new(&target));
+        }
+        return Err(e.into());
+    }
+    if let Some(previous) = replaced {
+        let _ = fs.remove(Path::new(&pack_file(lang, previous)));
+    }
+    Ok(target)
+}
+
+/// Why `parley pack install` installed nothing.
+#[derive(Debug, Clone, PartialEq)]
+pub enum PackInstallError {
+    /// The lock has no entry for the pack's language, or the entry's SHA-256 or size differ from
+    /// the file's.
+    NotLocked,
+    /// The course of the pack's language has not been started in the data directory.
+    NotStarted(Lang),
+    /// The data file could not be used or the pack could not be written.
+    App(AppError),
+}
+
+impl fmt::Display for PackInstallError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PackInstallError::NotLocked => f.write_str("This pack does not match packs.lock.toml."),
+            PackInstallError::NotStarted(lang) => write!(
+                f,
+                "Start the {} course in Parley first.",
+                language_name(*lang)
+            ),
+            PackInstallError::App(e) => f.write_str(&e.message),
+        }
+    }
+}
+
+impl std::error::Error for PackInstallError {}
+
+impl From<AppError> for PackInstallError {
+    fn from(e: AppError) -> Self {
+        PackInstallError::App(e)
+    }
+}
+
+/// What `parley pack install` prints: the language, the locked version and the pack's path
+/// relative to the data directory.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct InstalledPack {
+    pub lang: Lang,
+    pub version: String,
+    pub path: String,
+}
+
+/// A pack file that `packs.lock.toml` pins: the lock's entry for the file's language has its
+/// SHA-256 and size. Only [`LockedPack::verify`] makes one, so nothing unchecked is installed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LockedPack {
+    lang: Lang,
+    entry: PackEntry,
+    bytes: Vec<u8>,
+}
+
+impl LockedPack {
+    /// Checks the bytes of a pack whose `meta` names `lang_code` against the lock's text.
+    pub fn verify(
+        packs_lock: &str,
+        lang_code: &str,
+        bytes: Vec<u8>,
+    ) -> Result<LockedPack, PackInstallError> {
+        let lang: Lang = lang_code.parse().map_err(|_| PackInstallError::NotLocked)?;
+        let entry = lock_entry(packs_lock, lang).ok_or(PackInstallError::NotLocked)?;
+        let matches = entry.bytes == bytes.len() as u64
+            && sha256_hex(&bytes).eq_ignore_ascii_case(entry.sha256.trim());
+        if !matches {
+            return Err(PackInstallError::NotLocked);
+        }
+        Ok(LockedPack { lang, entry, bytes })
+    }
+
+    pub fn lang(&self) -> Lang {
+        self.lang
+    }
+
+    /// The locked version, which names the file.
+    pub fn version(&self) -> &str {
+        &self.entry.version
+    }
+
+    /// Installs the pack into the started course of its language, through the same steps as a
+    /// download (`write_pack`).
+    pub fn install(
+        &self,
+        store: &mut Store,
+        fs: &dyn Fs,
+    ) -> Result<InstalledPack, PackInstallError> {
+        let course = store
+            .course(self.lang)
+            .map_err(AppError::from)?
+            .ok_or(PackInstallError::NotStarted(self.lang))?;
+        let path = write_pack(
+            fs,
+            store,
+            self.lang,
+            course.pack_version.as_deref(),
+            &self.entry.version,
+            &self.bytes,
+        )?;
+        Ok(InstalledPack {
+            lang: self.lang,
+            version: self.entry.version.clone(),
+            path,
+        })
     }
 }
 
@@ -436,6 +576,169 @@ mod tests {
             )
         );
         assert!(NO_PACKS.contains("parley.packs/1"));
+    }
+
+    /// A lock that pins `bytes` exactly, at version 2026-11-05.
+    fn exact_lock(bytes: &[u8]) -> String {
+        format!(
+            "schema = \"parley.packs/1\"\n[es]\nversion = \"2026-11-05\"\nurl = \"https://example.com/es.sqlite3\"\nsha256 = \"{}\"\nbytes = {}\ncontent_sha256 = \"x\"\n",
+            sha256_hex(bytes),
+            bytes.len()
+        )
+    }
+
+    #[test]
+    fn only_a_pack_the_lock_pins_is_accepted() {
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        let lock = exact_lock(&bytes);
+        let locked = LockedPack::verify(&lock, "es", bytes.clone()).unwrap();
+        assert_eq!((locked.lang(), locked.version()), (Lang::Es, "2026-11-05"));
+
+        let mut damaged = bytes.clone();
+        damaged[100] ^= 1;
+        let err = LockedPack::verify(&lock, "es", damaged).unwrap_err();
+        assert_eq!(err, PackInstallError::NotLocked);
+        assert_eq!(err.to_string(), "This pack does not match packs.lock.toml.");
+        let mut longer = bytes.clone();
+        longer.push(0);
+        assert_eq!(
+            LockedPack::verify(&lock, "es", longer).unwrap_err(),
+            PackInstallError::NotLocked
+        );
+        // The size must agree as well as the hash.
+        let wrong_size = lock.replace(&format!("bytes = {}", bytes.len()), "bytes = 1");
+        assert_eq!(
+            LockedPack::verify(&wrong_size, "es", bytes.clone()).unwrap_err(),
+            PackInstallError::NotLocked
+        );
+        for (lock, lang) in [
+            (lock.as_str(), "fr"),
+            (lock.as_str(), "it"),
+            (NO_PACKS, "es"),
+        ] {
+            assert_eq!(
+                LockedPack::verify(lock, lang, bytes.clone()).unwrap_err(),
+                PackInstallError::NotLocked,
+                "{lang}"
+            );
+        }
+    }
+
+    #[test]
+    fn installing_needs_a_started_course_and_takes_the_download_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        let lock = exact_lock(&bytes);
+        let mut app = parley_with(dir.path(), &lock, Box::new(crate::env::FailingNet));
+        let locked = LockedPack::verify(&lock, "es", bytes.clone()).unwrap();
+
+        let store = app.store.as_mut().unwrap();
+        let err = locked.install(store, &*app.env.fs).unwrap_err();
+        assert_eq!(err, PackInstallError::NotStarted(Lang::Es));
+        assert_eq!(err.to_string(), "Start the Spanish course in Parley first.");
+        assert!(!dir.path().join("packs").exists(), "nothing written");
+
+        app.course_start("es").unwrap();
+        // An older pack of the course is replaced.
+        std::fs::create_dir_all(dir.path().join("packs")).unwrap();
+        std::fs::write(dir.path().join("packs/es-2026-10-01.sqlite3"), b"old").unwrap();
+        let store = app.store.as_mut().unwrap();
+        store
+            .set_pack_version(Lang::Es, Some("2026-10-01"))
+            .unwrap();
+        let installed = locked.install(store, &*app.env.fs).unwrap();
+        assert_eq!(
+            serde_json::to_value(&installed).unwrap(),
+            serde_json::json!({"lang": "es", "version": "2026-11-05",
+                               "path": "packs/es-2026-11-05.sqlite3"})
+        );
+        assert_eq!(
+            std::fs::read(dir.path().join("packs/es-2026-11-05.sqlite3")).unwrap(),
+            bytes
+        );
+        assert!(!dir.path().join("packs/es-2026-11-05.sqlite3.part").exists());
+        assert!(!dir.path().join("packs/es-2026-10-01.sqlite3").exists());
+        let status = app.pack_status("es").unwrap();
+        assert_eq!(status.state, PackState::Installed);
+        assert_eq!(status.version.as_deref(), Some("2026-11-05"));
+        assert_eq!(status.bytes, Some(bytes.len() as u64));
+    }
+
+    #[test]
+    fn a_version_that_cannot_be_recorded_keeps_the_old_pack_and_drops_the_new_one() {
+        let dir = tempfile::tempdir().unwrap();
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        let lock = exact_lock(&bytes);
+        let mut app = parley_with(dir.path(), &lock, Box::new(crate::env::FailingNet));
+        app.course_start("es").unwrap();
+        std::fs::create_dir_all(dir.path().join("packs")).unwrap();
+        std::fs::write(dir.path().join("packs/es-2026-10-01.sqlite3"), b"old").unwrap();
+        app.store
+            .as_mut()
+            .unwrap()
+            .set_pack_version(Lang::Es, Some("2026-10-01"))
+            .unwrap();
+        // A second connection makes every later update of the course row fail.
+        let other = Connection::open(dir.path().join(super::super::STORE_FILE)).unwrap();
+        other
+            .execute_batch(
+                "CREATE TRIGGER refuse BEFORE UPDATE ON courses
+                 BEGIN SELECT RAISE(ABORT, 'refused'); END;",
+            )
+            .unwrap();
+        drop(other);
+
+        let locked = LockedPack::verify(&lock, "es", bytes).unwrap();
+        let store = app.store.as_mut().unwrap();
+        let err = locked.install(store, &*app.env.fs).unwrap_err();
+        assert!(
+            matches!(&err, PackInstallError::App(e) if e.code == ErrorCode::Storage),
+            "{err:?}"
+        );
+        assert_eq!(
+            std::fs::read(dir.path().join("packs/es-2026-10-01.sqlite3")).unwrap(),
+            b"old"
+        );
+        assert!(!dir.path().join("packs/es-2026-11-05.sqlite3").exists());
+        assert!(!dir.path().join("packs/es-2026-11-05.sqlite3.part").exists());
+        let course = app
+            .store
+            .as_ref()
+            .unwrap()
+            .course(Lang::Es)
+            .unwrap()
+            .unwrap();
+        assert_eq!(course.pack_version.as_deref(), Some("2026-10-01"));
+    }
+
+    #[test]
+    fn an_install_that_cannot_write_leaves_no_partial_file() {
+        let dir = tempfile::tempdir().unwrap();
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        let lock = exact_lock(&bytes);
+        let mut app = parley_with(dir.path(), &lock, Box::new(crate::env::FailingNet));
+        app.course_start("es").unwrap();
+        // A folder where the pack goes cannot be replaced by a file.
+        std::fs::create_dir_all(dir.path().join("packs/es-2026-11-05.sqlite3/inside")).unwrap();
+        let locked = LockedPack::verify(&lock, "es", bytes).unwrap();
+        let store = app.store.as_mut().unwrap();
+        let err = locked.install(store, &*app.env.fs).unwrap_err();
+        assert_eq!(err.to_string(), "Parley could not write that file.");
+        assert!(!dir.path().join("packs/es-2026-11-05.sqlite3.part").exists());
+        assert_eq!(
+            app.store
+                .as_ref()
+                .unwrap()
+                .course(Lang::Es)
+                .unwrap()
+                .unwrap()
+                .pack_version,
+            None
+        );
     }
 
     #[test]

@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/scenarios/bad-SC01.yaml: /: title_en is required"
+  ],
+  "warnings": []
+}

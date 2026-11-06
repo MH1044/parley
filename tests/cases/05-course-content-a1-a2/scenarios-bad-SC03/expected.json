@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "bad-SC03: 7 goals; a scenario has 3 to 6"
+  ],
+  "warnings": []
+}

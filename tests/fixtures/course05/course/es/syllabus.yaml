@@ -1,0 +1,92 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish fixture course for the course reports
+variety: Spain Spanish
+version: 1
+function_words: [el, la, los, las, un, una, "y", de, a, en, con, "no", que, qué]
+names: [Ana, Luis, Carmen, Pablo, Madrid]
+units:
+  - id: es.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye and say who I am.
+        requires: []
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: 24}
+          - {lemma: adiós, pos: intj, en: [goodbye, bye], rank: 2900}
+          - {lemma: bueno, pos: adj, en: [good], rank: 3}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: 21}
+          - {lemma: ser, pos: verb, en: [to be], rank: 1}
+          - {lemma: buenas noches, pos: expr, en: [good night, good evening], rank: null}
+        examples:
+          - {id: 1, target: "Hola, soy Ana.", en: ["Hello, I am Ana."]}
+          - {id: 2, target: "Buenos días, Luis.", en: ["Good morning, Luis."]}
+          - {id: 3, target: "Adiós, Ana.", en: ["Goodbye, Ana."]}
+          - {id: 4, target: "Buenas noches, Luis.", en: ["Good night, Luis."]}
+      - id: es.a1.u01.s02
+        kind: vocab
+        title: At home
+        cefr: A1
+        can_do: I can name a few things at home.
+        requires: [es.a1.u01.s01]
+        lemmas:
+          - {lemma: gato, pos: noun, gender: m, en: [cat], rank: 4}
+          - {lemma: mesa, pos: noun, gender: f, en: [table], rank: 14}
+          - {lemma: casa, pos: noun, gender: f, en: [house, home], rank: 9}
+          - {lemma: grande, pos: adj, en: [big, large], rank: 10}
+          - {lemma: estar, pos: verb, en: [to be], rank: 23}
+          - {lemma: perro, pos: noun, gender: m, en: [dog], rank: 1200}
+        examples:
+          - {id: 1, target: "La mesa es grande.", en: ["The table is big."]}
+          - {id: 2, target: "Los gatos están en la mesa.", en: ["The cats are on the table."]}
+          - {id: 3, target: "El perro está en casa.", en: ["The dog is at home."]}
+          - {id: 4, target: "El gato es grande.", en: ["The cat is big."]}
+  - id: es.a1.u02
+    title: Food and drink
+    cefr: A1
+    skills:
+      - id: es.a1.u02.s01
+        kind: vocab
+        title: Food and drink
+        cefr: A1
+        can_do: I can say what people eat and drink.
+        requires: []
+        lemmas:
+          - {lemma: pan, pos: noun, gender: m, en: [bread], rank: 16}
+          - {lemma: café, pos: noun, gender: m, en: [coffee], rank: 6}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: 19}
+          - {lemma: comer, pos: verb, en: [to eat], rank: 8}
+          - {lemma: tener, pos: verb, en: [to have], rank: 2}
+          - {lemma: leche, pos: noun, gender: f, en: [milk], rank: 1500}
+        examples:
+          - {id: 1, target: "El gato come pan.", en: ["The cat eats bread."]}
+          - {id: 2, target: "Tenemos agua y café.", en: ["We have water and coffee."]}
+          - {id: 3, target: "Ana come pan con leche.", en: ["Ana eats bread with milk."]}
+          - {id: 4, target: "Luis tiene café.", en: ["Luis has coffee."]}
+  - id: es.a2.u01
+    title: Around town
+    cefr: A2
+    skills:
+      - id: es.a2.u01.s01
+        kind: vocab
+        title: Around town
+        cefr: A2
+        can_do: I can say where people go and who they talk to.
+        requires: []
+        lemmas:
+          - {lemma: mercado, pos: noun, gender: m, en: [market], rank: 13}
+          - {lemma: pueblo, pos: noun, gender: m, en: [village, town], rank: 17}
+          - {lemma: ir, pos: verb, en: [to go], rank: 5}
+          - {lemma: casa, pos: noun, gender: f, en: [house, home], rank: 7}
+          - {lemma: amigo, pos: noun, gender: m, en: [friend], rank: 30}
+          - {lemma: hablar, pos: verb, en: [to speak, to talk], rank: 11}
+        examples:
+          - {id: 1, target: "Voy al mercado del pueblo.", en: ["I am going to the village market."]}
+          - {id: 2, target: "Luis habla con un amigo.", en: ["Luis is talking with a friend."]}
+          - {id: 3, target: "El pueblo tiene un mercado.", en: ["The village has a market."]}
+          - {id: 4, target: "Ana va a casa.", en: ["Ana is going home."]}

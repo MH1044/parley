@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/scenarios/bad-SC01.yaml: /: title_en is required",
+    "tests/fixtures/scenarios/bad-SC02.yaml: id must match the file name",
+    "bad-SC03: 7 goals; a scenario has 3 to 6",
+    "bad-SC04: turn_cap 21 is outside 6 to 20",
+    "bad-SC05: es: skill es.a1.u09.s01 does not exist",
+    "bad-SC05: es: skill es.a1.u01.s07 does not exist",
+    "bad-SC05: fr: skill fr.a1.u03.s01 does not exist",
+    "bad-SC06: es: opening uses \"pongo\", which the listed skills do not teach",
+    "bad-SC06: es: opening uses \"Café\", which the listed skills do not teach"
+  ],
+  "warnings": []
+}

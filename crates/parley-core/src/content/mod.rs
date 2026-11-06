@@ -1,6 +1,8 @@
 //! The content model (docs/modules/01-content-model-and-syllabus.md): the syllabus format and
 //! its validator, the tokeniser, the forms table, item derivation, the id lock and sentence
-//! packs.
+//! packs; and the course files of docs/modules/05-course-content-a1-a2.md: the grammar and
+//! functions checklist, the review status of each unit, the role-play scenarios and the course
+//! report.
 //!
 //! Content files and packs are inputs and build outputs, not learner data, so this module reads
 //! them by path; the `Fs` trait of [`crate::env`] stays the only way to the learner's data
@@ -14,19 +16,25 @@ use std::sync::OnceLock;
 
 use jsonschema::error::ValidationErrorKind;
 use jsonschema::{JsonType, Validator};
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use unicode_normalization::UnicodeNormalization;
 
+pub mod checklist;
 pub mod forms;
 pub mod items;
 pub mod lock;
 pub mod numbers;
 pub mod pack;
+pub mod report;
+pub mod review;
+pub mod scenario;
 pub mod syllabus;
 pub mod tokenise;
 pub mod validate;
 pub mod wiktextract;
 
+pub use checklist::{Checklist, ChecklistEntry, EntryKind, check_checklist, load_checklist};
 pub use forms::{FormRow, Forms};
 pub use items::{Accepted, Item, ItemKind, TaughtForms, derive_items};
 pub use lock::{IdsLock, LockReport, lock_items};
@@ -35,9 +43,18 @@ pub use pack::{
     Dropped, PackEntry, PackError, PackInfo, PackInput, PackReport, PacksLock, build_pack,
     pack_info, parse_packs_lock, verify_pack,
 };
+pub use report::{
+    CourseReport, FreqCheck, LevelCounts, PackStats, RankDiffers, RankMissing, SkillsPerUnit,
+    course_report, freq_check, read_pack_stats,
+};
+pub use review::{ReviewFile, ReviewStatus, UnitReview, check_review, load_review};
+pub use scenario::{
+    Goal, Scenario, ScenarioCourse, ScenarioLanguage, check_scenario, load_scenario,
+    validate_scenario_file,
+};
 pub use syllabus::{Cefr, Example, Gender, Lemma, Pos, Skill, SkillKind, Syllabus, Unit};
 pub use tokenise::{Token, TokenKind, tokenise};
-pub use validate::{Context, Report, validate};
+pub use validate::{Context, Report, check_ranks, validate};
 pub use wiktextract::{Extract, read_wiktextract, write_forms_tsv};
 
 /// A course language. Serialises as its two-letter code (`"es"`).
@@ -129,6 +146,9 @@ pub fn display_path(path: &Path) -> String {
 
 const SYLLABUS_SCHEMA: &str = include_str!("../../../../schemas/syllabus.schema.json");
 const ITEM_SCHEMA: &str = include_str!("../../../../schemas/item.schema.json");
+const SCENARIO_SCHEMA: &str = include_str!("../../../../schemas/scenario.schema.json");
+const CHECKLIST_SCHEMA: &str = include_str!("../../../../schemas/checklist.schema.json");
+const REVIEW_SCHEMA: &str = include_str!("../../../../schemas/review.schema.json");
 
 fn validator_from(schema: &str) -> Validator {
     let schema: serde_json::Value =
@@ -146,6 +166,24 @@ pub fn syllabus_validator() -> &'static Validator {
 pub fn item_validator() -> &'static Validator {
     static VALIDATOR: OnceLock<Validator> = OnceLock::new();
     VALIDATOR.get_or_init(|| validator_from(ITEM_SCHEMA))
+}
+
+/// The compiled `schemas/scenario.schema.json`.
+pub fn scenario_validator() -> &'static Validator {
+    static VALIDATOR: OnceLock<Validator> = OnceLock::new();
+    VALIDATOR.get_or_init(|| validator_from(SCENARIO_SCHEMA))
+}
+
+/// The compiled `schemas/checklist.schema.json`.
+pub fn checklist_validator() -> &'static Validator {
+    static VALIDATOR: OnceLock<Validator> = OnceLock::new();
+    VALIDATOR.get_or_init(|| validator_from(CHECKLIST_SCHEMA))
+}
+
+/// The compiled `schemas/review.schema.json`.
+pub fn review_validator() -> &'static Validator {
+    static VALIDATOR: OnceLock<Validator> = OnceLock::new();
+    VALIDATOR.get_or_init(|| validator_from(REVIEW_SCHEMA))
 }
 
 /// The article for a JSON type in a V01 message: `a string`, `an integer`, `null`.
@@ -257,9 +295,22 @@ pub(crate) fn read_text(path: &Path, file: &str) -> Result<String, ContentError>
 /// Parses syllabus text named `file` (the path as typed, used in every message): YAML first,
 /// then the JSON Schema, then the typed structure.
 pub fn parse_syllabus(file: &str, text: &str) -> Result<Syllabus, Vec<ContentError>> {
+    parse_yaml(file, text, syllabus_validator())
+}
+
+/// Parses a YAML content file named `file` against a schema, with V01's messages: a file that
+/// is not YAML gives `{file}: {parser message}`; every schema violation gives
+/// `{file}: {pointer}: {message}`; a value the schema accepts but the typed structure does not
+/// gives `{file}: /: {message}`. The checklist (CL01), review (RV01) and scenario (SC01) files
+/// use the same wording.
+pub(crate) fn parse_yaml<T: DeserializeOwned>(
+    file: &str,
+    text: &str,
+    validator: &Validator,
+) -> Result<T, Vec<ContentError>> {
     let value: serde_json::Value =
         serde_yaml_ng::from_str(text).map_err(|e| vec![ContentError(format!("{file}: {e}"))])?;
-    let errors = schema_errors(syllabus_validator(), &value);
+    let errors = schema_errors(validator, &value);
     if !errors.is_empty() {
         return Err(errors
             .into_iter()
@@ -267,6 +318,17 @@ pub fn parse_syllabus(file: &str, text: &str) -> Result<Syllabus, Vec<ContentErr
             .collect());
     }
     serde_json::from_value(value).map_err(|e| vec![ContentError(format!("{file}: /: {e}"))])
+}
+
+/// Reads and parses a YAML content file by path with [`parse_yaml`]; the file name in every
+/// message is the path as typed, with `/` separators.
+pub(crate) fn load_yaml<T: DeserializeOwned>(
+    path: &Path,
+    validator: &Validator,
+) -> Result<T, Vec<ContentError>> {
+    let file = display_path(path);
+    let text = read_text(path, &file).map_err(|e| vec![e])?;
+    parse_yaml(&file, &text, validator)
 }
 
 /// The spec's example syllabus and a forms table for it, shared by the unit tests.

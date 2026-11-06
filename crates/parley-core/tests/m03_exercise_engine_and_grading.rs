@@ -3031,7 +3031,10 @@ fn template_lesson_on_the_fixture_course() {
     }
 }
 
-/// One language of the seed content, as `parley lesson template` reads it from content/<l>/.
+/// One language of the seed content: the eight-skill Spanish and four-skill French and German
+/// course this module was written against, frozen in tests/fixtures/seed-course/<l>/ since the
+/// bundled course grew to full A1 and A2 syllabi (every skill of that course is covered by the
+/// module 05 tests and gate G3).
 struct SeedCourse {
     lang: Lang,
     syllabus: Syllabus,
@@ -3041,7 +3044,7 @@ struct SeedCourse {
 }
 
 fn seed_course(lang: Lang) -> SeedCourse {
-    let dir = format!("content/{}", lang.as_str());
+    let dir = format!("tests/fixtures/seed-course/{}", lang.as_str());
     let syllabus = syllabus_at(&format!("{dir}/syllabus.yaml"));
     let forms = forms_at(&format!("{dir}/forms.tsv"));
     let numbers = load_numbers(&read(&format!("{dir}/numbers.yaml")))

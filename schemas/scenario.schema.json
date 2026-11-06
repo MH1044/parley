@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley role-play scenario",
+  "description": "A role-play scenario (content/scenarios/<id>.yaml). The schema checks types, required fields, enumerations and the schema constant only; the id, goal count, turn cap, skills and opening are rules SC02 to SC06, so each has its own message.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "cefr", "title_en", "partner_role_en", "learner_role_en", "turn_cap", "goals", "languages"],
+  "properties": {
+    "schema": { "const": "parley.scenario/1" },
+    "id": { "type": "string" },
+    "cefr": { "enum": ["A1", "A2"] },
+    "title_en": { "type": "string" },
+    "partner_role_en": { "type": "string" },
+    "learner_role_en": { "type": "string" },
+    "turn_cap": { "type": "integer" },
+    "goals": { "type": "array", "items": { "$ref": "#/$defs/goal" } },
+    "languages": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "es": { "$ref": "#/$defs/language" },
+        "fr": { "$ref": "#/$defs/language" },
+        "de": { "$ref": "#/$defs/language" }
+      }
+    }
+  },
+  "$defs": {
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text_en"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "text_en": { "type": "string" }
+      }
+    },
+    "language": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["setting_en", "opening", "opening_en", "skills"],
+      "properties": {
+        "setting_en": { "type": "string" },
+        "opening": { "type": "string" },
+        "opening_en": { "type": "string" },
+        "skills": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      }
+    }
+  }
+}

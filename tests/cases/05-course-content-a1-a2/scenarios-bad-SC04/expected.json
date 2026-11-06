@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "bad-SC04: turn_cap 21 is outside 6 to 20"
+  ],
+  "warnings": []
+}

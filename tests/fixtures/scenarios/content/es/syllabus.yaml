@@ -1,0 +1,64 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish mini course for the scenario fixtures
+variety: Spain Spanish
+version: 1
+function_words: [el, la, un, una, "y", de, a, en, con, que, qué, le, me, usted]
+names: [Ana, Luis, Madrid]
+units:
+  - id: es.a1.u01
+    title: Hello
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Greetings
+        cefr: A1
+        can_do: I can say hello and goodbye.
+        requires: []
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello, hi], rank: null}
+          - {lemma: adiós, pos: intj, en: [goodbye], rank: null}
+          - {lemma: bueno, pos: adj, en: [good], rank: null}
+          - {lemma: día, pos: noun, gender: m, en: [day], rank: null}
+        examples:
+          - {id: 1, target: "Hola, Ana.", en: ["Hello, Ana."]}
+          - {id: 2, target: "Buenos días.", en: ["Good morning."]}
+          - {id: 3, target: "Adiós, Luis.", en: ["Goodbye, Luis."]}
+          - {id: 4, target: "Buenos días, Ana.", en: ["Good morning, Ana."]}
+  - id: es.a1.u02
+    title: At the café
+    cefr: A1
+    skills:
+      - id: es.a1.u02.s01
+        kind: vocab
+        title: Drinks
+        cefr: A1
+        can_do: I can ask for a drink.
+        requires: []
+        lemmas:
+          - {lemma: café, pos: noun, gender: m, en: [coffee], rank: null}
+          - {lemma: leche, pos: noun, gender: f, en: [milk], rank: null}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: null}
+          - {lemma: querer, pos: verb, en: [to want], rank: null}
+        examples:
+          - {id: 1, target: "Quiero un café.", en: ["I want a coffee."]}
+          - {id: 2, target: "Un café con leche.", en: ["A coffee with milk."]}
+          - {id: 3, target: "Ana quiere agua.", en: ["Ana wants water."]}
+          - {id: 4, target: "Quiero agua.", en: ["I want water."]}
+      - id: es.a1.u02.s02
+        kind: function
+        title: Ordering
+        cefr: A1
+        can_do: I can order and ask how much it is.
+        requires: [es.a1.u02.s01]
+        lemmas:
+          - {lemma: poner, pos: verb, en: [to put, to serve], rank: null}
+          - {lemma: cuánto, pos: pron, en: [how much], rank: null}
+          - {lemma: ser, pos: verb, en: [to be], rank: null}
+          - {lemma: gracias, pos: intj, en: [thank you, thanks], rank: null}
+        examples:
+          - {id: 1, target: "¿Qué le pongo?", en: ["What can I get you?"]}
+          - {id: 2, target: "¿Cuánto es?", en: ["How much is it?"]}
+          - {id: 3, target: "Un café, gracias.", en: ["A coffee, thank you."]}
+          - {id: 4, target: "Es un café con leche.", en: ["It is a coffee with milk."]}

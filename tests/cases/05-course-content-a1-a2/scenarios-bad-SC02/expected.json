@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "errors": [
+    "tests/fixtures/scenarios/bad-SC02.yaml: id must match the file name"
+  ],
+  "warnings": []
+}
