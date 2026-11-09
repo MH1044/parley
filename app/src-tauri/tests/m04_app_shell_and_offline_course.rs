@@ -2152,7 +2152,11 @@ fn contains_word(text: &str, word: &str) -> bool {
 
 #[test]
 fn t11_commands_are_one_list_in_core_ui_and_desktop() {
-    assert_eq!(COMMANDS, SPEC_COMMANDS.as_slice(), "the spec's table order");
+    assert_eq!(
+        &COMMANDS[..SPEC_COMMANDS.len()],
+        SPEC_COMMANDS.as_slice(),
+        "the spec's table order, before the commands later modules append"
+    );
     let app_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the app folder");

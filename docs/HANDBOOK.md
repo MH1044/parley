@@ -8,7 +8,8 @@ and every example in it has been run.
 Building from source (see `README.md`) gives:
 
 - the desktop app, which teaches offline: onboarding with a placement test, the learning path,
-  lessons and reviews, the streak and stats, settings, and backups (below);
+  lessons and reviews, the streak and stats, settings, and backups (below), and lets you set up AI
+  when you choose to: publik API, your own key or a local model, with a connection check;
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -26,7 +27,8 @@ npm --prefix app run build
 cargo run -p parley-app
 ```
 
-Everything below works with no network and no AI; nothing asks about AI yet.
+Everything below works with no network and no AI. Parley asks about AI only when you choose
+**Set up AI** (see *AI* below), never at launch or during onboarding.
 
 **First launch.** One step at a time: *Welcome to Parley* ("Learn by speaking. No hearts, no ads,
 nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
@@ -42,10 +44,12 @@ come back in your reviews.
 
 **The path.** Your streak ("3 day streak") and today's XP ("12 of 20 XP today"), then
 **Continue** (the next lesson of the first skill you can learn), **Review (n)** with the number of
-cards due, **Stats** and **Settings**. Below them every unit ("Unit 1: …") and its skills with
-their state: locked, available, learning, practised or mastered. A skill opens its detail: what
-you will be able to do, its words, and **Start lesson**; a locked skill says which skill to finish
-first.
+cards due, **Stats** and **Settings**. Before any AI is set up, a card says "Parley works without
+AI. Set it up for fresh lessons, answer checks and conversations." with **Set up AI**; once a
+provider is chosen, a chip says which ("AI: publik API" with the balance line under it, "AI: your
+own key" or "AI: local model"). Below them every unit ("Unit 1: …") and its skills with their
+state: locked, available, learning, practised or mastered. A skill opens its detail: what you will
+be able to do, its words, and **Start lesson**; a locked skill says which skill to finish first.
 
 **Lessons.** "Exercise 3 of 12" at the top, then one of: *What does el día mean?* (four choices),
 *Translate into Spanish* or *Translate into English* (typed, or built from a word bank when the
@@ -68,16 +72,53 @@ your first lesson: "Finish a lesson to see your stats."
 
 **Settings.** *Learning*: the daily goal, how accents are graded (an accent slip is almost right,
 wrong, or ignored), typing or word bank, exercises per lesson, new words per lesson and the target
-recall (80% to 95%). *Data*: **Export a backup** writes one JSON file (`parley.backup/1`, laid out
+recall (80% to 95%). *AI*: the three providers (see *AI* below). *Data*: **Export a backup** writes one JSON file (`parley.backup/1`, laid out
 in `docs/modules/04-app-shell-and-offline-course.md`) with your settings and progress, never a
 key, a cache or a pack; **Restore a backup** replaces all your progress on this computer with a
 backup's, after a warning; **Clear caches**; and **Delete everything**, once you type `delete`,
-which starts Parley afresh. *About*: the version, the folder your data is in, and the credits:
+which starts Parley afresh: your progress, settings, packs, AI answers and the publik API status
+are deleted. Two things stay, because they are not in the data folder: publik API's credential for
+this computer (it holds this computer's publik balance; **Disconnect** in Settings > AI forgets its
+key) and your own key in the operating system's keychain (**Remove my key** deletes it). *About*: the version, the folder your data is in, and the credits:
 example sentences from Tatoeba (CC BY 2.0 FR), word forms from Wiktionary (CC BY-SA 4.0).
 
+**AI.** **Set up AI** opens *Set up AI features*: what Parley sends through publik's servers
+(only what the AI feature you use needs; your progress, reviews and other recordings stay on this
+computer), publik's own disclosure word for word, "Everything else in Parley works without AI.",
+and three equal choices. **Continue with publik API** sets this computer up with publik API (a key
+made for this install, no key to paste) and shows the first-run card: the balance line ("$0.00 ·
+link this computer for $0.05 of free use"), what a use costs, and **Sign in with publik**, which
+opens publik's page in your browser to link this computer (once linked, **Add a plan or pack**).
+**Use my own key** and **Use a local model** open Settings > AI. **Not now** closes the dialog and
+sends nothing. If publik API cannot set this computer up, the dialog says why ("publik API is
+unreachable right now. Use your own key for now.") and the other two choices stay.
+
+*Settings > AI* always shows **publik API**, **Your own key** and **Local model**, in that order,
+with "In use" on the chosen one. publik API: the balance line, **Sign in with publik** or **Add a
+plan or pack**, **Use publik API** when another provider is chosen, and **Disconnect** (forgets
+this computer's key) or **Reconnect**. Your own key: **Base URL** (any OpenAI-compatible API,
+starting with `https://` or `http://`), **Key** (kept in the operating system's keychain and never
+shown again), **Chat model**, and optional transcription and speech models and voice; **Save my
+key** chooses it, **Remove my key** deletes it from the keychain. Local model: **Server address**
+(`http://localhost:11434/v1`, Ollama's, by default; it must be on this computer), **Find models**
+lists the chat models it offers, largest first with their sizes ("llama3.1:8b 4.7 GB"), and **Use
+this model** chooses one (without a choice, the largest is used). **Check connection** makes one
+tiny call to the chosen provider and says "Connected. This check cost $0.000017." (on publik API,
+with what it cost) or "Connected."; a problem shows one message and one way out: with no publik
+balance left, the message and one link (**Sign in with publik** until this computer is linked,
+then **Add a plan or pack**) "or use your own key or a local model in Settings"; a disconnected
+publik API, **Reconnect**; a busy provider or an answer that could not be used, **Try again**.
+Only the provider you chose is ever contacted, and publik API calls are never repeated by
+themselves, so nothing is paid for twice.
+
 **Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
-Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json` and,
-once downloaded, `packs/`. A settings file that cannot be read gives the default settings and
+Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json`,
+once downloaded, `packs/`, and, once AI is used, `cache/ai.sqlite3` (AI answers, so the same
+question is never paid for twice; **Clear caches** removes it) and `publik-status.json` (the
+publik API balance and status, never a key). publik API's own key for this computer is in publik's
+credential file (`%LOCALAPPDATA%\publik\apps\parley.json` on Windows,
+`~/.config/publik/apps/parley.json` on Linux), and your own key in the operating system's
+keychain. A settings file that cannot be read gives the default settings and
 says so once. A data file that cannot be opened shows "Parley could not open its data file." with
 **Restore a backup** and **Show details**.
 
@@ -88,6 +129,20 @@ error (the JSON report is still printed) or 2 on a usage error, which prints one
 error, such as `error: --out is required. Run parley --help.` or
 `error: content/es/syllabus.yaml not found`. In the examples `parley` stands for
 `cargo run -q -p parley-cli --`.
+
+One command is for the maintainer only and prints plain lines instead of JSON: `parley publik
+proof` (also `scripts/publik-proof`) makes one real publik API connection check, which costs a
+fraction of a cent, and prints the reply, the charge, every `x-publik-*` header and the model ids
+publik API lists, never the key. Without `PUBLIK_PROOF=1` in the environment it sends nothing:
+
+```
+parley publik proof
+This makes one real publik API call. Run it with PUBLIK_PROOF=1.
+```
+
+and exits 1. A built desktop app started with `PUBLIK_SELF_TEST=1` sets itself up with publik API
+(that is a real request), prints one line, `publik self-test: ok parley 0.1.0 (install 5f0c8a52)`
+or `publik self-test: failed: <why>`, and exits without opening a window.
 
 ### The course files
 
@@ -295,10 +350,10 @@ lists are empty; the command reports, and the author edits the ranks.
 
 ### Installing a pack for development: `parley pack install`
 
-The app cannot download a pack yet: until it gets its network connection (with the AI providers),
-**Download** says "You're offline. Parley works without the pack, with fewer example sentences.",
-and once it has one, until the packs are published as release assets, "The course pack could not
-be downloaded. Try again later." A pack built with `parley pack build` and pinned in
+The app downloads a pack from the release URL in `content/packs.lock.toml` and checks its
+SHA-256, but until the packs are published as release assets, **Download** says "The course pack
+could not be downloaded. Try again later." (offline: "You're offline. Parley works without the
+pack, with fewer example sentences."). A pack built with `parley pack build` and pinned in
 `content/packs.lock.toml` can be installed by hand instead:
 
 1. Start the course in the app (choose the language in onboarding), then close the app.
@@ -518,7 +573,7 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: AI through publik API, your own key or a local model, then
-fresh AI lessons and stories. The sentence packs are published as release assets before the first
-release; until then the app's Download button cannot fetch them, and `parley pack install` puts a
-locally built pack in place.
+In the order of `docs/ROADMAP.md`: fresh AI lessons and stories, then AI answer checks and
+explanations, through the provider set up in Settings > AI. The sentence packs are published as
+release assets before the first release; until then the app's Download button cannot fetch them,
+and `parley pack install` puts a locally built pack in place.

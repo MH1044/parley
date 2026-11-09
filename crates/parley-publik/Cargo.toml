@@ -9,3 +9,16 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+keyring = { workspace = true }
+parley-core = { workspace = true }
+reqwest = { workspace = true }
+rustls = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+sha2 = { workspace = true }
+tempfile = { workspace = true }
+# A runtime to call the transport from, as the desktop app's async commands do.
+tokio = { version = "1", default-features = false, features = ["rt"] }

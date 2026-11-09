@@ -18,6 +18,7 @@ rust-version = "1.90"
 
 [workspace.dependencies]
 parley-core = { path = "crates/parley-core" }
+parley-publik = { path = "crates/parley-publik" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # YAML for the syllabus and numbers files; reads `no`, `on` and `yes` as the strings they are
@@ -38,6 +39,23 @@ tauri-build = { version = "2", features = [] }
 # The native file picker for backups, called from Rust only, so the web view needs no dialog
 # permission.
 tauri-plugin-dialog = "2"
+# Opens the claim, top-up and add-credit links in the browser, called from Rust only, so the web view
+# needs no opener permission.
+tauri-plugin-opener = "2"
+# The HTTP transport of every AI call and pack download: blocking calls on a plain thread, rustls
+# for TLS with the operating system's certificate store, no crypto provider of its own (ring is
+# chosen below).
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "rustls-no-provider"] }
+# TLS. The ring provider builds with the C compiler alone (no CMake or NASM) on every platform the
+# app ships for; its licence is Apache-2.0 AND ISC.
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+# The learner's own key in the OS keychain (Windows Credential Manager, macOS Keychain, the Secret
+# Service on Linux over zbus, so no system D-Bus library is needed).
+keyring = "4"
+# The install id of the publik API reference module.
+uuid = { version = "1", features = ["v4"] }
+# AttachConsole for the built-app self-test on Windows.
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_Console"] }
 # The local UTC offset of the desktop clock; the clock feature only.
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 toml = "1"

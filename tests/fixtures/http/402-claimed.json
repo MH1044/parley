@@ -1,0 +1,17 @@
+{
+  "status": 402,
+  "headers": {
+    "content-type": "application/json",
+    "x-publik-balance": "0",
+    "x-publik-claim-state": "claimed",
+    "x-publik-request-id": "req_0403"
+  },
+  "body": {
+    "error": {
+      "type": "insufficient_balance",
+      "code": "insufficient_balance",
+      "message": "Your publik balance is $0.00. Add a plan or pack to keep using AI features.",
+      "top_up_url": "https://publikhq.com/wallet/add-credit?from=402"
+    }
+  }
+}

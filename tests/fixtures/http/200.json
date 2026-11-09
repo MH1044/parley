@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "x-publik-balance": "3120000",
+    "x-publik-charge-micros": "17",
+    "x-publik-request-id": "req_0001",
+    "x-publik-claim-state": "claimed",
+    "x-publik-starter-remaining": "40000",
+    "x-publik-week-used": "2017",
+    "x-publik-week-budget": "5000000",
+    "x-publik-week-resets-at": "2026-11-09T00:00:00Z"
+  },
+  "body": {
+    "id": "chatcmpl-0001",
+    "object": "chat.completion",
+    "created": 1762387200,
+    "model": "publik-fast",
+    "choices": [
+      {
+        "index": 0,
+        "message": { "role": "assistant", "content": "{\"ok\": true}" },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": { "prompt_tokens": 30, "completion_tokens": 5, "total_tokens": 35 }
+  }
+}

@@ -33,12 +33,26 @@ export const COMMANDS = [
   'stats_get',
   'backup_export',
   'backup_import',
+  'ai_status',
+  'ai_consent_accept',
+  'ai_consent_decline',
+  'ai_set_own_key',
+  'ai_clear_own_key',
+  'ai_local_probe',
+  'ai_set_local',
+  'ai_check_connection',
+  'ai_disconnect_publik',
+  'ai_reconnect_publik',
+  'ai_open_link',
 ] as const
 
 export type Command = (typeof COMMANDS)[number]
 
 /** The event `pack_download` reports its progress on. */
 export const PACK_PROGRESS_EVENT = 'pack://progress'
+
+/** The event every AI command that changes the status emits it on. */
+export const AI_STATUS_EVENT = 'ai://status'
 
 // Errors -----------------------------------------------------------------------------------------
 
@@ -342,6 +356,57 @@ export interface ImportReport {
   skipped_cards: number
 }
 
+export type AiProvider = 'unset' | 'publik' | 'own_key' | 'local'
+
+/** What the interface knows about AI. It never holds a key. */
+export interface AiStatus {
+  provider: AiProvider
+  needs_consent: boolean
+  connected: boolean
+  claim_state: string | null
+  balance_micros: number | null
+  balance_line: string | null
+  cost_sentence: string | null
+  claim_url: string | null
+  add_credit_url: string | null
+  top_up_url: string | null
+  needs_credit: boolean
+  last_charge_micros: number | null
+  last_request_id: string | null
+  starter_remaining_micros: number | null
+  week_used_micros: number | null
+  week_budget_micros: number | null
+  week_resets_at: string | null
+  own_key_stored: boolean
+  local_model: string | null
+}
+
+/** A model a local server offers, with its size in bytes when the server says. */
+export interface LocalModel {
+  name: string
+  bytes: number | null
+}
+
+/** The result of the connection check. */
+export interface ConnectionCheck {
+  ok: boolean
+  charge_micros: number | null
+  message: string
+}
+
+/** The learner's own OpenAI-compatible endpoint. The key goes to the keychain and never comes back. */
+export interface OwnKeyInput {
+  base_url: string
+  key: string
+  chat_model: string
+  transcribe_model: string | null
+  speech_model: string | null
+  speech_voice: string | null
+}
+
+/** The links of publik API the core holds; the interface names one, never a URL. */
+export type AiLink = 'claim' | 'top_up' | 'add_credit'
+
 // Commands, in COMMANDS order --------------------------------------------------------------------
 
 /**
@@ -465,6 +530,63 @@ export function backupImport(srcPath: string): Promise<ImportReport> {
   return call<ImportReport>('backup_import', { src_path: srcPath })
 }
 
+/** The AI status; `refresh` is true when Settings > AI opens (one wallet refresh on publik API). */
+export function aiStatus(refresh: boolean): Promise<AiStatus> {
+  return call<AiStatus>('ai_status', { refresh })
+}
+
+/** The learner said yes to publik API: provisions this computer when it must. */
+export function aiConsentAccept(): Promise<AiStatus> {
+  return call<AiStatus>('ai_consent_accept')
+}
+
+/** Not now: sends nothing, changes nothing. */
+export function aiConsentDecline(): Promise<AiStatus> {
+  return call<AiStatus>('ai_consent_decline')
+}
+
+export function aiSetOwnKey(input: OwnKeyInput): Promise<AiStatus> {
+  return call<AiStatus>('ai_set_own_key', {
+    base_url: input.base_url,
+    key: input.key,
+    chat_model: input.chat_model,
+    transcribe_model: input.transcribe_model,
+    speech_model: input.speech_model,
+    speech_voice: input.speech_voice,
+  })
+}
+
+export function aiClearOwnKey(): Promise<AiStatus> {
+  return call<AiStatus>('ai_clear_own_key')
+}
+
+/** The models a local server offers, largest first. */
+export function aiLocalProbe(baseUrl: string): Promise<LocalModel[]> {
+  return call<LocalModel[]>('ai_local_probe', { base_url: baseUrl })
+}
+
+/** Chooses the local server and a model, or none (the largest it offers). */
+export function aiSetLocal(baseUrl: string, chatModel: string | null): Promise<AiStatus> {
+  return call<AiStatus>('ai_set_local', { base_url: baseUrl, chat_model: chatModel })
+}
+
+export function aiCheckConnection(): Promise<ConnectionCheck> {
+  return call<ConnectionCheck>('ai_check_connection')
+}
+
+export function aiDisconnectPublik(): Promise<AiStatus> {
+  return call<AiStatus>('ai_disconnect_publik')
+}
+
+export function aiReconnectPublik(): Promise<AiStatus> {
+  return call<AiStatus>('ai_reconnect_publik')
+}
+
+/** Opens the claim, top-up or add-credit link in the browser. */
+export function aiOpenLink(kind: AiLink): Promise<null> {
+  return call<null>('ai_open_link', { kind })
+}
+
 // Events -----------------------------------------------------------------------------------------
 
 /**
@@ -479,6 +601,19 @@ export async function onPackProgress(
       handler(event.payload),
     )
     return unlisten
+  } catch {
+    return () => {}
+  }
+}
+
+/**
+ * Listens to AI status changes until the returned function is called. Where events are not
+ * available the handler is simply never called.
+ */
+export async function onAiStatus(handler: (status: AiStatus) => void): Promise<() => void> {
+  try {
+    const unlisten = await listen<AiStatus>(AI_STATUS_EVENT, (event) => handler(event.payload))
+    return typeof unlisten === 'function' ? unlisten : () => {}
   } catch {
     return () => {}
   }

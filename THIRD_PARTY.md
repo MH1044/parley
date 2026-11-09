@@ -11,22 +11,29 @@ get a row here when a module adds them.
 | tauri | Apache-2.0 OR MIT | The desktop shell |
 | tauri-build | Apache-2.0 OR MIT | Build-time setup of the Tauri crate |
 | tauri-plugin-dialog | Apache-2.0 OR MIT | The native file dialog for backups, called from Rust only so the web view needs no dialog permission (it brings tauri-plugin-fs, Apache-2.0 OR MIT, and rfd, MIT) |
+| tauri-plugin-opener | Apache-2.0 OR MIT | Opening publik API's claim, top-up and add-credit links in the browser, called from Rust only (`open_url`) so the web view needs no opener permission (it brings open, MIT) |
+| reqwest, blocking, with rustls and no crypto provider of its own | MIT OR Apache-2.0 | The one HTTP transport: AI calls (with server-sent events for streamed chat) and pack downloads; certificates checked against the operating system's store through rustls-platform-verifier (MIT OR Apache-2.0) |
+| rustls, with the ring provider | Apache-2.0 OR ISC OR MIT; ring is Apache-2.0 AND ISC | TLS for every request; ring builds with the C compiler alone on every platform the app ships for |
+| keyring, with its platform stores (keyring-core, windows-native-keyring-store, apple-native-keyring-store, zbus-secret-service-keyring-store) | MIT OR Apache-2.0 | The learner's own key in the operating system's keychain; on Linux the Secret Service is reached over zbus (MIT), so no system D-Bus library is needed (ADR-0013) |
+| uuid, with v4 | Apache-2.0 OR MIT | The random install id of the publik API reference module |
+| windows-sys (Windows only) | MIT OR Apache-2.0 | `AttachConsole`, so a release build started with `PUBLIK_SELF_TEST` prints its line in the console that started it |
 | chrono, with the clock feature only | MIT OR Apache-2.0 | The local UTC offset of the desktop clock, so a day of the streak is the learner's day |
 | serde | MIT OR Apache-2.0 | Serialisation of command results and errors |
 | serde_json | MIT OR Apache-2.0 | JSON output of the command-line tool, the fixture manifest, and the untyped pass of a syllabus before its schema check |
 | serde_yaml_ng | MIT | Reading `syllabus.yaml` and `numbers.yaml` (YAML 1.2: `no` and `yes` stay strings) |
-| jsonschema | MIT | JSON Schema checks of content, settings and backups (later: every AI response); built without its network resolver |
+| jsonschema | MIT | JSON Schema checks of content, settings, backups and every AI response; built without its network resolver |
 | rusqlite, with bundled SQLite | MIT; SQLite is public domain | Sentence packs and the learner's store (`parley.sqlite3`: course, items, cards, review log) |
 | fsrs | BSD-3-Clause | FSRS-6 scheduling of every card with the default parameters (no training); its `priority-queue` dependency, offered as LGPL-3.0-or-later OR MPL-2.0, is taken under MPL-2.0 |
 | unicode-segmentation | MIT OR Apache-2.0 | UAX #29 word boundaries in the tokeniser |
 | unicode-normalization | MIT OR Apache-2.0 | Unicode NFC for every comparison of words |
 | strsim | MIT | Optimal string alignment distance between words, for typo tolerance in grading |
 | toml | MIT OR Apache-2.0 | Reading `content/packs.lock.toml` (and `deny.toml`, `Cargo.toml` in tests) |
-| sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures, pack checksums, the content hash and forms-table headers (later: cache keys) |
+| sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures, pack checksums, the content hash and forms-table headers, AI cache keys and idempotency keys |
 | regex (tests only) | MIT OR Apache-2.0 | The source-hygiene test's patterns |
 | ignore (tests only) | Unlicense OR MIT | The source-hygiene test's fallback walk, honouring `.gitignore` |
 | libtest-mimic (tests only) | MIT OR Apache-2.0 | One test per golden case directory |
 | tempfile (tests only) | MIT OR Apache-2.0 | Temporary directories in tests |
+| tokio, with the rt feature (tests only; already part of reqwest) | MIT | Calling the HTTP transport from inside an async runtime in its tests, as the desktop app's commands do |
 
 ## npm packages (registry.npmjs.org)
 

@@ -1,6 +1,6 @@
 //! The real environment the desktop app gives the core: the system clock with the local UTC
 //! offset, files under the app data directory, and a time-seeded generator. The network is
-//! `parley_core::env::FailingNet` until the HTTP transport arrives (module 06).
+//! `parley_publik::http::HttpNet`, the AI transport (module 06).
 
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};

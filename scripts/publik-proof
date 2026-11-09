@@ -1,0 +1,10 @@
+#!/bin/sh
+# The maintainer's proof of the publik API wiring (docs/PUBLIK-CONTRACT.md §11): one real
+# connection check, which costs money. It prints the reply, the charge, every x-publik-* header
+# and the model ids publik API lists, never the key. Without PUBLIK_PROOF=1 it sends nothing.
+#
+#   PUBLIK_PROOF=1 scripts/publik-proof
+
+set -eu
+cd "$(dirname "$0")/.."
+exec cargo run -q -p parley-cli -- publik proof "$@"

@@ -5,7 +5,8 @@
 //! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`), the
 //! grading, lesson and streak commands of module 03 (`grade`, `lesson template`,
 //! `streak simulate`), the course commands of module 05 (`content scenarios`, `content report`,
-//! `freq check`, `pack install`) and, from later modules, the others (docs/ARCHITECTURE.md §2).
+//! `freq check`, `pack install`), the maintainer's `publik proof` of module 06 and, from later
+//! modules, the others (docs/ARCHITECTURE.md §2).
 //! Every command prints one JSON object on standard output, exits 0 on success, 1 on a content
 //! error and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
 
@@ -26,7 +27,8 @@ const HELP: &str = "Usage: parley <command> [options]
        parley --version [--json]
        parley --help
 
-Parley's command-line tool. Every command prints one JSON object on standard output.
+Parley's command-line tool. Every command but publik proof prints one JSON object on standard
+output.
 
   content validate <file-or-dir> [--forms <forms.tsv>] [--json]
       Check a syllabus, or every <dir>/<lang>/syllabus.yaml (es, fr, de). The forms table is
@@ -94,6 +96,11 @@ Parley's command-line tool. Every command prints one JSON object on standard out
       ({\"today\":\"YYYY-MM-DD\",\"utc_offset_minutes\":n,\"goal_xp\":n,
       \"sessions\":[{\"started_at\":ms,\"xp\":n},...]}); prints the length, freezes, frozen
       days, freeze events, days and records. Exit 1 on a file that is not a days file.
+  publik proof
+      For the maintainer only: one real publik API connection check, which costs money. Refuses
+      and sends nothing unless PUBLIK_PROOF=1 is set; then provisions this computer if it must,
+      and prints the reply, the charge, every x-publik-* header and the ids GET /models lists,
+      never the key. scripts/publik-proof runs it.
   --version, -V   print the version (with --json: {\"name\":\"parley\",\"version\":\"...\"})
   --help, -h      print this help
 
@@ -111,6 +118,7 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
         Some("lesson") => return cmd::lesson::run(&args[1..], out, err),
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
         Some("placement") => return cmd::placement::run(&args[1..], out, err),
+        Some("publik") => return cmd::publik::run(&args[1..], out, err),
         Some("srs") => return cmd::srs::run(&args[1..], out, err),
         Some("streak") => return cmd::streak::run(&args[1..], out, err),
         _ => {}
@@ -317,6 +325,7 @@ mod tests {
             (&["placement"][..], "placement simulate"),
             (&["lesson"][..], "lesson template"),
             (&["streak"][..], "streak simulate"),
+            (&["publik"][..], "publik proof"),
         ] {
             let (code, out, err) = run_capture(args);
             assert_eq!(code, 2, "{args:?}");

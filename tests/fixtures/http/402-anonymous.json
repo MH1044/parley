@@ -1,0 +1,17 @@
+{
+  "status": 402,
+  "headers": {
+    "content-type": "application/json",
+    "x-publik-balance": "0",
+    "x-publik-claim-state": "anonymous",
+    "x-publik-request-id": "req_0402"
+  },
+  "body": {
+    "error": {
+      "type": "insufficient_balance",
+      "code": "insufficient_balance",
+      "message": "This computer has $0.00 of publik balance. Link it to a publik account for $0.05 of free use.",
+      "top_up_url": "https://publikhq.com/claim/5f0c8a52?from=402"
+    }
+  }
+}

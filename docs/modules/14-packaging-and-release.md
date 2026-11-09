@@ -38,6 +38,14 @@ notes saying the course awaits native-speaker review.
   redirect, reading the tag from `Location`; `User-Agent: Parley/<version>` and nothing else; off in
   development builds and switchable in Settings > About.
 - CI `macos` job running `scripts/verify` and a bundle build.
+- Usage reports to publik (maintainer decision, 2026-11-09; publik's `skills/telemetry.md` and its
+  Rust file fetched again with `curl` at implementation): `app_opened` once per launch and
+  `active_session` every 30 minutes after it, `POST {base_url}/telemetry`, sent **only while
+  `ai.provider = publik`**, never before the learner has chosen publik API, so a launch with
+  `unset`, `own_key` or `local` sends nothing and invariant I9 holds. No key and no content: only
+  the fields publik's file lists (the slug `parley`, the version, the event, the platform). A switch
+  in Settings > AI, "Send publik anonymous usage reports" (`ai.usage_reports`, default on), stops
+  them. `SECURITY.md` and ARCHITECTURE §8 list the call and its condition.
 - `RELEASING.md`: the tag flow, the notes rule, what Windows SmartScreen and macOS Gatekeeper show
   for unsigned builds and how testers get past them.
 - `THIRD_PARTY.md` complete: every direct dependency, the Whisper models, Tatoeba and Wiktionary.
@@ -48,6 +56,7 @@ notes saying the course awaits native-speaker review.
 
 - `.github/workflows/{release.yml,packs.yml,ci.yml}`, `app/src-tauri/icons/*`, `app/src-tauri/tauri.conf.json`
 - `crates/parley-core/src/update.rs`, `app/src/screens/Settings/About.tsx`
+- `crates/parley-publik/src/telemetry.rs`, `app/src/screens/Settings/AiSection.tsx`, `schemas/settings.schema.json`
 - `RELEASING.md`, `THIRD_PARTY.md`, `docs/LISTING.md`, `docs/releases/0.9.0.md`, `docs/HANDBOOK.md`
 - `crates/parley-core/tests/m14_packaging_and_release.rs`
 
@@ -95,6 +104,16 @@ YAML files; the release run itself is the evidence for the bundles.
 12. Every pack named in `content/packs.lock.toml` has `bytes` of at most 60,000,000, and the built
     file in `data-cache/packs/` has exactly that size (measured from the file; skipped with module
     05's message when the pack is not built).
+13. Usage reports, against the fake server with a clock the test sets: with `ai.provider` =
+    `unset`, `own_key` or `local`, or with `ai.usage_reports` off, a launch and two hours of running
+    send no request to publik API; with `publik` and the switch on, one `app_opened` at launch, then
+    one `active_session` at 30, 60, 90 and 120 minutes; choosing publik API while running starts
+    them, and choosing another provider or turning the switch off stops them before the next one.
+14. A usage report carries no `Authorization` or `x-api-key` header, no `pk_` string anywhere, and
+    no content: its body has exactly the fields publik's telemetry file lists, and none of the
+    learner's text, answers, settings or file names.
+15. `SECURITY.md` and `docs/ARCHITECTURE.md` §8 list `POST /telemetry` with its condition (only
+    while publik API is the chosen provider, and the switch).
 
 ## Status
 

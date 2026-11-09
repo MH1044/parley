@@ -2,6 +2,7 @@
 //! into `parley_core::app::Parley` and its result or `AppError` back out, and nothing more. The
 //! web view passes argument names in snake case, as the command table writes them.
 
+pub mod ai;
 pub mod app;
 pub mod backup;
 pub mod course;

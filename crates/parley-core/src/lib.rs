@@ -13,11 +13,13 @@
 //! [`exercise`] (exercise types, structural checks, template lessons, the composer and the lesson
 //! runner) and [`game`] (XP, streaks with earned freezes, the weekly record), with sessions,
 //! lessons, judgements and the daily record in the store. Module 04 adds [`app`] (the service
-//! every desktop command calls), [`settings`] and [`backup`]. Later modules add the AI features,
-//! one folder each.
+//! every desktop command calls), [`settings`] and [`backup`]. Module 06 adds [`ai`]: the client
+//! trait every AI feature calls, the call pipeline with its cache and idempotency keys, prompt
+//! files and their schemas. Later modules add the AI features, one file each under `ai`.
 
 #![forbid(unsafe_code)]
 
+pub mod ai;
 pub mod api;
 pub mod app;
 pub mod backup;

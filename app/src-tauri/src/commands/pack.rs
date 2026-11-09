@@ -1,8 +1,8 @@
 //! `pack_status` and `pack_download`, which reports its progress as `pack://progress` events.
 
 use parley_core::api::PackStatus;
-use parley_core::error::AppError;
-use tauri::{Emitter, State};
+use parley_core::error::{AppError, ErrorCode};
+use tauri::{Emitter, Manager, State};
 
 use crate::state::AppState;
 
@@ -14,17 +14,24 @@ pub fn pack_status(state: State<'_, AppState>, lang: String) -> Result<PackStatu
     state.with(|p| p.pack_status(&lang))
 }
 
-/// Async, so the download never blocks the window.
+/// Async, with the download itself on a blocking thread, so it never blocks the window or the
+/// async runtime.
 #[tauri::command(rename_all = "snake_case")]
-pub async fn pack_download(
-    app: tauri::AppHandle,
-    state: State<'_, AppState>,
-    lang: String,
-) -> Result<PackStatus, AppError> {
-    state.with(|p| {
-        p.pack_download(&lang, &mut |progress| {
-            // A window that cannot hear the event still gets the result.
-            let _ = app.emit(PROGRESS_EVENT, &progress);
+pub async fn pack_download(app: tauri::AppHandle, lang: String) -> Result<PackStatus, AppError> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        state.with(|p| {
+            p.pack_download(&lang, &mut |progress| {
+                // A window that cannot hear the event still gets the result.
+                let _ = app.emit(PROGRESS_EVENT, &progress);
+            })
         })
     })
+    .await
+    .map_err(|_| {
+        AppError::new(
+            ErrorCode::PackMissing,
+            "The course pack could not be downloaded. Try again later.",
+        )
+    })?
 }

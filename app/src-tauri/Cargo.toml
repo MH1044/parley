@@ -24,10 +24,17 @@ tauri-build = { workspace = true }
 [dependencies]
 chrono = { workspace = true }
 parley-core = { workspace = true }
+parley-publik = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true }
 tauri-plugin-dialog = { workspace = true }
+tauri-plugin-opener = { workspace = true }
+
+# The built-app self-test attaches to the console that started a release build (which has no
+# console of its own on Windows) before it prints its line.
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }

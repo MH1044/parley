@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
 import {
+  aiStatus,
   errorMessage,
   lessonStart,
+  onAiStatus,
   pathGet,
   reviewStart,
   skillGet,
+  type AiStatus,
   type LessonStarted,
   type PathView,
   type SkillDetail as Detail,
 } from '../../api/commands'
+import AiChip from '../../components/AiChip'
+import AiSetupDialog from '../../components/AiSetupDialog'
 import StreakBadge from '../../components/StreakBadge'
+import type { SettingsTab } from '../Settings/Settings'
 import { languageName, t } from '../../strings'
 import { stateLabel } from './labels'
 import SkillDetail from './SkillDetail'
@@ -24,7 +30,8 @@ interface Props {
   /** A review found nothing due: its notice. */
   onNothingToReview: (notice: string) => void
   onStats: () => void
-  onSettings: () => void
+  /** Opens Settings, on its AI part when the learner chose their own key or a local model. */
+  onSettings: (tab?: SettingsTab) => void
 }
 
 /** The learning path: units and skills in order, the streak, today's XP, and the way in. */
@@ -33,6 +40,26 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
   const [detail, setDetail] = useState<Detail | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  // Nothing AI-related shows until ai_status answers, and nothing while it fails.
+  const [ai, setAi] = useState<AiStatus | null>(null)
+  const [setup, setSetup] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    aiStatus(false).then(
+      (status) => {
+        if (!cancelled && status) setAi(status)
+      },
+      () => {},
+    )
+    const unlisten = onAiStatus((status) => {
+      if (!cancelled) setAi(status)
+    })
+    return () => {
+      cancelled = true
+      void unlisten.then((stop) => stop())
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -129,11 +156,30 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
           <button type="button" onClick={onStats}>
             {t('path.stats')}
           </button>
-          <button type="button" onClick={onSettings}>
+          <button type="button" onClick={() => onSettings()}>
             {t('path.settings')}
           </button>
         </nav>
+        {ai && ai.provider !== 'unset' && <AiChip status={ai} />}
       </header>
+      {ai?.provider === 'unset' && (
+        <section className="ai-card">
+          <p>{t('ai.card.text')}</p>
+          <button type="button" onClick={() => setSetup(true)}>
+            {t('ai.card.set_up')}
+          </button>
+        </section>
+      )}
+      {setup && (
+        <AiSetupDialog
+          onStatus={setAi}
+          onClose={() => setSetup(false)}
+          onChooseOther={() => {
+            setSetup(false)
+            onSettings('ai')
+          }}
+        />
+      )}
       {error && (
         <p role="alert" className="error">
           {error}

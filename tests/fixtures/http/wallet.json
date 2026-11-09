@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "balance_micros": 2500000,
+    "add_credit_url": "https://publikhq.com/wallet/add-credit",
+    "top_up_url": "https://publikhq.com/wallet/top-up",
+    "claim_state": "claimed",
+    "week_used_micros": 4000,
+    "week_budget_micros": 5000000,
+    "week_resets_at": "2026-11-16T00:00:00Z"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "status": 201,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "key": "pk_live_a",
+    "key_id": "key_a",
+    "base_url": "{base_url}",
+    "install_id": "5f0c8a52-6e0b-4c55-9a3e-2a3f1d9b7c11",
+    "claim_url": "https://publikhq.com/claim/5f0c8a52",
+    "claim_state": "anonymous",
+    "balance_micros": 0,
+    "wallet": {
+      "balance_micros": 0,
+      "add_credit_url": "https://publikhq.com/wallet/add-credit",
+      "top_up_url": "https://publikhq.com/claim/5f0c8a52?from=wallet",
+      "claim_state": "anonymous"
+    },
+    "disclosure": {
+      "version": 1,
+      "cost": "A typical use costs about $0.01 on publik-balanced and $0.001 on publik-fast.",
+      "data_path": "Your prompts go through publik's servers to the model."
+    }
+  }
+}

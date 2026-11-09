@@ -20,8 +20,8 @@ Every licence is checked again at the module that adds the dependency ("verify a
 | Scheduler | `fsrs` (open-spaced-repetition) | BSD-3-Clause (repository page, 2026-09-29; recheck 02) | Current best open scheduler |
 | Language ID | `whatlang` | MIT (repository page, 2026-09-29; recheck 07) | Pure Rust, covers en, es, fr, de |
 | Stemming fallback | `rust-stemmers` (Snowball) | MIT / BSD-3-Clause (verify 07) | Coverage check for forms missing from the forms table |
-| HTTP | `reqwest` with rustls | MIT OR Apache-2.0 (06) | One transport on desktop and Android; streaming |
-| Own-key storage | `keyring` | MIT OR Apache-2.0 (verify 06) | OS keychain on desktop |
+| HTTP | `reqwest` with rustls and the ring provider | MIT OR Apache-2.0; ring Apache-2.0 AND ISC (06) | One transport on desktop and Android; streaming |
+| Own-key storage | `keyring` 4 | MIT OR Apache-2.0 (06; ADR-0013) | OS keychain on desktop |
 | Hashing | `sha2` | MIT OR Apache-2.0 (01) | Cache keys, pack checksums |
 | Audio I/O | `cpal` (capture), `rodio` (playback) | Apache-2.0; MIT OR Apache-2.0 (verify 09, 10) | Cross-platform, Android support |
 | Resampling, WAV | `rubato`, `hound` | MIT; Apache-2.0 (verify 10) | 16 kHz mono for transcription |
@@ -273,12 +273,12 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `stats_get` | `lang` | `Stats` | 04 |
 | `backup_export` / `backup_import` | `dest_path` / `src_path` | `ExportSummary` / `ImportReport` | 04 |
 | `course_pack_export` / `course_pack_import` | `lang, dest_path` / `src_path` | `ExportSummary` / `ImportReport` | 07 |
-| `ai_status` | | `AiStatus` (also `ai://status`) | 06 |
+| `ai_status` | `refresh` (true when Settings opens) | `AiStatus` (also `ai://status`) | 06 |
 | `ai_consent_accept` / `ai_consent_decline` | | `AiStatus` | 06 |
 | `ai_set_own_key` | `base_url, key, chat_model, transcribe_model?, speech_model?, speech_voice?` | `AiStatus` | 06 |
 | `ai_clear_own_key` | | `AiStatus` | 06 |
 | `ai_local_probe` / `ai_set_local` | `base_url` / `base_url, chat_model?` | `[LocalModel]` / `AiStatus` | 06 |
-| `ai_check_connection` | | `{ok, charge_micros?}` | 06 |
+| `ai_check_connection` | | `{ok, charge_micros?, message}` | 06 |
 | `ai_disconnect_publik` / `ai_reconnect_publik` | | `AiStatus` | 06 |
 | `ai_open_link` | `kind: claim/top_up/add_credit` | `()` | 06 |
 | `voices_list` | `lang` | `[Voice {id, name, source, installed}]` | 09 |
@@ -369,6 +369,7 @@ with `PUBLIK_SELF_TEST` set, and then exits.
 | 0010 iOS | Proposed: **maintainer decides** after module 13 | later, needs an Apple developer account | in v1 |
 | 0011 No server | Accepted | streak, XP and records are local; no leagues | a leaderboard server (accounts, moderation, cost) |
 | 0012 Module order | Accepted | offline app (04) before Publik (06) | UI last (AI features would be untestable by hand for months) |
+| 0013 Own-key keychain | Accepted | the learner's own key in the OS keychain through `keyring` (zbus on Linux), behind a small trait; the exit is the platform APIs | `keyring` 3 with the system D-Bus library; a key file in the data directory |
 
 ## 10. Platforms
 

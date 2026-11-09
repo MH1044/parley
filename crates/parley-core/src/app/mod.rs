@@ -18,7 +18,9 @@ use crate::content::{Forms, Item, Lang, Syllabus, derive_items, load_numbers, pa
 use crate::env::{Clock, Fs, FsError, Net, Rng};
 use crate::error::{AppError, ErrorCode};
 use crate::exercise::LessonRun;
-use crate::settings::{SETTINGS_FILE, SETTINGS_NOTICE, Settings, apply_patch, parse_settings};
+use crate::settings::{
+    AiSettings, SETTINGS_FILE, SETTINGS_NOTICE, Settings, apply_patch, parse_settings,
+};
 use crate::srs::Placement;
 use crate::store::{Store, StoreError};
 
@@ -345,6 +347,14 @@ impl Parley {
         let next = apply_patch(&self.settings, patch)?;
         self.save_settings(next.clone())?;
         Ok(next)
+    }
+
+    /// Saves the AI settings an AI command changed (the provider, the own key's endpoint and
+    /// models, the local server), through the same checks as `settings_set`. The own key itself is
+    /// never part of them.
+    pub fn save_ai_settings(&mut self, ai: &AiSettings) -> Result<Settings, AppError> {
+        let ai = serde_json::to_value(ai).expect("AI settings serialise");
+        self.settings_set(&json!({ "ai": ai }))
     }
 
     /// Writes the settings file and keeps the settings.

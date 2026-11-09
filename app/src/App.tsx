@@ -5,7 +5,7 @@ import Lesson from './screens/Lesson/Lesson'
 import Onboarding from './screens/Onboarding/Onboarding'
 import Path from './screens/Path/Path'
 import Review from './screens/Review/Review'
-import Settings from './screens/Settings/Settings'
+import Settings, { type SettingsTab } from './screens/Settings/Settings'
 import Stats from './screens/Stats/Stats'
 import { t } from './strings'
 
@@ -19,7 +19,7 @@ type Screen =
   | { name: 'lesson'; lang: string; started: LessonStarted }
   | { name: 'review_empty'; lang: string; notice: string }
   | { name: 'stats'; lang: string }
-  | { name: 'settings'; lang: string }
+  | { name: 'settings'; lang: string; tab?: SettingsTab }
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'loading' })
@@ -95,7 +95,7 @@ export default function App() {
           onStart={(started) => setScreen({ name: 'lesson', lang, started })}
           onNothingToReview={(text) => setScreen({ name: 'review_empty', lang, notice: text })}
           onStats={() => setScreen({ name: 'stats', lang })}
-          onSettings={() => setScreen({ name: 'settings', lang })}
+          onSettings={(tab) => setScreen({ name: 'settings', lang, tab })}
         />
       )
       break
@@ -124,7 +124,13 @@ export default function App() {
     }
     case 'settings': {
       const lang = screen.lang
-      body = <Settings onBack={() => setScreen({ name: 'path', lang })} onRestart={restart} />
+      body = (
+        <Settings
+          initialTab={screen.tab}
+          onBack={() => setScreen({ name: 'path', lang })}
+          onRestart={restart}
+        />
+      )
       break
     }
   }

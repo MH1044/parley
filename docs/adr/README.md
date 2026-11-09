@@ -17,6 +17,7 @@ reverse, each with what was rejected and why. `docs/ARCHITECTURE.md` §9 summari
 | [0010](0010-ios.md) | iOS: later | Proposed (maintainer decides after module 13) |
 | [0011](0011-no-server.md) | No server: streaks, XP and records are local; no leagues | Accepted |
 | [0012](0012-module-order.md) | Module order: the offline app before publik API | Accepted |
+| [0013](0013-own-key-keychain.md) | The learner's own key in the OS keychain through keyring | Accepted |
 
 ## Rules
 

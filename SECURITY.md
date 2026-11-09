@@ -26,8 +26,11 @@ Out of scope: a compromised operating-system account, which can read any local f
 ## Every network call the app can make
 
 This is the complete list (`docs/ARCHITECTURE.md` §8). Nothing else contacts the network, and a
-test proves that only the chosen provider is ever contacted (invariant I9). At version 0.1.0 none of
-these calls exists yet; each arrives with the module named.
+test proves that only the chosen provider is ever contacted (invariant I9). At version 0.1.0 the
+course pack download and the AI calls exist; the others arrive with the module named. Every request
+goes through one transport (reqwest with rustls, the operating system's certificate store); a
+request to `localhost` never goes through a proxy, and no request body of 4,000,000 bytes or more is
+ever sent (invariant I10).
 
 1. **Course pack download** (module 04): from the release URLs pinned in `content/packs.lock.toml`,
    on explicit user action, with the size shown first and the SHA-256 verified.
@@ -43,7 +46,10 @@ these calls exists yet; each arrives with the module named.
      `GET /models` is made only by developers during implementation and by the maintainer's
      `scripts/publik-proof`. The built-app self-test makes one `POST /installs` only when the desktop
      app is started with `PUBLIK_SELF_TEST` set, and then exits.
-   - The learner's own OpenAI-compatible base URL, with their key.
+   - The learner's own OpenAI-compatible base URL, with their key: `/chat/completions`, and
+     `/audio/transcriptions` and `/audio/speech` once a transcription or speech model is set.
+     Own-key and local calls are retried twice (after 1 s and 4 s) on a connection error, a
+     timeout or a 5xx; publik API calls are never retried.
    - A local model server on `localhost` (`/v1/models`, Ollama's `/api/tags`,
      `/v1/chat/completions`), which never contacts publikhq.com.
 
@@ -51,13 +57,21 @@ What each AI feature sends, and what never leaves the machine, is listed feature
 `docs/PUBLIK-INTEGRATION.md` §10, and the consent screen says it in one sentence before the first
 AI action (never at launch or in onboarding, invariant I12).
 
-The provisioning request carries a `device_name` field only if the learner opts in, and then a
-generic label (`Windows PC`, `Mac`, `Linux PC`, `Android phone`), never the hostname.
+The provisioning request (`POST /installs`) carries a `device_name` field only if the learner opts
+in (`ai.share_device_name`, off by default), and then a generic label (`Windows PC`, `Mac`,
+`Linux PC`, `Android phone`), never the hostname. Its other fields are the public app token, the
+app's slug and version, the operating system and processor architecture, a random install id, the
+disclosure version and the API dialect.
 
 ## Keys
 
 - The publik API key rides only in the `Authorization` header: never a query string, a command
-  line, a log line or a file inside the app data directory.
+  line, a log line or a file inside the app data directory. It is written to the publik credential
+  file before anything else sees it; **Disconnect** revokes it (`POST /installs/revoke`, best
+  effort) and forgets it, keeping only the install id so reconnecting makes no second install.
+- The learner's own key goes from the Settings field straight to the operating system's keychain
+  (service `org.parley.app`, user `own_key`) and is never sent back to the interface; the field is
+  never filled in again.
 - The app token in `crates/parley-publik/publik-app-token.txt` is public by design: it can only
   mint keys capped to this app.
 - Keys never appear in error messages, the status object, events, or anything the interface

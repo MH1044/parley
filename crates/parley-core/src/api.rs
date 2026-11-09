@@ -39,7 +39,22 @@ pub const COMMANDS: &[&str] = &[
     "stats_get",
     "backup_export",
     "backup_import",
+    // Module 06: AI providers.
+    "ai_status",
+    "ai_consent_accept",
+    "ai_consent_decline",
+    "ai_set_own_key",
+    "ai_clear_own_key",
+    "ai_local_probe",
+    "ai_set_local",
+    "ai_check_connection",
+    "ai_disconnect_publik",
+    "ai_reconnect_publik",
+    "ai_open_link",
 ];
+
+/// The event every AI command that changes the status emits it on, with the [`crate::ai::AiStatus`].
+pub const AI_STATUS_EVENT: &str = "ai://status";
 
 /// The version shared by every crate and the app (the workspace version in Cargo.toml).
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -414,8 +429,10 @@ mod tests {
             serde_json::to_string(&status).unwrap(),
             r#"{"lang":"es","state":"not_published","version":null,"bytes":null,"size":null}"#
         );
-        assert_eq!(COMMANDS.len(), 23);
+        assert_eq!(COMMANDS.len(), 34);
         assert_eq!(COMMANDS[0], "app_start");
         assert_eq!(COMMANDS[22], "backup_import");
+        assert_eq!(COMMANDS[23], "ai_status");
+        assert_eq!(COMMANDS[33], "ai_open_link");
     }
 }

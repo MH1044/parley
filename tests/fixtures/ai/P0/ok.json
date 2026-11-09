@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "x-publik-charge-micros": "17",
+    "x-publik-request-id": "req_p0_ok"
+  },
+  "body": {
+    "id": "chatcmpl-p0",
+    "object": "chat.completion",
+    "created": 1762387200,
+    "model": "publik-fast",
+    "choices": [
+      {
+        "index": 0,
+        "message": { "role": "assistant", "content": "{\"ok\": true}" },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": { "prompt_tokens": 30, "completion_tokens": 5, "total_tokens": 35 }
+  }
+}

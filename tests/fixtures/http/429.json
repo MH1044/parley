@@ -1,0 +1,12 @@
+{
+  "status": 429,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "error": {
+      "type": "rate_limited",
+      "message": "Too many requests from this computer. Wait a minute, then try again."
+    }
+  }
+}

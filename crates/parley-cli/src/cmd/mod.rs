@@ -7,7 +7,8 @@
 //! errors, which print one line on standard error and nothing on standard output:
 //! `error: {path} not found`, `error: {flag} is required. Run parley --help.` or
 //! `error: unknown argument {arg}. Run parley --help.`. A path in a message is the path as
-//! typed, with `/` as the separator.
+//! typed, with `/` as the separator. `publik proof` (module 06) prints lines for a person, not
+//! JSON.
 
 pub mod content;
 pub mod forms;
@@ -16,6 +17,7 @@ pub mod grade;
 pub mod lesson;
 pub mod pack;
 pub mod placement;
+pub mod publik;
 pub mod report;
 pub mod srs;
 pub mod streak;

@@ -323,7 +323,8 @@ fn t11_failing_net_returns_disabled() {
 
 // Bullet 12: twelve ADRs, indexed, each with a Status line; 0009 and 0010 Proposed, the rest
 // Accepted (0003 was Proposed at module 00 and was accepted with CC BY-SA 4.0 before module 01);
-// every document the Scope names exists.
+// every document the Scope names exists. Later modules add records after the twelve (0013 at
+// module 06), in sequence and indexed like them.
 #[test]
 fn t12_adrs_and_documents_exist() {
     let root = repo_root();
@@ -338,7 +339,7 @@ fn t12_adrs_and_documents_exist() {
         })
         .collect();
     adr_files.sort();
-    assert_eq!(adr_files.len(), 12, "ADR files: {adr_files:?}");
+    assert!(adr_files.len() >= 12, "ADR files: {adr_files:?}");
 
     for (i, path) in adr_files.iter().enumerate() {
         let number = i + 1;

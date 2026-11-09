@@ -1,0 +1,12 @@
+{
+  "status": 500,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "error": {
+      "type": "server_error",
+      "message": "The model provider failed."
+    }
+  }
+}
