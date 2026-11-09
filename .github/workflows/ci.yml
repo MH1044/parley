@@ -77,13 +77,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # WebKitWebDriver is packaged as webkitgtk-webdriver from Ubuntu 26.04 (the ubuntu-latest
+      # image since November 2026) and as webkit2gtk-driver before it; both come from the same
+      # webkit2gtk source, so the job installs whichever the image's archive has.
       - name: Linux prerequisites for Tauri, the WebKit driver and a virtual display
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
+          if apt-cache show webkitgtk-webdriver > /dev/null 2>&1; then
+            driver=webkitgtk-webdriver
+          else
+            driver=webkit2gtk-driver
+          fi
           sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev \
             libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev \
-            webkit2gtk-driver xvfb
+            "$driver" xvfb
+          command -v WebKitWebDriver
 
       - uses: actions/setup-node@v5
         with:

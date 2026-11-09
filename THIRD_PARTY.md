@@ -57,7 +57,7 @@ get a row here when a module adds them.
 | Swatinem/rust-cache | MIT | Caching Cargo builds in continuous integration |
 | taiki-e/install-action | Apache-2.0 OR MIT | Installing cargo-deny in continuous integration |
 | tauri-driver | Apache-2.0 OR MIT | The launch smoke in continuous integration: a W3C WebDriver server in front of the platform's driver |
-| WebKitWebDriver (Ubuntu's webkit2gtk-driver), Microsoft Edge WebDriver, Xvfb | the platform's own terms | The platform WebDriver tauri-driver talks to, and a virtual display on Linux; installed on the runner by the e2e job, never shipped or linked |
+| WebKitWebDriver (Ubuntu's webkitgtk-webdriver from 26.04, webkit2gtk-driver before), Microsoft Edge WebDriver, Xvfb | the platform's own terms | The platform WebDriver tauri-driver talks to, and a virtual display on Linux; installed on the runner by the e2e job, never shipped or linked |
 | py-fsrs 6.3.2, run with uv | py-fsrs MIT; uv MIT OR Apache-2.0 | Recording the FSRS reference values in `tests/cases/02-srs-and-learner-model/fsrs_reference.json` with `scripts/reference/fsrs_reference.py`, run once, never in the build |
 
 ## Models
