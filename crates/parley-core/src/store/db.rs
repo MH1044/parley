@@ -25,9 +25,10 @@ use crate::srs::{
 };
 
 /// Every migration in order; migration `n` is `MIGRATIONS[n - 1]` and sets `user_version` to n.
-const MIGRATIONS: [&str; 2] = [
+const MIGRATIONS: [&str; 3] = [
     include_str!("migrations/0001_init.sql"),
     include_str!("migrations/0002_sessions.sql"),
+    include_str!("migrations/0003_stories.sql"),
 ];
 
 /// The columns of a card, in the order [`card_from_row`] reads them.
@@ -981,6 +982,239 @@ impl Store {
         Ok(highest.map_or(1, |seq| u32::try_from(seq.max(0) + 1).unwrap_or(u32::MAX)))
     }
 
+    /// How many lesson sessions of a skill have started: the lesson a skill plays next is
+    /// number 1 + this (module 07), so an imported lesson stored at that number plays next.
+    pub fn lesson_sessions(&self, skill_id: &str) -> Result<u32, StoreError> {
+        self.sessions_of(skill_id, "lesson")
+    }
+
+    /// How many story sessions of a skill have started; the story it plays next is 1 + this.
+    pub fn story_sessions(&self, skill_id: &str) -> Result<u32, StoreError> {
+        self.sessions_of(skill_id, "story")
+    }
+
+    fn sessions_of(&self, skill_id: &str, kind: &str) -> Result<u32, StoreError> {
+        let count: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM sessions WHERE skill_id = ?1 AND kind = ?2",
+            params![skill_id, kind],
+            |row| row.get(0),
+        )?;
+        Ok(u32::try_from(count).unwrap_or(u32::MAX))
+    }
+
+    /// The stored lesson of a skill at `seq`, if there is one that still reads.
+    pub fn stored_lesson(&self, skill_id: &str, seq: u32) -> Result<Option<Lesson>, StoreError> {
+        let content: Option<String> = self
+            .conn
+            .query_row(
+                "SELECT content FROM lessons WHERE skill_id = ?1 AND seq = ?2",
+                params![skill_id, seq],
+                |row| row.get(0),
+            )
+            .optional()?;
+        Ok(content.and_then(|text| serde_json::from_str(&text).ok()))
+    }
+
+    /// The stored story of a skill at `seq` with its origin (`ai` or `course_pack`), if there is
+    /// one that still reads.
+    pub fn stored_story(
+        &self,
+        skill_id: &str,
+        seq: u32,
+    ) -> Result<Option<(crate::ai::Story, String)>, StoreError> {
+        let row: Option<(String, String)> = self
+            .conn
+            .query_row(
+                "SELECT content, origin FROM stories WHERE skill_id = ?1 AND seq = ?2",
+                params![skill_id, seq],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .optional()?;
+        Ok(row.and_then(|(text, origin)| {
+            serde_json::from_str(&text)
+                .ok()
+                .map(|story| (story, origin))
+        }))
+    }
+
+    /// Stores an AI story at `seq` (a story already stored there is kept).
+    pub(crate) fn put_story(
+        &mut self,
+        lang: Lang,
+        skill_id: &str,
+        seq: u32,
+        story: &crate::ai::Story,
+        now_ms: i64,
+    ) -> Result<(), StoreError> {
+        self.conn.execute(
+            "INSERT INTO stories (id, lang, skill_id, seq, origin, prompt_id, content, created_at)
+             VALUES (?1, ?2, ?3, ?4, 'ai', ?5, ?6, ?7)
+             ON CONFLICT DO NOTHING",
+            params![
+                format!("{skill_id}/story/{seq}"),
+                lang.as_str(),
+                skill_id,
+                seq,
+                crate::ai::STORY_PROMPT_ID,
+                serde_json::to_string(story).expect("a story serialises"),
+                now_ms
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// Stores imported lessons and stories in one transaction, each at its skill's next number
+    /// (1 + the highest stored), with origin `course_pack`; all or nothing.
+    pub(crate) fn import_pack_rows(
+        &mut self,
+        lang: Lang,
+        lessons: &[(Lesson, Option<String>)],
+        stories: &[(String, crate::ai::Story, Option<String>)],
+        now_ms: i64,
+    ) -> Result<(), StoreError> {
+        let tx = self.conn.transaction()?;
+        for (lesson, prompt_id) in lessons {
+            let highest: Option<i64> = tx.query_row(
+                "SELECT MAX(seq) FROM lessons WHERE skill_id = ?1",
+                [&lesson.skill_id],
+                |row| row.get(0),
+            )?;
+            let seq = highest.map_or(1, |seq| seq.max(0) + 1);
+            let mut stored = lesson.clone();
+            stored.seq = u32::try_from(seq).unwrap_or(u32::MAX);
+            tx.execute(
+                "INSERT INTO lessons (id, lang, skill_id, seq, origin, prompt_id, content,
+                   created_at)
+                 VALUES (?1, ?2, ?3, ?4, 'course_pack', ?5, ?6, ?7)",
+                params![
+                    format!("{}/{seq}", lesson.skill_id),
+                    lang.as_str(),
+                    lesson.skill_id,
+                    seq,
+                    prompt_id,
+                    serde_json::to_string(&stored).expect("a lesson serialises"),
+                    now_ms
+                ],
+            )?;
+        }
+        for (skill_id, story, prompt_id) in stories {
+            let highest: Option<i64> = tx.query_row(
+                "SELECT MAX(seq) FROM stories WHERE skill_id = ?1",
+                [skill_id],
+                |row| row.get(0),
+            )?;
+            let seq = highest.map_or(1, |seq| seq.max(0) + 1);
+            tx.execute(
+                "INSERT INTO stories (id, lang, skill_id, seq, origin, prompt_id, content,
+                   created_at)
+                 VALUES (?1, ?2, ?3, ?4, 'course_pack', ?5, ?6, ?7)",
+                params![
+                    format!("{skill_id}/story/{seq}"),
+                    lang.as_str(),
+                    skill_id,
+                    seq,
+                    prompt_id,
+                    serde_json::to_string(story).expect("a story serialises"),
+                    now_ms
+                ],
+            )?;
+        }
+        tx.commit()?;
+        Ok(())
+    }
+
+    /// Every stored lesson of a language with its prompt id, by skill (syllabus order) then
+    /// number; a lesson whose content no longer reads is left out.
+    pub fn lessons_of(&self, lang: Lang) -> Result<Vec<(Lesson, Option<String>)>, StoreError> {
+        let mut statement = self.conn.prepare(
+            "SELECT l.content, l.prompt_id FROM lessons l LEFT JOIN skills s ON s.id = l.skill_id
+             WHERE l.lang = ?1 ORDER BY s.ord, l.skill_id, l.seq",
+        )?;
+        let rows = statement.query_map([lang.as_str()], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, Option<String>>(1)?))
+        })?;
+        let mut lessons = Vec::new();
+        for row in rows {
+            let (content, prompt_id) = row?;
+            if let Ok(lesson) = serde_json::from_str::<Lesson>(&content) {
+                lessons.push((lesson, prompt_id));
+            }
+        }
+        Ok(lessons)
+    }
+
+    /// Every stored story of a language: (skill, story, prompt id), by skill then number.
+    pub fn stories_of(
+        &self,
+        lang: Lang,
+    ) -> Result<Vec<(String, crate::ai::Story, Option<String>)>, StoreError> {
+        let mut statement = self.conn.prepare(
+            "SELECT t.skill_id, t.content, t.prompt_id FROM stories t
+             LEFT JOIN skills s ON s.id = t.skill_id
+             WHERE t.lang = ?1 ORDER BY s.ord, t.skill_id, t.seq",
+        )?;
+        let rows = statement.query_map([lang.as_str()], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, String>(1)?,
+                row.get::<_, Option<String>>(2)?,
+            ))
+        })?;
+        let mut stories = Vec::new();
+        for row in rows {
+            let (skill_id, content, prompt_id) = row?;
+            if let Ok(story) = serde_json::from_str(&content) {
+                stories.push((skill_id, story, prompt_id));
+            }
+        }
+        Ok(stories)
+    }
+
+    /// The skills of a language with at least one introduced item, in syllabus order.
+    pub fn introduced_skills(&self, lang: Lang) -> Result<Vec<String>, StoreError> {
+        let mut statement = self.conn.prepare(
+            "SELECT s.id FROM skills s WHERE s.lang = ?1 AND EXISTS (SELECT 1 FROM items i
+               JOIN cards c ON c.item_id = i.id WHERE i.skill_id = s.id)
+             ORDER BY s.ord",
+        )?;
+        let rows = statement.query_map([lang.as_str()], |row| row.get::<_, String>(0))?;
+        Ok(rows.collect::<Result<Vec<_>, _>>()?)
+    }
+
+    /// The AI summaries of the newest lessons a provider wrote, newest first, at most `limit`.
+    pub fn recent_ai_lessons(
+        &self,
+        provider: &str,
+        limit: usize,
+    ) -> Result<Vec<crate::ai::LessonAiInfo>, StoreError> {
+        let mut statement = self.conn.prepare(
+            "SELECT content FROM lessons
+             WHERE json_extract(content, '$.ai.provider') = ?1
+             ORDER BY created_at DESC, rowid DESC LIMIT ?2",
+        )?;
+        let rows = statement.query_map(params![provider, limit as i64], |row| {
+            row.get::<_, String>(0)
+        })?;
+        let mut found = Vec::new();
+        for row in rows {
+            if let Ok(lesson) = serde_json::from_str::<Lesson>(&row?)
+                && let Some(ai) = lesson.ai
+            {
+                found.push(ai);
+            }
+        }
+        Ok(found)
+    }
+
+    /// Adds an AI call's charge to a session's cost.
+    pub(crate) fn add_session_cost(&mut self, id: &str, micros: i64) -> Result<(), StoreError> {
+        self.conn.execute(
+            "UPDATE sessions SET cost_micros = cost_micros + ?2 WHERE id = ?1",
+            params![id, micros.max(0)],
+        )?;
+        Ok(())
+    }
+
     /// Every `daily` row, by date.
     pub fn daily(&self) -> Result<Vec<DayRow>, StoreError> {
         daily_in(&self.conn)
@@ -1005,7 +1239,7 @@ impl Store {
             tx.execute(
                 "INSERT INTO lessons (id, lang, skill_id, seq, origin, prompt_id, content,
                    created_at)
-                 VALUES (?1, ?2, ?3, ?4, ?5, NULL, ?6, ?7)
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
                  ON CONFLICT DO NOTHING",
                 params![
                     format!("{}/{}", lesson.skill_id, lesson.seq),
@@ -1013,6 +1247,7 @@ impl Store {
                     lesson.skill_id,
                     lesson.seq,
                     lesson.origin.as_str(),
+                    lesson.ai.map(|_| crate::ai::LESSON_PROMPT_ID),
                     content,
                     start.started_at
                 ],
@@ -1176,11 +1411,11 @@ mod tests {
     }
 
     #[test]
-    fn a_new_file_gets_the_twelve_tables_and_version_2() {
+    fn a_new_file_gets_the_thirteen_tables_and_version_3() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("parley.sqlite3");
         let store = Store::open(&path).unwrap();
-        assert_eq!(store.user_version().unwrap(), 2);
+        assert_eq!(store.user_version().unwrap(), 3);
         let tables = count(
             &store,
             "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name IN
@@ -1193,20 +1428,25 @@ mod tests {
              ('sessions','lessons','judgements','daily','freeze_events')",
         );
         assert_eq!(tables, 5, "the tables of 0002_sessions");
+        let tables = count(
+            &store,
+            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'stories'",
+        );
+        assert_eq!(tables, 1, "the table of 0003_stories");
         let all = count(
             &store,
             "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'",
         );
-        assert_eq!(all, 12);
+        assert_eq!(all, 13);
         let foreign_keys = count(&store, "PRAGMA foreign_keys");
         assert_eq!(foreign_keys, 1);
         drop(store);
         let again = Store::open(&path).unwrap();
-        assert_eq!(again.user_version().unwrap(), 2, "reopening runs nothing");
+        assert_eq!(again.user_version().unwrap(), 3, "reopening runs nothing");
     }
 
     #[test]
-    fn a_version_1_file_is_migrated_to_version_2() {
+    fn a_version_1_file_is_migrated_to_the_newest() {
         let dir = tempfile::tempdir().unwrap();
         let path = dir.path().join("parley.sqlite3");
         let conn = Connection::open(&path).unwrap();
@@ -1216,9 +1456,10 @@ mod tests {
             .unwrap();
         drop(conn);
         let store = Store::open(&path).unwrap();
-        assert_eq!(store.user_version().unwrap(), 2);
+        assert_eq!(store.user_version().unwrap(), 3);
         assert_eq!(count(&store, "SELECT COUNT(*) FROM meta"), 1);
         assert_eq!(count(&store, "SELECT COUNT(*) FROM daily"), 0);
+        assert_eq!(count(&store, "SELECT COUNT(*) FROM stories"), 0);
     }
 
     #[test]
@@ -1604,6 +1845,7 @@ mod tests {
             seq,
             origin: crate::exercise::Origin::Template,
             exercises: Vec::new(),
+            ai: None,
         }
     }
 

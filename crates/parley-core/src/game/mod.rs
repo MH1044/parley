@@ -8,4 +8,4 @@ pub mod xp;
 pub use streak::{
     DayRow, FreezeEvent, FreezeKind, StreakState, WEEKLY_RECORD, streak, weekly_record,
 };
-pub use xp::{SessionKind, SessionResult, xp_for};
+pub use xp::{SessionKind, SessionResult, story_xp, xp_for};

@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import {
   aiCheckConnection,
+  aiLessonChecks,
   aiClearOwnKey,
   aiConsentAccept,
   aiDisconnectPublik,
@@ -13,6 +14,7 @@ import {
   asAppError,
   onAiStatus,
   settingsGet,
+  settingsSet,
   type AiLink,
   type AiStatus,
   type AppError,
@@ -21,7 +23,15 @@ import {
 import AiBanner from '../../components/AiBanner'
 import AiSetupDialog from '../../components/AiSetupDialog'
 import BalanceLine from '../../components/BalanceLine'
-import { t } from '../../strings'
+import { t, type StringKey } from '../../strings'
+
+/** The AI lesson settings Settings > AI switches, with their labels (module 07). */
+type LessonSwitch = 'fresh_lessons' | 'prepare_next_lesson' | 'stories'
+const LESSON_SWITCHES: [LessonSwitch, StringKey][] = [
+  ['fresh_lessons', 'ai.settings.fresh_lessons'],
+  ['prepare_next_lesson', 'ai.settings.prepare_next'],
+  ['stories', 'ai.settings.stories'],
+]
 
 /** The default local server: Ollama's OpenAI-compatible endpoint. */
 const DEFAULT_SERVER = 'http://localhost:11434/v1'
@@ -83,6 +93,9 @@ export default function AiSection() {
   const [speechVoice, setSpeechVoice] = useState('')
   const [server, setServer] = useState(DEFAULT_SERVER)
   const [models, setModels] = useState<LocalModel[] | null>(null)
+  // The AI lesson switches (module 07) and the local model's validity rate.
+  const [switches, setSwitches] = useState<Record<LessonSwitch, boolean> | null>(null)
+  const [checks, setChecks] = useState<string | null>(null)
 
   const titles = {
     publik: useId(),
@@ -110,6 +123,17 @@ export default function AiSection() {
         setSpeechModel(own.speech_model ?? '')
         setSpeechVoice(own.speech_voice ?? '')
         setServer(settings.ai.local.base_url || DEFAULT_SERVER)
+        setSwitches({
+          fresh_lessons: settings.ai.fresh_lessons,
+          prepare_next_lesson: settings.ai.prepare_next_lesson,
+          stories: settings.ai.stories,
+        })
+      },
+      () => {},
+    )
+    aiLessonChecks().then(
+      (found) => {
+        if (!cancelled) setChecks(found?.message ?? null)
       },
       () => {},
     )
@@ -121,6 +145,17 @@ export default function AiSection() {
       void unlisten.then((stop) => stop())
     }
   }, [])
+
+  /** Turns one AI lesson switch; on a refusal it goes back. */
+  async function flip(which: LessonSwitch, on: boolean) {
+    setSwitches((all) => (all ? { ...all, [which]: on } : all))
+    try {
+      await settingsSet({ ai: { [which]: on } })
+    } catch (reason) {
+      setSwitches((all) => (all ? { ...all, [which]: !on } : all))
+      setError(toError(reason))
+    }
+  }
 
   /** Runs one action; a failure shows its banner (or the setup dialog when consent is needed). */
   async function run(action: () => Promise<void>, again?: () => void) {
@@ -297,6 +332,7 @@ export default function AiSection() {
         {provider === 'local' && status?.local_model && (
           <p>{t('ai.settings.model_in_use', { model: status.local_model })}</p>
         )}
+        {provider === 'local' && checks && <p className="validity">{checks}</p>}
         {models && models.length === 0 && <p>{t('ai.settings.no_models')}</p>}
         {models && models.length > 0 && (
           <ul className="models" aria-label={t('ai.settings.models')}>
@@ -312,6 +348,23 @@ export default function AiSection() {
           </ul>
         )}
       </section>
+
+      {switches && (
+        <fieldset className="lesson-switches">
+          <legend>{t('ai.settings.lessons')}</legend>
+          {LESSON_SWITCHES.map(([which, label]) => (
+            <label key={which} className="switch">
+              <input
+                type="checkbox"
+                role="switch"
+                checked={switches[which]}
+                onChange={(event) => void flip(which, event.target.checked)}
+              />
+              {t(label)}
+            </label>
+          ))}
+        </fieldset>
+      )}
 
       <div className="actions">
         <button type="button" disabled={busy} onClick={() => void checkConnection()}>

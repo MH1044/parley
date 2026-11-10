@@ -302,6 +302,7 @@ fn lesson_of(exercises: Vec<Exercise>) -> Lesson {
         seq: 1,
         origin: Origin::Template,
         exercises,
+        ai: None,
     }
 }
 
@@ -4061,8 +4062,9 @@ fn architecture_statements() -> Vec<(String, String)> {
 
 // Bullet 21: migration 0002 on a version-1 file (made from 0001_init.sql as module 02 wrote it)
 // creates sessions, lessons, judgements, daily and freeze_events with the columns of
-// ARCHITECTURE §4, their two indexes and §4's SQL verbatim, keeps the existing rows, and sets
-// user_version 2. A new file opens at version 2 with the twelve tables.
+// ARCHITECTURE §4, their two indexes and §4's SQL verbatim, and keeps the existing rows. Since
+// module 07 the file then goes on through migration 0003 (stories), so it ends at user_version 3
+// with thirteen tables, and a new file opens at version 3 with the same thirteen.
 #[test]
 fn t21_migration_0002_on_a_version_1_file() {
     let dir = tempfile::tempdir().unwrap();
@@ -4078,16 +4080,16 @@ fn t21_migration_0002_on_a_version_1_file() {
         conn.pragma_update(None, "user_version", 1).unwrap();
     }
     let store = ok(Store::open(&path));
-    assert_eq!(ok(store.user_version()), 2);
+    assert_eq!(ok(store.user_version()), 3);
     drop(store);
 
     let conn = Connection::open(&path).unwrap();
-    assert_eq!(query::<i64>(&conn, "PRAGMA user_version"), 2);
+    assert_eq!(query::<i64>(&conn, "PRAGMA user_version"), 3);
     assert_eq!(
         query::<String>(&conn, "SELECT value FROM meta WHERE key = 'kept'"),
         "yes"
     );
-    let twelve = [
+    let thirteen = [
         "accepted_answers",
         "cards",
         "courses",
@@ -4100,8 +4102,9 @@ fn t21_migration_0002_on_a_version_1_file() {
         "review_log",
         "sessions",
         "skills",
+        "stories",
     ];
-    assert_eq!(user_tables(&conn), twelve);
+    assert_eq!(user_tables(&conn), thirteen);
     for (table, columns) in session_tables() {
         let expected: Vec<ColumnInfo> = columns
             .iter()
@@ -4182,10 +4185,10 @@ fn t21_migration_0002_on_a_version_1_file() {
 
     let fresh = dir.path().join("new.sqlite3");
     let store = ok(Store::open(&fresh));
-    assert_eq!(ok(store.user_version()), 2);
+    assert_eq!(ok(store.user_version()), 3);
     drop(store);
-    assert_eq!(user_tables(&Connection::open(&fresh).unwrap()), twelve);
-    assert_eq!(ok(ok(Store::open_in_memory()).user_version()), 2);
+    assert_eq!(user_tables(&Connection::open(&fresh).unwrap()), thirteen);
+    assert_eq!(ok(ok(Store::open_in_memory()).user_version()), 3);
 }
 
 // ---------------------------------------------------------------------------------------------

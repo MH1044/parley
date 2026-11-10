@@ -25,7 +25,7 @@ pub use db::Store;
 pub(crate) use db::{SessionEnd, SessionStart};
 pub use dump::{
     AnswerDump, CardDump, CourseDump, DailyDump, FreezeDump, ItemDump, JudgementDump, LessonDump,
-    RestoreReport, ReviewDump, SessionDump, Tables,
+    RestoreReport, ReviewDump, SessionDump, StoryDump, Tables,
 };
 
 /// One row of `items`, with its JSON columns read.

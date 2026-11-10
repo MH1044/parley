@@ -12,6 +12,7 @@ publish = false
 fsrs = { workspace = true }
 jsonschema = { workspace = true }
 rusqlite = { workspace = true }
+rust-stemmers = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml_ng = { workspace = true }
@@ -20,6 +21,7 @@ strsim = { workspace = true }
 toml = { workspace = true }
 unicode-normalization = { workspace = true }
 unicode-segmentation = { workspace = true }
+whatlang = { workspace = true }
 
 [dev-dependencies]
 ignore = { workspace = true }

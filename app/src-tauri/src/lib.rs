@@ -59,6 +59,10 @@ pub fn run() {
             commands::ai::ai_disconnect_publik,
             commands::ai::ai_reconnect_publik,
             commands::ai::ai_open_link,
+            commands::lesson::lesson_use_course_pack,
+            commands::lesson::course_pack_export,
+            commands::lesson::course_pack_import,
+            commands::lesson::ai_lesson_checks,
         ])
         .run(tauri::generate_context!())
         .expect("Parley could not open its window");

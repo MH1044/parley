@@ -1,0 +1,66 @@
+schema: parley.syllabus/1
+lang: es
+name: Spanish test course for lesson generation
+variety: Spain Spanish, usted and tú both allowed
+version: 1
+# The function words and lemmas are those of the P1 example in docs/PUBLIK-INTEGRATION.md §6.3, so
+# the allowed lemma list of es.a1.u03.s01 (with es.a1.u01.s01 introduced) is the example's list,
+# in the example's order: function words first, then lemmas by frequency rank.
+function_words: [el, la, un, una, "y", de, en, a, "no", sí, yo, tú, usted]
+names: [Ana, Luis, Madrid]
+units:
+  - id: es.a1.u01
+    title: Basics
+    cefr: A1
+    skills:
+      - id: es.a1.u01.s01
+        kind: function
+        title: Basics
+        cefr: A1
+        can_do: I can say what I want and thank someone.
+        requires: []
+        lemmas:
+          - {lemma: ser, pos: verb, en: [to be], rank: 10}
+          - {lemma: estar, pos: verb, en: [to be located], rank: 20}
+          - {lemma: tener, pos: verb, en: [to have], rank: 30}
+          - {lemma: querer, pos: verb, en: [to want], rank: 40}
+          - {lemma: por favor, pos: expr, en: [please], rank: 50}
+          - {lemma: gracias, pos: intj, en: [thank you], rank: 60}
+        examples: []
+      - id: es.a1.u01.s02
+        kind: function
+        title: Hello
+        cefr: A1
+        can_do: I can say hello and goodbye.
+        requires: [es.a1.u01.s01]
+        lemmas:
+          - {lemma: hola, pos: intj, en: [hello], rank: 300}
+          - {lemma: adiós, pos: intj, en: [goodbye], rank: 400}
+          - {lemma: bien, pos: adv, en: [well], rank: 200}
+          - {lemma: mal, pos: adv, en: [badly], rank: 500}
+        examples: []
+  - id: es.a1.u03
+    title: Food and drink
+    cefr: A1
+    skills:
+      - id: es.a1.u03.s01
+        kind: vocab
+        title: Food and drink
+        cefr: A1
+        can_do: I can order simple food and drinks.
+        requires: [es.a1.u01.s02]
+        grammar_note: "Every noun is masculine or feminine. Use el and un with masculine nouns, la and una with feminine nouns."
+        lemmas:
+          - {lemma: café, pos: noun, gender: m, en: [coffee], rank: 70}
+          - {lemma: té, pos: noun, gender: m, en: [tea], rank: 80}
+          - {lemma: agua, pos: noun, gender: f, article: el, en: [water], rank: 90}
+          - {lemma: leche, pos: noun, gender: f, en: [milk], rank: 100}
+          - {lemma: pan, pos: noun, gender: m, en: [bread], rank: 110}
+          - {lemma: zumo, pos: noun, gender: m, en: [juice], rank: 120}
+          - {lemma: bocadillo, pos: noun, gender: m, en: [sandwich], rank: 130}
+          - {lemma: con, pos: prep, en: [with], rank: 140}
+          - {lemma: sin, pos: prep, en: [without], rank: 150}
+          - {lemma: azúcar, pos: noun, gender: m, en: [sugar], rank: 160}
+        examples:
+          - {id: 1, target: "Un café, por favor.", en: ["A coffee, please."]}
+          - {id: 2, target: "Quiero un café con leche.", en: ["I want a coffee with milk.", "I want a white coffee."]}

@@ -32,8 +32,24 @@ pub fn link_not_opened() -> AppError {
     )
 }
 
-/// Runs `f` on a blocking thread with the AI service and the AI settings; saves the settings when
-/// `f` changed them, and emits the status when `emit` is set.
+/// The settings patch of the AI fields `after` changed from `before`, or None when nothing
+/// changed. Only those fields are written, onto the settings as they are when they are saved, so a
+/// switch the learner turned while an AI request ran (Fresh lessons, Stories) is kept.
+pub fn changed_fields(before: &AiSettings, after: &AiSettings) -> Option<serde_json::Value> {
+    let (Ok(serde_json::Value::Object(old)), Ok(serde_json::Value::Object(new))) =
+        (serde_json::to_value(before), serde_json::to_value(after))
+    else {
+        return None;
+    };
+    let changed: serde_json::Map<String, serde_json::Value> = new
+        .into_iter()
+        .filter(|(key, value)| old.get(key) != Some(value))
+        .collect();
+    (!changed.is_empty()).then(|| serde_json::json!({ "ai": changed }))
+}
+
+/// Runs `f` on a blocking thread with the AI service and the AI settings; saves the AI fields `f`
+/// changed, and emits the status when `emit` is set.
 ///
 /// All of it happens while the AI service is locked, and the settings are read after the lock is
 /// taken, so two overlapping AI commands cannot both start from the same settings and lose one
@@ -50,8 +66,8 @@ async fn with_ai<T: Send + 'static>(
             let before = state.with(|p| p.settings_get().ai);
             let mut ai = before.clone();
             let result = f(service, &mut ai);
-            if ai != before {
-                state.with(|p| p.save_ai_settings(&ai))?;
+            if let Some(patch) = changed_fields(&before, &ai) {
+                state.with(|p| p.settings_set(&patch))?;
             }
             if emit {
                 let status = service.status(&ai, false);
@@ -227,5 +243,27 @@ mod tests {
     #[test]
     fn own_key_and_local_calls_wait_one_then_four_seconds_between_tries() {
         assert_eq!(AI_BACKOFF, [Duration::from_secs(1), Duration::from_secs(4)]);
+    }
+
+    #[test]
+    fn only_the_fields_a_command_changed_are_saved() {
+        let before = AiSettings::default();
+        assert_eq!(changed_fields(&before, &before), None);
+        let mut after = before.clone();
+        after.provider = "local".into();
+        after.local.chat_model = Some("llama3.1:8b".into());
+        let patch = changed_fields(&before, &after).unwrap();
+        assert_eq!(patch["ai"]["provider"], serde_json::json!("local"));
+        assert_eq!(
+            patch["ai"]["local"]["chat_model"],
+            serde_json::json!("llama3.1:8b")
+        );
+        let mut keys: Vec<&String> = patch["ai"].as_object().unwrap().keys().collect();
+        keys.sort();
+        assert_eq!(
+            keys,
+            ["local", "provider"],
+            "fresh_lessons is left as it is"
+        );
     }
 }

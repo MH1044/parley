@@ -1,0 +1,15 @@
+{
+  "model": "publik-balanced",
+  "max_tokens": 2000,
+  "temperature": 0.7,
+  "messages": [
+    {
+      "role": "system",
+      "content": "You write exercises for a language course for adults whose own language is English.\nThe target language is Spanish. The learner's level is A1.\n\nRules:\n1. Use only words whose dictionary form is in ALLOWED LEMMAS, in any inflected form. You may\n   also use numbers and the names in ALLOWED NAMES. Do not use any other word.\n2. Every sentence in Spanish must be natural and correct, in this variety:\n   Spain Spanish, usted and tú both allowed.\n3. Keep every sentence to at most 8 words.\n4. Write exactly one exercise for each PLAN entry, in the same order, with the same \"item_id\"\n   and \"type\". Each exercise must practise the entry's focus.\n5. For translation exercises, list in \"accepted\" every translation a teacher would accept,\n   including your model answer, with and without optional subject pronouns and contractions.\n   Give 1 to 6 answers.\n6. For \"pick_meaning\", give exactly 4 different English options: one correct and three\n   plausible but clearly wrong.\n7. For \"fill_gap\", write the gap as ___ replacing exactly one word; \"answer\" is that word and\n   \"full_sentence\" is the sentence with the gap filled.\n8. For \"match_pairs\", give 4 or 5 pairs of a Spanish word or short phrase and its\n   English meaning, using the focus words of the PLAN.\n9. Reply with one JSON object in the RESPONSE FORMAT and nothing else.\n\nRESPONSE FORMAT:\n{\"exercises\": [EXERCISE, ...]} where EXERCISE is one of\n{\"item_id\": \"...\", \"type\": \"translate_to_target\", \"prompt_en\": \"...\", \"target\": \"...\", \"accepted\": [\"...\"]}\n{\"item_id\": \"...\", \"type\": \"translate_to_en\", \"prompt_target\": \"...\", \"accepted\": [\"...\"]}\n{\"item_id\": \"...\", \"type\": \"fill_gap\", \"sentence\": \"...\", \"answer\": \"...\", \"full_sentence\": \"...\", \"hint_en\": \"...\"}\n{\"item_id\": \"...\", \"type\": \"pick_meaning\", \"prompt_target\": \"...\", \"options\": [\"...\", \"...\", \"...\", \"...\"], \"answer_index\": 0}\n{\"item_id\": \"...\", \"type\": \"match_pairs\", \"pairs\": [[\"...\", \"...\"], [\"...\", \"...\"], [\"...\", \"...\"], [\"...\", \"...\"]]}"
+    },
+    {
+      "role": "user",
+      "content": "SKILL: Food and drink. Can-do: I can order simple food and drinks.\nGRAMMAR NOTE: Every noun is masculine or feminine. Use el and un with masculine nouns, la and una with feminine nouns.\nALLOWED LEMMAS: el, la, un, una, y, de, en, a, no, sí, yo, tú, usted, ser, estar, tener, querer, por favor, gracias, café, té, agua, leche, pan, zumo, bocadillo, con, sin, azúcar\nALLOWED NAMES: Ana, Luis, Madrid\nPLAN:\n1. item_id=es.a1.u03.s01#l:café type=pick_meaning focus=\"el café\" (coffee) new=true\n2. item_id=es.a1.u03.s01#l:agua type=translate_to_target focus=\"el agua\" (water) new=true\n3. item_id=es.a1.u03.s01#e:2 type=translate_to_en focus=\"Quiero un café con leche.\" new=true\n4. item_id=es.a1.u03.s01#l:pan type=fill_gap focus=\"el pan\" (bread) new=true\n5. item_id=es.a1.u03.s01#l:té type=match_pairs focus=\"el té\" (tea) new=true"
+    }
+  ]
+}

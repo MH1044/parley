@@ -117,6 +117,19 @@ pub struct LessonDump {
     pub created_at: i64,
 }
 
+/// A stored story (module 07): `content` is the story as a JSON object.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct StoryDump {
+    pub id: String,
+    pub lang: String,
+    pub skill_id: String,
+    pub seq: i64,
+    pub origin: String,
+    pub prompt_id: Option<String>,
+    pub content: serde_json::Value,
+    pub created_at: i64,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct JudgementDump {
     pub key: String,
@@ -161,6 +174,8 @@ pub struct Tables {
     pub judgements: Vec<JudgementDump>,
     pub daily: Vec<DailyDump>,
     pub freeze_events: Vec<FreezeDump>,
+    /// Module 07; a backup made before it has none.
+    pub stories: Vec<StoryDump>,
 }
 
 /// What writing the rows into a new store kept and skipped.
@@ -394,6 +409,23 @@ impl Store {
                     })
                 },
             )?,
+            stories: rows(
+                conn,
+                "SELECT id, lang, skill_id, seq, origin, prompt_id, content, created_at
+                 FROM stories ORDER BY id",
+                |row| {
+                    Ok(StoryDump {
+                        id: row.get(0)?,
+                        lang: row.get(1)?,
+                        skill_id: row.get(2)?,
+                        seq: row.get(3)?,
+                        origin: row.get(4)?,
+                        prompt_id: row.get(5)?,
+                        content: json_value(&row.get::<_, String>(6)?)?,
+                        created_at: row.get(7)?,
+                    })
+                },
+            )?,
         })
     }
 
@@ -569,6 +601,24 @@ impl Store {
                     lesson.prompt_id,
                     content,
                     lesson.created_at
+                ],
+            )?;
+        }
+        for story in &tables.stories {
+            let content = serde_json::to_string(&story.content).expect("JSON serialises");
+            tx.execute(
+                "INSERT INTO stories (id, lang, skill_id, seq, origin, prompt_id, content,
+                   created_at)
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+                params![
+                    story.id,
+                    story.lang,
+                    story.skill_id,
+                    story.seq,
+                    story.origin,
+                    story.prompt_id,
+                    content,
+                    story.created_at
                 ],
             )?;
         }

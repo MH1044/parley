@@ -9,8 +9,10 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
+use crate::ai::Story;
 use crate::content::{Cefr, Lang};
 use crate::env::{LocalDate, local_date_at};
+use crate::error::AppError;
 use crate::exercise::{Exercise, Origin};
 use crate::srs::{DAY_MS, SkillState};
 
@@ -51,6 +53,11 @@ pub const COMMANDS: &[&str] = &[
     "ai_disconnect_publik",
     "ai_reconnect_publik",
     "ai_open_link",
+    // Module 07: lesson generation and course packs.
+    "lesson_use_course_pack",
+    "course_pack_export",
+    "course_pack_import",
+    "ai_lesson_checks",
 ];
 
 /// The event every AI command that changes the status emits it on, with the [`crate::ai::AiStatus`].
@@ -216,6 +223,16 @@ pub struct PathUnit {
     pub title: String,
     pub cefr: Cefr,
     pub skills: Vec<PathSkill>,
+    /// The unit's Story node while `ai.stories` is on (module 07).
+    pub story: Option<PathStory>,
+}
+
+/// A unit's Story node: the skill whose story it is (the unit's last), and whether that skill is
+/// practised, so the story can be read.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PathStory {
+    pub skill_id: String,
+    pub available: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -285,17 +302,22 @@ pub struct PlacementOutcome {
 }
 
 /// Result of `lesson_start` and `review_start`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LessonStarted {
     /// Empty when a review starts no session (nothing due).
     pub session_id: String,
-    /// "lesson" or "review".
+    /// "lesson", "review" or "story".
     pub kind: String,
     pub skill_id: Option<String>,
     pub origin: Origin,
     pub exercises: Vec<Exercise>,
     pub attributions: Vec<Attribution>,
     pub notice: Option<String>,
+    /// Why a fresh lesson could not be written (a 402 with its link, a disconnected publik API,
+    /// a busy provider); the lesson itself came from the course pack (module 07).
+    pub ai_error: Option<AppError>,
+    /// The story of a story session (module 07); its questions are answered as `q1`, `q2`, ….
+    pub story: Option<Story>,
 }
 
 /// The author of a pack sentence an exercise shows; empty for a sentence without one.
@@ -429,10 +451,12 @@ mod tests {
             serde_json::to_string(&status).unwrap(),
             r#"{"lang":"es","state":"not_published","version":null,"bytes":null,"size":null}"#
         );
-        assert_eq!(COMMANDS.len(), 34);
+        assert_eq!(COMMANDS.len(), 38);
         assert_eq!(COMMANDS[0], "app_start");
         assert_eq!(COMMANDS[22], "backup_import");
         assert_eq!(COMMANDS[23], "ai_status");
         assert_eq!(COMMANDS[33], "ai_open_link");
+        assert_eq!(COMMANDS[34], "lesson_use_course_pack");
+        assert_eq!(COMMANDS[37], "ai_lesson_checks");
     }
 }

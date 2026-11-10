@@ -233,6 +233,10 @@ pub struct Lesson {
     pub seq: u32,
     pub origin: Origin,
     pub exercises: Vec<Exercise>,
+    /// Who wrote the lesson and how many of its planned exercises passed L2 to L9, whenever a
+    /// fresh-lesson answer was received (module 07); none for a lesson made offline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ai: Option<crate::ai::LessonAiInfo>,
 }
 
 impl Lesson {

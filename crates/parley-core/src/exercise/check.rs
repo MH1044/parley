@@ -47,6 +47,41 @@ impl Allowed {
         }
     }
 
+    /// The allowed words of an AI call: the syllabus's function words, names and numbers, and
+    /// exactly `list` (lemmas as the syllabus writes them, in the order given). A lemma the
+    /// syllabus does not have is taught by its own words only.
+    pub(crate) fn from_list(syllabus: &Syllabus, numbers: &[String], list: &[String]) -> Allowed {
+        let mut taught = Vec::new();
+        let mut lemmas = Vec::new();
+        for text in list {
+            let wanted = crate::content::nfc(text);
+            let found = syllabus
+                .skills()
+                .flat_map(|(_, skill)| skill.lemmas.iter())
+                .find(|lemma| crate::content::nfc(&lemma.lemma) == wanted);
+            let forms = match found {
+                Some(lemma) => TaughtForms::of(lemma),
+                None => TaughtForms::of(&Lemma {
+                    lemma: text.clone(),
+                    pos: crate::content::Pos::Expr,
+                    gender: None,
+                    en: Vec::new(),
+                    rank: None,
+                    separable: None,
+                    article: None,
+                }),
+            };
+            taught.push(forms);
+            lemmas.push(text.clone());
+        }
+        Allowed {
+            known: Known::new(syllabus, numbers),
+            taught,
+            lemmas,
+            function_words: syllabus.function_words.clone(),
+        }
+    }
+
     /// Module 01's V12 rule: a number, a name, a function word, or a form of an allowed lemma
     /// (`TaughtForms::matches`, so each word of a multiword lemma counts).
     pub fn allows(&self, token: &Token) -> bool {
@@ -267,26 +302,49 @@ fn check_answers(ex: &Exercise, lang: Lang) -> Result<(), CheckFailure> {
 /// its first main text (`match_pairs` is exempt). L8: every main text has at most `max_words`
 /// words. L9: with a focus, a token of a main text is a form of a focus lemma.
 pub fn check_exercise(ex: &Exercise, ctx: &CheckCtx) -> Result<(), CheckFailure> {
-    let lang = ctx.lang;
-    let targets = ex.targets();
-
     // L5
-    let mut texts: Vec<&str> = targets.clone();
+    let (mut covered, mut counted) = (0, 0);
+    for text in coverage_texts(ex) {
+        let (c, n) = coverage(ctx.lang, text, ctx.allowed, ctx.forms);
+        covered += c;
+        counted += n;
+    }
+    coverage_rule(covered, counted)?;
+    check_structure(ex, ctx, false)
+}
+
+/// The texts L5 counts: the main texts, and the accepted answers of `translate_to_target` and
+/// `listen_type`.
+pub(crate) fn coverage_texts(ex: &Exercise) -> Vec<&str> {
+    let mut texts: Vec<&str> = ex.targets();
     match &ex.body {
         Body::TranslateToTarget { accepted, .. } | Body::ListenType { accepted, .. } => {
             texts.extend(accepted.iter().map(String::as_str));
         }
         _ => {}
     }
-    let (mut covered, mut counted) = (0, 0);
-    for text in texts {
-        let (c, n) = coverage(lang, text, ctx.allowed, ctx.forms);
-        covered += c;
-        counted += n;
-    }
+    texts
+}
+
+/// L5 over summed counts: at least 90% covered; nothing counted passes.
+pub(crate) fn coverage_rule(covered: usize, counted: usize) -> Result<(), CheckFailure> {
     if counted > 0 && covered * COVERAGE_DENOMINATOR < counted * COVERAGE_NUMERATOR {
-        return Err(CheckFailure::Coverage { covered, counted });
+        Err(CheckFailure::Coverage { covered, counted })
+    } else {
+        Ok(())
     }
+}
+
+/// L6 to L9. With `any_type`, L7 compares the first main text with every exercise in `seen`
+/// whatever its type, `match_pairs` on either side exempt (the AI lesson rule of module 07);
+/// otherwise only with exercises of the same type (the template rule).
+pub(crate) fn check_structure(
+    ex: &Exercise,
+    ctx: &CheckCtx,
+    any_type: bool,
+) -> Result<(), CheckFailure> {
+    let lang = ctx.lang;
+    let targets = ex.targets();
 
     // L6
     check_answers(ex, lang)?;
@@ -297,11 +355,15 @@ pub fn check_exercise(ex: &Exercise, ctx: &CheckCtx) -> Result<(), CheckFailure>
         && let Some(first) = targets.first()
     {
         let first = normalise(lang, first);
-        if ctx
-            .seen
-            .iter()
-            .any(|(seen_kind, text)| *seen_kind == kind && normalise(lang, text) == first)
-        {
+        let repeated = ctx.seen.iter().any(|(seen_kind, text)| {
+            let comparable = if any_type {
+                *seen_kind != ExerciseType::MatchPairs
+            } else {
+                *seen_kind == kind
+            };
+            comparable && normalise(lang, text) == first
+        });
+        if repeated {
             return Err(CheckFailure::Duplicate);
         }
     }

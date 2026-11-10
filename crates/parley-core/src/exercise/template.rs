@@ -2,14 +2,12 @@
 //! deterministic for a seed (docs/modules/03-exercise-engine-and-grading.md, Design notes). It is
 //! the offline course, and fills the gaps an AI lesson leaves.
 
-use std::collections::HashMap;
-
 use super::check::{Allowed, CheckCtx, check_exercise, max_words};
-use super::compose::Plan;
+use super::compose::{Plan, PlanEntry};
 use super::types::{Body, Exercise, ExerciseType, Lesson, Origin};
 use super::wordbank::word_bank;
 use crate::content::{
-    Cefr, Example, Forms, Item, ItemKind, Lemma, Syllabus, TaughtForms, Token, nfc, tokenise,
+    Cefr, Example, Forms, Item, ItemKind, Lang, Lemma, Syllabus, TaughtForms, Token, nfc, tokenise,
 };
 use crate::env::{Rng, below, shuffle};
 use crate::grading::normalise;
@@ -313,41 +311,11 @@ fn attempts(kind: ExerciseType) -> &'static [ExerciseType] {
 /// `check_exercise` with the entry's item's lemmas as focus and the lesson's earlier exercises as
 /// `seen`. An entry with none is dropped. `max_words` comes from the lesson skill's level.
 pub fn template_lesson(plan: &Plan, ctx: &TemplateCtx, seq: u32, rng: &mut dyn Rng) -> Lesson {
-    let by_id: HashMap<&str, &Item> = ctx
-        .items
-        .iter()
-        .map(|item| (item.id.as_str(), item))
-        .collect();
-    let limit = max_words(ctx.level().unwrap_or(Cefr::A1));
     let mut exercises: Vec<Exercise> = Vec::new();
     let mut seen: Vec<(ExerciseType, String)> = Vec::new();
     for entry in &plan.entries {
-        let Some(item) = by_id.get(entry.item_id.as_str()) else {
-            continue;
-        };
-        let focus: Vec<Lemma> = item
-            .lemmas
-            .iter()
-            .filter_map(|lemma| ctx.lemma(lemma).cloned())
-            .collect();
-        let check = CheckCtx {
-            lang: ctx.syllabus.lang,
-            forms: ctx.forms,
-            allowed: ctx.allowed,
-            max_words: limit,
-            focus: &focus,
-            seen: &seen,
-        };
-        let found = attempts(entry.kind).iter().find_map(|&kind| {
-            template(item, kind, ctx, rng).filter(|ex| check_exercise(ex, &check).is_ok())
-        });
-        if let Some(mut ex) = found {
-            ex.id = format!("e{}", entry.n);
-            ex.facet = entry.facet;
-            if let Some(first) = ex.targets().first() {
-                let first = normalise(ctx.syllabus.lang, first);
-                seen.push((ex.kind(), first));
-            }
+        if let Some(ex) = template_for_entry(entry, ctx, &seen, rng) {
+            seen_push(&mut seen, ctx.syllabus.lang, &ex);
             exercises.push(ex);
         }
     }
@@ -358,7 +326,58 @@ pub fn template_lesson(plan: &Plan, ctx: &TemplateCtx, seq: u32, rng: &mut dyn R
         seq,
         origin: Origin::Template,
         exercises,
+        ai: None,
     }
+}
+
+/// Adds an exercise's type and normalised first main text to `seen` (L7's memory).
+pub(crate) fn seen_push(seen: &mut Vec<(ExerciseType, String)>, lang: Lang, ex: &Exercise) {
+    if let Some(first) = ex.targets().first() {
+        seen.push((ex.kind(), normalise(lang, first)));
+    }
+}
+
+/// The lemmas of the syllabus an item practises, as L9's focus.
+pub(crate) fn focus_of(syllabus: &Syllabus, item: &Item) -> Vec<Lemma> {
+    item.lemmas
+        .iter()
+        .filter_map(|lemma| {
+            let text = nfc(lemma);
+            syllabus
+                .skills()
+                .flat_map(|(_, skill)| skill.lemmas.iter())
+                .find(|found| nfc(&found.lemma) == text)
+                .cloned()
+        })
+        .collect()
+}
+
+/// The exercise `template_lesson` gives one plan entry after the exercises of `seen`: the entry's
+/// type, then its fallbacks, the first that passes `check_exercise`; id `e{n}` and the entry's
+/// facet. None when the item is unknown or no type gives a passing exercise.
+pub(crate) fn template_for_entry(
+    entry: &PlanEntry,
+    ctx: &TemplateCtx,
+    seen: &[(ExerciseType, String)],
+    rng: &mut dyn Rng,
+) -> Option<Exercise> {
+    let item = ctx.items.iter().find(|item| item.id == entry.item_id)?;
+    let limit = max_words(ctx.level().unwrap_or(Cefr::A1));
+    let focus = focus_of(ctx.syllabus, item);
+    let check = CheckCtx {
+        lang: ctx.syllabus.lang,
+        forms: ctx.forms,
+        allowed: ctx.allowed,
+        max_words: limit,
+        focus: &focus,
+        seen,
+    };
+    let mut ex = attempts(entry.kind).iter().find_map(|&kind| {
+        template(item, kind, ctx, rng).filter(|ex| check_exercise(ex, &check).is_ok())
+    })?;
+    ex.id = format!("e{}", entry.n);
+    ex.facet = entry.facet;
+    Some(ex)
 }
 
 #[cfg(test)]

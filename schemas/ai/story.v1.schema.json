@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P2 graded story answer (story.v1)",
+  "description": "The answer of prompts/story.v1.md (docs/PUBLIK-INTEGRATION.md §6.4, rule S1): a title and its English translation, 3 or 4 paragraphs, and 3 or 4 multiple-choice questions in English, each with 3 options, the index of the right one and the index of the paragraph that answers it. Also the shape of a stored story and of a course pack's story.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "title_en", "paragraphs", "questions"],
+  "properties": {
+    "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "title_en": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "paragraphs": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": { "type": "string", "minLength": 1, "maxLength": 600 }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question_en", "options", "answer_index", "paragraph"],
+        "properties": {
+          "question_en": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "options": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+          },
+          "answer_index": { "type": "integer", "minimum": 0, "maximum": 2 },
+          "paragraph": { "type": "integer", "minimum": 0, "maximum": 3 }
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@
 
 use std::collections::{BTreeMap, HashMap};
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use serde_json::json;
 
@@ -29,7 +30,9 @@ mod lesson;
 mod pack;
 mod placement;
 mod stats;
+mod story;
 
+pub use lesson::{AiAccess, JobOutcome, LessonBegin, LessonJob};
 pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
 
 /// The learner's data file, under the data directory.
@@ -99,6 +102,8 @@ impl Course {
 pub(crate) struct ActiveRun {
     pub lang: Lang,
     pub run: LessonRun,
+    /// The skill of a learn-mode lesson, whose next lesson may be prepared when it finishes.
+    pub skill_id: Option<String>,
 }
 
 /// A placement test in progress and its current question.
@@ -112,13 +117,19 @@ pub(crate) struct ActivePlacement {
 pub struct Parley {
     pub(crate) config: Config,
     pub(crate) env: Env,
-    pub(crate) content: BTreeMap<Lang, Course>,
+    pub(crate) content: BTreeMap<Lang, Arc<Course>>,
     /// The open store, or the store's message when the data file could not be opened.
     pub(crate) store: Result<Store, String>,
     pub(crate) settings: Settings,
     /// The settings file could not be read; cleared by the next save.
     pub(crate) settings_notice: bool,
     pub(crate) runs: HashMap<String, ActiveRun>,
+    /// Stories being read (module 07).
+    pub(crate) story_runs: HashMap<String, story::StoryRun>,
+    /// The fresh lesson or story each skill is waiting for, by a number its job carries; a job
+    /// whose number is no longer here was superseded (Use the course pack instead).
+    pub(crate) pending: HashMap<String, u64>,
+    pub(crate) next_job: u64,
     pub(crate) placements: HashMap<String, ActivePlacement>,
 }
 
@@ -204,7 +215,7 @@ impl Parley {
         let content = config
             .courses
             .iter()
-            .filter_map(|(lang, files)| Course::load(files).map(|course| (*lang, course)))
+            .filter_map(|(lang, files)| Course::load(files).map(|course| (*lang, Arc::new(course))))
             .filter(|(lang, course)| course.syllabus.lang == *lang)
             .collect();
         let store = Store::open(&config.data_dir.join(STORE_FILE)).map_err(|e| e.to_string());
@@ -217,6 +228,9 @@ impl Parley {
             settings,
             settings_notice,
             runs: HashMap::new(),
+            story_runs: HashMap::new(),
+            pending: HashMap::new(),
+            next_job: 0,
             placements: HashMap::new(),
         }
     }
@@ -291,6 +305,8 @@ impl Parley {
         // when it could not be removed), so the app keeps working; the first failure is reported.
         self.store = Err("The data file is being replaced.".to_string());
         self.runs.clear();
+        self.story_runs.clear();
+        self.pending.clear();
         self.placements.clear();
         let fs = &*self.env.fs;
         let mut paths: Vec<String> = [
@@ -435,6 +451,8 @@ impl Parley {
         // The current store is closed before the new file takes its place.
         self.store = Err("The data file is being replaced.".to_string());
         self.runs.clear();
+        self.story_runs.clear();
+        self.pending.clear();
         self.placements.clear();
         let renamed = fs.rename(Path::new(IMPORT_FILE), Path::new(STORE_FILE));
         // The store is open again whatever happens next: the new file, or the old one when the

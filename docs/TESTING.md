@@ -10,7 +10,7 @@
 | Property tests | inside module tests, `proptest` with fixed seeds recorded in `proptest-regressions/` | `cargo test` |
 | UI unit tests | `app/src/**/<name>.test.tsx` | Vitest |
 | Launch smoke | `app/e2e/launch.spec.ts` | Vitest driving tauri-driver over the W3C WebDriver protocol |
-| Quality gates | `scripts/gates/run` (offline) and `scripts/gates/run --live` (spends money, maintainer only); the directory and `crates/parley-core/tests/gates.rs` are created by module 03 | `cargo test --release -- --ignored gate_` |
+| Quality gates | `scripts/gates/run` (offline) and `scripts/gates/run --live` (spends money, maintainer only); the directory and `crates/parley-core/tests/gates.rs` are created by module 03; live gates that need the real client are in `crates/parley-cli/tests/gates_live.rs` (module 07) | `cargo test --release -- --ignored gate_` |
 | Hygiene | `crates/parley-core/tests/hygiene.rs` | `cargo test`, in `verify` and CI |
 
 Golden comparison: stdout is parsed as JSON and compared structurally with `expected.json`.

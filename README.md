@@ -6,9 +6,10 @@ macOS, with Android to follow.
 
 **Status: pre-alpha.** The offline app works end to end: onboarding with a placement test, the
 learning path, lessons and reviews with honest grading, the streak and stats, settings, backup and
-restore, all with no network and no AI. AI can now be set up, when you choose to, through publik
-API, your own OpenAI-compatible key or a local model server, with a connection check in Settings;
-the AI features themselves come next. The course covers A1 and A2 in Spanish, French and German
+restore, all with no network and no AI. AI can be set up, when you choose to, through publik
+API, your own OpenAI-compatible key or a local model server; with it, lessons are written fresh
+for you and each unit ends with a short graded story, and every AI exercise is checked before you
+see it. Answer checks and explanations come next. The course covers A1 and A2 in Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
 built and pinned by checksum but not yet published; `parley pack install` installs one for
@@ -251,6 +252,19 @@ chose is ever contacted. Your own key is kept in the operating system's keychain
 `settings.json`, a backup or anything the interface receives; `SECURITY.md` lists every network
 call the app can make.
 
+With a provider set up, each lesson is written fresh for your skill and the words you know
+("Writing a fresh lesson…"; after 5 seconds **Use the course pack instead** starts the offline
+lesson at once). Every exercise is checked before you see it: the right language, only words the
+course has taught, answers that fit, no repeats, the level's length, and the word being practised;
+an exercise that fails is replaced from the course pack, and if more than half fail the whole
+lesson comes from the course pack with a note saying so. The same lesson is never paid for twice,
+and the next lesson of a skill is prepared while you finish one (Settings > AI, **Prepare the next
+lesson**). Each unit ends with **Read a story**, a short graded story in the course language with
+questions in English, once the unit's last skill is practised; stories earn XP and never change
+your reviews. At $0.00, or offline, lessons simply come from the course pack. Settings > Data
+exports the lessons you have as a course pack and imports one from someone else, checked the same
+way.
+
 For the maintainer only, `scripts/publik-proof` makes one real publik API call and prints the
 reply, the charge and the `x-publik-*` headers; without `PUBLIK_PROOF=1` it sends nothing. A
 built app started with `PUBLIK_SELF_TEST=1` prints one `publik self-test:` line and exits, without
@@ -267,7 +281,7 @@ opening a window.
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
 | `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
 | `schemas/` | JSON Schemas for the content formats, lessons, settings and backups; `schemas/ai/` one per AI answer |
-| `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md`, the connection check), compiled into the app |
+| `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md` the connection check, `lesson.v1.md` fresh lessons, `story.v1.md` graded stories), compiled into the app |
 | `scripts/` | `verify`, the licence gates, the release-notes check, `publik-proof` (the maintainer's one real publik API call); `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |
 | `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated and hand-written fixtures |
 | `docs/` | Product, architecture, Publik integration and contract, testing, roadmap, one spec per module, decision records, the handbook |

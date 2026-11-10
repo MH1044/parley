@@ -12,6 +12,8 @@ use crate::grading::Verdict;
 pub enum SessionKind {
     Lesson,
     Review,
+    /// A graded story (module 07).
+    Story,
 }
 
 impl SessionKind {
@@ -19,6 +21,7 @@ impl SessionKind {
         match self {
             SessionKind::Lesson => "lesson",
             SessionKind::Review => "review",
+            SessionKind::Story => "story",
         }
     }
 }
@@ -46,11 +49,32 @@ const XP_LESSON: u32 = 10;
 const XP_REVIEW: u32 = 5;
 /// Extra XP for a finished lesson with no wrong answer.
 const XP_NO_WRONG: u32 = 5;
+/// XP for finishing a story, and per correct answer to its questions
+/// (docs/PUBLIK-INTEGRATION.md §6.4).
+const XP_STORY: u32 = 10;
+const XP_PER_STORY_ANSWER: u32 = 2;
+
+/// XP of a finished story: 10 plus 2 per correct answer.
+pub fn story_xp(correct: u32) -> u32 {
+    XP_STORY + XP_PER_STORY_ANSWER * correct
+}
 
 /// The session's XP: 1 per correct, typo or almost answer (unchecked earns nothing and is not
 /// wrong); 10 for finishing a lesson, 5 for a finished review session; 5 more for a finished
 /// lesson with no wrong answer. Nothing is ever taken away.
 pub fn xp_for(session: &SessionResult) -> u32 {
+    if session.kind == SessionKind::Story {
+        let correct = session
+            .verdicts
+            .iter()
+            .filter(|v| **v == Verdict::Correct)
+            .count() as u32;
+        return if session.finished {
+            story_xp(correct)
+        } else {
+            XP_PER_STORY_ANSWER * correct
+        };
+    }
     let answers = session
         .verdicts
         .iter()
@@ -66,6 +90,7 @@ pub fn xp_for(session: &SessionResult) -> u32 {
             answers + XP_LESSON + if flawless { XP_NO_WRONG } else { 0 }
         }
         SessionKind::Review => answers + XP_REVIEW,
+        SessionKind::Story => unreachable!("stories return above"),
     }
 }
 

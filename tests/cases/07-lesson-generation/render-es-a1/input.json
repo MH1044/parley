@@ -1,0 +1,88 @@
+{
+  "lang": "es",
+  "cefr": "A1",
+  "skill_id": "es.a1.u03.s01",
+  "seq": 1,
+  "skill_title": "Food and drink",
+  "can_do": "I can order simple food and drinks.",
+  "grammar_note": "Every noun is masculine or feminine. Use el and un with masculine nouns, la and una with feminine nouns.",
+  "variety": "Spain Spanish, usted and tú both allowed",
+  "allowed_lemmas": [
+    "el",
+    "la",
+    "un",
+    "una",
+    "y",
+    "de",
+    "en",
+    "a",
+    "no",
+    "sí",
+    "yo",
+    "tú",
+    "usted",
+    "ser",
+    "estar",
+    "tener",
+    "querer",
+    "por favor",
+    "gracias",
+    "café",
+    "té",
+    "agua",
+    "leche",
+    "pan",
+    "zumo",
+    "bocadillo",
+    "con",
+    "sin",
+    "azúcar"
+  ],
+  "names": [
+    "Ana",
+    "Luis",
+    "Madrid"
+  ],
+  "plan": [
+    {
+      "n": 1,
+      "item_id": "es.a1.u03.s01#l:café",
+      "type": "pick_meaning",
+      "focus": "el café",
+      "gloss": "coffee",
+      "new": true
+    },
+    {
+      "n": 2,
+      "item_id": "es.a1.u03.s01#l:agua",
+      "type": "translate_to_target",
+      "focus": "el agua",
+      "gloss": "water",
+      "new": true
+    },
+    {
+      "n": 3,
+      "item_id": "es.a1.u03.s01#e:2",
+      "type": "translate_to_en",
+      "focus": "Quiero un café con leche.",
+      "gloss": null,
+      "new": true
+    },
+    {
+      "n": 4,
+      "item_id": "es.a1.u03.s01#l:pan",
+      "type": "fill_gap",
+      "focus": "el pan",
+      "gloss": "bread",
+      "new": true
+    },
+    {
+      "n": 5,
+      "item_id": "es.a1.u03.s01#l:té",
+      "type": "match_pairs",
+      "focus": "el té",
+      "gloss": "tea",
+      "new": true
+    }
+  ]
+}

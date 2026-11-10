@@ -23,17 +23,33 @@ pub fn app_info(state: State<'_, AppState>) -> AppInfo {
     state.with(|p| p.app_info())
 }
 
-/// The native file dialog for a backup, opened from Rust so the web view needs no dialog
-/// permission: a save dialog for `backup_export`, an open dialog for `backup_import`. The chosen
+/// The native file dialog for a backup or a course pack, opened from Rust so the web view needs no
+/// dialog permission: a save dialog for `backup_export` and `course_pack_export`, an open dialog for
+/// `backup_import` and `course_pack_import`. The chosen
 /// path, or null when cancelled. Async, so the blocking dialog never runs on the main thread.
 #[tauri::command(rename_all = "snake_case")]
 pub async fn file_pick(app: tauri::AppHandle, kind: String) -> Result<Option<String>, AppError> {
-    let dialog = app.dialog().file().add_filter("Parley backup", &["json"]);
+    let backup = || app.dialog().file().add_filter("Parley backup", &["json"]);
+    let pack = || {
+        app.dialog()
+            .file()
+            .add_filter("Parley course pack", &["json"])
+    };
     let picked = match kind.as_str() {
-        "backup_export" => dialog
+        "backup_export" => backup()
             .set_file_name("parley-backup.json")
             .blocking_save_file(),
-        "backup_import" => dialog.blocking_pick_file(),
+        "backup_import" => backup().blocking_pick_file(),
+        "course_pack_export" => {
+            let lang = app
+                .state::<AppState>()
+                .with(|p| p.settings_get().active_course)
+                .unwrap_or_else(|| "course".into());
+            pack()
+                .set_file_name(format!("parley-course-{lang}.json"))
+                .blocking_save_file()
+        }
+        "course_pack_import" => pack().blocking_pick_file(),
         other => {
             return Err(AppError::new(
                 ErrorCode::InvalidInput,

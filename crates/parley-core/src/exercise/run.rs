@@ -446,6 +446,7 @@ mod tests {
                     },
                 ),
             ],
+            ai: None,
         }
     }
 

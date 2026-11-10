@@ -6,10 +6,10 @@
 
 use std::fmt;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Every error code a command can return. Serialised in snake case, exactly as the UI matches them.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorCode {
     Offline,
@@ -71,7 +71,7 @@ impl fmt::Display for ErrorCode {
 }
 
 /// What a failed command tells the UI.
-#[derive(Debug, Clone, PartialEq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AppError {
     pub code: ErrorCode,
     /// User-facing text. Never a key, a learner's answer, a file path chosen by the learner, or a

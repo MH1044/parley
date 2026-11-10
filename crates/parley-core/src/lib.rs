@@ -24,6 +24,7 @@ pub mod api;
 pub mod app;
 pub mod backup;
 pub mod content;
+pub mod coursepack;
 pub mod env;
 pub mod error;
 pub mod exercise;

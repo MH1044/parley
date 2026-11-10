@@ -16,6 +16,17 @@
       "minItems": 1,
       "maxItems": 20,
       "items": { "$ref": "#/$defs/exercise" }
+    },
+    "ai": {
+      "description": "Present when a fresh-lesson answer was received (module 07): the provider that wrote it, how many planned exercises passed the checks, and how many were planned.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "valid", "planned"],
+      "properties": {
+        "provider": { "enum": ["publik", "own_key", "local"] },
+        "valid": { "type": "integer", "minimum": 0 },
+        "planned": { "type": "integer", "minimum": 0 }
+      }
     }
   },
   "$defs": {

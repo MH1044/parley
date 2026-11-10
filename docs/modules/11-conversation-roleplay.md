@@ -17,7 +17,7 @@ mistakes into new review items.
 
 - `prompts/roleplay_turn.v1.md`, `prompts/roleplay_summary.v1.md` with the exact text of §6.9 and
   §6.10; schemas `schemas/ai/roleplay_turn.v1.schema.json` and `roleplay_summary.v1.schema.json`.
-- Migration `0003_conversations.sql` (`conversations`, `conversation_turns`); the personal skill
+- Migration `0004_conversations.sql` (`conversations`, `conversation_turns`); the personal skill
   `<lang>.personal.conversation` created on first use.
 - Commands `scenario_list`, `conversation_start` (opening from the scenario, spoken, no AI call),
   `conversation_transcribe`, `conversation_turn`, `conversation_end`.
@@ -36,7 +36,7 @@ mistakes into new review items.
 
 ## Files
 
-- `crates/parley-core/src/ai/roleplay.rs`, `crates/parley-core/src/store/migrations/0003_conversations.sql`
+- `crates/parley-core/src/ai/roleplay.rs`, `crates/parley-core/src/store/migrations/0004_conversations.sql`
 - `prompts/roleplay_{turn,summary}.v1.md`, `schemas/ai/roleplay_{turn,summary}.v1.schema.json`
 - `app/src-tauri/src/commands/conversation.rs`; `app/src/screens/Conversation/{List,Chat,Summary}.tsx`
 - `tests/fixtures/ai/P7/*.json` (including SSE chunk files), `tests/fixtures/ai/P8/*.json`

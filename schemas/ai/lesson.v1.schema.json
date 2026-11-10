@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P1 fresh lesson answer (lesson.v1)",
+  "description": "The answer of prompts/lesson.v1.md (docs/PUBLIK-INTEGRATION.md §6.3, rule L1): one exercise per plan entry, each one of the five shapes of the response format. Strings are non-empty and at most 200 characters.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["exercises"],
+  "properties": {
+    "exercises": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": { "$ref": "#/$defs/exercise" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "accepted": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "exercise": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["item_id", "type", "prompt_en", "target", "accepted"],
+          "properties": {
+            "item_id": { "$ref": "#/$defs/text" },
+            "type": { "const": "translate_to_target" },
+            "prompt_en": { "$ref": "#/$defs/text" },
+            "target": { "$ref": "#/$defs/text" },
+            "accepted": { "$ref": "#/$defs/accepted" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["item_id", "type", "prompt_target", "accepted"],
+          "properties": {
+            "item_id": { "$ref": "#/$defs/text" },
+            "type": { "const": "translate_to_en" },
+            "prompt_target": { "$ref": "#/$defs/text" },
+            "accepted": { "$ref": "#/$defs/accepted" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["item_id", "type", "sentence", "answer", "full_sentence", "hint_en"],
+          "properties": {
+            "item_id": { "$ref": "#/$defs/text" },
+            "type": { "const": "fill_gap" },
+            "sentence": { "$ref": "#/$defs/text" },
+            "answer": { "$ref": "#/$defs/text" },
+            "full_sentence": { "$ref": "#/$defs/text" },
+            "hint_en": { "$ref": "#/$defs/text" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["item_id", "type", "prompt_target", "options", "answer_index"],
+          "properties": {
+            "item_id": { "$ref": "#/$defs/text" },
+            "type": { "const": "pick_meaning" },
+            "prompt_target": { "$ref": "#/$defs/text" },
+            "options": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": { "$ref": "#/$defs/text" }
+            },
+            "answer_index": { "type": "integer", "minimum": 0, "maximum": 3 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["item_id", "type", "pairs"],
+          "properties": {
+            "item_id": { "$ref": "#/$defs/text" },
+            "type": { "const": "match_pairs" },
+            "pairs": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 5,
+              "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": { "$ref": "#/$defs/text" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

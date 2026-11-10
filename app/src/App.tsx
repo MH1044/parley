@@ -7,6 +7,7 @@ import Path from './screens/Path/Path'
 import Review from './screens/Review/Review'
 import Settings, { type SettingsTab } from './screens/Settings/Settings'
 import Stats from './screens/Stats/Stats'
+import Story from './screens/Story/Story'
 import { t } from './strings'
 
 /** Which screen shows; the app routes by state, with no router. */
@@ -17,6 +18,7 @@ type Screen =
   | { name: 'onboarding' }
   | { name: 'path'; lang: string }
   | { name: 'lesson'; lang: string; started: LessonStarted }
+  | { name: 'story'; lang: string; started: LessonStarted }
   | { name: 'review_empty'; lang: string; notice: string }
   | { name: 'stats'; lang: string }
   | { name: 'settings'; lang: string; tab?: SettingsTab }
@@ -92,7 +94,13 @@ export default function App() {
         <Path
           key={lang}
           lang={lang}
-          onStart={(started) => setScreen({ name: 'lesson', lang, started })}
+          onStart={(started) =>
+            setScreen(
+              started.kind === 'story'
+                ? { name: 'story', lang, started }
+                : { name: 'lesson', lang, started },
+            )
+          }
           onNothingToReview={(text) => setScreen({ name: 'review_empty', lang, notice: text })}
           onStats={() => setScreen({ name: 'stats', lang })}
           onSettings={(tab) => setScreen({ name: 'settings', lang, tab })}
@@ -107,6 +115,17 @@ export default function App() {
           key={screen.started.session_id}
           started={screen.started}
           lang={lang}
+          onExit={() => setScreen({ name: 'path', lang })}
+        />
+      )
+      break
+    }
+    case 'story': {
+      const lang = screen.lang
+      body = (
+        <Story
+          key={screen.started.session_id}
+          started={screen.started}
           onExit={() => setScreen({ name: 'path', lang })}
         />
       )

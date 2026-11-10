@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Parley backup (parley.backup/1)",
-  "description": "A learner's progress as backup_export writes it (docs/modules/04-app-shell-and-offline-course.md): settings and every table of parley.sqlite3 but the syllabus items and content answers, which are rebuilt from content/. Every key is required; export writes every column, and import needs only the columns without a default. The settings object is checked against settings.schema.json separately. Never holds a key, a cache, a recording or a pack file.",
+  "description": "A learner's progress as backup_export writes it (docs/modules/04-app-shell-and-offline-course.md): settings and every table of parley.sqlite3 but the syllabus items and content answers, which are rebuilt from content/. Every key is required except stories (module 07); export writes every column, and import needs only the columns without a default. The settings object is checked against settings.schema.json separately. Never holds a key, a cache, a recording or a pack file.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -142,6 +142,25 @@
           "skill_id": { "type": "string" },
           "seq": { "type": "integer" },
           "origin": { "enum": ["ai", "template", "course_pack"] },
+          "prompt_id": { "type": ["string", "null"] },
+          "content": { "type": "object" },
+          "created_at": { "type": "integer" }
+        }
+      }
+    },
+    "stories": {
+      "description": "Stories (module 07); optional, so a backup made before them still imports.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "lang", "skill_id", "seq", "origin", "content", "created_at"],
+        "properties": {
+          "id": { "type": "string" },
+          "lang": { "enum": ["es", "fr", "de"] },
+          "skill_id": { "type": "string" },
+          "seq": { "type": "integer" },
+          "origin": { "enum": ["ai", "course_pack"] },
           "prompt_id": { "type": ["string", "null"] },
           "content": { "type": "object" },
           "created_at": { "type": "integer" }

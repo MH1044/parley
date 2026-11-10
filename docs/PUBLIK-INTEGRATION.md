@@ -283,7 +283,7 @@ Placeholder values for the example: `target_language_name` = "Spanish", `cefr` =
 drink", `can_do` = "I can order simple food and drinks.", `allowed_names` = "Ana, Luis, Madrid".
 `allowed_lemmas` is a comma-separated list; `plan` has one line per entry,
 `{n}. item_id={id} type={type} focus="{target}" ({first English gloss}) new={true|false}`, with the
-gloss omitted for phrase and pattern items. The golden case `tests/cases/07-lesson-generation/render-es-a1/expected_request.json` holds the
+gloss omitted for phrase and pattern items. The golden case `tests/cases/07-lesson-generation/render-es-a1/expected.json` holds the
 fully rendered body. Example body (system content shortened here only):
 
 ```json
@@ -369,7 +369,7 @@ is not. Cache key input: `{"lang", "skill_id", "seq", "plan", "allowed_sha256", 
 
 A1 values: `paragraphs` 3, `min_words` 80, `max_words` 120, `questions` 3, `tenses` "present";
 A2: 4, 120, 180, 4, "present, {past_tense_name} and near future" (pretérito perfecto and
-indefinido; passé composé; Perfekt). `theme` is the skill title. Example body:
+indefinido; passé composé; Perfekt). `theme` is the title of the unit the story ends. Example body:
 
 ```json
 {"model": "publik-balanced", "max_tokens": 1200, "temperature": 0.8, "messages": [

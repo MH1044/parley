@@ -9,7 +9,8 @@ Building from source (see `README.md`) gives:
 
 - the desktop app, which teaches offline: onboarding with a placement test, the learning path,
   lessons and reviews, the streak and stats, settings, and backups (below), and lets you set up AI
-  when you choose to: publik API, your own key or a local model, with a connection check;
+  when you choose to: publik API, your own key or a local model, with a connection check; with
+  AI set up, fresh lessons, graded stories, and course packs to share lessons;
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -110,6 +111,40 @@ then **Add a plan or pack**) "or use your own key or a local model in Settings";
 publik API, **Reconnect**; a busy provider or an answer that could not be used, **Try again**.
 Only the provider you chose is ever contacted, and publik API calls are never repeated by
 themselves, so nothing is paid for twice.
+
+**Fresh lessons.** With a provider chosen and **Fresh lessons** on (Settings > AI), **Continue**
+shows "Writing a fresh lesson…" while the lesson is written for your skill and the words you
+know; after 5 seconds **Use the course pack instead** starts the offline lesson at once (a fresh
+lesson that arrives later is not shown). Each exercise is checked before you
+see it: it practises the planned word, uses only words the course has taught (or their forms),
+is in the right language, has answers that fit, repeats no other exercise and keeps to the level's
+length (8 words at A1, 12 at A2). An exercise that fails is replaced by the course pack's; if more
+than half fail, the lesson comes from the course pack with "A fresh lesson was not available, so
+this one comes from the course pack." Offline, the lesson says "You're offline, so this lesson
+comes from the course pack."; with no publik balance left it comes from the course pack with the
+balance message and its one link. The same lesson is never paid for twice: a fresh lesson is kept
+in `cache/ai.sqlite3`. With **Prepare the next lesson** on, finishing a lesson writes the skill's
+next one in the background, so it is ready at once (never while the balance is empty). Settings >
+AI > Local model shows how a local model is doing: "Local model: 75% of AI exercises passed
+Parley's checks (last 3 lessons)."
+
+**Stories.** With **Stories** on, each unit of the path ends with **Read a story**, open once the
+unit's last skill is practised ("Practise the last skill of this unit first."). A story is three
+short paragraphs at A1 (four at A2) on the unit's theme, using the words you know, then three
+questions in English (four at A2); each answer shows "Correct" or the right option, and **Finish** gives
+10 XP plus 2 per right answer. Stories never change your reviews. An unusable story shows "The AI
+answer could not be used." with **Try again**; with no provider set up, **Read a story** opens the
+AI setup dialog first.
+
+**Course packs.** *Settings > Data > Course packs*: **Export a course pack** saves the AI lessons
+and stories of your active course as `parley-course-<lang>.json` ("Exported 3 lessons and 1
+stories."); **Import a course pack** reads one, for instance from a friend, and checks every
+exercise and story as if an AI had just written it: "Imported 3 lessons and 1 stories; 2 exercises
+were dropped because they did not pass Parley's checks." Imported lessons are the next ones each
+skill plays, and imported stories need no provider. A pack for another language ("This course pack
+is for French; your active course is Spanish."), a file that is not a pack ("This is not a Parley
+course pack.") or one over 5 MB ("This course pack is larger than 5 MB.") is refused and nothing
+changes. Course content is CC BY-SA 4.0, and a pack says so.
 
 **Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
 Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json`,
@@ -531,6 +566,20 @@ parley lesson template --lang es --skill es.a1.u01.s01 --seed 1
 `--content <dir>` reads another course folder (default `content`). A skill the syllabus does not
 have exits 1 (`error: unknown skill es.a1.u99.s01`); `--seq` must be a whole number from 1.
 
+### The fresh-lesson request: `parley lesson render`
+
+`parley lesson render <prompt.json>` prints the request a fresh lesson sends to publik API for a
+lesson prompt (the skill, its level, the allowed words and names, and the plan), without sending
+anything: the model, the limits, and the two messages of `prompts/lesson.v1.md` filled in. With the
+example of `tests/cases/07-lesson-generation/render-es-a1/input.json` (messages shortened here):
+
+```
+parley lesson render tests/cases/07-lesson-generation/render-es-a1/input.json
+{"max_tokens":2000,"messages":[{"content":"You write exercises for a language course for adults whose own language is English.\nThe target language is Spanish. The learner's level is A1.\n…","role":"system"},{"content":"SKILL: Food and drink. Can-do: I can order simple food and drinks.\n…\nPLAN:\n1. item_id=es.a1.u03.s01#l:café type=pick_meaning focus=\"el café\" (coffee) new=true\n…","role":"user"}],"model":"publik-balanced","temperature":0.7}
+```
+
+A file that is not a lesson prompt exits 1 with `error: <file>: <what is wrong>`.
+
 ### XP, streaks and freezes: `parley streak simulate`
 
 Each correct, typo or almost answer earns 1 XP; finishing a lesson earns 10 more, and 5 more
@@ -573,7 +622,7 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: fresh AI lessons and stories, then AI answer checks and
-explanations, through the provider set up in Settings > AI. The sentence packs are published as
+In the order of `docs/ROADMAP.md`: AI answer checks and explanations, through the provider set
+up in Settings > AI, then natural voices and listening. The sentence packs are published as
 release assets before the first release; until then the app's Download button cannot fetch them,
 and `parley pack install` puts a locally built pack in place.

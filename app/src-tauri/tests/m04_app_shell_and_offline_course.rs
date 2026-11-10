@@ -1790,16 +1790,19 @@ fn t08_refused_backups_change_nothing() {
     );
 
     // The learner's data is untouched: an export gives the fixture back, apart from the time of
-    // export and the version that wrote it.
+    // export and the version that wrote it. The fixture predates stories (module 07), which an
+    // export now always writes, here as an empty array.
     let after = out.path().join("after.json");
     ok(app.backup_export(&after));
     assert_backup_layout(&after);
+    let mut expected = backup_without(
+        &case_file("stats-backup.json"),
+        &["exported_at", "app_version"],
+    );
+    expected["stories"] = serde_json::json!([]);
     assert_json_close(
         &backup_without(&after, &["exported_at", "app_version"]),
-        &backup_without(
-            &case_file("stats-backup.json"),
-            &["exported_at", "app_version"],
-        ),
+        &expected,
         1e-12,
         "backup",
     );
@@ -2262,6 +2265,7 @@ fn t13_attributions_name_pack_authors_and_not_syllabus_examples() {
                 "Tenemos agua y café.",
             ),
         ],
+        ai: None,
     };
     let pack = vec![
         PackSentence {

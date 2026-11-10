@@ -1,0 +1,40 @@
+{
+  "title": "Un café en Madrid",
+  "title_en": "A coffee in Madrid",
+  "paragraphs": [
+    "Ana está en un café en Madrid. Ana tiene un café con leche y un bocadillo. Luis no está en el café. Ana quiere un zumo. El zumo no tiene azúcar. Ana tiene pan y agua.",
+    "Luis está en Madrid con Ana. Luis quiere un té sin azúcar, por favor. Ana tiene un té con leche y un zumo. Luis tiene agua y pan. Ana no quiere un bocadillo.",
+    "Ana y Luis están en el café. Luis tiene un café con azúcar. Ana quiere agua sin azúcar. Ana y Luis tienen pan y un bocadillo. Gracias, Ana."
+  ],
+  "questions": [
+    {
+      "question_en": "Where is Ana?",
+      "options": [
+        "In a café",
+        "At home"
+      ],
+      "answer_index": 0,
+      "paragraph": 0
+    },
+    {
+      "question_en": "What does Luis drink without sugar?",
+      "options": [
+        "Tea",
+        "Milk",
+        "Juice"
+      ],
+      "answer_index": 0,
+      "paragraph": 1
+    },
+    {
+      "question_en": "What do Ana and Luis have?",
+      "options": [
+        "Bread and a sandwich",
+        "Two coffees",
+        "Nothing"
+      ],
+      "answer_index": 0,
+      "paragraph": 2
+    }
+  ]
+}

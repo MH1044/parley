@@ -199,10 +199,15 @@ CREATE TABLE media (id TEXT PRIMARY KEY, lang TEXT NOT NULL, title TEXT NOT NULL
 CREATE TABLE media_sentences (media_id TEXT NOT NULL REFERENCES media(id), n INTEGER NOT NULL,
   start_ms INTEGER NOT NULL, end_ms INTEGER NOT NULL, text TEXT NOT NULL, translation TEXT, item_id TEXT,
   PRIMARY KEY (media_id, n));
+CREATE TABLE stories (id TEXT PRIMARY KEY, lang TEXT NOT NULL, skill_id TEXT NOT NULL, seq INTEGER NOT NULL,
+  origin TEXT NOT NULL CHECK (origin IN ('ai','course_pack')), prompt_id TEXT,
+  content TEXT NOT NULL,                 -- JSON, schemas/ai/story.v1.schema.json
+  created_at INTEGER NOT NULL);
+CREATE UNIQUE INDEX stories_skill_seq ON stories(skill_id, seq);
 ```
 
 Migrations: `0001_init` (module 02) creates `meta` to `review_log`; `0002_sessions` (03) `sessions`
-to `freeze_events`; `0003_conversations` (11); `0004_media` (12).
+to `freeze_events`; `0003_stories` (07) `stories`; `0004_conversations` (11); `0005_media` (12).
 
 `cache/ai.sqlite3`: `ai_cache(key TEXT PRIMARY KEY, provider TEXT, model TEXT, prompt_id TEXT,
 prompt_version INTEGER, response TEXT, charge_micros INTEGER, created_at INTEGER)` and
@@ -264,7 +269,8 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `skill_get` | `skill_id` | `SkillDetail` | 04 |
 | `placement_start` | `lang` | `PlacementQuestion` | 04 |
 | `placement_answer` | `session_id, answer` | `{next?: PlacementQuestion, result?: PlacementResult}` | 04 |
-| `lesson_start` | `skill_id, mode: learn/review/story` | `LessonStarted {session_id, origin, exercises, notice?}` | 04, 07 |
+| `lesson_start` | `skill_id, mode: learn/review/story` | `LessonStarted {session_id, origin, exercises, notice?, ai_error?, story?}` | 04, 07 |
+| `lesson_use_course_pack` | `skill_id` | `LessonStarted` (the template lesson while a fresh one is being written) | 07 |
 | `review_start` | `lang, limit` | `LessonStarted` | 04 |
 | `exercise_submit` | `session_id, exercise_id, answer, response_ms, used_hint` | `Grade` | 04, 08 |
 | `exercise_i_was_right` | `session_id, exercise_id` | `Grade` | 04 |
@@ -272,7 +278,8 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `lesson_finish` | `session_id` | `LessonSummary {xp, correct, total, streak, record_week}` | 04 |
 | `stats_get` | `lang` | `Stats` | 04 |
 | `backup_export` / `backup_import` | `dest_path` / `src_path` | `ExportSummary` / `ImportReport` | 04 |
-| `course_pack_export` / `course_pack_import` | `lang, dest_path` / `src_path` | `ExportSummary` / `ImportReport` | 07 |
+| `course_pack_export` / `course_pack_import` | `lang, dest_path` / `src_path` | `CoursePackSummary` / `CoursePackReport` | 07 |
+| `ai_lesson_checks` | | `LessonChecks` (the local model's validity rate) | 07 |
 | `ai_status` | `refresh` (true when Settings opens) | `AiStatus` (also `ai://status`) | 06 |
 | `ai_consent_accept` / `ai_consent_decline` | | `AiStatus` | 06 |
 | `ai_set_own_key` | `base_url, key, chat_model, transcribe_model?, speech_model?, speech_voice?` | `AiStatus` | 06 |

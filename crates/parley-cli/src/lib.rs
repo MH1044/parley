@@ -91,6 +91,10 @@ output.
       content), for a learner who has done lessons 1 to n-1, with a SplitMix64 generator
       seeded with <s> (default 0); prints the lesson (schemas/lesson.schema.json). Exit 1 on
       an unknown skill, or with the validate report on a syllabus that does not load.
+  lesson render <prompt.json> [--json]
+      Print the fresh-lesson request body for publik API (prompts/lesson.v1.md) of the lesson
+      prompt in <prompt.json> (the LessonPrompt shape of docs/modules/07-lesson-generation.md).
+      Exit 1 on a file that is not a lesson prompt.
   streak simulate <days.json> [--json]
       Compute the streak, freezes and weekly records of a list of sessions
       ({\"today\":\"YYYY-MM-DD\",\"utc_offset_minutes\":n,\"goal_xp\":n,
@@ -323,7 +327,7 @@ mod tests {
             (&["pack"][..], "pack build, pack info or pack install"),
             (&["srs"][..], "srs replay"),
             (&["placement"][..], "placement simulate"),
-            (&["lesson"][..], "lesson template"),
+            (&["lesson"][..], "lesson template or lesson render"),
             (&["streak"][..], "streak simulate"),
             (&["publik"][..], "publik proof"),
         ] {

@@ -9,6 +9,7 @@ import {
   type LessonStarted,
   type LessonSummary,
 } from '../../api/commands'
+import AiBanner from '../../components/AiBanner'
 import ResultSheet from '../../components/ResultSheet'
 import { languageName, t } from '../../strings'
 import ExerciseView from './ExerciseView'
@@ -195,6 +196,8 @@ export default function Lesson({ started, lang, onExit }: Props) {
       {exercise && (
         <p className="counter">{t('exercise.counter', { i: index + 1, n: exercises.length })}</p>
       )}
+      {index === 0 && started.notice && <p className="notice">{started.notice}</p>}
+      {index === 0 && started.ai_error && <AiBanner error={started.ai_error} />}
       {exercise ? (
         <ExerciseView
           key={exercise.id}

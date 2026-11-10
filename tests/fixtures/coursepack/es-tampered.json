@@ -1,0 +1,152 @@
+{
+  "schema": "parley.coursepack/1",
+  "lang": "es",
+  "syllabus_version": 1,
+  "app_version": "0.7.0",
+  "created_at": "2026-11-02",
+  "licence": "CC-BY-SA-4.0",
+  "lessons": [
+    {
+      "skill_id": "es.a1.u03.s01",
+      "prompt": "lesson.v1",
+      "exercises": [
+        {
+          "id": "x1",
+          "item_id": "es.a1.u03.s01#l:café",
+          "facet": "receptive",
+          "origin": "ai",
+          "type": "pick_meaning",
+          "prompt_target": "un café",
+          "options": [
+            "a coffee",
+            "a tea",
+            "a sandwich",
+            "a water"
+          ],
+          "answer_index": 0
+        },
+        {
+          "id": "x2",
+          "item_id": "es.a1.u03.s01#l:agua",
+          "facet": "productive",
+          "origin": "ai",
+          "type": "translate_to_target",
+          "prompt_en": "I want water with ice, please.",
+          "target": "Quiero agua con hielo, por favor.",
+          "accepted": [
+            "Quiero agua con hielo, por favor."
+          ]
+        },
+        {
+          "id": "x3",
+          "item_id": "es.a1.u03.s01#e:2",
+          "facet": "receptive",
+          "origin": "ai",
+          "type": "translate_to_en",
+          "prompt_target": "Quiero un café con leche.",
+          "accepted": [
+            "I want a coffee with milk.",
+            "I'd like a white coffee.",
+            "I want a white coffee."
+          ]
+        },
+        {
+          "id": "x4",
+          "item_id": "es.a1.u03.s01#l:pan",
+          "facet": "productive",
+          "origin": "ai",
+          "type": "fill_gap",
+          "sentence": "Ana quiere ___ con agua.",
+          "answer": "pan",
+          "full_sentence": "Ana quiere pan con agua.",
+          "hint_en": "bread"
+        },
+        {
+          "id": "x5",
+          "item_id": "es.a1.u03.s01#l:té",
+          "facet": "receptive",
+          "origin": "ai",
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "el té",
+              "tea"
+            ],
+            [
+              "el café",
+              "coffee"
+            ],
+            [
+              "el agua",
+              "water"
+            ],
+            [
+              "el pan",
+              "bread"
+            ]
+          ]
+        },
+        {
+          "id": "x6",
+          "item_id": "es.a1.u09.s01#l:hielo",
+          "facet": "receptive",
+          "origin": "ai",
+          "type": "pick_meaning",
+          "prompt_target": "el agua",
+          "options": [
+            "water",
+            "ice",
+            "milk",
+            "tea"
+          ],
+          "answer_index": 0
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "skill_id": "es.a1.u03.s01",
+      "prompt": "story.v1",
+      "title": "Un café en Madrid",
+      "title_en": "A coffee in Madrid",
+      "paragraphs": [
+        "Ana está en un café en Madrid. Ana tiene un café con leche y un bocadillo. Luis no está en el café. Ana quiere un zumo. El zumo no tiene azúcar. Ana tiene pan y agua.",
+        "Luis está en Madrid con Ana. Luis quiere un té sin azúcar, por favor. Ana tiene un té con leche y un zumo. Luis tiene agua y pan. Ana no quiere un bocadillo.",
+        "Ana y Luis están en el café. Luis tiene un café con azúcar. Ana quiere agua sin azúcar. Ana y Luis tienen pan y un bocadillo. Gracias, Ana."
+      ],
+      "questions": [
+        {
+          "question_en": "Where is Ana?",
+          "options": [
+            "In a café",
+            "At home",
+            "At school"
+          ],
+          "answer_index": 0,
+          "paragraph": 0
+        },
+        {
+          "question_en": "What does Luis drink without sugar?",
+          "options": [
+            "Tea",
+            "Milk",
+            "Juice"
+          ],
+          "answer_index": 0,
+          "paragraph": 1
+        },
+        {
+          "question_en": "What do Ana and Luis have?",
+          "options": [
+            "Bread and a sandwich",
+            "Two coffees",
+            "Nothing"
+          ],
+          "answer_index": 0,
+          "paragraph": 2
+        }
+      ]
+    }
+  ]
+}

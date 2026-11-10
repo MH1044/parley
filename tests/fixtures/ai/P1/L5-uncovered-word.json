@@ -1,0 +1,65 @@
+{
+  "exercises": [
+    {
+      "item_id": "es.a1.u03.s01#l:café",
+      "type": "pick_meaning",
+      "prompt_target": "un café",
+      "options": [
+        "a coffee",
+        "a tea",
+        "a sandwich",
+        "a water"
+      ],
+      "answer_index": 0
+    },
+    {
+      "item_id": "es.a1.u03.s01#l:agua",
+      "type": "translate_to_target",
+      "prompt_en": "I want water with ice, please.",
+      "target": "Quiero agua con hielo, por favor.",
+      "accepted": [
+        "Quiero agua con hielo, por favor."
+      ]
+    },
+    {
+      "item_id": "es.a1.u03.s01#e:2",
+      "type": "translate_to_en",
+      "prompt_target": "Quiero un café con leche.",
+      "accepted": [
+        "I want a coffee with milk.",
+        "I'd like a white coffee.",
+        "I want a white coffee."
+      ]
+    },
+    {
+      "item_id": "es.a1.u03.s01#l:pan",
+      "type": "fill_gap",
+      "sentence": "Ana quiere ___ con agua.",
+      "answer": "pan",
+      "full_sentence": "Ana quiere pan con agua.",
+      "hint_en": "bread"
+    },
+    {
+      "item_id": "es.a1.u03.s01#l:té",
+      "type": "match_pairs",
+      "pairs": [
+        [
+          "el té",
+          "tea"
+        ],
+        [
+          "el café",
+          "coffee"
+        ],
+        [
+          "el agua",
+          "water"
+        ],
+        [
+          "el pan",
+          "bread"
+        ]
+      ]
+    }
+  ]
+}

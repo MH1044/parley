@@ -3,9 +3,12 @@ import {
   backupExport,
   backupImport,
   cacheClear,
+  coursePackExport,
+  coursePackImport,
   dataDeleteAll,
   errorMessage,
   filePick,
+  settingsGet,
 } from '../../api/commands'
 import { t } from '../../strings'
 
@@ -14,7 +17,7 @@ interface Props {
   onRestart: () => void
 }
 
-/** Backup export and restore, clearing caches, and deleting everything. */
+/** Backup export and restore, course packs, clearing caches, and deleting everything. */
 export default function Data({ onRestart }: Props) {
   const [status, setStatus] = useState<string | null>(null)
   const [confirming, setConfirming] = useState(false)
@@ -22,6 +25,7 @@ export default function Data({ onRestart }: Props) {
   const [busy, setBusy] = useState(false)
   const deleteId = useId()
   const dialogTitle = useId()
+  const packsTitle = useId()
 
   async function run(action: () => Promise<void>) {
     setBusy(true)
@@ -55,6 +59,27 @@ export default function Data({ onRestart }: Props) {
     })
   }
 
+  const exportCoursePack = () =>
+    run(async () => {
+      const path = await filePick('course_pack_export')
+      if (!path) return
+      const settings = await settingsGet()
+      const lang = settings?.active_course
+      if (!lang) return
+      const summary = await coursePackExport(lang, path)
+      if (summary) {
+        setStatus(t('settings.course_pack_exported', { n: summary.lessons, m: summary.stories }))
+      }
+    })
+
+  const importCoursePack = () =>
+    run(async () => {
+      const path = await filePick('course_pack_import')
+      if (!path) return
+      const report = await coursePackImport(path)
+      if (report) setStatus(report.message)
+    })
+
   const clearCaches = () =>
     run(async () => {
       await cacheClear('all')
@@ -80,6 +105,17 @@ export default function Data({ onRestart }: Props) {
           {t('settings.clear_caches')}
         </button>
       </div>
+      <section className="course-packs" aria-labelledby={packsTitle}>
+        <h2 id={packsTitle}>{t('settings.course_packs')}</h2>
+        <div className="actions">
+          <button type="button" disabled={busy} onClick={() => void exportCoursePack()}>
+            {t('settings.course_pack_export')}
+          </button>
+          <button type="button" disabled={busy} onClick={() => void importCoursePack()}>
+            {t('settings.course_pack_import')}
+          </button>
+        </div>
+      </section>
       <div className="danger-zone">
         <label htmlFor={deleteId}>{t('settings.delete_label')}</label>
         <input

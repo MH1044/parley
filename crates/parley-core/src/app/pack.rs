@@ -769,6 +769,7 @@ mod tests {
                 gap("e2", "Hasta la noche."),
                 gap("e3", "Buenas noches."),
             ],
+            ai: None,
         };
         let pack = [
             PackSentence {

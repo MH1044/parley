@@ -212,5 +212,22 @@
   "ai.settings.use_model": "Use this model",
   "ai.settings.model_in_use": "Model: {model}",
   "ai.settings.size_gb": "{size} GB",
-  "ai.settings.size_mb": "{size} MB"
+  "ai.settings.size_mb": "{size} MB",
+  "lesson.writing": "Writing a fresh lesson…",
+  "lesson.use_course_pack": "Use the course pack instead",
+  "story.writing": "Writing a story…",
+  "story.correct": "Correct",
+  "story.wrong": "Wrong: {answer}",
+  "story.finish": "Finish",
+  "story.back": "Back to the path",
+  "path.story": "Read a story",
+  "path.story_locked": "Practise the last skill of this unit first.",
+  "ai.settings.lessons": "AI lessons",
+  "ai.settings.fresh_lessons": "Fresh lessons",
+  "ai.settings.prepare_next": "Prepare the next lesson",
+  "ai.settings.stories": "Stories",
+  "settings.course_packs": "Course packs",
+  "settings.course_pack_export": "Export a course pack",
+  "settings.course_pack_import": "Import a course pack",
+  "settings.course_pack_exported": "Exported {n} lessons and {m} stories."
 }

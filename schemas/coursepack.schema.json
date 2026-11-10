@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Parley course pack (parley.coursepack/1)",
+  "description": "AI lessons and stories of one course as course_pack_export writes them (docs/modules/07-lesson-generation.md). This schema checks the envelope only: every exercise is then checked on its own against the shape of schemas/ai/lesson.v1.schema.json (with id, item_id, facet and origin) and the lesson checks L4 to L9, and every story against schemas/ai/story.v1.schema.json and S2 to S4 and S6, so one bad exercise or story is dropped alone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "lang", "syllabus_version", "app_version", "created_at", "licence", "lessons", "stories"],
+  "properties": {
+    "schema": { "const": "parley.coursepack/1" },
+    "lang": { "enum": ["es", "fr", "de"] },
+    "syllabus_version": { "type": "integer", "minimum": 0 },
+    "app_version": { "type": "string" },
+    "created_at": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "licence": { "type": "string" },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["skill_id", "exercises"],
+        "properties": {
+          "skill_id": { "type": "string" },
+          "prompt": { "type": ["string", "null"] },
+          "exercises": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["skill_id"],
+        "properties": {
+          "skill_id": { "type": "string" },
+          "prompt": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

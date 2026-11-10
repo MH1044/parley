@@ -4,6 +4,7 @@
 use std::io::Write;
 use std::path::Path;
 
+use parley_core::ai::{ChatRequest, LessonPrompt, lesson_prompt_file};
 use parley_core::content::{Lang, Report, derive_items, load_syllabus};
 use parley_core::env::SplitMix64;
 use parley_core::exercise::{
@@ -12,7 +13,8 @@ use parley_core::exercise::{
 use parley_core::store::Store;
 
 use super::{
-    failure, join, load_siblings, missing, not_found, parse, parse_lang, print_json, unknown, usage,
+    failure, join, load_siblings, missing, not_found, parse, parse_lang, print_json, shown,
+    unknown, usage,
 };
 
 /// The settings the command composes with: the app's defaults.
@@ -22,8 +24,9 @@ const NEW_ITEMS_PER_LESSON: usize = 5;
 pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
     match args.first().map(String::as_str) {
         Some("template") => template_command(&args[1..], out, err),
+        Some("render") => render_command(&args[1..], out, err),
         Some(other) => unknown(err, other),
-        None => missing(err, "lesson template"),
+        None => missing(err, "lesson template or lesson render"),
     }
 }
 
@@ -163,6 +166,51 @@ fn template_command(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -
     }
 }
 
+/// `parley lesson render <prompt.json>`: the P1 request body for publik API of the `LessonPrompt`
+/// in the file (docs/modules/07-lesson-generation.md, CLI): `lesson.v1` rendered with the prompt's
+/// values, the model its tier.
+fn render_command(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
+    let parsed = match parse(args, &[], &["--json"]) {
+        Ok(parsed) => parsed,
+        Err(message) => return usage(err, &message),
+    };
+    if let Some(extra) = parsed.positional.get(1) {
+        return unknown(err, extra);
+    }
+    let Some(given) = parsed.positional.first() else {
+        return missing(err, "<prompt.json>");
+    };
+    let file = shown(given);
+    let path = Path::new(given);
+    if !path.is_file() {
+        return not_found(err, &file);
+    }
+    let text = match std::fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => return failure(err, &format!("{file}: {e}")),
+    };
+    let text = text.strip_prefix('\u{feff}').unwrap_or(&text);
+    let prompt: LessonPrompt = match serde_json::from_str(text) {
+        Ok(prompt) => prompt,
+        Err(e) => return failure(err, &format!("{file}: {e}")),
+    };
+    let feature = lesson_prompt_file();
+    let messages = match feature.render(&prompt.vars()) {
+        Ok(messages) => messages,
+        Err(e) => return failure(err, &format!("{file}: {e:?}")),
+    };
+    let request = ChatRequest {
+        model: feature.tier.clone(),
+        messages,
+        max_tokens: feature.max_tokens,
+        temperature: feature.temperature,
+        timeout_s: feature.timeout_s,
+        idempotency_key: None,
+    };
+    print_json(out, &request.body(false));
+    0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -234,7 +282,15 @@ mod tests {
         );
         assert_eq!(
             usage_line(&[]),
-            "error: lesson template is required. Run parley --help.\n"
+            "error: lesson template or lesson render is required. Run parley --help.\n"
+        );
+        assert_eq!(
+            usage_line(&["render"]),
+            "error: <prompt.json> is required. Run parley --help.\n"
+        );
+        assert_eq!(
+            usage_line(&["render", "no/such.json"]),
+            "error: no/such.json not found\n"
         );
     }
 

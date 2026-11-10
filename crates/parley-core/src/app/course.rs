@@ -1,7 +1,9 @@
 //! Courses and the path: `course_list`, `course_start`, `path_get` and `skill_get`.
 
 use super::{Course, Parley, no_such_skill, not_started, open_store};
-use crate::api::{CourseSummary, PathSkill, PathUnit, PathView, SkillDetail, Word, language_name};
+use crate::api::{
+    CourseSummary, PathSkill, PathStory, PathUnit, PathView, SkillDetail, Word, language_name,
+};
 use crate::content::{ItemKind, Lang};
 use crate::env::local_date;
 use crate::error::AppError;
@@ -107,12 +109,22 @@ impl Parley {
                     tested_out,
                 });
             }
+            // The Story node ends the unit while stories are on; it opens once the unit's last
+            // skill is practised (module 07).
+            let story = skills
+                .last()
+                .filter(|_| self.settings.ai.stories)
+                .map(|last| PathStory {
+                    skill_id: last.id.clone(),
+                    available: matches!(last.state, SkillState::Practised | SkillState::Mastered),
+                });
             units.push(PathUnit {
                 id: unit.id.clone(),
                 n: index + 1,
                 title: unit.title.clone(),
                 cefr: unit.cefr,
                 skills,
+                story,
             });
         }
         let today = local_date(clock);

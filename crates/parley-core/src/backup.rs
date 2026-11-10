@@ -19,7 +19,7 @@ use crate::settings::{SETTINGS_SCHEMA, Settings, settings_from_value};
 use crate::srs::DAY_MS;
 use crate::store::{
     AnswerDump, CardDump, CourseDump, DailyDump, FreezeDump, ItemDump, JudgementDump, LessonDump,
-    ReviewDump, SessionDump, Tables,
+    ReviewDump, SessionDump, StoryDump, Tables,
 };
 
 /// The schema tag of a backup.
@@ -74,6 +74,9 @@ pub struct Backup {
     pub daily: Vec<DailyDump>,
     #[serde(default)]
     pub freeze_events: Vec<FreezeDump>,
+    /// Stories (module 07), optional so a backup made before them still imports.
+    #[serde(default)]
+    pub stories: Vec<StoryDump>,
 }
 
 impl Backup {
@@ -94,6 +97,7 @@ impl Backup {
             judgements: tables.judgements,
             daily: tables.daily,
             freeze_events: tables.freeze_events,
+            stories: tables.stories,
         }
     }
 
@@ -110,6 +114,7 @@ impl Backup {
             judgements: self.judgements.clone(),
             daily: self.daily.clone(),
             freeze_events: self.freeze_events.clone(),
+            stories: self.stories.clone(),
         }
     }
 
@@ -263,7 +268,8 @@ mod tests {
                 "lessons",
                 "judgements",
                 "daily",
-                "freeze_events"
+                "freeze_events",
+                "stories"
             ]
         );
         assert_eq!(parse_backup(text.as_bytes()).unwrap(), backup);

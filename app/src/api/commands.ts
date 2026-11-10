@@ -44,6 +44,11 @@ export const COMMANDS = [
   'ai_disconnect_publik',
   'ai_reconnect_publik',
   'ai_open_link',
+  // Module 07: lesson generation and course packs.
+  'lesson_use_course_pack',
+  'course_pack_export',
+  'course_pack_import',
+  'ai_lesson_checks',
 ] as const
 
 export type Command = (typeof COMMANDS)[number]
@@ -190,6 +195,13 @@ export interface PathUnit {
   title: string
   cefr: Cefr
   skills: PathSkill[]
+  /** The unit's Story node while stories are on (module 07). */
+  story?: PathStory | null
+}
+
+export interface PathStory {
+  skill_id: string
+  available: boolean
 }
 
 export interface PathView {
@@ -291,12 +303,51 @@ export interface Attribution {
 
 export interface LessonStarted {
   session_id: string
-  kind: 'lesson' | 'review'
+  kind: 'lesson' | 'review' | 'story'
   skill_id: string | null
   origin: Origin
   exercises: Exercise[]
   attributions: Attribution[]
   notice: string | null
+  /** Why a fresh lesson could not be written; the lesson came from the course pack (module 07). */
+  ai_error?: AppError | null
+  /** The story of a story session; its questions are answered as q1, q2, … (module 07). */
+  story?: Story | null
+}
+
+export interface StoryQuestion {
+  question_en: string
+  options: string[]
+  answer_index: number
+  paragraph: number
+}
+
+export interface Story {
+  title: string
+  title_en: string
+  paragraphs: string[]
+  questions: StoryQuestion[]
+}
+
+export interface CoursePackSummary {
+  bytes: number
+  lessons: number
+  stories: number
+  exercises: number
+}
+
+export interface CoursePackReport {
+  lessons: number
+  stories: number
+  dropped: number
+  message: string
+}
+
+export interface LessonChecks {
+  lessons: number
+  valid: number
+  planned: number
+  message: string | null
 }
 
 export interface LessonSummary {
@@ -432,7 +483,9 @@ export function appInfo(): Promise<AppInfo> {
 }
 
 /** The native file dialog for a backup; the chosen path, or null when cancelled. */
-export function filePick(kind: 'backup_export' | 'backup_import'): Promise<string | null> {
+export function filePick(
+  kind: 'backup_export' | 'backup_import' | 'course_pack_export' | 'course_pack_import',
+): Promise<string | null> {
   return call<string | null>('file_pick', { kind })
 }
 
@@ -486,8 +539,24 @@ export function placementAnswer(sessionId: string, answer: Answer): Promise<Plac
   return call<PlacementStep>('placement_answer', { session_id: sessionId, answer })
 }
 
-export function lessonStart(skillId: string, mode: 'learn' | 'review'): Promise<LessonStarted> {
+export function lessonStart(skillId: string, mode: 'learn' | 'review' | 'story'): Promise<LessonStarted> {
   return call<LessonStarted>('lesson_start', { skill_id: skillId, mode })
+}
+
+export function lessonUseCoursePack(skillId: string): Promise<LessonStarted> {
+  return call<LessonStarted>('lesson_use_course_pack', { skill_id: skillId })
+}
+
+export function coursePackExport(lang: string, destPath: string): Promise<CoursePackSummary> {
+  return call<CoursePackSummary>('course_pack_export', { lang, dest_path: destPath })
+}
+
+export function coursePackImport(srcPath: string): Promise<CoursePackReport> {
+  return call<CoursePackReport>('course_pack_import', { src_path: srcPath })
+}
+
+export function aiLessonChecks(): Promise<LessonChecks> {
+  return call<LessonChecks>('ai_lesson_checks')
 }
 
 export function reviewStart(lang: string, limit: number): Promise<LessonStarted> {

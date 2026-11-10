@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   aiStatus,
+  asAppError,
   errorMessage,
   lessonStart,
+  lessonUseCoursePack,
   onAiStatus,
   pathGet,
   reviewStart,
+  settingsGet,
   skillGet,
   type AiStatus,
+  type AppError,
   type LessonStarted,
   type PathView,
   type SkillDetail as Detail,
 } from '../../api/commands'
+import AiBanner from '../../components/AiBanner'
 import AiChip from '../../components/AiChip'
+import Loading from '../Lesson/Loading'
 import AiSetupDialog from '../../components/AiSetupDialog'
 import StreakBadge from '../../components/StreakBadge'
 import type { SettingsTab } from '../Settings/Settings'
@@ -43,6 +49,28 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
   // Nothing AI-related shows until ai_status answers, and nothing while it fails.
   const [ai, setAi] = useState<AiStatus | null>(null)
   const [setup, setSetup] = useState(false)
+  // The AI action that opened the consent dialog, run again after its Continue.
+  const afterSetup = useRef<(() => void) | null>(null)
+  // Fresh lessons are on unless the settings say otherwise.
+  const [freshLessons, setFreshLessons] = useState(true)
+  // The skill whose fresh lesson is being written, and whether the learner took the course pack.
+  const [writing, setWriting] = useState<string | null>(null)
+  const superseded = useRef(false)
+  // The story being written, or why it could not be.
+  const [story, setStory] = useState<{ skillId: string; error: AppError | null } | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    settingsGet().then(
+      (settings) => {
+        if (!cancelled && settings?.ai) setFreshLessons(settings.ai.fresh_lessons)
+      },
+      () => {},
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -79,13 +107,54 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
   async function startLesson(skillId: string) {
     setBusy(true)
     setError(null)
+    superseded.current = false
+    if (ai && ai.provider !== 'unset' && freshLessons) setWriting(skillId)
     try {
       const started = await lessonStart(skillId, 'learn')
+      // After Use the course pack instead, the fresh lesson is no longer wanted.
+      if (superseded.current) return
+      if (started) onStart(started)
+    } catch (reason) {
+      if (!superseded.current) setError(errorMessage(reason))
+    } finally {
+      if (!superseded.current) {
+        setBusy(false)
+        setWriting(null)
+      }
+    }
+  }
+
+  async function takeCoursePack(skillId: string) {
+    superseded.current = true
+    try {
+      const started = await lessonUseCoursePack(skillId)
       if (started) onStart(started)
     } catch (reason) {
       setError(errorMessage(reason))
-    } finally {
+      setWriting(null)
       setBusy(false)
+    }
+  }
+
+  async function startStory(skillId: string) {
+    setError(null)
+    setStory({ skillId, error: null })
+    try {
+      const started = await lessonStart(skillId, 'story')
+      setStory(null)
+      if (started) onStart(started)
+    } catch (reason) {
+      const appError = asAppError(reason)
+      if (appError?.code === 'needs_consent') {
+        setStory(null)
+        afterSetup.current = () => void startStory(skillId)
+        setSetup(true)
+        return
+      }
+      setStory({
+        skillId,
+        error: appError ?? { code: 'not_found', message: errorMessage(reason), action: null },
+      })
     }
   }
 
@@ -127,6 +196,10 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
         }}
       />
     )
+  }
+
+  if (writing) {
+    return <Loading onUseCoursePack={() => void takeCoursePack(writing)} />
   }
 
   return (
@@ -173,9 +246,15 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
       {setup && (
         <AiSetupDialog
           onStatus={setAi}
-          onClose={() => setSetup(false)}
+          onClose={(proceed) => {
+            setSetup(false)
+            const action = afterSetup.current
+            afterSetup.current = null
+            if (proceed && action) action()
+          }}
           onChooseOther={() => {
             setSetup(false)
+            afterSetup.current = null
             onSettings('ai')
           }}
         />
@@ -184,6 +263,15 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
         <p role="alert" className="error">
           {error}
         </p>
+      )}
+      {story && !story.error && <p role="status">{t('story.writing')}</p>}
+      {story?.error && (
+        <AiBanner
+          error={story.error}
+          claimState={ai?.claim_state}
+          onStatus={setAi}
+          onRetry={() => void startStory(story.skillId)}
+        />
       )}
       {path && !path.next_skill_id && <p>{t('path.all_done')}</p>}
       {path?.units.map((unit) => (
@@ -200,6 +288,18 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
               </li>
             ))}
           </ul>
+          {unit.story && (
+            <div className="story-node">
+              <button
+                type="button"
+                disabled={!unit.story.available || (story !== null && !story.error)}
+                onClick={() => unit.story && void startStory(unit.story.skill_id)}
+              >
+                {t('path.story')}
+              </button>
+              {!unit.story.available && <span className="hint">{t('path.story_locked')}</span>}
+            </div>
+          )}
         </section>
       ))}
     </main>

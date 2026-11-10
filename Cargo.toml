@@ -34,6 +34,12 @@ fsrs = "=6.6.2"
 sha2 = "0.11"
 # Optimal string alignment distance over chars, for typo tolerance in grading.
 strsim = "0.11"
+# Language identification of AI answers (trigram profiles), restricted to English, Spanish,
+# French and German; pure Rust, no data files.
+whatlang = "0.18"
+# Snowball stemmers for Spanish, French and German: the coverage check's fallback for word forms
+# the forms table does not list.
+rust-stemmers = "1.2"
 tauri = { version = "2", features = [] }
 tauri-build = { version = "2", features = [] }
 # The native file picker for backups, called from Rust only, so the web view needs no dialog

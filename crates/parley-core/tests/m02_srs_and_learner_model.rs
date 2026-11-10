@@ -428,20 +428,21 @@ fn user_version(conn: &Connection) -> i64 {
 }
 
 // Bullet 1: an empty file gets the seven tables with §4's columns, their indexes and foreign
-// keys. Since module 03 a new file also runs migration 0002 (five more tables), so it opens at
-// user_version 2 with the seven tables among twelve; opening it again keeps version 2.
+// keys. Since module 03 a new file also runs migration 0002 (five more tables) and since module 07
+// migration 0003 (stories), so it opens at user_version 3 with the seven tables among thirteen;
+// opening it again keeps version 3.
 #[test]
 fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("parley.sqlite3");
     {
         let store = ok(Store::open(&path));
-        assert_eq!(ok(store.user_version()), 2);
+        assert_eq!(ok(store.user_version()), 3);
     }
     assert!(path.is_file(), "open creates the file");
 
     let conn = Connection::open(&path).unwrap();
-    assert_eq!(user_version(&conn), 2);
+    assert_eq!(user_version(&conn), 3);
     let expected_names: Vec<String> = architecture_tables()
         .iter()
         .map(|(name, _)| name.to_string())
@@ -449,8 +450,8 @@ fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
     let tables = user_tables(&conn);
     assert_eq!(
         tables.len(),
-        12,
-        "the tables of 0001_init and 0002_sessions"
+        13,
+        "the tables of 0001_init, 0002_sessions and 0003_stories"
     );
     for name in &expected_names {
         assert!(tables.contains(name), "{name} of 0001_init is in the file");
@@ -525,12 +526,12 @@ fn t01_migration_creates_the_seven_tables_of_architecture_section_4() {
     let again = ok(Store::open(&path));
     assert_eq!(
         ok(again.user_version()),
-        2,
+        3,
         "nothing is pending on a second open"
     );
     drop(again);
     let in_memory = ok(Store::open_in_memory());
-    assert_eq!(ok(in_memory.user_version()), 2);
+    assert_eq!(ok(in_memory.user_version()), 3);
 }
 
 /// SQL as written, with `--` comments removed, whitespace collapsed and no space next to

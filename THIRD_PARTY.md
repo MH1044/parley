@@ -27,6 +27,8 @@ get a row here when a module adds them.
 | unicode-segmentation | MIT OR Apache-2.0 | UAX #29 word boundaries in the tokeniser |
 | unicode-normalization | MIT OR Apache-2.0 | Unicode NFC for every comparison of words |
 | strsim | MIT | Optimal string alignment distance between words, for typo tolerance in grading |
+| whatlang 0.18 | MIT | Language identification of AI text (trigram profiles), restricted to English, Spanish, French and German: an AI exercise or story in the wrong language is dropped (lesson check L4, story checks S2 and S6) |
+| rust-stemmers 1.2 | MIT AND BSD-3-Clause (the crate under MIT; its Snowball algorithms under BSD-3-Clause) | Snowball stems for Spanish, French and German: the coverage check counts a word form the forms table does not list when its stem is an allowed lemma's (L5, S3) |
 | toml | MIT OR Apache-2.0 | Reading `content/packs.lock.toml` (and `deny.toml`, `Cargo.toml` in tests) |
 | sha2 | MIT OR Apache-2.0 | SHA-256 of generated fixtures, pack checksums, the content hash and forms-table headers, AI cache keys and idempotency keys |
 | regex (tests only) | MIT OR Apache-2.0 | The source-hygiene test's patterns |
