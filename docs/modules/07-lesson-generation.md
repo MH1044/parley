@@ -281,7 +281,7 @@ hold: `ai.fresh_lessons`, `ai.provider` is not `unset`, `ai` is `Some(Ok(client)
 do the same with `story` sessions of the skill and the `stories` table.
 
 **Outcomes of P1** (`lesson_complete`; PUBLIK-INTEGRATION §9): a draft → its lesson, `notice` and
-the call's charge added to the session's `cost_micros`; `Offline` → template lesson,
+the call's charge added to the session's `cost_micros` (also when the answer failed L1); `Offline` → template lesson,
 `notice: OFFLINE_LESSON`; `NeedsConsent` or `ai` None → template lesson, nothing shown; any other
 error (including from `ai: Some(Err(e))`) → template lesson, `ai_error: Some(e.into())`, no notice.
 A job superseded by `lesson_use_course_pack` (or by a later begin of the same skill) stores and
@@ -522,8 +522,9 @@ lessons)."; "Practise the last skill of this unit first."
   request runs is kept.
 - S5 finds a focus word through the forms table or, failing that, its Snowball stem, like L5 and
   S3.
-- The charge of an answer that fails L1 is not added to the lesson's cost: the call pipeline
-  reports no charge for an unusable answer. The prepared next lesson is reused only when the plan
+- The charge of an answer that fails L1 is added to the lesson's cost like that of any other
+  answer, so the cost shown equals what publik API charged (PUBLIK-INTEGRATION §6.1; contract test
+  34): the call pipeline reports the charge of an unusable answer beside its error. The prepared next lesson is reused only when the plan
   composed at the next start is the one composed at the finish (the same due items).
 - The course pack commands are in `app/src-tauri/src/commands/lesson.rs`, beside the lesson
   commands.

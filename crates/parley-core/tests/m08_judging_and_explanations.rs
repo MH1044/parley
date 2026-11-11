@@ -1157,6 +1157,51 @@ fn t07_an_unusable_answer_in_a_lesson_is_tried_again_with_a_new_key() {
     assert_eq!(again.judge_error, None);
 }
 
+/// PUBLIK-INTEGRATION §6.1 and contract test 34: the session's cost equals the sum of what its
+/// calls were charged, whether the answer was used or failed its checks. A J2 answer (charged 140),
+/// its valid Try again (150), an E3 explanation (charged 210) and its valid Try again (220).
+#[test]
+fn every_charged_answer_counts_towards_the_session_cost() {
+    let dir = tempdir();
+    let (mut app, lesson) = lessons_app(dir.path(), "publik", &[Kind::Coffee]);
+    let client = Scripted::new()
+        .reply_costing(&p3("J2-26-words.json"), 140)
+        .reply_costing(&p3("almost.json"), 150)
+        .reply_costing(&p4("E3-french.json"), 210)
+        .reply_costing(&p4("valid.json"), 220)
+        .shared();
+    let coffee = lesson.coffee();
+    let first = submit(&mut app, &lesson, &coffee, ANSWER, access(&client));
+    assert_unchecked(&first, Some(&AppError::new(ErrorCode::AiInvalid, INVALID)));
+    let stored = tables(&mut app, dir.path());
+    assert_eq!(session_cost(&stored, &lesson.session), 140);
+
+    let again = app
+        .exercise_check_with(&lesson.session, &coffee, access(&client))
+        .expect("Try again");
+    assert_eq!(again.verdict, Verdict::Almost);
+    let stored = tables(&mut app, dir.path());
+    assert_eq!(session_cost(&stored, &lesson.session), 140 + 150);
+
+    assert_error(
+        app.explain_answer_with(&lesson.session, &coffee, access(&client))
+            .err(),
+        ErrorCode::AiInvalid,
+        INVALID,
+    );
+    let stored = tables(&mut app, dir.path());
+    assert_eq!(session_cost(&stored, &lesson.session), 140 + 150 + 210);
+
+    app.explain_answer_with(&lesson.session, &coffee, access(&client))
+        .expect("the explanation");
+    assert_eq!(client.requests(), 4);
+    let stored = tables(&mut app, dir.path());
+    assert_eq!(
+        session_cost(&stored, &lesson.session),
+        140 + 150 + 210 + 220
+    );
+}
+
 // ---------------------------------------------------------------------------------------------
 // Acceptance tests 5 and 6: what a verdict does (PUBLIK-INTEGRATION test 25).
 // ---------------------------------------------------------------------------------------------
@@ -1947,6 +1992,8 @@ fn a_verdict_that_arrives_after_i_was_right_changes_nothing() {
         .filter(|r| r["item_id"] == ITEM)
         .count();
     assert_eq!(reviews, 1, "reviewed once, by I was right");
+    // The call was charged, so the session's cost counts it (PUBLIK-INTEGRATION §6.1).
+    assert_eq!(session_cost(&stored, &lesson.session), P3_CHARGE);
 }
 
 /// Design notes: a judge job whose lesson has ended is "This exercise is no longer available." and
@@ -1981,6 +2028,8 @@ fn a_verdict_for_a_finished_lesson_is_no_longer_available() {
             .any(|r| r["item_id"] == ITEM),
         "no review"
     );
+    // The call was charged, so the ended session's cost counts it (PUBLIK-INTEGRATION §6.1).
+    assert_eq!(session_cost(&stored, &lesson.session), P3_CHARGE);
     let cache = app_cache(dir.path());
     assert!(
         cache

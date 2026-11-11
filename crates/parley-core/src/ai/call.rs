@@ -53,8 +53,24 @@ pub fn call<T: DeserializeOwned>(
     key_input: &Value,
     rules: &dyn Fn(&T) -> Result<(), RuleFailure>,
 ) -> Result<Called<T>, AiError> {
+    call_charged(client, cache, feature, vars, key_input, rules).0
+}
+
+/// [`call`], with what the request was charged beside its result: the reply's charge whether its
+/// answer was usable or not (an answer that fails its checks was still charged, and the cost the
+/// learner sees must equal what was spent), none for a cache hit or a request that got no reply.
+pub(crate) fn call_charged<T: DeserializeOwned>(
+    client: &dyn AiClient,
+    cache: &Cache,
+    feature: &Prompt,
+    vars: &BTreeMap<String, String>,
+    key_input: &Value,
+    rules: &dyn Fn(&T) -> Result<(), RuleFailure>,
+) -> (Result<Called<T>, AiError>, Option<i64>) {
     // A prompt that does not render is a fault in the caller, caught by its tests; nothing is sent.
-    let messages = feature.render(vars).map_err(|_| AiError::Invalid)?;
+    let Ok(messages) = feature.render(vars) else {
+        return (Err(AiError::Invalid), None);
+    };
     let kind = client.kind();
     let model = client.chat_model(&feature.tier);
     let key_json = cache_key_json(&feature.id, feature.version, kind, &model, key_input);
@@ -63,11 +79,14 @@ pub fn call<T: DeserializeOwned>(
     if let Some(stored) = cache.get(&key)
         && let Ok(value) = serde_json::from_str::<T>(&stored)
     {
-        return Ok(Called {
-            value,
-            cached: true,
-            charge_micros: None,
-        });
+        return (
+            Ok(Called {
+                value,
+                cached: true,
+                charge_micros: None,
+            }),
+            None,
+        );
     }
 
     let attempt = cache.attempts(&key).saturating_add(1);
@@ -82,9 +101,9 @@ pub fn call<T: DeserializeOwned>(
         Ok(reply) => reply,
         Err(AiError::Invalid) => {
             let _ = cache.add_attempt(&key);
-            return Err(AiError::Invalid);
+            return (Err(AiError::Invalid), None);
         }
-        Err(other) => return Err(other),
+        Err(other) => return (Err(other), None),
     };
 
     let checked = parse_reply(&reply.content)
@@ -98,7 +117,7 @@ pub fn call<T: DeserializeOwned>(
         // The count enters the next idempotency key, so Try again is a new request and not a
         // replay of the unusable answer. A count that cannot be written only costs that.
         let _ = cache.add_attempt(&key);
-        return Err(AiError::Invalid);
+        return (Err(AiError::Invalid), reply.charge_micros);
     };
     // A cache that cannot be written loses only the saving; the valid answer is still returned.
     let _ = cache.put(&CacheEntry {
@@ -110,11 +129,14 @@ pub fn call<T: DeserializeOwned>(
         response: &canonical_json(&value),
         charge_micros: reply.charge_micros,
     });
-    Ok(Called {
-        value: typed,
-        cached: false,
-        charge_micros: reply.charge_micros,
-    })
+    (
+        Ok(Called {
+            value: typed,
+            cached: false,
+            charge_micros: reply.charge_micros,
+        }),
+        reply.charge_micros,
+    )
 }
 
 /// The result of P0, the connection check.

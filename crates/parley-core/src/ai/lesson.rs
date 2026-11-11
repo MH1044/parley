@@ -16,7 +16,7 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
 use super::cache::Cache;
-use super::call::{Called, RuleFailure, call};
+use super::call::{Called, RuleFailure, call_charged};
 use super::client::{AiClient, AiError, ProviderKind};
 use super::prompts::Prompt;
 use super::validate::{AiCheck, allowed_from_list, check_ai_exercise, stems_of};
@@ -284,7 +284,17 @@ pub fn request_lesson(
     cache: &Cache,
     prompt: &LessonPrompt,
 ) -> Result<Called<LessonResponse>, AiError> {
-    call(
+    request_lesson_charged(client, cache, prompt).0
+}
+
+/// [`request_lesson`] with the request's charge beside its result, also for an answer that fails
+/// L1, so the lesson's cost counts it.
+pub(crate) fn request_lesson_charged(
+    client: &dyn AiClient,
+    cache: &Cache,
+    prompt: &LessonPrompt,
+) -> (Result<Called<LessonResponse>, AiError>, Option<i64>) {
+    call_charged(
         client,
         cache,
         lesson_prompt_file(),

@@ -13,7 +13,7 @@ use serde_json::{Value, json};
 use unicode_segmentation::UnicodeSegmentation;
 
 use super::cache::Cache;
-use super::call::{RuleFailure, call};
+use super::call::{RuleFailure, call_charged};
 use super::client::{AiClient, AiError};
 use super::langid::{TextLang, is_language_in};
 use super::prompts::{Prompt, json_literal};
@@ -192,21 +192,34 @@ pub fn explain(
     cache: &Cache,
     req: &ExplainRequest,
 ) -> Result<Explanation, AiError> {
-    let called = call::<ExplainResponse>(
+    explain_charged(client, cache, req).0
+}
+
+/// [`explain`] with the request's charge beside its result, also for an answer that fails E1 to
+/// E3, so the session's cost counts it.
+pub(crate) fn explain_charged(
+    client: &dyn AiClient,
+    cache: &Cache,
+    req: &ExplainRequest,
+) -> (Result<Explanation, AiError>, Option<i64>) {
+    let (called, charge) = call_charged::<ExplainResponse>(
         client,
         cache,
         explain_prompt_file(),
         &req.vars(),
         &req.key_input(),
         &|response: &ExplainResponse| check_explanation(response, req.lang),
-    )?;
-    let ExplainResponse { explanation, tip } = called.value;
-    Ok(Explanation {
-        text: explanation,
-        tip: tip.filter(|tip| !tip.trim().is_empty()),
-        cached: called.cached,
-        charge_micros: called.charge_micros,
-    })
+    );
+    let explained = called.map(|called| {
+        let ExplainResponse { explanation, tip } = called.value;
+        Explanation {
+            text: explanation,
+            tip: tip.filter(|tip| !tip.trim().is_empty()),
+            cached: called.cached,
+            charge_micros: called.charge_micros,
+        }
+    });
+    (explained, charge)
 }
 
 #[cfg(test)]

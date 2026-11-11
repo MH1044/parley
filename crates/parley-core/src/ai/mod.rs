@@ -53,5 +53,8 @@ pub use story::{
 };
 pub use validate::{allowed_from_list, coverage_with_stems};
 
+pub(crate) use explain::explain_charged;
+pub(crate) use judge::request_judgement_charged;
+pub(crate) use lesson::request_lesson_charged;
 pub(crate) use story::{has_story, story_schema_valid};
 pub(crate) use validate::{AiCheck, check_ai_exercise, stems_of};

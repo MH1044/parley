@@ -21,7 +21,7 @@ use super::{
 };
 use crate::ai::{
     self, AiClient, AiError, Cache, Called, LessonChecks, LessonCtx, LessonPrompt, LessonResponse,
-    OFFLINE_LESSON, ProviderKind, lesson_checks, request_lesson,
+    OFFLINE_LESSON, ProviderKind, lesson_checks,
 };
 use crate::api::{LessonStarted, NOTHING_TO_REVIEW_YET, next_review_notice};
 use crate::content::{Example, Lang};
@@ -84,7 +84,8 @@ pub struct LessonJob {
 }
 
 pub(crate) enum Outcome {
-    Lesson(Result<Called<LessonResponse>, AiError>),
+    /// The P1 result and what the request was charged, usable answer or not.
+    Lesson(Result<Called<LessonResponse>, AiError>, Option<i64>),
     Story(Result<Called<ai::Story>, AiError>),
 }
 
@@ -100,12 +101,14 @@ impl LessonJob {
         self.seq
     }
 
-    /// Opens cache/ai.sqlite3 and makes the call (request_lesson or generate_story).
+    /// Opens cache/ai.sqlite3 and makes the call (request_lesson, with its charge, or
+    /// generate_story).
     pub fn run(&self) -> JobOutcome {
         let cache = open_cache(&self.cache_path, self.now_ms);
         JobOutcome(match &self.work {
             JobWork::Lesson { prompt, .. } => {
-                Outcome::Lesson(request_lesson(&*self.client, &cache, prompt))
+                let (result, charge) = ai::request_lesson_charged(&*self.client, &cache, prompt);
+                Outcome::Lesson(result, charge)
             }
             JobWork::Story(story) => Outcome::Story(story.run(&*self.client, &cache)),
         })
@@ -401,8 +404,9 @@ impl Parley {
             ..
         } = job;
         match (work, outcome.0) {
-            (JobWork::Lesson { prompt, plan }, Outcome::Lesson(result)) => {
-                self.complete_lesson(lang, &skill_id, seq, prompt, plan, client.kind(), result)
+            (JobWork::Lesson { prompt, plan }, Outcome::Lesson(result, charge)) => {
+                let provider = client.kind();
+                self.complete_lesson(lang, &skill_id, seq, prompt, plan, provider, result, charge)
             }
             (JobWork::Story(story), Outcome::Story(result)) => {
                 self.story_complete(lang, &skill_id, seq, story, result)
@@ -422,6 +426,7 @@ impl Parley {
         plan: Plan,
         provider: ProviderKind,
         result: Result<Called<LessonResponse>, AiError>,
+        charge: Option<i64>,
     ) -> Result<LessonStarted, AppError> {
         let course = self.content.get(&lang).ok_or_else(no_such_skill)?.clone();
         let store = open_store(&mut self.store)?;
@@ -438,10 +443,8 @@ impl Parley {
                     numbers: &course.numbers,
                     sentences: &sentences,
                 };
-                let (response, cost) = match &result {
-                    Ok(called) => (Some(&called.value), called.charge_micros),
-                    Err(_) => (None, None),
-                };
+                // An answer that failed L1 was charged too: its charge counts like any other.
+                let response = result.as_ref().ok().map(|called| &called.value);
                 let draft = ai::build_lesson(response, provider, &plan, &ctx, rng);
                 let credits = attributions(&draft.lesson, &pack, &course.syllabus);
                 (
@@ -450,7 +453,7 @@ impl Parley {
                         credits,
                         notice: draft.notice,
                         ai_error: None,
-                        cost_micros: cost,
+                        cost_micros: charge,
                     },
                 )
             }

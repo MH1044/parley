@@ -15,7 +15,7 @@ use serde_json::{Value, json};
 use unicode_segmentation::UnicodeSegmentation;
 
 use super::cache::Cache;
-use super::call::{RuleFailure, call};
+use super::call::{Called, RuleFailure, call_charged};
 use super::client::{AiClient, AiError, ProviderKind};
 use super::langid::{TextLang, is_language, is_language_in};
 use super::prompts::Prompt;
@@ -194,28 +194,43 @@ pub fn request_judgement(
     cache: &Cache,
     req: &JudgeRequest,
 ) -> Result<Judgement, AiError> {
-    let called = call::<JudgeResponse>(
+    request_judgement_charged(client, cache, req).0
+}
+
+/// [`request_judgement`] with the request's charge beside its result, also for an answer that
+/// fails J1 to J3, so the session's cost counts it.
+pub(crate) fn request_judgement_charged(
+    client: &dyn AiClient,
+    cache: &Cache,
+    req: &JudgeRequest,
+) -> (Result<Judgement, AiError>, Option<i64>) {
+    let (called, charge) = call_charged::<JudgeResponse>(
         client,
         cache,
         judge_prompt_file(),
         &req.vars(),
         &req.key_input(),
         &|response: &JudgeResponse| check_verdict(response, req),
-    )?;
+    );
+    (called.map(judgement_of), charge)
+}
+
+/// The verdict of a valid P3 answer, after J4.
+fn judgement_of(called: Called<JudgeResponse>) -> Judgement {
     let JudgeResponse {
         verdict,
         corrected,
         explanation,
         error_tags,
     } = called.value;
-    Ok(Judgement {
+    Judgement {
         verdict,
         corrected,
         explanation,
         tags: without_tags_if_correct(verdict, error_tags),
         cached: called.cached,
         charge_micros: called.charge_micros,
-    })
+    }
 }
 
 /// The effects of a valid verdict: the `judgements` row under `judgement_key` (provider =

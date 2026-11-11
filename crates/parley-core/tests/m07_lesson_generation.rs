@@ -617,6 +617,45 @@ fn l1_a_reply_that_is_not_json_gives_the_template_lesson_with_the_notice() {
     );
 }
 
+/// PUBLIK-INTEGRATION §6.1 and contract test 34: an answer that fails L1 was still charged, so
+/// the template lesson started in its place counts the charge (15000 micros) in its cost, and the
+/// next lesson, whose answer is valid, counts its own.
+#[test]
+fn an_answer_that_fails_l1_still_counts_towards_the_lesson_cost() {
+    let dir = tempdir();
+    let mut app = app_with(dir.path(), "publik");
+    let client = Arc::new(
+        Scripted::new(ProviderKind::Publik)
+            .reply(&p1("L1-not-json.json"))
+            .reply(&p1("valid.json")),
+    );
+    let started = app
+        .lesson_start_with(SKILL, "learn", access(&client))
+        .unwrap();
+    assert_eq!(client.requests(), 1);
+    assert_eq!(started.origin, Origin::Template);
+    assert_eq!(started.notice.as_deref(), Some(FRESH_LESSON_UNAVAILABLE));
+    answer_all(&mut app, &started.session_id, &started.exercises);
+    app.lesson_finish(&started.session_id).unwrap();
+    let next = app
+        .lesson_start_with(SKILL, "learn", access(&client))
+        .unwrap();
+    assert_eq!(client.requests(), 2);
+
+    let saved = backup(&mut app, dir.path(), "cost.json");
+    let cost = |id: &str| {
+        saved["sessions"]
+            .as_array()
+            .expect("sessions in the backup")
+            .iter()
+            .find(|row| row["id"].as_str() == Some(id))
+            .and_then(|row| row["cost_micros"].as_i64())
+            .unwrap_or_else(|| panic!("session {id} has a cost"))
+    };
+    assert_eq!(cost(&started.session_id), 15_000);
+    assert_eq!(cost(&next.session_id), 15_000);
+}
+
 /// Acceptance test 4: L2, 7 exercises for a 5-entry plan → the last 2 dropped, 5 shown.
 #[test]
 fn l2_extra_exercises_are_dropped() {

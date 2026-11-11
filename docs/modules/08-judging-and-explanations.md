@@ -241,21 +241,23 @@ interface opens the AI setup dialog); `Some(Err(e))` is `Done` with `judge_error
 client is `Pending`, even with `needs_credit` set or judging stopped (a learner-triggered call goes
 out once, §9).
 
-`judge_complete`: a valid verdict reviews the card with `rating_for` (the verdict, the submission's
-hint and response time), replaces the run's grade with `verdict_grade` (rating as reviewed),
-applies `apply_judgement` with the client's kind, and adds the charge to the session's
-`cost_micros`. A failure leaves the grade `unchecked` with `judge_error` set (kept on the run, so
+`judge_complete` first adds the call's charge to the session's `cost_micros`, whether its answer
+was usable or not (a valid verdict, one that failed J1 to J3, or one that arrives late), so the cost
+shown equals what publik API charged. A valid verdict reviews the card with `rating_for` (the
+verdict, the submission's hint and response time), replaces the run's grade with `verdict_grade`
+(rating as reviewed) and applies `apply_judgement` with the client's kind. A failure leaves the grade `unchecked` with `judge_error` set (kept on the run, so
 **I was right** still works): `NeedsCredit` also stops judging for the rest of the run; `Offline`
 becomes `AppError { code: offline, message: JUDGE_OFFLINE }`; `NeedsConsent` is the command error
 `needs_consent` after **Check with AI** or **Try again**, while after an automatic call the grade
 stays as it is; every other error is its own `AppError`. A job whose answer was decided in the
-meantime (**I was right**) changes nothing and returns the run's grade.
+meantime (**I was right**) changes nothing but the session's cost and returns the run's grade; a
+job whose lesson has ended is `not_found` and likewise only adds its charge.
 
 `explain_begin` refuses an unknown session or exercise with `not_found`, and an answer that is not
 `almost` or `wrong` (or not yet given, or a `match_pairs` answer) with `invalid_input`
 EXPLAIN_NOT_AVAILABLE; no provider chosen or no consent is `needs_consent`; `Some(Err(e))` is the
-command error (Offline as EXPLAIN_OFFLINE). `explain_complete` returns `Explained` and adds the
-charge to the session's cost; `Offline` is `AppError { code: offline, message: EXPLAIN_OFFLINE }`,
+command error (Offline as EXPLAIN_OFFLINE). `explain_complete` adds the call's charge to the
+session's cost, whether its answer was usable or not, and returns `Explained`; `Offline` is `AppError { code: offline, message: EXPLAIN_OFFLINE }`,
 any other error its own `AppError` (a 402 carries its message and `top_up_url`).
 
 `Grade` gains three fields, each left out of the JSON when None (so every grade of modules 03 and
@@ -388,7 +390,12 @@ one `judgements` row. Until the first live run, the folder holds ten hand-writte
 - After a valid verdict, a store that cannot be written loses only the saving (the judgement, the
   accepted answer, the cost): the review and the grade stand. `apply_judgement` stores nothing for
   an answer with no words. A judge job whose lesson has ended is "This exercise is no longer
-  available." and changes nothing; its answer stays in the AI cache.
+  available." and changes nothing but the session's cost; its answer stays in the AI cache.
+- Every answer publik API charges counts towards the cost Parley shows (§6.1; contract test 34): the
+  charge of a judge or explain answer is added to the session's cost whether the answer was used,
+  failed its checks, or arrived after the answer was decided or the lesson ended. The call pipeline
+  reports the charge of an unusable answer beside its error; a reply the client cannot read at all
+  carries no charge, so none is added.
 - The stored-judgement grade (module 03 step 5) carries the stored explanation when there is one,
   and no `expected`.
 - "Checking…" is a state of the result sheet itself, which turns into the verdict in place. The

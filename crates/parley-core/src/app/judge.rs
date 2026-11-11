@@ -16,8 +16,8 @@ use super::lesson::{AiAccess, open_cache, run_error, run_settings};
 use super::{Parley, not_available, open_store};
 use crate::ai::{
     AiClient, AiError, EXPLAIN_NOT_AVAILABLE, EXPLAIN_OFFLINE, ExplainRequest, Explanation,
-    JUDGE_OFFLINE, JudgeRequest, Judgement, apply_judgement, explain, request_judgement,
-    verdict_grade,
+    JUDGE_OFFLINE, JudgeRequest, Judgement, apply_judgement, explain_charged,
+    request_judgement_charged, verdict_grade,
 };
 use crate::content::{Cefr, Lang};
 use crate::error::{AppError, ErrorCode};
@@ -46,8 +46,12 @@ pub struct JudgeJob {
     automatic: bool,
 }
 
-/// What a judge job's call gave.
-pub struct JudgeOutcome(pub(crate) Result<Judgement, AiError>);
+/// What a judge job's call gave, and what it was charged (also for an answer that could not be
+/// used).
+pub struct JudgeOutcome(
+    pub(crate) Result<Judgement, AiError>,
+    pub(crate) Option<i64>,
+);
 
 impl JudgeJob {
     /// What the job asks the judge.
@@ -58,7 +62,8 @@ impl JudgeJob {
     /// Opens cache/ai.sqlite3 and makes the call (request_judgement).
     pub fn run(&self) -> JudgeOutcome {
         let cache = open_cache(&self.cache_path, self.now_ms);
-        JudgeOutcome(request_judgement(&*self.client, &cache, &self.request))
+        let (result, charge) = request_judgement_charged(&*self.client, &cache, &self.request);
+        JudgeOutcome(result, charge)
     }
 }
 
@@ -71,8 +76,12 @@ pub struct ExplainJob {
     now_ms: i64,
 }
 
-/// What an explain job's call gave.
-pub struct ExplainOutcome(pub(crate) Result<Explanation, AiError>);
+/// What an explain job's call gave, and what it was charged (also for an answer that could not be
+/// used).
+pub struct ExplainOutcome(
+    pub(crate) Result<Explanation, AiError>,
+    pub(crate) Option<i64>,
+);
 
 impl ExplainJob {
     /// What the job asks for.
@@ -83,7 +92,8 @@ impl ExplainJob {
     /// Opens cache/ai.sqlite3 and makes the call (explain).
     pub fn run(&self) -> ExplainOutcome {
         let cache = open_cache(&self.cache_path, self.now_ms);
-        ExplainOutcome(explain(&*self.client, &cache, &self.request))
+        let (result, charge) = explain_charged(&*self.client, &cache, &self.request);
+        ExplainOutcome(result, charge)
     }
 }
 
@@ -349,6 +359,12 @@ impl Parley {
         } = job;
         let settings = run_settings(&self.settings);
         let store = open_store(&mut self.store)?;
+        // Every answer publik API charged counts towards the cost shown, whether it is used, fails
+        // its checks, or arrives after the answer was decided or the lesson ended (the session row
+        // outlives the run). A store that cannot be written loses only the saving.
+        if let Some(charge) = outcome.1 {
+            let _ = store.add_session_cost(&session_id, charge);
+        }
         let active = self.runs.get_mut(&session_id).ok_or_else(not_available)?;
         let state = active.run.state(&exercise_id).map_err(run_error)?;
         let current = match state.answered {
@@ -376,9 +392,6 @@ impl Parley {
                     .map_err(run_error)?;
                 // A store that cannot be written loses only the saving; the verdict stands.
                 let _ = apply_judgement(store, &request, &judgement, client.kind(), clock.now_ms());
-                if let Some(charge) = judgement.charge_micros {
-                    let _ = store.add_session_cost(&session_id, charge);
-                }
                 Ok(graded)
             }
             Err(AiError::NeedsConsent) if automatic => Ok(current),
@@ -514,12 +527,13 @@ impl Parley {
         job: ExplainJob,
         outcome: ExplainOutcome,
     ) -> Result<Explained, AppError> {
-        let explanation = outcome.0.map_err(explain_error)?;
-        if let Some(charge) = explanation.charge_micros
+        // The charge counts whether the answer could be used or not.
+        if let Some(charge) = outcome.1
             && let Ok(store) = open_store(&mut self.store)
         {
             let _ = store.add_session_cost(&job.session_id, charge);
         }
+        let explanation = outcome.0.map_err(explain_error)?;
         Ok(Explained {
             text: explanation.text,
             tip: explanation.tip,
@@ -842,7 +856,8 @@ mod tests {
             (error.code, error.message.as_str()),
             (ErrorCode::Offline, JUDGE_OFFLINE)
         );
-        // Try again, answered after I was right: nothing changes.
+        // Try again, answered after I was right: nothing changes but the cost, which counts the
+        // charge of every answer publik API charged.
         let c = client(vec![Scripted::reply(WRONG, Some(150))]);
         let JudgeBegin::Pending(job) = app.judge_begin(SESSION, "e1", access(&c), false).unwrap()
         else {
@@ -855,7 +870,7 @@ mod tests {
         let tables = app.store.as_ref().unwrap().dump().unwrap();
         assert!(tables.judgements.is_empty());
         assert_eq!(tables.review_log.len(), 1);
-        assert_eq!(tables.sessions[0].cost_micros, 0);
+        assert_eq!(tables.sessions[0].cost_micros, 150);
     }
 
     #[test]
