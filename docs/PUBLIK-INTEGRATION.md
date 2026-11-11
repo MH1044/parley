@@ -182,6 +182,7 @@ Cost per action is the planning figure from section 8 (P5, P6 and P10 are pass-t
       max_tokens: 200
       timeout_s: 10
       schema: schemas/ai/judge.v1.schema.json
+      json_lists: accepted_json
       ---
       ## system
       ...text with {placeholders}...
@@ -190,7 +191,10 @@ Cost per action is the planning figure from section 8 (P5, P6 and P10 are pass-t
 
   The renderer fails (a build-time test) if a placeholder has no value or a value has no
   placeholder. Learner-supplied text (answers, turns, transcript lines) is inserted as a JSON string
-  literal (`{answer_json}`), never raw.
+  literal (`{answer_json}`), never raw: the renderer writes every `_json` value as one JSON string
+  literal itself. A `_json` placeholder the front matter names in the optional `json_lists` takes a
+  JSON array of strings instead, whose items the renderer writes as JSON string literals joined by
+  `", "` inside `[` and `]`; any other value for it is refused.
 - **Cache key**: SHA-256 hex of the canonical JSON
   `{"feature": id, "v": version, "provider": "publik"|"own_key"|"local", "model": model, "input": {...}}`
   with keys sorted, no insignificant whitespace, strings NFC. The `input` object per call is listed

@@ -14,3 +14,8 @@ source = "docs/modules/03-exercise-engine-and-grading.md, 2026-11-03"
 valid_share = 0.8
 p95_s = 20.0
 source = "docs/modules/07-lesson-generation.md and docs/TESTING.md section 6, 2026-11-10"
+[g2]
+agreement = 0.9
+false_accept_share = 0.03
+p95_s = 4.0
+source = "docs/modules/08-judging-and-explanations.md and docs/TESTING.md section 6, 2026-11-10"

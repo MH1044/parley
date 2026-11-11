@@ -1,0 +1,10 @@
+{
+  "lang": "de",
+  "direction": "to_target",
+  "cefr": "A1",
+  "source": "The girl drinks water.",
+  "accepted": [
+    "Das Mädchen trinkt Wasser."
+  ],
+  "answer": "Die Mädchen trinkt Wasser"
+}

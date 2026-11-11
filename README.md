@@ -8,8 +8,11 @@ macOS, with Android to follow.
 learning path, lessons and reviews with honest grading, the streak and stats, settings, backup and
 restore, all with no network and no AI. AI can be set up, when you choose to, through publik
 API, your own OpenAI-compatible key or a local model server; with it, lessons are written fresh
-for you and each unit ends with a short graded story, and every AI exercise is checked before you
-see it. Answer checks and explanations come next. The course covers A1 and A2 in Spanish, French and German
+for you and each unit ends with a short graded story, every AI exercise is checked before you
+see it, a free translation the offline grader cannot match is checked by an AI judge (and
+remembered, so the same answer is accepted offline next time), and **Explain** says why an answer
+was almost right or wrong. Natural voices and listening come next. The course covers A1 and A2 in
+Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
 built and pinned by checksum but not yet published; `parley pack install` installs one for
@@ -220,7 +223,8 @@ cards and built offline from the syllabus with a seeded generator, so the same s
 same lesson on every machine. Answers are graded in a fixed order: exact (case, punctuation and
 spacing never count), a missing or wrong article, an accent slip (almost by default; strict or
 ignore in the settings), one wrong letter in a few long words, then a stored judgement; a free
-translation nothing matches is left unchecked for "I was right", never guessed.
+translation nothing matches is checked by the AI judge when AI is set up, and otherwise left
+unchecked for **Check with AI** or "I was right", never guessed.
 
 ```sh
 cargo run -q -p parley-cli -- grade --lang es --type listen_type --expected "Buenos días." --answer "Buenos dias"
@@ -265,6 +269,15 @@ your reviews. At $0.00, or offline, lessons simply come from the course pack. Se
 exports the lessons you have as a course pack and imports one from someone else, checked the same
 way.
 
+A free translation the offline grader cannot match ("Checking…" for a few seconds) is judged
+correct, almost or wrong, with the corrected answer and a short reason; a correct answer is
+remembered, so the same answer is accepted offline from then on, whichever provider judged it.
+Without a provider, or when the check could not be made, the answer shows "Not checked" with the
+reason, **Check with AI** (which opens the AI setup dialog when AI is not set up yet) and **I was
+right**; at $0.00 the judge stops for the rest of the lesson. After an answer that was almost right
+or wrong, **Explain** gives up to 80 words of plain English about the mistake and, often, a tip; an
+explanation is never paid for twice.
+
 For the maintainer only, `scripts/publik-proof` makes one real publik API call and prints the
 reply, the charge and the `x-publik-*` headers; without `PUBLIK_PROOF=1` it sends nothing. A
 built app started with `PUBLIK_SELF_TEST=1` prints one `publik self-test:` line and exits, without
@@ -281,7 +294,7 @@ opening a window.
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
 | `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
 | `schemas/` | JSON Schemas for the content formats, lessons, settings and backups; `schemas/ai/` one per AI answer |
-| `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md` the connection check, `lesson.v1.md` fresh lessons, `story.v1.md` graded stories), compiled into the app |
+| `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md` the connection check, `lesson.v1.md` fresh lessons, `story.v1.md` graded stories, `judge.v1.md` answer checks, `explain.v1.md` explanations), compiled into the app |
 | `scripts/` | `verify`, the licence gates, the release-notes check, `publik-proof` (the maintainer's one real publik API call); `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |
 | `tests/cases/` | Golden cases run through the `parley` binary; `tests/fixtures/` holds generated and hand-written fixtures |
 | `docs/` | Product, architecture, Publik integration and contract, testing, roadmap, one spec per module, decision records, the handbook |

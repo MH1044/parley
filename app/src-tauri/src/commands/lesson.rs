@@ -1,6 +1,8 @@
 //! Lessons and reviews: `lesson_start`, `lesson_use_course_pack`, `review_start`,
 //! `exercise_submit`, `exercise_i_was_right` and `lesson_finish`; course packs and the local
-//! model's validity rate (docs/modules/07-lesson-generation.md, Commands and events).
+//! model's validity rate (docs/modules/07-lesson-generation.md, Commands and events); the AI judge
+//! of an unchecked answer, `exercise_check` and `explain_answer`
+//! (docs/modules/08-judging-and-explanations.md, Commands and events).
 //!
 //! A fresh lesson or a story starts in three steps so the AI call holds no lock: the lesson is
 //! begun with the service locked, the call runs on a blocking thread with nothing locked, and the
@@ -8,16 +10,20 @@
 //! can start the template lesson, and the late answer is only cached. A client is asked for only
 //! when a provider is chosen (`ai.provider` is not `unset`), so nothing reaches any provider
 //! before the learner has chosen one (invariants I9 and I12).
+//!
+//! An answer is graded offline with the service locked; only an `unchecked` translation asks for a
+//! client, and the judge's call runs on a blocking thread with nothing locked, between the begin
+//! and the completion, as a fresh lesson's does. Explain works the same way.
 
 use std::path::PathBuf;
 
 use parley_core::ai::LessonChecks;
 use parley_core::api::{AI_STATUS_EVENT, LessonStarted};
-use parley_core::app::{AiAccess, LessonBegin};
+use parley_core::app::{AiAccess, Explained, JudgeBegin, LessonBegin};
 use parley_core::coursepack::{CoursePackReport, CoursePackSummary};
 use parley_core::error::AppError;
 use parley_core::exercise::LessonSummary;
-use parley_core::grading::{Answer, Grade};
+use parley_core::grading::{Answer, Grade, Verdict};
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use super::ai::unfinished;
@@ -35,6 +41,34 @@ fn ai_access(state: &AppState, mode: &str) -> Option<AiAccess> {
             _ => false,
         };
     wanted.then(|| state.with_ai(|service| service.client(&ai)))
+}
+
+/// The chosen provider's client for judging or explaining an answer, or None when no provider is
+/// chosen. The settings are read first; the AI service is locked only while the client is built.
+fn answer_access(state: &AppState) -> Option<AiAccess> {
+    let ai = state.with(|p| p.settings_get().ai);
+    (ai.provider != "unset").then(|| state.with_ai(|service| service.client(&ai)))
+}
+
+/// Judges an unchecked answer: begun with the service locked, the call made with nothing locked,
+/// completed with the service locked again; the status is emitted after a call.
+fn judge(
+    app: &AppHandle,
+    state: &AppState,
+    session_id: &str,
+    exercise_id: &str,
+    automatic: bool,
+) -> Result<Grade, AppError> {
+    let ai = answer_access(state);
+    match state.with(|p| p.judge_begin(session_id, exercise_id, ai, automatic))? {
+        JudgeBegin::Done(grade) => Ok(grade),
+        JudgeBegin::Pending(job) => {
+            let outcome = job.run();
+            let grade = state.with(|p| p.judge_complete(job, outcome));
+            emit_status(app, state);
+            grade
+        }
+    }
 }
 
 /// Emits the AI status after a call, so a 402 or a reconnect shows on every view at once.
@@ -85,16 +119,64 @@ pub fn review_start(
     state.with(|p| p.review_start(&lang, limit))
 }
 
+/// Grades an answer offline; an `unchecked` translation then goes to the judge when a provider is
+/// chosen and ready (module 08).
 #[tauri::command(rename_all = "snake_case")]
-pub fn exercise_submit(
-    state: State<'_, AppState>,
+pub async fn exercise_submit(
+    app: AppHandle,
     session_id: String,
     exercise_id: String,
     answer: Answer,
     response_ms: Option<i64>,
     used_hint: bool,
 ) -> Result<Grade, AppError> {
-    state.with(|p| p.exercise_submit(&session_id, &exercise_id, &answer, response_ms, used_hint))
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        let grade = state.with(|p| {
+            p.exercise_submit(&session_id, &exercise_id, &answer, response_ms, used_hint)
+        })?;
+        if grade.verdict != Verdict::Unchecked {
+            return Ok(grade);
+        }
+        judge(&app, &state, &session_id, &exercise_id, true)
+    })
+    .await
+    .map_err(|_| unfinished())?
+}
+
+/// **Check with AI** and **Try again** on an unchecked answer.
+#[tauri::command(rename_all = "snake_case")]
+pub async fn exercise_check(
+    app: AppHandle,
+    session_id: String,
+    exercise_id: String,
+) -> Result<Grade, AppError> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        judge(&app, &state, &session_id, &exercise_id, false)
+    })
+    .await
+    .map_err(|_| unfinished())?
+}
+
+/// **Explain** after an answer that was almost right or wrong.
+#[tauri::command(rename_all = "snake_case")]
+pub async fn explain_answer(
+    app: AppHandle,
+    session_id: String,
+    exercise_id: String,
+) -> Result<Explained, AppError> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<AppState>();
+        let ai = answer_access(&state);
+        let job = state.with(|p| p.explain_begin(&session_id, &exercise_id, ai))?;
+        let outcome = job.run();
+        let explained = state.with(|p| p.explain_complete(job, outcome));
+        emit_status(&app, &state);
+        explained
+    })
+    .await
+    .map_err(|_| unfinished())?
 }
 
 #[tauri::command(rename_all = "snake_case")]

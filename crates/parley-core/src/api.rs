@@ -58,6 +58,9 @@ pub const COMMANDS: &[&str] = &[
     "course_pack_export",
     "course_pack_import",
     "ai_lesson_checks",
+    // Module 08: judging and explanations.
+    "exercise_check",
+    "explain_answer",
 ];
 
 /// The event every AI command that changes the status emits it on, with the [`crate::ai::AiStatus`].
@@ -451,12 +454,13 @@ mod tests {
             serde_json::to_string(&status).unwrap(),
             r#"{"lang":"es","state":"not_published","version":null,"bytes":null,"size":null}"#
         );
-        assert_eq!(COMMANDS.len(), 38);
+        assert_eq!(COMMANDS.len(), 40);
         assert_eq!(COMMANDS[0], "app_start");
         assert_eq!(COMMANDS[22], "backup_import");
         assert_eq!(COMMANDS[23], "ai_status");
         assert_eq!(COMMANDS[33], "ai_open_link");
         assert_eq!(COMMANDS[34], "lesson_use_course_pack");
         assert_eq!(COMMANDS[37], "ai_lesson_checks");
+        assert_eq!(&COMMANDS[38..], ["exercise_check", "explain_answer"]);
     }
 }

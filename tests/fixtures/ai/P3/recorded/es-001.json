@@ -1,0 +1,15 @@
+{
+  "case": "es-001",
+  "request": {
+    "lang": "es",
+    "direction": "to_target",
+    "cefr": "A1",
+    "source": "The kitchen is very small.",
+    "accepted": [
+      "La cocina es muy pequeña."
+    ],
+    "answer": "El cocina es muy pequeña."
+  },
+  "content": "{\"verdict\": \"almost\", \"corrected\": \"La cocina es muy pequeña.\", \"explanation\": \"Cocina is feminine, so it takes la, not el.\", \"error_tags\": [\"gender\"]}",
+  "ms": 1184
+}

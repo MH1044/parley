@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use super::types::{Exercise, Lesson};
 use crate::content::{Forms, Lang};
 use crate::env::{Clock, LocalDate, local_date};
+use crate::error::AppError;
 use crate::game::{SessionKind, SessionResult, WEEKLY_RECORD, xp_for};
 use crate::grading::{
     AccentLeniency, Answer, Grade, Verdict, accept_learner_answer, grade, grade_ctx, normalise,
@@ -102,7 +103,28 @@ pub struct LessonSummary {
 struct Answered {
     answer: Answer,
     response_ms: Option<i64>,
+    used_hint: bool,
     grade: Grade,
+    /// The AI judge's error tags, once it gave a verdict (Explain sends them).
+    judge_tags: Vec<String>,
+}
+
+/// One exercise of a run, and what was answered once it was.
+pub(crate) struct ExerciseState<'a> {
+    pub exercise: &'a Exercise,
+    /// The answer, its grade and the AI judge's error tags.
+    pub answered: Option<(&'a Answer, &'a Grade, &'a [String])>,
+}
+
+/// The submitted answer of `slot`, when it is still unchecked.
+fn unchecked(slot: &mut Option<Answered>) -> Result<&mut Answered, RunError> {
+    let Some(answered) = slot.as_mut() else {
+        return Err(RunError::EmptyAnswer);
+    };
+    if answered.grade.verdict != Verdict::Unchecked {
+        return Err(RunError::AlreadyChecked);
+    }
+    Ok(answered)
 }
 
 /// A lesson or review in progress.
@@ -265,9 +287,92 @@ impl LessonRun {
         self.answered[index] = Some(Answered {
             answer: sub.answer.clone(),
             response_ms: sub.response_ms,
+            used_hint: sub.used_hint,
             grade: graded.clone(),
+            judge_tags: Vec::new(),
         });
         Ok(graded)
+    }
+
+    /// The exercise `exercise_id` and, once answered, its answer, grade and the judge's tags. An
+    /// unknown exercise is no longer available.
+    pub(crate) fn state(&self, exercise_id: &str) -> Result<ExerciseState<'_>, RunError> {
+        let index = self.index_of(exercise_id)?;
+        Ok(ExerciseState {
+            exercise: &self.exercises[index],
+            answered: self.answered[index]
+                .as_ref()
+                .map(|a| (&a.answer, &a.grade, a.judge_tags.as_slice())),
+        })
+    }
+
+    /// The AI judge's verdict on a submitted, unchecked answer: the card is reviewed with the
+    /// verdict, the submission's hint and response time, and `grade` (module 08's verdict grade)
+    /// becomes the answer's grade with the rating as reviewed; `tags` are the judge's error tags.
+    /// Refused like "I was right": an unknown exercise, one not yet submitted, or one decided.
+    pub(crate) fn judged(
+        &mut self,
+        store: &mut Store,
+        settings: &RunSettings,
+        exercise_id: &str,
+        mut grade: Grade,
+        tags: Vec<String>,
+        clock: &dyn Clock,
+    ) -> Result<Grade, RunError> {
+        let index = self.index_of(exercise_id)?;
+        let ex = &self.exercises[index];
+        let answered = unchecked(&mut self.answered[index])?;
+        let Some(verdict) = grade.verdict.srs() else {
+            return Ok(answered.grade.clone());
+        };
+        let rating = rating_for(&Outcome {
+            verdict,
+            used_hint: answered.used_hint,
+            exercise_type: ex.kind().as_str().to_string(),
+            response_ms: answered.response_ms,
+            learner_override: false,
+        });
+        let context = ReviewContext {
+            exercise_type: ex.kind().as_str().to_string(),
+            verdict,
+            response_ms: answered.response_ms,
+            session_id: self.session_id.clone(),
+        };
+        store.review(
+            &ex.item_id,
+            ex.facet,
+            rating,
+            clock.now_ms(),
+            &context,
+            &settings.srs,
+        )?;
+        grade.rating = Some(rating);
+        answered.grade = grade.clone();
+        answered.judge_tags = tags;
+        Ok(grade)
+    }
+
+    /// Why the AI judge gave no verdict on a submitted, unchecked answer: kept on its grade, which
+    /// stays unchecked (so "I was right" still works), and returned. A decided answer keeps its
+    /// grade, which is returned as it is.
+    pub(crate) fn judge_failed(
+        &mut self,
+        exercise_id: &str,
+        error: AppError,
+    ) -> Result<Grade, RunError> {
+        let index = self.index_of(exercise_id)?;
+        let slot = &mut self.answered[index];
+        match unchecked(slot) {
+            Ok(answered) => {
+                answered.grade.judge_error = Some(error);
+                Ok(answered.grade.clone())
+            }
+            Err(RunError::AlreadyChecked) => slot
+                .as_ref()
+                .map(|a| a.grade.clone())
+                .ok_or(RunError::EmptyAnswer),
+            Err(e) => Err(e),
+        }
     }
 
     /// "I was right" on a submitted, unchecked answer: the answer is accepted from now on

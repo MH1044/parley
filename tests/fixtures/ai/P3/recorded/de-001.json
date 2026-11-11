@@ -1,0 +1,15 @@
+{
+  "case": "de-001",
+  "request": {
+    "lang": "de",
+    "direction": "to_target",
+    "cefr": "A1",
+    "source": "We are going to the cinema today.",
+    "accepted": [
+      "Wir gehen heute ins Kino."
+    ],
+    "answer": "Heute gehen wir ins Kino."
+  },
+  "content": "{\"verdict\": \"correct\", \"corrected\": \"Heute gehen wir ins Kino.\", \"explanation\": \"Starting with heute and putting the verb second is natural German.\", \"error_tags\": []}",
+  "ms": 1112
+}

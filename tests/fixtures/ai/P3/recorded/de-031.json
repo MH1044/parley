@@ -1,0 +1,16 @@
+{
+  "case": "de-031",
+  "request": {
+    "lang": "de",
+    "direction": "to_target",
+    "cefr": "A2",
+    "source": "Yesterday we ate in a small restaurant.",
+    "accepted": [
+      "Gestern haben wir in einem kleinen Restaurant gegessen.",
+      "Wir haben gestern in einem kleinen Restaurant gegessen."
+    ],
+    "answer": "Gestern haben wir in einem kleinen Restaurant gegesst."
+  },
+  "content": "{\"verdict\": \"almost\", \"corrected\": \"Gestern haben wir in einem kleinen Restaurant gegessen.\", \"explanation\": \"The past participle of essen is gegessen, not gegesst.\", \"error_tags\": [\"conjugation\"]}",
+  "ms": 1405
+}

@@ -238,6 +238,9 @@ impl Parley {
                 .flatten(),
             words: Vec::new(),
             rating: None,
+            explanation: None,
+            expected: None,
+            judge_error: None,
         })
     }
 

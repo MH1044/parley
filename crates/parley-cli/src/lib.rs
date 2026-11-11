@@ -5,8 +5,9 @@
 //! scheduler and placement commands of module 02 (`srs replay`, `placement simulate`), the
 //! grading, lesson and streak commands of module 03 (`grade`, `lesson template`,
 //! `streak simulate`), the course commands of module 05 (`content scenarios`, `content report`,
-//! `freq check`, `pack install`), the maintainer's `publik proof` of module 06 and, from later
-//! modules, the others (docs/ARCHITECTURE.md §2).
+//! `freq check`, `pack install`), the maintainer's `publik proof` of module 06, the request
+//! renderers of modules 07 and 08 (`lesson render`, `judge render`) and, from later modules, the
+//! others (docs/ARCHITECTURE.md §2).
 //! Every command prints one JSON object on standard output, exits 0 on success, 1 on a content
 //! error and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
 
@@ -95,6 +96,11 @@ output.
       Print the fresh-lesson request body for publik API (prompts/lesson.v1.md) of the lesson
       prompt in <prompt.json> (the LessonPrompt shape of docs/modules/07-lesson-generation.md).
       Exit 1 on a file that is not a lesson prompt.
+  judge render <request.json> [--json]
+      Print the answer-judge request body for publik API (prompts/judge.v1.md, model
+      publik-fast) of the judge request in <request.json> (the JudgeRequest shape of
+      docs/modules/08-judging-and-explanations.md: lang, direction, cefr, source, accepted,
+      answer). Exit 1 on a file that is not a judge request.
   streak simulate <days.json> [--json]
       Compute the streak, freezes and weekly records of a list of sessions
       ({\"today\":\"YYYY-MM-DD\",\"utc_offset_minutes\":n,\"goal_xp\":n,
@@ -119,6 +125,7 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
         Some("forms") => return cmd::forms::run(&args[1..], out, err),
         Some("freq") => return cmd::freq::run(&args[1..], out, err),
         Some("grade") => return cmd::grade::run(&args[1..], out, err),
+        Some("judge") => return cmd::judge::run(&args[1..], out, err),
         Some("lesson") => return cmd::lesson::run(&args[1..], out, err),
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
         Some("placement") => return cmd::placement::run(&args[1..], out, err),
@@ -218,6 +225,7 @@ mod tests {
             assert!(out.contains("placement simulate --syllabus <file>"));
             assert!(out.contains("grade --lang <l> --type <t>"));
             assert!(out.contains("lesson template --lang <l> --skill <id>"));
+            assert!(out.contains("judge render <request.json> [--json]"));
             assert!(out.contains("streak simulate <days.json>"));
             assert!(out.contains("content scenarios <file-or-dir> [--content <dir>]"));
             assert!(
@@ -328,6 +336,7 @@ mod tests {
             (&["srs"][..], "srs replay"),
             (&["placement"][..], "placement simulate"),
             (&["lesson"][..], "lesson template or lesson render"),
+            (&["judge"][..], "judge render"),
             (&["streak"][..], "streak simulate"),
             (&["publik"][..], "publik proof"),
         ] {

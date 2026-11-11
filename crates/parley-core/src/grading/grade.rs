@@ -15,6 +15,7 @@ use sha2::{Digest, Sha256};
 use super::normalise::{accent_equal, display_words, normalise, words};
 use super::typo::typo_match;
 use crate::content::{Forms, Gender, ItemKind, Lang, nfc};
+use crate::error::AppError;
 use crate::exercise::{Body, Exercise, ExerciseType};
 use crate::srs::{self, Outcome, Rating, rating_for};
 use crate::store::{AnswerSource, ItemRow, Store, StoreError};
@@ -114,7 +115,8 @@ impl Tag {
         }
     }
 
-    fn parse(text: &str) -> Option<Tag> {
+    /// The tag named `text`, when it is one of the three.
+    pub(crate) fn parse(text: &str) -> Option<Tag> {
         match text {
             "accent" => Some(Tag::Accent),
             "article" => Some(Tag::Article),
@@ -258,8 +260,9 @@ pub enum Answer {
     Pairs(Vec<[u32; 2]>),
 }
 
-/// The grader's result, as the result sheet shows it.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+/// The grader's result, as the result sheet shows it. The three fields of module 08 are left out
+/// of the JSON when empty, so every other grade serialises as it did before.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Grade {
     pub verdict: Verdict,
     pub tags: Vec<Tag>,
@@ -270,6 +273,15 @@ pub struct Grade {
     pub words: Vec<String>,
     /// The FSRS rating the verdict gives; none for an unchecked answer.
     pub rating: Option<Rating>,
+    /// The AI judge's reason, on a verdict it gave (also a stored one).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<String>,
+    /// The exercise's first accepted answer, under a judged `wrong`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expected: Option<String>,
+    /// Why an unchecked answer has no verdict: the AI judge's call failed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub judge_error: Option<AppError>,
 }
 
 /// The rating of `verdict` for an exercise of `kind`, with no hint and no response time: the
@@ -301,6 +313,9 @@ fn graded(
         corrected,
         words,
         rating: rating_of(kind, verdict),
+        explanation: None,
+        expected: None,
+        judge_error: None,
     }
 }
 
@@ -514,14 +529,14 @@ pub fn grade(ctx: &GradeCtx, ex: &Exercise, answer: &Answer) -> Grade {
         }
     }
 
-    // 5. A cached judgement.
+    // 5. A cached judgement, with the judge's reason when it gave one.
     if let Some(judgement) = &ctx.judgement {
         let tags: Vec<Tag> = judgement
             .tags
             .iter()
             .filter_map(|t| Tag::parse(t))
             .collect();
-        return graded(
+        let mut stored = graded(
             kind,
             judgement.verdict.into(),
             tags,
@@ -529,6 +544,10 @@ pub fn grade(ctx: &GradeCtx, ex: &Exercise, answer: &Answer) -> Grade {
             Some(judgement.corrected.clone()),
             Vec::new(),
         );
+        if !judgement.explanation.is_empty() {
+            stored.explanation = Some(judgement.explanation.clone());
+        }
+        return stored;
     }
 
     // 6. Nothing matched.
@@ -540,6 +559,9 @@ pub fn grade(ctx: &GradeCtx, ex: &Exercise, answer: &Answer) -> Grade {
             corrected: None,
             words: Vec::new(),
             rating: None,
+            explanation: None,
+            expected: None,
+            judge_error: None,
         },
         _ => wrong(kind, first),
     }
@@ -567,7 +589,7 @@ pub fn judgement_key(lang: Lang, direction: Direction, source: &str, answer_norm
 /// Whether the exercise asks for the item itself: a `translate_to_target` whose `prompt_en` is
 /// one of the item's English texts, or a `translate_to_en`, `listen_type` or `speak` whose
 /// prompt is the item's target (NFC compared). Only then do the item's stored answers apply.
-fn prompt_is_items_own(item: &ItemRow, ex: &Exercise) -> bool {
+pub(crate) fn prompt_is_items_own(item: &ItemRow, ex: &Exercise) -> bool {
     match &ex.body {
         Body::TranslateToTarget { prompt_en, .. } => {
             let prompt = nfc(prompt_en);
@@ -653,6 +675,9 @@ pub fn accept_learner_answer(
         corrected: None,
         words: Vec::new(),
         rating: Some(Rating::Good),
+        explanation: None,
+        expected: None,
+        judge_error: None,
     };
     let (Answer::Text(text), Some(direction)) = (answer, ex.direction()) else {
         return Ok(accepted);
@@ -936,7 +961,14 @@ mod tests {
         let g = grade(&c, &to_target(&["Buenos días."]), &text("buenas tarde"));
         assert_eq!(g.verdict, Verdict::Almost);
         assert_eq!(g.corrected.as_deref(), Some("Buenas tardes."));
+        assert_eq!(g.explanation, None, "an empty explanation is left out");
         assert_eq!((g.tags, g.message), (vec![Tag::Typo], None));
+        if let Some(judgement) = c.judgement.as_mut() {
+            judgement.explanation = "Tarde is singular here.".into();
+        }
+        let g = grade(&c, &to_target(&["Buenos días."]), &text("buenas tarde"));
+        assert_eq!(g.explanation.as_deref(), Some("Tarde is singular here."));
+        assert_eq!(g.expected, None);
     }
 
     #[test]
@@ -1001,6 +1033,9 @@ mod tests {
             corrected: None,
             words: vec![],
             rating: None,
+            explanation: None,
+            expected: None,
+            judge_error: None,
         };
         assert_eq!(
             serde_json::to_string(&g).unwrap(),

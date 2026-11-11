@@ -10,7 +10,8 @@ Building from source (see `README.md`) gives:
 - the desktop app, which teaches offline: onboarding with a placement test, the learning path,
   lessons and reviews, the streak and stats, settings, and backups (below), and lets you set up AI
   when you choose to: publik API, your own key or a local model, with a connection check; with
-  AI set up, fresh lessons, graded stories, and course packs to share lessons;
+  AI set up, fresh lessons, graded stories, course packs to share lessons, AI checks of free
+  translations, and explanations of answers that were almost right or wrong;
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -58,7 +59,8 @@ settings say so), *Fill the gap* with an English hint, and *Match the pairs* (a 
 meaning). **Check** shows the result: Correct, Almost, Typo, Wrong or Not checked, the reason,
 the correct answer and, for a sentence from the course pack, its Tatoeba author ("Sentence by
 … on Tatoeba"). Not checked means a free translation Parley cannot decide offline: **I was
-right** accepts it from then on. The keyboard does it all: Enter checks and continues, 1 to 4
+right** accepts it from then on, and **Check with AI** asks the AI judge (see *Answer checks*
+below). The keyboard does it all: Enter checks and continues, 1 to 4
 choose an option, Esc asks "Quit this lesson?". The summary shows the XP earned, how many answers
 were correct and the streak. There is no limit on lessons.
 
@@ -135,6 +137,27 @@ questions in English (four at A2); each answer shows "Correct" or the right opti
 10 XP plus 2 per right answer. Stories never change your reviews. An unusable story shows "The AI
 answer could not be used." with **Try again**; with no provider set up, **Read a story** opens the
 AI setup dialog first.
+
+**Answer checks.** With a provider set up, a free translation that matches no accepted answer,
+accent slip or typo is sent to the AI judge, and the result sheet says "Checking…" for a few
+seconds: then Correct, Almost or Wrong with a short reason, "Correct answer: …" with your answer
+corrected, and after Wrong "Also correct: …" with the course's own answer. A correct answer is
+remembered: the same answer to the same sentence is accepted offline from then on, whichever
+provider judged it. Without a provider the sheet says "Not checked" with **Check with AI** (the AI
+setup dialog opens first when AI is not set up yet; **Not now** leaves the answer as it is), **I
+was right** and **Continue**. When the check cannot be made, "Not checked" says why, as the AI
+banner does: offline, "You're offline, so Parley can't check free answers."; with no publik balance
+left, the message, its one link and "or use your own key or a local model in Settings", and no
+more answers are sent to the judge by themselves in that lesson (**Check with AI** still asks once);
+a disconnected publik API, **Reconnect**; a slow
+or busy provider ("publik API did not answer in time.") or an answer that could not be used ("The
+AI answer could not be used."), **Try again**. **I was right** always works.
+
+**Explain.** After an answer that was almost right or wrong (not after a typo, and never on match
+the pairs), **Explain** shows "Explaining…", then up to 80 words of plain English about the mistake
+and often "Tip: …". It sends the exercise, the expected answer, your answer, the verdict with its
+error tags, the level and the skill's grammar note, nothing else. Asking again shows the same
+explanation at no cost. Offline it says "Explanations need a connection or a local model."
 
 **Course packs.** *Settings > Data > Course packs*: **Export a course pack** saves the AI lessons
 and stories of your active course as `parley-course-<lang>.json` ("Exported 3 lessons and 1
@@ -580,6 +603,32 @@ parley lesson render tests/cases/07-lesson-generation/render-es-a1/input.json
 
 A file that is not a lesson prompt exits 1 with `error: <file>: <what is wrong>`.
 
+### The answer-check request: `parley judge render`
+
+`parley judge render <request.json>` prints the request the answer judge sends to publik API for
+one answer, without sending anything: the model (`publik-fast`), the limits, and the two messages
+of `prompts/judge.v1.md` filled in. The file names the course language, the direction
+(`to_target`: the answer is in the course language; `to_en`: the answer is English), the level, the
+sentence to translate, the course's accepted answers and the answer. With the example of
+`docs/PUBLIK-INTEGRATION.md` §6.5, kept as
+`tests/cases/08-judging-and-explanations/render-es-almost/input.json`:
+
+```
+{"lang": "es", "direction": "to_target", "cefr": "A1",
+ "source": "I would like a coffee with milk.",
+ "accepted": ["Quiero un café con leche.", "Quisiera un café con leche."],
+ "answer": "Me gustaría una café con leche"}
+```
+
+it prints (the system message shortened here):
+
+```
+parley judge render tests/cases/08-judging-and-explanations/render-es-almost/input.json
+{"max_tokens":200,"messages":[{"content":"You check one answer in a language exercise for an adult learner whose own language is English.\nThe learner was asked to translate SOURCE into Spanish. …","role":"system"},{"content":"LEVEL: A1\nSOURCE (English): \"I would like a coffee with milk.\"\nACCEPTED: [\"Quiero un café con leche.\", \"Quisiera un café con leche.\"]\nANSWER: \"Me gustaría una café con leche\"","role":"user"}],"model":"publik-fast","temperature":0}
+```
+
+A file that is not a judge request exits 1 with `error: <file>: <what is wrong>`.
+
 ### XP, streaks and freezes: `parley streak simulate`
 
 Each correct, typo or almost answer earns 1 XP; finishing a lesson earns 10 more, and 5 more
@@ -622,7 +671,7 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: AI answer checks and explanations, through the provider set
-up in Settings > AI, then natural voices and listening. The sentence packs are published as
+In the order of `docs/ROADMAP.md`: natural voices and listening, then speaking and
+pronunciation. The sentence packs are published as
 release assets before the first release; until then the app's Download button cannot fetch them,
 and `parley pack install` puts a locally built pack in place.

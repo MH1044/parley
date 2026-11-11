@@ -1,0 +1,11 @@
+{
+  "lang": "es",
+  "direction": "to_target",
+  "cefr": "A1",
+  "source": "I would like a coffee with milk.",
+  "accepted": [
+    "Quiero un café con leche.",
+    "Quisiera un café con leche."
+  ],
+  "answer": "Me gustaría una café con leche"
+}

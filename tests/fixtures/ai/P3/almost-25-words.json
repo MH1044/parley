@@ -1,0 +1,6 @@
+{
+  "verdict": "almost",
+  "corrected": "Me gustaría un café con leche",
+  "explanation": "Café is a masculine noun, so it takes the masculine article un and not the feminine article una; the rest of your answer is right.",
+  "error_tags": ["gender"]
+}

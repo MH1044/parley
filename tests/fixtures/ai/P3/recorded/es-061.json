@@ -1,0 +1,16 @@
+{
+  "case": "es-061",
+  "request": {
+    "lang": "es",
+    "direction": "to_target",
+    "cefr": "A2",
+    "source": "I'm going to cook pasta tonight.",
+    "accepted": [
+      "Voy a cocinar pasta esta noche.",
+      "Esta noche voy a cocinar pasta."
+    ],
+    "answer": "Voy a comer pasta esta noche."
+  },
+  "content": "{\"verdict\": \"wrong\", \"corrected\": \"Voy a cocinar pasta esta noche.\", \"explanation\": \"Comer means to eat; to cook is cocinar.\", \"error_tags\": [\"wrong_word\"]}",
+  "ms": 1347
+}

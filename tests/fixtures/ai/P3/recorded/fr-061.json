@@ -1,0 +1,15 @@
+{
+  "case": "fr-061",
+  "request": {
+    "lang": "fr",
+    "direction": "to_target",
+    "cefr": "A1",
+    "source": "My grandmother lives in the country.",
+    "accepted": [
+      "Ma grand-mère habite à la campagne."
+    ],
+    "answer": "Ma grand-mère vit à la campagne."
+  },
+  "content": "{\"verdict\": \"correct\", \"corrected\": \"Ma grand-mère vit à la campagne.\", \"explanation\": \"Vivre and habiter both mean to live, so this answer is correct.\", \"error_tags\": []}",
+  "ms": 893
+}

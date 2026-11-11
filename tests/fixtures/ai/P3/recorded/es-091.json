@@ -1,0 +1,15 @@
+{
+  "case": "es-091",
+  "request": {
+    "lang": "es",
+    "direction": "to_target",
+    "cefr": "A2",
+    "source": "I spent the whole afternoon at the library.",
+    "accepted": [
+      "Pasé toda la tarde en la biblioteca."
+    ],
+    "answer": "Estuve toda la tarde en la biblioteca."
+  },
+  "content": "{\"verdict\": \"correct\", \"corrected\": \"Estuve toda la tarde en la biblioteca.\", \"explanation\": \"Estuve toda la tarde is a natural way to say you spent the afternoon there.\", \"error_tags\": []}",
+  "ms": 1021
+}

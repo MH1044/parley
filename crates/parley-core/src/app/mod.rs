@@ -26,12 +26,14 @@ use crate::srs::Placement;
 use crate::store::{Store, StoreError};
 
 mod course;
+mod judge;
 mod lesson;
 mod pack;
 mod placement;
 mod stats;
 mod story;
 
+pub use judge::{ExplainJob, ExplainOutcome, Explained, JudgeBegin, JudgeJob, JudgeOutcome};
 pub use lesson::{AiAccess, JobOutcome, LessonBegin, LessonJob};
 pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
 
@@ -104,6 +106,8 @@ pub(crate) struct ActiveRun {
     pub run: LessonRun,
     /// The skill of a learn-mode lesson, whose next lesson may be prepared when it finishes.
     pub skill_id: Option<String>,
+    /// A 402 stopped automatic judging for the rest of this run (module 08).
+    pub judging_stopped: bool,
 }
 
 /// A placement test in progress and its current question.

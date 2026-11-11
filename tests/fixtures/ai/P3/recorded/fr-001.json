@@ -1,0 +1,15 @@
+{
+  "case": "fr-001",
+  "request": {
+    "lang": "fr",
+    "direction": "to_en",
+    "cefr": "A1",
+    "source": "Mon frère habite à Lyon.",
+    "accepted": [
+      "My brother lives in Lyon."
+    ],
+    "answer": "My brother works in Lyon."
+  },
+  "content": "{\"verdict\": \"wrong\", \"corrected\": \"My brother lives in Lyon.\", \"explanation\": \"Habite means lives; works would be travaille.\", \"error_tags\": [\"wrong_word\"]}",
+  "ms": 1530
+}

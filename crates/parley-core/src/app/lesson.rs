@@ -113,7 +113,7 @@ impl LessonJob {
 }
 
 /// The settings a run grades and schedules with.
-fn run_settings(settings: &Settings) -> RunSettings {
+pub(crate) fn run_settings(settings: &Settings) -> RunSettings {
     RunSettings {
         accent: settings.accent(),
         daily_goal_xp: settings.daily_goal_xp,
@@ -122,7 +122,7 @@ fn run_settings(settings: &Settings) -> RunSettings {
 }
 
 /// The runner's refusals with their messages; a store failure is the data-file error.
-fn run_error(e: RunError) -> AppError {
+pub(crate) fn run_error(e: RunError) -> AppError {
     match e {
         RunError::EmptyAnswer => AppError::new(ErrorCode::InvalidInput, "Type an answer first."),
         RunError::AlreadyChecked => AppError::new(
@@ -240,6 +240,7 @@ impl Parley {
                 lang,
                 run,
                 skill_id: learn.then(|| lesson.skill_id.clone()),
+                judging_stopped: false,
             },
         );
         Ok(LessonStarted {
@@ -646,6 +647,7 @@ impl Parley {
                 lang,
                 run,
                 skill_id: None,
+                judging_stopped: false,
             },
         );
         Ok(LessonStarted {
@@ -661,7 +663,8 @@ impl Parley {
         })
     }
 
-    /// Grades one answer of a run in progress (module 03's grade) and reviews its card.
+    /// Grades one answer of a run in progress (module 03's grade) and reviews its card, offline:
+    /// an unchecked answer is left for `judge_begin` (module 08).
     pub fn exercise_submit(
         &mut self,
         session_id: &str,

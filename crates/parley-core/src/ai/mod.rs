@@ -1,6 +1,7 @@
 //! AI in the core (docs/modules/06-publik-and-providers.md; docs/PUBLIK-INTEGRATION.md §6): the
 //! [`AiClient`] trait every feature calls, the [`call`] pipeline, the response [`Cache`], prompt
-//! files and their schemas, and amounts in dollars.
+//! files and their schemas, and amounts in dollars; the features themselves: fresh lessons and
+//! stories (module 07), the answer judge and Explain my answer (module 08).
 //!
 //! The core makes no HTTP request of its own: the `parley-publik` crate implements [`AiClient`]
 //! for publik API, the learner's own key and a local model server, and the desktop app passes the
@@ -10,12 +11,16 @@
 mod cache;
 mod call;
 mod client;
+mod explain;
+mod judge;
 mod langid;
 mod lesson;
 mod money;
 mod prompts;
 mod schema;
 mod story;
+#[cfg(test)]
+pub(crate) mod test_client;
 mod validate;
 
 pub use cache::{Cache, CacheEntry, cache_key, cache_key_json, canonical_json, idempotency_key};
@@ -24,6 +29,14 @@ pub use client::{
     AiClient, AiError, AiStatus, AudioReply, ChatMessage, ChatReply, ChatRequest, LocalModel,
     MAX_REQUEST_BYTES, NO_TOKEN_MESSAGE, ProviderKind, SpeechRequest, TranscribeRequest,
     TranscriptReply, image_part,
+};
+pub use explain::{
+    EXPLAIN_NOT_AVAILABLE, EXPLAIN_OFFLINE, EXPLAIN_PROMPT_ID, ExplainRequest, ExplainResponse,
+    Explanation, explain, explain_prompt_file,
+};
+pub use judge::{
+    JUDGE_OFFLINE, JUDGE_PROMPT_ID, JudgeRequest, JudgeResponse, Judgement, apply_judgement, judge,
+    judge_prompt_file, judgement_key, request_judgement, verdict_grade,
 };
 pub use langid::{LANGID_THRESHOLD, TextLang, identify, is_language, stem};
 pub use lesson::{

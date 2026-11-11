@@ -1,16 +1,21 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import {
+  asAppError,
   errorMessage,
+  exerciseCheck,
   exerciseIWasRight,
   exerciseSubmit,
+  explainAnswer,
   lessonFinish,
+  onAiStatus,
   settingsGet,
   type Grade,
   type LessonStarted,
   type LessonSummary,
 } from '../../api/commands'
 import AiBanner from '../../components/AiBanner'
-import ResultSheet from '../../components/ResultSheet'
+import AiSetupDialog from '../../components/AiSetupDialog'
+import ResultSheet, { type ExplainView } from '../../components/ResultSheet'
 import { languageName, t } from '../../strings'
 import ExerciseView from './ExerciseView'
 import Summary from './Summary'
@@ -28,6 +33,11 @@ interface Props {
  * The lesson player, for lessons and reviews: one exercise at a time, its result sheet, then the
  * summary. Keyboard: Enter checks an answer and continues from the result sheet, keys 1 to 4
  * choose an option of a pick-the-meaning exercise, Esc asks to quit.
+ *
+ * A free translation the offline grader cannot decide goes to the AI judge when a provider is set
+ * up: the sheet says "Checking…" meanwhile. An unchecked answer offers Check with AI, an answer
+ * that was almost right or wrong offers Explain; either opens the AI setup dialog when AI is not
+ * set up yet, and runs again after its Continue.
  */
 export default function Lesson({ started, lang, onExit }: Props) {
   const exercises = started.exercises
@@ -39,6 +49,15 @@ export default function Lesson({ started, lang, onExit }: Props) {
   const [quitting, setQuitting] = useState(false)
   const [summary, setSummary] = useState<LessonSummary | null>(null)
   const [wordBank, setWordBank] = useState(false)
+  // The AI judge is deciding the answer (a translation's submission, or Check with AI).
+  const [checking, setChecking] = useState(false)
+  const [explain, setExplain] = useState<ExplainView | null>(null)
+  const [setup, setSetup] = useState(false)
+  // The AI action that opened the setup dialog, run again after its Continue.
+  const afterSetup = useRef<(() => void) | null>(null)
+  // The exercise on screen, so a late explanation never lands on the next one.
+  const onScreen = useRef<string | null>(null)
+  const [claimState, setClaimState] = useState<string | null>(null)
   const shownAt = useRef(0)
   const quitTitle = useId()
 
@@ -46,7 +65,20 @@ export default function Lesson({ started, lang, onExit }: Props) {
 
   useEffect(() => {
     shownAt.current = Date.now()
-  }, [index])
+    onScreen.current = exercises[index]?.id ?? null
+  }, [index, exercises])
+
+  // The status arrives after every AI call; the 402 link's label follows its claim state.
+  useEffect(() => {
+    let cancelled = false
+    const unlisten = onAiStatus((status) => {
+      if (!cancelled) setClaimState(status.claim_state)
+    })
+    return () => {
+      cancelled = true
+      void unlisten.then((stop) => stop())
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -76,6 +108,8 @@ export default function Lesson({ started, lang, onExit }: Props) {
     }
     setBusy(true)
     setError(null)
+    // Only a free translation can go to the AI judge, which takes a few seconds.
+    setChecking(exercise.type === 'translate_to_target' || exercise.type === 'translate_to_en')
     try {
       const result = await exerciseSubmit(
         started.session_id,
@@ -89,6 +123,58 @@ export default function Lesson({ started, lang, onExit }: Props) {
       setError(errorMessage(reason))
     } finally {
       setBusy(false)
+      setChecking(false)
+    }
+  }
+
+  /** Opens the AI setup dialog; its Continue runs `action`, Not now leaves things as they are. */
+  function askForSetup(action: () => void) {
+    afterSetup.current = action
+    setSetup(true)
+  }
+
+  /** Check with AI, and Try again after the judge's call failed. */
+  async function checkWithAi() {
+    if (!exercise) return
+    const exerciseId = exercise.id
+    setBusy(true)
+    setChecking(true)
+    setError(null)
+    try {
+      const result = await exerciseCheck(started.session_id, exerciseId)
+      if (result) setGrade(result)
+    } catch (reason) {
+      if (asAppError(reason)?.code === 'needs_consent') {
+        askForSetup(() => void checkWithAi())
+      } else {
+        setError(errorMessage(reason))
+      }
+    } finally {
+      setBusy(false)
+      setChecking(false)
+    }
+  }
+
+  async function explainThis() {
+    if (!exercise) return
+    const exerciseId = exercise.id
+    setExplain({ state: 'loading' })
+    try {
+      const result = await explainAnswer(started.session_id, exerciseId)
+      if (onScreen.current !== exerciseId) return
+      setExplain(result ? { state: 'done', text: result.text, tip: result.tip ?? null } : null)
+    } catch (reason) {
+      if (onScreen.current !== exerciseId) return
+      const appError = asAppError(reason)
+      if (appError?.code === 'needs_consent') {
+        setExplain(null)
+        askForSetup(() => void explainThis())
+      } else {
+        setExplain({
+          state: 'error',
+          error: appError ?? { code: '', message: errorMessage(reason), action: null },
+        })
+      }
     }
   }
 
@@ -122,10 +208,12 @@ export default function Lesson({ started, lang, onExit }: Props) {
   function next() {
     if (busy) return
     if (index + 1 < exercises.length) {
+      onScreen.current = null
       setIndex(index + 1)
       setDraft(EMPTY_DRAFT)
       setGrade(null)
       setError(null)
+      setExplain(null)
     } else {
       void finish()
     }
@@ -136,6 +224,8 @@ export default function Lesson({ started, lang, onExit }: Props) {
   useEffect(() => {
     if (summary) return
     function onKey(event: KeyboardEvent) {
+      // The AI setup dialog takes the keyboard while it is open.
+      if (setup) return
       if (quitting) {
         if (event.key === 'Escape') {
           event.preventDefault()
@@ -215,13 +305,21 @@ export default function Lesson({ started, lang, onExit }: Props) {
           {error}
         </p>
       )}
-      {grade ? (
+      {checking || grade ? (
+        // One sheet throughout: "Checking…" turns into the verdict in place.
         <ResultSheet
           grade={grade}
+          checking={checking}
+          exerciseType={exercise?.type}
           author={author}
           busy={busy}
+          claimState={claimState}
+          explain={explain}
           onIWasRight={() => void iWasRight()}
           onContinue={next}
+          onCheckWithAi={() => void checkWithAi()}
+          onExplain={() => void explainThis()}
+          onStatus={(status) => setClaimState(status.claim_state)}
         />
       ) : exercise ? (
         <div className="actions">
@@ -237,6 +335,22 @@ export default function Lesson({ started, lang, onExit }: Props) {
         </div>
       )}
       <p className="keys">{t('exercise.keys')}</p>
+      {setup && (
+        <AiSetupDialog
+          onStatus={(status) => setClaimState(status.claim_state)}
+          onClose={(proceed) => {
+            setSetup(false)
+            const action = afterSetup.current
+            afterSetup.current = null
+            if (proceed && action) action()
+          }}
+          onChooseOther={() => {
+            // The answer stays as it is; the provider is chosen in Settings > AI after the lesson.
+            setSetup(false)
+            afterSetup.current = null
+          }}
+        />
+      )}
       {quitting && (
         <div className="dialog-backdrop">
           <div role="dialog" aria-modal="true" aria-labelledby={quitTitle} className="dialog">

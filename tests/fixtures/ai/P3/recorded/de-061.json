@@ -1,0 +1,15 @@
+{
+  "case": "de-061",
+  "request": {
+    "lang": "de",
+    "direction": "to_target",
+    "cefr": "A2",
+    "source": "I bought bread and cheese at the market.",
+    "accepted": [
+      "Ich habe auf dem Markt Brot und Käse gekauft."
+    ],
+    "answer": "Ich habe auf dem Markt Brot und Wurst gekauft."
+  },
+  "content": "{\"verdict\": \"wrong\", \"corrected\": \"Ich habe auf dem Markt Brot und Käse gekauft.\", \"explanation\": \"Wurst means sausage; cheese is Käse.\", \"error_tags\": [\"wrong_word\"]}",
+  "ms": 1199
+}

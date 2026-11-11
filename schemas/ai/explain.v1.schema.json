@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P4 explain my answer answer (explain.v1)",
+  "description": "The answer of prompts/explain.v1.md (docs/PUBLIK-INTEGRATION.md §6.6, rule E1): an explanation in plain English and, optionally, a short tip; nothing else.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["explanation"],
+  "properties": {
+    "explanation": { "type": "string", "minLength": 1, "maxLength": 700 },
+    "tip": { "type": "string", "maxLength": 120 }
+  }
+}

@@ -88,7 +88,7 @@ Thresholds marked "first run" are set by the first run that measures them, recor
 | Gate | What | Threshold | Cost | Scaled-down in `verify` |
 |---|---|---|---|---|
 | G1 lessons (live) | 30 lesson requests: 10 skills × es, fr, de on publik-balanced | ≥ 80% exercises valid; p95 ≤ 20 s | about $0.45 | recorded responses replayed through validators |
-| G2 judge (live) | `tests/gates/judge-set.jsonl`: 300 labelled answers, 100 per language | ≥ 90% agreement; ≤ 3% false accepts; p95 ≤ 4 s | about $0.05 | 10 recorded verdicts |
+| G2 judge (live) | `tests/gates/judge-set.jsonl`: 300 labelled answers, 100 per language | ≥ 90% agreement; ≤ 3% false accepts (of the answers labelled almost or wrong); p95 ≤ 4 s | about $0.05 | 10 recorded verdicts (`tests/fixtures/ai/P3/recorded/`) replayed through the validators |
 | G3 templates (offline) | 1,000 seeded template lessons over the real syllabi | 100% pass the lesson validators | none | 50 seeds |
 | G4 speaking loopback (offline, desktop) | 60 sentences per language synthesised by an OS voice, transcribed by local Whisper `base`, scored | mean score: first run | none | 5 sentences when voice and model exist, else skipped with a message |
 | G5 role-play (live) | 20 turns in 2 scenarios | first delta p50 ≤ 2.5 s; ≥ 95% valid turns | about $0.10 | recorded streams |

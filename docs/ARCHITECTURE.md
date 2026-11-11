@@ -274,6 +274,7 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `review_start` | `lang, limit` | `LessonStarted` | 04 |
 | `exercise_submit` | `session_id, exercise_id, answer, response_ms, used_hint` | `Grade` | 04, 08 |
 | `exercise_i_was_right` | `session_id, exercise_id` | `Grade` | 04 |
+| `exercise_check` | `session_id, exercise_id` | `Grade` (**Check with AI** and **Try again** on an unchecked answer) | 08 |
 | `explain_answer` | `session_id, exercise_id` | `{text, tip?, cached}` | 08 |
 | `lesson_finish` | `session_id` | `LessonSummary {xp, correct, total, streak, record_week}` | 04 |
 | `stats_get` | `lang` | `Stats` | 04 |

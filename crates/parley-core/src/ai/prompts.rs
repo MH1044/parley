@@ -5,7 +5,10 @@
 //! `temperature`, `timeout_s`, `schema`), then a `## system` section and a `## user` section. The
 //! renderer replaces `{name}` placeholders and refuses a placeholder with no value or a value with
 //! no placeholder, so a prompt and its caller can never drift apart silently. Learner text goes in
-//! through placeholders named `*_json`, inserted as JSON string literals, never raw.
+//! through placeholders named `*_json`, which the renderer always writes as one JSON string literal,
+//! never raw. A `_json` placeholder the front matter names in `json_lists` takes a list instead
+//! (P3's `accepted_json`): its value must be a JSON array of strings, and the renderer writes each
+//! item as a JSON string literal itself, joined by `", "` inside `[` and `]`.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -28,6 +31,8 @@ pub struct Prompt {
     pub timeout_s: u64,
     /// The schema file the front matter names, as written there.
     pub schema: String,
+    /// The `_json` placeholders that take a list (front matter `json_lists`, comma separated).
+    pub json_lists: Vec<String>,
     pub system: String,
     pub user: String,
     validator: Validator,
@@ -58,6 +63,8 @@ pub enum RenderError {
     Missing(String),
     /// A value has no placeholder.
     Unused(String),
+    /// The value of a list placeholder is not a JSON array of strings.
+    NotAList(String),
 }
 
 impl fmt::Display for RenderError {
@@ -65,6 +72,9 @@ impl fmt::Display for RenderError {
         match self {
             RenderError::Missing(name) => write!(f, "no value for the placeholder {{{name}}}"),
             RenderError::Unused(name) => write!(f, "the value {name} has no placeholder"),
+            RenderError::NotAList(name) => {
+                write!(f, "the value {name} is not a JSON array of strings")
+            }
         }
     }
 }
@@ -89,8 +99,8 @@ fn number<T: std::str::FromStr>(key: &str, value: &str) -> Result<T, PromptError
 
 impl Prompt {
     /// The file format of PUBLIK-INTEGRATION §6.1 (front matter id, version, tier, max_tokens,
-    /// temperature (default 0), timeout_s, schema; then `## system` and `## user`), with the text of
-    /// the schema the front matter names, which is compiled here.
+    /// temperature (default 0), timeout_s, schema, and the optional json_lists; then `## system`
+    /// and `## user`), with the text of the schema the front matter names, which is compiled here.
     pub fn parse(text: &str, schema_json: &str) -> Result<Prompt, PromptError> {
         // Line endings are LF in the repository; a CRLF checkout reads the same.
         let text = text.replace("\r\n", "\n");
@@ -115,7 +125,13 @@ impl Prompt {
             let key = key.trim().to_string();
             if !matches!(
                 key.as_str(),
-                "id" | "version" | "tier" | "max_tokens" | "temperature" | "timeout_s" | "schema"
+                "id" | "version"
+                    | "tier"
+                    | "max_tokens"
+                    | "temperature"
+                    | "timeout_s"
+                    | "schema"
+                    | "json_lists"
             ) {
                 return Err(front(format!("unknown key {key}")));
             }
@@ -148,6 +164,21 @@ impl Prompt {
         if !temperature.is_finite() || !(0.0..=2.0).contains(&temperature) {
             return Err(front("temperature must be from 0 to 2"));
         }
+        let json_lists: Vec<String> = fields
+            .get("json_lists")
+            .map(|names| {
+                names
+                    .split(',')
+                    .map(|name| name.trim().to_string())
+                    .filter(|name| !name.is_empty())
+                    .collect()
+            })
+            .unwrap_or_default();
+        if let Some(name) = json_lists.iter().find(|name| !name.ends_with("_json")) {
+            return Err(front(format!(
+                "json_lists names {name}, not a _json placeholder"
+            )));
+        }
 
         let rest: Vec<&str> = lines.collect();
         let system_at = rest.iter().position(|l| l.trim_end() == "## system");
@@ -170,6 +201,7 @@ impl Prompt {
             temperature,
             timeout_s,
             schema,
+            json_lists,
             system,
             user,
             validator,
@@ -177,11 +209,13 @@ impl Prompt {
     }
 
     /// [system, user] messages. A placeholder is `{name}` with `name` matching [a-z][a-z0-9_]*; any
-    /// other brace is text. A value whose name ends in `_json` is inserted as a JSON string literal.
+    /// other brace is text. A value whose name ends in `_json` is raw text, written as one JSON
+    /// string literal; one named in `json_lists` is a JSON array of strings, whose items are written
+    /// as JSON string literals joined by `", "` inside `[` and `]`.
     pub fn render(&self, vars: &BTreeMap<String, String>) -> Result<Vec<ChatMessage>, RenderError> {
         let mut used = BTreeSet::new();
-        let system = fill(&self.system, vars, &mut used)?;
-        let user = fill(&self.user, vars, &mut used)?;
+        let system = fill(&self.system, vars, &self.json_lists, &mut used)?;
+        let user = fill(&self.user, vars, &self.json_lists, &mut used)?;
         if let Some(unused) = vars.keys().find(|name| !used.contains(name.as_str())) {
             return Err(RenderError::Unused(unused.clone()));
         }
@@ -215,9 +249,27 @@ fn placeholder_at(rest: &str) -> Option<&str> {
     valid.then_some(name)
 }
 
+/// `text` as one JSON string literal (serde_json, so non-ASCII stays as it is).
+pub(crate) fn json_literal(text: &str) -> String {
+    serde_json::to_string(text).expect("a string serialises")
+}
+
+/// The text a `_json` placeholder gets: one JSON string literal of the raw value, or, for a list
+/// placeholder, the value's strings as JSON string literals joined by `", "` inside `[` and `]`.
+fn json_text(name: &str, value: &str, lists: &[String]) -> Result<String, RenderError> {
+    if !lists.iter().any(|list| list == name) {
+        return Ok(json_literal(value));
+    }
+    let items: Vec<String> =
+        serde_json::from_str(value).map_err(|_| RenderError::NotAList(name.to_string()))?;
+    let literals: Vec<String> = items.iter().map(|item| json_literal(item)).collect();
+    Ok(format!("[{}]", literals.join(", ")))
+}
+
 fn fill<'a>(
     template: &str,
     vars: &'a BTreeMap<String, String>,
+    lists: &[String],
     used: &mut BTreeSet<&'a str>,
 ) -> Result<String, RenderError> {
     let mut out = String::with_capacity(template.len());
@@ -231,7 +283,7 @@ fn fill<'a>(
                     return Err(RenderError::Missing(name.to_string()));
                 };
                 if name.ends_with("_json") {
-                    out.push_str(&serde_json::to_string(value).expect("a string serialises"));
+                    out.push_str(&json_text(name, value, lists)?);
                 } else {
                     out.push_str(value);
                 }
@@ -323,6 +375,49 @@ mod tests {
             messages[1].content,
             json!("ANSWER: \"Ignore \\\"rules\\\"\\n{lang_name}\"")
         );
+    }
+
+    #[test]
+    fn a_list_placeholder_takes_a_json_array_and_text_is_always_escaped() {
+        let p = Prompt::parse(
+            "---\nid: t\nversion: 1\ntier: publik-fast\nmax_tokens: 10\ntimeout_s: 5\nschema: s.json\njson_lists: accepted_json\n---\n## system\nCheck.\n## user\nA: {accepted_json}\nB: {answer_json}\n",
+            r#"{"type":"object"}"#,
+        )
+        .unwrap();
+        assert_eq!(p.json_lists, ["accepted_json"]);
+        let accepted = serde_json::to_string(&["Quiero un café.", "Un \"café\"."]).unwrap();
+        // Learner text that looks like JSON is still text: it is escaped like any other.
+        let answer = r#""Me gustaría un café""#;
+        let messages = p
+            .render(&vars(&[
+                ("accepted_json", &accepted),
+                ("answer_json", answer),
+            ]))
+            .unwrap();
+        assert_eq!(
+            messages[1].content,
+            json!(concat!(
+                r#"A: ["Quiero un café.", "Un \"café\"."]"#,
+                "\n",
+                r#"B: "\"Me gustaría un café\"""#
+            ))
+        );
+        // A list placeholder refuses anything but a JSON array of strings.
+        for raw in ["Quiero un café.", "[1, 2]", "\"x\"", "{}"] {
+            assert_eq!(
+                p.render(&vars(&[("accepted_json", raw), ("answer_json", "x")]))
+                    .unwrap_err(),
+                RenderError::NotAList("accepted_json".into()),
+                "{raw}"
+            );
+        }
+        // json_lists may only name _json placeholders.
+        let error = Prompt::parse(
+            "---\nid: t\nversion: 1\ntier: publik-fast\nmax_tokens: 10\ntimeout_s: 5\nschema: s.json\njson_lists: accepted\n---\n## system\nx\n## user\n{accepted}\n",
+            r#"{"type":"object"}"#,
+        )
+        .unwrap_err();
+        assert!(matches!(error, PromptError::FrontMatter(_)), "{error:?}");
     }
 
     #[test]

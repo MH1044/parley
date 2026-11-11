@@ -1,0 +1,6 @@
+{
+  "verdict": "correct",
+  "corrected": "Me gustaría un café con leche.",
+  "explanation": "Me gustaría is a polite way to say I would like, so this is right.",
+  "error_tags": ["accent", "register"]
+}

@@ -1,0 +1,15 @@
+{
+  "case": "fr-031",
+  "request": {
+    "lang": "fr",
+    "direction": "to_target",
+    "cefr": "A1",
+    "source": "I would like a glass of red wine.",
+    "accepted": [
+      "Je voudrais un verre de vin rouge."
+    ],
+    "answer": "J'aimerais une verre de vin rouge."
+  },
+  "content": "{\"verdict\": \"almost\", \"corrected\": \"J'aimerais un verre de vin rouge.\", \"explanation\": \"Verre is masculine, so it takes un, not une.\", \"error_tags\": [\"gender\"]}",
+  "ms": 1268
+}

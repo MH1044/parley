@@ -1,0 +1,11 @@
+{
+  "lang": "fr",
+  "direction": "to_en",
+  "cefr": "A2",
+  "source": "Je voudrais un café, s'il vous plaît.",
+  "accepted": [
+    "I would like a coffee, please.",
+    "I'd like a coffee, please."
+  ],
+  "answer": "I want a coffee please"
+}

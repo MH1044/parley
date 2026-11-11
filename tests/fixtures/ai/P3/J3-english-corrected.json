@@ -1,0 +1,6 @@
+{
+  "verdict": "almost",
+  "corrected": "I want coffee with milk",
+  "explanation": "Café is masculine, so it takes un, not una.",
+  "error_tags": ["gender"]
+}

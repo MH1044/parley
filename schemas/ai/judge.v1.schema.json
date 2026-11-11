@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "P3 answer judge answer (judge.v1)",
+  "description": "The answer of prompts/judge.v1.md (docs/PUBLIK-INTEGRATION.md §6.5, rule J1): a verdict, the learner's answer with the fewest changes that make it correct, a short English explanation, and zero or more error tags, each at most once.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "corrected", "explanation"],
+  "properties": {
+    "verdict": { "enum": ["correct", "almost", "wrong"] },
+    "corrected": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "explanation": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "error_tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "accent",
+          "spelling",
+          "agreement",
+          "gender",
+          "conjugation",
+          "tense",
+          "word_order",
+          "missing_word",
+          "extra_word",
+          "wrong_word",
+          "meaning",
+          "register"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "verdict": "wrong",
+  "corrected": "Me gustaría un café con leche",
+  "explanation": "Té is tea, not coffee, and me gusta means I like; to say I would like, use me gustaría.",
+  "error_tags": ["wrong_word", "conjugation"]
+}

@@ -49,6 +49,9 @@ export const COMMANDS = [
   'course_pack_export',
   'course_pack_import',
   'ai_lesson_checks',
+  // Module 08: judging and explanations.
+  'exercise_check',
+  'explain_answer',
 ] as const
 
 export type Command = (typeof COMMANDS)[number]
@@ -273,6 +276,19 @@ export interface Grade {
   corrected: string | null
   words: string[]
   rating: number | null
+  /** The AI judge's reason, on a verdict it gave (module 08). */
+  explanation?: string | null
+  /** The exercise's first accepted answer, under a judged wrong (module 08). */
+  expected?: string | null
+  /** Why an unchecked answer has no verdict: the AI judge's call failed (module 08). */
+  judge_error?: AppError | null
+}
+
+/** The result of `explain_answer`. */
+export interface Explained {
+  text: string
+  tip: string | null
+  cached: boolean
 }
 
 export interface PlacementQuestion {
@@ -581,6 +597,16 @@ export function exerciseSubmit(
 
 export function exerciseIWasRight(sessionId: string, exerciseId: string): Promise<Grade> {
   return call<Grade>('exercise_i_was_right', { session_id: sessionId, exercise_id: exerciseId })
+}
+
+/** Check with AI and Try again: asks the AI judge about an unchecked answer. */
+export function exerciseCheck(sessionId: string, exerciseId: string): Promise<Grade> {
+  return call<Grade>('exercise_check', { session_id: sessionId, exercise_id: exerciseId })
+}
+
+/** Explain: why an answer was almost right or wrong. */
+export function explainAnswer(sessionId: string, exerciseId: string): Promise<Explained> {
+  return call<Explained>('explain_answer', { session_id: sessionId, exercise_id: exerciseId })
 }
 
 export function lessonFinish(sessionId: string): Promise<LessonSummary> {

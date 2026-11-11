@@ -63,6 +63,8 @@ pub fn run() {
             commands::lesson::course_pack_export,
             commands::lesson::course_pack_import,
             commands::lesson::ai_lesson_checks,
+            commands::lesson::exercise_check,
+            commands::lesson::explain_answer,
         ])
         .run(tauri::generate_context!())
         .expect("Parley could not open its window");

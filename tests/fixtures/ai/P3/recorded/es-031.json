@@ -1,0 +1,16 @@
+{
+  "case": "es-031",
+  "request": {
+    "lang": "es",
+    "direction": "to_en",
+    "cefr": "A2",
+    "source": "El tren salió a las ocho de la mañana.",
+    "accepted": [
+      "The train left at eight in the morning.",
+      "The train left at 8 in the morning."
+    ],
+    "answer": "The train departed at eight in the morning."
+  },
+  "content": "{\"verdict\": \"correct\", \"corrected\": \"The train departed at eight in the morning.\", \"explanation\": \"Departed means the same as left here, so this is correct.\", \"error_tags\": []}",
+  "ms": 962
+}
