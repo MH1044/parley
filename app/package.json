@@ -11,7 +11,8 @@
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "test": "vitest",
-    "e2e": "vitest run --config e2e/vitest.config.ts"
+    "e2e": "vitest run --config e2e/vitest.config.ts",
+    "desktop": "npm run build && cargo run --release -p parley-app"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",

@@ -66,6 +66,8 @@ npm --prefix app run build
 cargo run -p parley-app
 ```
 
+Or, as one command that builds an optimised app: `npm --prefix app run desktop`.
+
 It opens on "Welcome to Parley" and walks you through choosing a language, the course pack, a
 daily goal and the placement test; `docs/HANDBOOK.md` describes every screen. Your progress lives
 in the app data folder (`parley.sqlite3` and `settings.json`), and Settings > Data exports it as
