@@ -459,6 +459,28 @@ verbatim and `ai.setup.data_path` the data-path sentence of PUBLIK-INTEGRATION �
   `response_format` (until then it is never sent, and the prompts ask for JSON); and the
   `GET /models` ids for `/audio/*`. The audio methods of the client send the `model` their caller
   gives, unchanged; modules 09 and 10 record those ids in their live checks.
+- Results of the maintainer's setup run (2026-11-12), against the live service:
+  - The listing is live at https://publikhq.com/parley with the products `ai.chat`,
+    `ai.transcribe` and `ai.speech`, category Study (publik's categories are AI, Productivity,
+    Creative, Health, Study and Lifestyle) and the run command `npm run desktop`. Parley has no
+    sign-in gate at launch: the course works offline with no account, and Sign in with publik is
+    offered in the AI setup dialog when a learner first chooses publik API (maintainer decision).
+  - The release build prints `publik self-test: ok parley 0.1.0 (install <8 characters>)` from
+    PowerShell and from cmd, so the console attach of the self-test path works.
+  - `GET /models` lists 43 ids, all chat models: the four tiers and vendor aliases. Each entry has
+    `id`, `kind`, `object`, `owned_by`, `resolves_to`, `tier`, `context_window` and `created`. It
+    lists **no id for `/audio/transcriptions` or `/audio/speech`**, so modules 09 and 10 take their
+    audio ids from a maintainer decision, as their specs require.
+  - `GET /wallet` answers with `account`, `add_credit_url`, `app_slug`, `available_micros`,
+    `balance_micros`, `base_url`, `claim_code`, `claim_expires_at`, `claim_reissued`,
+    `claim_state`, `claim_url`, `daily_cap_micros`, `install_id`, `key_id`, `linked_at`, `pack`,
+    `plan`, `plans_url`, `price_epoch`, `smart_locked`, `spent_today_micros`, `starter`,
+    `top_up_url` and `week`.
+  - A `publik-fast` call from an anonymous install at $0.00 answers 402 with `error.message` and
+    `error.top_up_url`, as contract §8 says, and charges nothing. The answers carried
+    `x-publik-request-id` and `x-publik-claim-state`; the balance and charge headers and whether
+    the tiers honour `response_format` need a charged call, so they stay as contract §7 names them
+    and `response_format` is still never sent.
 - Adaptations of `publik.rs`, each marked `// ADAPTATION n` in the code: 1 the key never reaches the
   web view (the UI gets `AiStatus`, which has no key); 2 `device_name` is sent only when
   `ai.share_device_name` is on, and then as `device_label()`; 3 `http.rs` (reqwest with rustls)
