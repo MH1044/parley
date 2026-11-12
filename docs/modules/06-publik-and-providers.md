@@ -469,18 +469,29 @@ verbatim and `ai.setup.data_path` the data-path sentence of PUBLIK-INTEGRATION �
     PowerShell and from cmd, so the console attach of the self-test path works.
   - `GET /models` lists 43 ids, all chat models: the four tiers and vendor aliases. Each entry has
     `id`, `kind`, `object`, `owned_by`, `resolves_to`, `tier`, `context_window` and `created`. It
-    lists **no id for `/audio/transcriptions` or `/audio/speech`**, so modules 09 and 10 take their
-    audio ids from a maintainer decision, as their specs require.
+    lists **no id for `/audio/transcriptions` or `/audio/speech`**. The maintainer decided to probe
+    the standard ids once from a linked install instead (see the last item).
   - `GET /wallet` answers with `account`, `add_credit_url`, `app_slug`, `available_micros`,
     `balance_micros`, `base_url`, `claim_code`, `claim_expires_at`, `claim_reissued`,
     `claim_state`, `claim_url`, `daily_cap_micros`, `install_id`, `key_id`, `linked_at`, `pack`,
     `plan`, `plans_url`, `price_epoch`, `smart_locked`, `spent_today_micros`, `starter`,
     `top_up_url` and `week`.
   - A `publik-fast` call from an anonymous install at $0.00 answers 402 with `error.message` and
-    `error.top_up_url`, as contract §8 says, and charges nothing. The answers carried
-    `x-publik-request-id` and `x-publik-claim-state`; the balance and charge headers and whether
-    the tiers honour `response_format` need a charged call, so they stay as contract §7 names them
-    and `response_format` is still never sent.
+    `error.top_up_url`, as contract §8 says, and charges nothing.
+  - From a linked install, charged calls confirm every header name of contract §7:
+    `x-publik-balance`, `x-publik-charge-micros`, `x-publik-request-id`, `x-publik-claim-state`,
+    `x-publik-starter-remaining`, `x-publik-week-used`, `x-publik-week-budget` (the text `none`
+    when there is no weekly budget) and `x-publik-week-resets-at`, plus `x-publik-model`, the
+    model that served the call. A five-word `publik-fast` reply cost 15 micros.
+  - `response_format: {"type": "json_object"}` is honoured by `publik-fast` and
+    `publik-balanced`: both returned valid JSON (33 and 328 micros). Parley may send it; every
+    response is still validated against its schema.
+  - Audio ids, probed once by maintainer decision because `GET /models` lists none: `/audio/speech`
+    accepts **`tts-1`** (voice `alloy`, MP3, 32 KB for one short sentence, 540 micros) and refuses
+    `gpt-4o-mini-tts` with `400 unknown_model`; `/audio/transcriptions` accepts
+    **`gpt-4o-mini-transcribe`** (multipart `file`, `model`, `language=es`, `response_format=json`,
+    `temperature=0`), which returned the spoken sentence exactly (538 micros). Modules 09 and 10
+    use these two ids.
 - Adaptations of `publik.rs`, each marked `// ADAPTATION n` in the code: 1 the key never reaches the
   web view (the UI gets `AiStatus`, which has no key); 2 `device_name` is sent only when
   `ai.share_device_name` is on, and then as `device_label()`; 3 `http.rs` (reqwest with rustls)
