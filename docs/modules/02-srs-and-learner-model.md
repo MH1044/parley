@@ -202,7 +202,8 @@ one line on stderr and nothing on stdout, in module 01's wording):
   always) is practised, mastered or tested out; otherwise **locked**.
 - Placement (Levitt 1971): skills of the course in syllabus order, indices 0 to N−1. Start at
   `i = N / 4` (integer), `step = max(1, N / 4)`. The question is the skill at `i` (module 04 asks
-  its first vocabulary item, translated to English and graded offline; almost counts as correct).
+  one of its vocabulary items, chosen as its Design notes say, graded offline; almost counts as
+  correct).
   After an answer, if its correctness differs from the previous answer's, record a reversal at the
   current index and set `step = max(1, step / 2)`; then move `i = min(N−1, i + step)` if correct,
   `max(0, i − step)` if wrong. Stop at 20 questions, or at 12 or more with at least 8 reversals,

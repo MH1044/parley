@@ -9,13 +9,18 @@ import { t } from '../../strings'
 
 interface Props {
   first: PlacementQuestion
-  /** The course language's code, for the prompt's `lang` attribute. */
+  /** The course language's code, for the `lang` attributes. */
   lang: string
+  /** The course language's English name. */
+  language: string
   onDone: () => void
 }
 
-/** The placement test: one translation into English at a time, then where the learner starts. */
-export default function Placement({ first, lang, onDone }: Props) {
+/**
+ * The placement test: one typed translation at a time, into English or into the course language,
+ * then where the learner starts.
+ */
+export default function Placement({ first, lang, language, onDone }: Props) {
   const [question, setQuestion] = useState<PlacementQuestion>(first)
   const [text, setText] = useState('')
   const [outcome, setOutcome] = useState<PlacementOutcome | null>(null)
@@ -62,13 +67,20 @@ export default function Placement({ first, lang, onDone }: Props) {
   }
 
   const exercise = question.exercise
-  const prompt = exercise.type === 'translate_to_en' ? exercise.prompt_target : ''
+  // A skill the test comes back to may ask a word again, translated into the course language.
+  const intoTarget = exercise.type === 'translate_to_target'
+  const prompt =
+    exercise.type === 'translate_to_target'
+      ? exercise.prompt_en
+      : exercise.type === 'translate_to_en'
+        ? exercise.prompt_target
+        : ''
   return (
     <main className="onboarding placement">
       <h1>{t('placement.title')}</h1>
       <p className="counter">{t('placement.question', { n: question.n })}</p>
-      <h2>{t('exercise.translate_to_en')}</h2>
-      <p className="prompt" lang={lang}>
+      <h2>{intoTarget ? t('exercise.translate_to_target', { language }) : t('exercise.translate_to_en')}</h2>
+      <p className="prompt" lang={intoTarget ? 'en' : lang}>
         {prompt}
       </p>
       <div className="answer">
@@ -76,7 +88,7 @@ export default function Placement({ first, lang, onDone }: Props) {
         <input
           id={answerId}
           type="text"
-          lang="en"
+          lang={intoTarget ? lang : 'en'}
           value={text}
           autoComplete="off"
           spellCheck={false}

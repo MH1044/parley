@@ -119,6 +119,8 @@ pub(crate) struct ActivePlacement {
     pub lang: Lang,
     pub placement: Placement,
     pub question: api::PlacementQuestion,
+    /// What the test has asked about each skill, by skill id.
+    pub asked: HashMap<String, placement::Asked>,
 }
 
 /// The app's state and every command's logic.

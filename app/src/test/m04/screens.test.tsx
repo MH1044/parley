@@ -560,6 +560,47 @@ describe('Onboarding (acceptance test 1, invariant I12)', () => {
     await waitFor(() => expect(callsOf('path_get')).toContainEqual({ lang: 'es' }))
   })
 
+  it('a placement question into the course language shows the English and takes the answer in that language', async () => {
+    // A skill the test comes back to asks one of its words again, as translate_to_target.
+    const intoSpanish = {
+      ...QUESTION_2,
+      exercise: {
+        id: 'p2',
+        item_id: 'es.a1.u01.s02#l:llamarse',
+        facet: 'productive',
+        origin: 'template',
+        type: 'translate_to_target',
+        prompt_en: 'to be called',
+        target: 'llamarse',
+        accepted: ['llamarse'],
+      },
+    }
+    let answered = 0
+    reply('placement_answer', () => {
+      answered += 1
+      return answered === 1 ? { next: intoSpanish, result: null } : { next: null, result: AROUND_A1 }
+    })
+    await walkTo('Where to start')
+    fireEvent.click(screen.getByRole('button', { name: 'Take the placement test (about 5 minutes)' }))
+    await heading('Translate into English', 2)
+    expect(screen.getByRole('textbox', { name: 'Your answer' })).toHaveAttribute('lang', 'en')
+    fireEvent.click(screen.getByRole('button', { name: "I don't know" }))
+
+    await expectText('Question 2')
+    await heading('Translate into Spanish', 2)
+    expect(screen.queryByRole('heading', { name: 'Translate into English' })).toBeNull()
+    expect(screen.getByText('to be called')).toHaveAttribute('lang', 'en')
+    const box = screen.getByRole('textbox', { name: 'Your answer' })
+    expect(box).toHaveAttribute('lang', 'es')
+    expect(box).toHaveValue('')
+    fireEvent.change(box, { target: { value: 'llamarse' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await waitFor(() =>
+      expect(callsOf('placement_answer')[1]).toEqual({ session_id: PLACEMENT, answer: { text: 'llamarse' } }),
+    )
+    await expectText("You're around A1. You'll start at Unit 1: Hello.")
+  })
+
   it('a Pre-A1 result names only where the learner starts', async () => {
     reply('placement_answer', () => ({
       next: null,

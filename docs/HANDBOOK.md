@@ -43,9 +43,11 @@ such file, it says "No course pack is published for Spanish yet. Parley works wi
 fewer example sentences." instead, and **Continue** goes on without it); *Daily goal* (10, 20, 30 or
 50 XP a day, 20 by default); and *Where to start*: **Take the placement test (about 5 minutes)**
 or **Start from the beginning**. The placement test asks you to translate a word of one skill
-after another into English (**I don't know** is always fine) and ends with where you start, such
-as "You're around A1. You'll start at Unit 2: …"; the skills before it count as tested out and
-come back in your reviews.
+after another into English (**I don't know** is always fine); a skill it comes back to asks
+another of its words, and once it has asked them all, one of them again into the language you are
+learning, so no word is asked twice the same way. It ends with where you start, such as "You're
+around A1. You'll start at Unit 2: …"; the skills before it count as tested out and come back in
+your reviews.
 
 **The path.** Your streak ("3 day streak") and today's XP ("12 of 20 XP today"), then
 **Continue** (the next lesson of the first skill you can learn), **Review (n)** with the number of

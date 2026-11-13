@@ -283,7 +283,8 @@ pub struct Word {
     pub en: String,
 }
 
-/// A placement question: a `translate_to_en` exercise of the skill being tested.
+/// A placement question: a `translate_to_en` or `translate_to_target` exercise of an item of the
+/// skill being tested.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct PlacementQuestion {
     pub session_id: String,

@@ -334,12 +334,24 @@ UI contract (visible text in `en.json`; tests find elements by these names):
 - Next review notice: the earliest `due` after now of a card of the course's items not retired, at
   the clock's UTC offset: "today at HH:MM" on today's local date, "tomorrow at HH:MM" on the next,
   otherwise "on {day} {Month}" (day without a leading zero, English month name).
-- Placement: `Placement` of module 02 over `Store::skills`; each question is a `translate_to_en`
-  exercise (id `p{n}`, facet receptive, origin template) of the skill's first vocabulary item (else
-  its first item) with the item's `to_en` answers, graded offline at the settings' accent leniency;
-  correct, almost and typo count as right, an empty answer as wrong. At the end
-  `Store::apply_placement` with the placement's session id; the start skill is the skill at the
-  estimate.
+- Placement: `Placement` of module 02 over `Store::skills`; each question (id `p{n}`, origin
+  template) is about one of the skill's vocabulary items (any of its items when it has none): a
+  `translate_to_en` exercise (facet receptive) with the item's `to_en` answers, or a typed
+  `translate_to_target` (facet productive, no tiles) of the item's first English meaning with its
+  `to_target` answers. Both are graded offline at the settings' accent leniency; correct, almost
+  and typo count as right, an empty answer as wrong. At the end `Store::apply_placement` with the
+  placement's session id; the start skill is the skill at the estimate.
+- A revisited skill asks a question it has not asked before. The staircase returns to a skill
+  after a reversal and stays at index 0 after a wrong answer there, so each visit draws, from the
+  injected `Rng`, one of the skill's items not yet asked in this test as `translate_to_en`; once
+  every item has been asked that way, a visit draws one not yet asked as `translate_to_target`.
+  No item is asked twice in the same form, and a word comes back only translated the other way.
+  A skill with no unasked item-and-form left gets its most recent answer again, without a
+  question, and the staircase moves on as usual (a skill without items is answered wrong). The
+  test in progress keeps, per skill, the item-and-form pairs it has asked and its last answer;
+  the same seed asks the same questions. Asking the first vocabulary item on every visit repeated
+  the same word up to three times in one test; this rule changes the questions every placement
+  test asks, but not the staircase, how it estimates, or how a finished test is recorded.
 - Stats: `streak`, `freezes`, `days` (the 30 local dates ending today, oldest first, from `daily`),
   `week_xp` (this ISO week) and `record_week_xp` (the best earlier ISO week, 0 without one) cover
   all courses; the rest is the language's. "Words known": vocabulary items not retired whose

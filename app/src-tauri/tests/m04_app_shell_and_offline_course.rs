@@ -367,18 +367,24 @@ fn skill_refs(syllabus: &Syllabus) -> Vec<SkillRef> {
         .collect()
 }
 
-/// The first vocabulary item of a skill: its id, its target and its English answers.
-fn first_vocabulary(syllabus: &Syllabus, skill_id: &str) -> (String, String, Vec<String>) {
+/// The vocabulary items of a skill: each one's id, target and English answers.
+fn vocabulary(syllabus: &Syllabus, skill_id: &str) -> Vec<(String, String, Vec<String>)> {
     let (_, skill) = syllabus
         .skills()
         .find(|(_, skill)| skill.id == skill_id)
         .unwrap_or_else(|| panic!("{skill_id} is a syllabus skill"));
-    let lemma = skill.lemmas.first().expect("every seed skill has lemmas");
-    (
-        lemma_item_id(&skill.id, &lemma.lemma),
-        vocab_target(syllabus.lang, lemma),
-        lemma.en.clone(),
-    )
+    assert!(!skill.lemmas.is_empty(), "every seed skill has lemmas");
+    skill
+        .lemmas
+        .iter()
+        .map(|lemma| {
+            (
+                lemma_item_id(&skill.id, &lemma.lemma),
+                vocab_target(syllabus.lang, lemma),
+                lemma.en.clone(),
+            )
+        })
+        .collect()
 }
 
 /// The answer module 03 grades `correct` for an exercise, read from its body.
@@ -1056,12 +1062,16 @@ fn t04_a_full_run_works_with_a_network_that_fails_every_call() {
     // question's own exercise; module 02's staircase is the reference. By hand, with N = 8:
     // questions at 2, 4, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2; reversals 4, 2, 3, 2, 3, 2, 3, 2, 3, 2;
     // estimate (2·20 + 8) / 16 = 3; label "around A1"; skills 0 to 2 tested out.
+    // Every visit to a skill asks one of its vocabulary items not asked before; no skill is
+    // visited more often than it has words (index 2 six times of 8, index 3 five of 14, index 4
+    // once of 8), so every question translates into English.
     const KNOWN: usize = 3;
     let mut oracle = Placement::new(skills.clone());
     let mut question = ok(app.placement_start("es"));
     let placement_session = question.session_id.clone();
     assert_session_id(&placement_session, "p-");
     let mut asked = 0;
+    let mut asked_items: Vec<String> = Vec::new();
     let outcome = loop {
         asked += 1;
         let expected = oracle
@@ -1071,9 +1081,17 @@ fn t04_a_full_run_works_with_a_network_that_fails_every_call() {
         assert_eq!(question.n, asked);
         assert_eq!(question.skill_id, expected.id, "question {asked}");
         let ex = &question.exercise;
-        let (item_id, target, english) = first_vocabulary(&syllabus, &question.skill_id);
+        let words = vocabulary(&syllabus, &question.skill_id);
+        let (item_id, target, english) = words
+            .iter()
+            .find(|(id, _, _)| *id == ex.item_id)
+            .unwrap_or_else(|| panic!("a vocabulary item of the skill: {}", show(ex)));
+        assert!(
+            !asked_items.contains(item_id),
+            "question {asked} asks {item_id} again"
+        );
+        asked_items.push(item_id.clone());
         assert_eq!(ex.id, format!("p{asked}"));
-        assert_eq!(ex.item_id, item_id);
         assert_eq!(ex.facet, Facet::Receptive);
         assert_eq!(ex.origin, Origin::Template);
         let Body::TranslateToEn {
@@ -1083,8 +1101,8 @@ fn t04_a_full_run_works_with_a_network_that_fails_every_call() {
         else {
             panic!("a placement question is translate_to_en: {}", show(ex));
         };
-        assert_eq!(prompt_target, &target);
-        assert_eq!(accepted, &english);
+        assert_eq!(prompt_target, target);
+        assert_eq!(accepted, english);
         let index = skills
             .iter()
             .position(|skill| skill.id == question.skill_id)

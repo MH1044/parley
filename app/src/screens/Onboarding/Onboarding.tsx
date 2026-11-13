@@ -258,7 +258,7 @@ export default function Onboarding({ onDone }: Props) {
       )
     case 'placement':
       return question ? (
-        <Placement first={question} lang={lang} onDone={() => onDone(lang)} />
+        <Placement first={question} lang={lang} language={language} onDone={() => onDone(lang)} />
       ) : null
   }
 }
