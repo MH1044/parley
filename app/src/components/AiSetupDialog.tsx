@@ -6,6 +6,7 @@ import {
   errorMessage,
   type AiStatus,
 } from '../api/commands'
+import { useEscape } from '../navigation'
 import { t } from '../strings'
 import BalanceLine from './BalanceLine'
 
@@ -66,6 +67,10 @@ export default function AiSetupDialog({ onClose, onChooseOther, onStatus }: Prop
       setFailure(errorMessage(reason))
     }
   }
+
+  // Esc closes the dialog without running the action that opened it: on the consent card it is
+  // Not now; on the first-run card nothing more is sent. Not while publik API is being set up.
+  useEscape(busy ? null : status ? () => onClose(false) : () => void notNow())
 
   const others = (
     <>

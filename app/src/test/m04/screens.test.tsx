@@ -673,7 +673,9 @@ describe('Path, reviews and stats', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Review (3)' }))
     await waitFor(() => expect(callsOf('review_start')).toEqual([{ lang: 'es', limit: 20 }]))
     await expectText('Nothing to review. Next review: tomorrow at 09:00.')
-    fireEvent.click(screen.getByRole('button', { name: 'Back to my path' }))
+    // One at the top of the screen and one at its foot (navigation.test.tsx); this is the foot's.
+    const backs = screen.getAllByRole('button', { name: 'Back to my path' })
+    fireEvent.click(backs[backs.length - 1])
     await expectText('4 day streak')
   })
 

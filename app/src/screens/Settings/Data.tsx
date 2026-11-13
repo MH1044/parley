@@ -10,6 +10,7 @@ import {
   filePick,
   settingsGet,
 } from '../../api/commands'
+import { useEscape } from '../../navigation'
 import { t } from '../../strings'
 
 interface Props {
@@ -91,6 +92,9 @@ export default function Data({ onRestart }: Props) {
       await dataDeleteAll(confirmText)
       onRestart()
     })
+
+  // Esc in the restore dialog is Cancel.
+  useEscape(confirming ? () => setConfirming(false) : null)
 
   return (
     <section className="data" aria-label={t('settings.data')}>

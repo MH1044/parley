@@ -90,6 +90,16 @@ this computer (it holds this computer's publik balance; **Disconnect** in Settin
 key) and your own key in the operating system's keychain (**Remove my key** deletes it). *About*: the version, the folder your data is in, and the credits:
 example sentences from Tatoeba (CC BY 2.0 FR), word forms from Wiktionary (CC BY-SA 4.0).
 
+**Moving around.** Reviews, Stats and Settings have **Back to my path** at the top and at the
+foot, and Esc on them returns to the path. The mouse's back and forward buttons, and Alt+Left and
+Alt+Right, move through the screens you have visited, in order, as a browser does: opening a
+screen from the path drops whatever was ahead, and Parley is never left or reloaded. Switching
+between Settings' parts is not a step of its own. In a lesson or a story, and during the first
+steps and the placement test, back and forward do nothing; a lesson is left through Esc and "Quit
+this lesson?", a story through its own buttons. Esc in a dialog closes it (Cancel, Keep going, Not
+now), and nothing leaves a screen while a dialog is open. In a text box, Alt+Left and Alt+Right
+stay with the text.
+
 **AI.** **Set up AI** opens *Set up AI features*: what Parley sends through publik's servers
 (only what the AI feature you use needs; your progress, reviews and other recordings stay on this
 computer), publik's own disclosure word for word, "Everything else in Parley works without AI.",

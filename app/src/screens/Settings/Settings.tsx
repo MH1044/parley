@@ -29,9 +29,18 @@ export default function Settings({ onBack, onRestart, initialTab }: Props) {
       {label}
     </button>
   )
+  // Back to my path at the top as well as the foot, so a long part never has to be scrolled.
+  const backToPath = (
+    <div className="actions">
+      <button type="button" onClick={onBack}>
+        {t('app.back_to_path')}
+      </button>
+    </div>
+  )
   return (
     <main className="settings">
       <h1>{t('settings.title')}</h1>
+      {backToPath}
       <nav className="tabs">
         {tabButton('learning', t('settings.learning'))}
         {tabButton('audio', t('settings.audio'))}
@@ -44,11 +53,7 @@ export default function Settings({ onBack, onRestart, initialTab }: Props) {
       {tab === 'ai' && <AiSection />}
       {tab === 'data' && <Data onRestart={onRestart} />}
       {tab === 'about' && <About />}
-      <div className="actions">
-        <button type="button" onClick={onBack}>
-          {t('app.back_to_path')}
-        </button>
-      </div>
+      {backToPath}
     </main>
   )
 }

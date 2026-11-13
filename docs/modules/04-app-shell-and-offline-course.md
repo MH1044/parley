@@ -39,7 +39,8 @@ module adds a screen to.
 - `app/src-tauri/src/{lib.rs,main.rs,state.rs,env.rs,bundled.rs}`,
   `app/src-tauri/src/commands/{app.rs,course.rs,pack.rs,path.rs,placement.rs,lesson.rs,stats.rs,settings.rs,backup.rs}`
 - `app/src/strings/{en.json,index.ts}`, `app/src/screens/{Onboarding,Path,Lesson,Review,Stats,Settings,DataError}/*.tsx`,
-  `app/src/components/{ResultSheet,WordBank,MatchPairs,StreakBadge}.tsx`, `app/src/App.tsx`
+  `app/src/components/{ResultSheet,WordBank,MatchPairs,StreakBadge}.tsx`, `app/src/App.tsx`,
+  `app/src/navigation.ts` (the screen history)
 - `app/e2e/{launch.spec.ts,vitest.config.ts}`, `.github/workflows/ci.yml` (e2e job)
 - Tests: `app/src-tauri/tests/m04_app_shell_and_offline_course.rs`, `app/src/test/m04/*.test.tsx`,
   `app/src/App.test.tsx` (updated), fixtures in `tests/cases/04-app-shell-and-offline-course/`
@@ -270,7 +271,8 @@ UI contract (visible text in `en.json`; tests find elements by these names):
 - Lesson summary: heading **Lesson complete**, "+{xp} XP", "{correct} of {total} correct", "{n} day
   streak", the summary's message when there is one, **Continue**.
 - Reviews: `review_start` with `limit` 20; no exercises → the notice and **Back to my path**.
-- Stats: heading **Stats**; `empty` → "Finish a lesson to see your stats."
+- Stats: heading **Stats**; `empty` → "Finish a lesson to see your stats."; **Back to my path**
+  under the heading, before the calendar and the skills, and again at the foot.
 - Settings: heading **Settings**, buttons **Learning**, **Data**, **About**. Data: **Export a
   backup**, **Restore a backup** (then a dialog with "Importing replaces all your progress on this
   computer. Export a backup first if you want to keep it.", **Replace my data** and **Cancel**), a
@@ -280,6 +282,17 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   forms come from Wiktionary (wiktionary.org) under CC BY-SA 4.0."
 - Keyboard: Enter checks when an answer is given and continues when the result sheet shows; keys
   1 to 4 check the matching option of `pick_meaning`; Esc asks to quit.
+- Leaving a screen: every screen the path opens (Reviews with nothing due, Stats, Settings) has
+  **Back to my path** at the top, straight after its heading, and at the foot; Esc on it returns
+  to the path. The app keeps a history of the screens visited, in order: the path and the screens
+  it opens. The mouse's back button (`button` 3) and Alt+Left go to the previous screen, its
+  forward button (`button` 4) and Alt+Right to the next; opening a screen drops everything forward
+  of it; back on the first screen and forward on the last do nothing. The web view's own history
+  navigation is always cancelled (`mousedown`, `mouseup` and `auxclick` with `button` 3 or 4,
+  Alt+Left and Alt+Right), so the page is never left or reloaded. In a lesson, a story,
+  onboarding and the placement test, back and forward do nothing, and in a lesson Esc still asks
+  to quit. A dialog takes Esc first and closes (**Cancel**, **Keep going**, **Not now**); while a
+  dialog is open, Esc, back and forward never leave the screen.
 
 ## Out of scope
 
@@ -378,6 +391,36 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   the AI setup dialog after the units on the path, the lesson's dialogs after its controls, and
   the restore dialog after the Data buttons, followed only by **Back to my path**, which is never
   disabled.
+- A way back from every screen. On a full course (French has 64 skills) Stats put its only
+  **Back to my path** after the calendar and a row for every skill, nothing else left the screen,
+  and the mouse's back and forward buttons did nothing, since screens are state in the app shell
+  and the web view had no history to walk. The app shell (`app/src/navigation.ts`, used by
+  `App.tsx`) now keeps a real screen history rather than only a way back to the path:
+  - The history's steps are the path, Reviews (nothing due), Stats and Settings. **Back to my
+    path** and Esc open the path as a new step, like any other screen: after the path, Stats, the
+    path again and Settings, back shows the path, then Stats, then the path. A step shows its
+    screen afresh: the path and Stats read their data again, Settings opens on the part it was
+    opened on, and Reviews shows the notice it showed.
+  - A part of a screen is not a step: Settings' parts (Learning, Audio, AI, Data, About) and a
+    skill's detail on the path add nothing to the history.
+  - A lesson or a story is not a step and is left only through its own controls (a lesson's quit
+    dialog, a story's buttons): back and forward do nothing during one, starting one drops what
+    was forward, and finishing or quitting returns to the path it started from. Onboarding, the
+    placement test, loading and the error screens are outside the history, where back and forward
+    do nothing; the history starts at the path, and starts again after a restore or Delete
+    everything.
+  - A side button arrives as `mousedown`, `mouseup` and `auxclick` with `button` 3 or 4. All three
+    are cancelled, so the web view never navigates; the screen changes once per press, on
+    `mouseup`. Alt+Left and Alt+Right in a text field are left to the field, where macOS moves the
+    caret by a word.
+  - Dialogs: Esc in the restore dialog is **Cancel**, in the AI setup dialog **Not now** (on its
+    first-run card it closes without running the action that opened it, so nothing more is sent),
+    and in a lesson's quit dialog **Keep going**. A dialog listens on the document, which hears a
+    key before the window where the app shell and the lesson player listen; the shell also
+    ignores Esc, back and forward while any element with the dialog role is on the page.
+  - Scrolling: nothing in the stylesheet clips the page or fixes its height (the body has only a
+    minimum height), so a long screen scrolls to its foot with the wheel and the keys, and the
+    shell takes only Esc and Alt with an arrow, never a scrolling key. Tests keep both true.
 - Desktop: the Tauri crate is a library with `run()`; `AppState` holds `Mutex<Parley>`;
   `SystemClock` takes the local UTC offset from `chrono` (clock feature only);
   `time_seeded_rng` seeds `SplitMix64` from the system time; the file picker is

@@ -29,9 +29,19 @@ export default function Stats({ lang, onBack }: Props) {
     }
   }, [lang])
 
+  // Back to my path at the top as well as the foot: on a full course the skills list is long.
+  const backToPath = (
+    <div className="actions">
+      <button type="button" onClick={onBack}>
+        {t('app.back_to_path')}
+      </button>
+    </div>
+  )
+
   return (
     <main className="stats">
       <h1>{t('stats.title')}</h1>
+      {backToPath}
       {error && (
         <p role="alert" className="error">
           {error}
@@ -87,11 +97,7 @@ export default function Stats({ lang, onBack }: Props) {
           </section>
         </>
       )}
-      <div className="actions">
-        <button type="button" onClick={onBack}>
-          {t('app.back_to_path')}
-        </button>
-      </div>
+      {backToPath}
     </main>
   )
 }
