@@ -12,6 +12,11 @@
   --almost: #8a5a00;
   --wrong: #a3262a;
   --danger: #a3262a;
+  /* Dialogs sit above everything on the page. An element with an opacity below 1 (a disabled or
+     locked button) paints as its own layer, so a fixed backdrop without a z-index would be drawn
+     under every such element that comes after it in the page. Nothing else may use a z-index this
+     high. */
+  --layer-dialog: 1000;
   color: var(--text);
   background-color: var(--background);
   line-height: 1.5;
@@ -268,6 +273,7 @@ button.matched {
 .dialog-backdrop {
   position: fixed;
   inset: 0;
+  z-index: var(--layer-dialog);
   display: flex;
   align-items: center;
   justify-content: center;

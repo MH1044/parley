@@ -176,6 +176,29 @@ const PATH = {
   goal_xp: 20,
 }
 
+/** The path with a locked skill and a story not open yet: both are drawn faded. */
+const PATH_WITH_LOCKED = {
+  ...PATH,
+  units: [
+    {
+      ...PATH.units[0],
+      skills: [
+        ...PATH.units[0].skills,
+        {
+          id: 'es.a1.u01.s02',
+          title: 'Names',
+          can_do: 'I can say my name and ask someone their name.',
+          cefr: 'A1',
+          state: 'locked',
+          mastery: 0,
+          tested_out: false,
+        },
+      ],
+      story: { skill_id: 'es.a1.u01.s02', available: false },
+    },
+  ],
+}
+
 const LOCAL_MODELS = [
   { name: 'llama3.1:8b', bytes: 4_700_000_000 },
   { name: 'llama3.2:3b', bytes: 2_000_000_000 },
@@ -359,6 +382,31 @@ describe('Consent dialog (acceptance test 18, invariant I12)', () => {
       expect(within(dialog).getByRole('button', { name })).toBeInTheDocument()
     }
     expect(callsOf('ai_consent_accept')).toHaveLength(0)
+  })
+
+  it('on the path the dialog sits on the backdrop, last on the page, after the locked skill and story', async () => {
+    // Module 04, Design notes: dialogs sit above everything. A faded button paints as its own
+    // layer, so the dialog comes after every one of them on the path.
+    reply('path_get', () => PATH_WITH_LOCKED)
+    await openPath()
+    const locked = await screen.findByRole('button', { name: 'Names' })
+    const story = screen.getByRole('button', { name: 'Read a story' })
+    expect(story).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Set up AI' }))
+    const dialog = await setupDialog()
+    const backdrop = dialog.parentElement as HTMLElement
+    expect(backdrop).toHaveClass('dialog-backdrop')
+    const home = backdrop.closest('main')
+    expect(home).toHaveClass('path')
+    expect(home?.lastElementChild, 'the backdrop is the last element of the path').toBe(backdrop)
+    for (const button of [locked, story]) {
+      expect(button.compareDocumentPosition(backdrop) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    }
+    const after = Array.from(document.body.querySelectorAll('*')).filter(
+      (element) =>
+        !backdrop.contains(element) && backdrop.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING,
+    )
+    expect(after.map((element) => element.outerHTML), 'nothing on the page comes after the dialog').toEqual([])
   })
 
   it('Not now calls ai_consent_decline, sends nothing else and closes', async () => {

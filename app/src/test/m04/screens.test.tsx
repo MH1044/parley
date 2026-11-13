@@ -4,6 +4,8 @@
 
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+// The stylesheet as text (vite.config.ts lets this one import through as text).
+import STYLESHEET from '../../index.css?raw'
 
 type Args = Record<string, unknown>
 
@@ -980,5 +982,43 @@ describe('Data-file error screen (acceptance test 15)', () => {
       expect(shown.length).toBeGreaterThan(0)
       shown.forEach((element) => expect(element).toBeVisible())
     })
+  })
+})
+
+// ---- dialogs sit above everything ----------------------------------------------------------------
+
+/** The declarations of the first rule whose selector is exactly `selector`, by property. */
+function rule(css: string, selector: string): Map<string, string> {
+  const found = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find((match) => match[1].trim() === selector)
+  expect(found, `a rule for ${selector}`).toBeDefined()
+  const declarations = new Map<string, string>()
+  for (const declaration of (found?.[2] ?? '').split(';')) {
+    const colon = declaration.indexOf(':')
+    if (colon > 0) declarations.set(declaration.slice(0, colon).trim(), declaration.slice(colon + 1).trim())
+  }
+  return declarations
+}
+
+/** A z-index value as a number: an integer, or a custom property of `:root` that holds one. */
+function zIndex(css: string, value: string): number {
+  const property = /^var\(\s*(--[\w-]+)\s*\)$/.exec(value)
+  const resolved = property ? rule(css, ':root').get(property[1]) : value
+  expect(resolved, `${value} is an integer`).toMatch(/^-?\d+$/)
+  return Number(resolved)
+}
+
+describe('Dialogs sit above everything (Design notes)', () => {
+  it('the dialog backdrop sets a z-index above every other z-index in the stylesheet', () => {
+    expect(STYLESHEET, 'app/src/index.css is read as text').toContain('.dialog-backdrop')
+    const css = STYLESHEET.replace(/\/\*[\s\S]*?\*\//g, '')
+    const backdrop = rule(css, '.dialog-backdrop')
+    expect(backdrop.get('position')).toBe('fixed')
+    const set = backdrop.get('z-index')
+    expect(set, '.dialog-backdrop sets a z-index').toBeDefined()
+    const layer = zIndex(css, set ?? '')
+    expect(layer).toBeGreaterThan(0)
+    // The backdrop's own z-index is the only one at the dialogs' layer or above.
+    const all = [...css.matchAll(/z-index\s*:\s*([^;}]+)/g)].map((match) => zIndex(css, match[1].trim()))
+    expect(all.filter((value) => value >= layer), "z-index values at the dialogs' layer or above").toEqual([layer])
   })
 })

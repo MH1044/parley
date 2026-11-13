@@ -243,22 +243,6 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
           </button>
         </section>
       )}
-      {setup && (
-        <AiSetupDialog
-          onStatus={setAi}
-          onClose={(proceed) => {
-            setSetup(false)
-            const action = afterSetup.current
-            afterSetup.current = null
-            if (proceed && action) action()
-          }}
-          onChooseOther={() => {
-            setSetup(false)
-            afterSetup.current = null
-            onSettings('ai')
-          }}
-        />
-      )}
       {error && (
         <p role="alert" className="error">
           {error}
@@ -302,6 +286,23 @@ export default function Path({ lang, onStart, onNothingToReview, onStats, onSett
           )}
         </section>
       ))}
+      {/* The dialog comes last on the page, after every skill and story button. */}
+      {setup && (
+        <AiSetupDialog
+          onStatus={setAi}
+          onClose={(proceed) => {
+            setSetup(false)
+            const action = afterSetup.current
+            afterSetup.current = null
+            if (proceed && action) action()
+          }}
+          onChooseOther={() => {
+            setSetup(false)
+            afterSetup.current = null
+            onSettings('ai')
+          }}
+        />
+      )}
     </main>
   )
 }

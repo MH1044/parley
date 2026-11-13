@@ -369,6 +369,15 @@ UI contract (visible text in `en.json`; tests find elements by these names):
 - Delete everything: `confirm_text` must equal `delete` after trimming; then the store, the
   settings file, pack files and `cache/ai.sqlite3` are removed and a fresh store opened.
   `cache_clear` removes `cache/ai.sqlite3` for `ai` and `all` (module 09 adds audio).
+- Dialogs sit above everything: `.dialog-backdrop` in `app/src/index.css` has `z-index:
+  var(--layer-dialog)`, one value (1000) defined once on `:root`, and nothing else in the
+  stylesheet may use a z-index that high. An element with an opacity below 1, such as a disabled
+  or locked button, paints as its own layer, so a fixed backdrop without a z-index was drawn under
+  every such button that came after it: on the path, the locked skills and the story button
+  showed over **Set up AI features** and its buttons. Each dialog also comes last on its screen:
+  the AI setup dialog after the units on the path, the lesson's dialogs after its controls, and
+  the restore dialog after the Data buttons, followed only by **Back to my path**, which is never
+  disabled.
 - Desktop: the Tauri crate is a library with `run()`; `AppState` holds `Mutex<Parley>`;
   `SystemClock` takes the local UTC offset from `chrono` (clock feature only);
   `time_seeded_rng` seeds `SplitMix64` from the system time; the file picker is
