@@ -61,7 +61,7 @@ output.
   pack info <file.sqlite3>
       Describe a pack: its meta rows, row counts, size and hashes.
   pack install <file> --data-dir <dir> [--lock <file>]
-      For development, until packs are published: install a pack into the started course of
+      For development: install a locally built pack into the started course of
       its language in the app data folder <dir>. The file must be the one the lock (default
       content/packs.lock.toml) pins; prints {\"lang\":...,\"version\":...,\"path\":...}.
   freq check --lang <l> --pack <file> [--content <dir>]

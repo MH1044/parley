@@ -516,6 +516,23 @@ describe('Onboarding (acceptance test 1, invariant I12)', () => {
     await heading('Daily goal', 1)
   })
 
+  it('a download that finds no published pack says so and goes on without it', async () => {
+    // pack_download's answer when the pack URL answers 404 or 410.
+    reply('pack_download', () => ({ lang: 'es', state: 'not_published', version: null, bytes: null, size: null }))
+    await walkTo('Course pack')
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }))
+    await waitFor(() => expect(callsOf('pack_download')).toEqual([{ lang: 'es' }]))
+    await expectText(
+      'No course pack is published for Spanish yet. Parley works without it, with fewer example sentences.',
+    )
+    expect(screen.queryByRole('alert')).toBeNull()
+    expect(screen.queryByText(textOf('Try again later'))).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Download' })).toBeNull()
+    expectNoDialog()
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    await heading('Daily goal', 1)
+  })
+
   it('the placement test asks, accepts I don\'t know, and says where the learner starts', async () => {
     await walkTo('Where to start')
     fireEvent.click(screen.getByRole('button', { name: 'Take the placement test (about 5 minutes)' }))

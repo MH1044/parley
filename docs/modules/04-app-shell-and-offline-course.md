@@ -217,7 +217,7 @@ Messages (code, then text):
 | the run's other refusals | `invalid_input` | "Type an answer first." / "This exercise was already checked." |
 | no pack in the lock for the language | `pack_missing` | "No course pack is published for {Language} yet." |
 | the download got no response | `offline` | "You're offline. Parley works without the pack, with fewer example sentences." |
-| the download answered other than 200 | `pack_missing` | "The course pack could not be downloaded. Try again later." |
+| the download answered other than 200, 404 or 410 (a 404 or 410 is not an error: see Design notes) | `pack_missing` | "The course pack could not be downloaded. Try again later." |
 | the bytes do not match the lock's SHA-256 | `checksum_mismatch` | "The download was damaged. Try again." |
 | a backup that is not JSON, has another `schema`, or fails its JSON Schema | `invalid_input` | "This is not a Parley backup." |
 | `parley.backup/N` with N > 1 | `invalid_input` | "This backup was made by a newer Parley. Update Parley to import it." |
@@ -316,6 +316,13 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   sentences per lemma of the plan's items from an installed pack (`sentence_lemmas`, by `max_rank`
   then id) as extra `fill_gap` candidates. `attributions` names the author of every `fill_gap` whose
   `full_sentence` is a pack sentence's text and no syllabus example's.
+- A 404 or 410 from a pack URL means the pack is not published yet: the lock names a release
+  asset that does not exist, and trying again cannot help until it does. `pack_download` then
+  writes nothing, records no version and returns the `not_published` status (no version, bytes
+  or size), so onboarding shows "No course pack is published for {Language} yet. Parley works
+  without it, with fewer example sentences." with **Continue** instead of an error. Every other
+  status but 200 stays `pack_missing`, "The course pack could not be downloaded. Try again later.",
+  since a server error may pass.
 - Lessons: `lesson_start` composes (module 03) with `lesson_length` and `new_items_per_lesson` from
   the settings (mode `review`: 0 new items) and no capabilities, then `template_lesson` with seq
   `Store::next_lesson_seq`, `Allowed::for_skill` and the pack sentences, then `LessonRun::start_lesson`.
@@ -436,9 +443,9 @@ come from this spec, the fixtures and modules 02 and 03.
 3. `pack_download` with a fake network serving bytes whose SHA-256 is in the given lock → installed
    and `pack://progress` reported 0 then the total; one changed byte → `checksum_mismatch`, "The
    download was damaged. Try again.", nothing left in `packs/`; with `FailingNet` → `offline` and
-   the offline message; a 404 → `pack_missing` and its message; a language missing from the lock
-   → `not_published` and "No course pack is published for Spanish yet."; `megabytes(8_200_000)` is
-   "8.2 MB".
+   the offline message; a 404 or 410 → the `not_published` status and nothing in `packs/`; a 500
+   → `pack_missing` and its message; a language missing from the lock → `not_published` and "No
+   course pack is published for Spanish yet."; `megabytes(8_200_000)` is "8.2 MB".
 4. With `FailingNet`, a full run succeeds: placement, a lesson, its summary, a review session,
    `stats_get` (invariant I3).
 5. `exercise_submit` returns the grade of module 03 (a right `pick_meaning` choice is `correct`, an

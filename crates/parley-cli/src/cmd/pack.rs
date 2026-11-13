@@ -159,8 +159,8 @@ impl Fs for DataDirFs {
     }
 }
 
-/// `parley pack install <file> --data-dir <dir> [--lock <file>]`: for development, until packs
-/// are published, installs a locally built pack into a started course. The file must be the pack
+/// `parley pack install <file> --data-dir <dir> [--lock <file>]`: for development, installs a
+/// locally built pack into a started course. The file must be the pack
 /// the lock pins for its language (SHA-256 and size), checked before anything is written; it
 /// then takes the path a download takes.
 fn install(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {

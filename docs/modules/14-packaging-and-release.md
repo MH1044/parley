@@ -24,7 +24,8 @@ notes saying the course awaits native-speaker review.
 - `release.yml` on a `v*` tag: `scripts/check-release-notes`, `scripts/verify`, the build matrix,
   a draft release with `docs/releases/<version>.md` as notes, uploads, publish only when every job
   is green; an Android APK only when the signing secrets exist.
-- Smaller sentence packs, before any pack is published: module 05 pinned packs of 247 MB (es),
+- Smaller sentence packs, before the first app release (the full-size packs are already published on
+  `packs-2026-11-05`): module 05 pinned packs of 247 MB (es),
   175 MB (fr) and 401 MB (de), most of it the whole Wiktionary forms table and, for German, the
   lemma keys of personal pronouns that the extract lists as forms of one another. Each pack is
   brought to at most 60 MB (for example: keep only the forms of lemmas the pack's sentences use,

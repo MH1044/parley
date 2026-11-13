@@ -17,8 +17,9 @@ listen-and-type exercises. Speaking checks come next. The course covers A1 and A
 Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
-built and pinned by checksum but not yet published; `parley pack install` installs one for
-development. Underneath: the
+published as release assets and pinned by checksum, and the app downloads the chosen language's
+pack in onboarding; `parley pack install` installs a locally built one for development.
+Underneath: the
 course as validated open data (a syllabus format with a validator, word-form tables, sentence
 packs built from Tatoeba), the learner model (FSRS cards, an append-only review log, skill
 mastery and states, an adaptive placement test) and the offline lesson engine (seven exercise
@@ -175,7 +176,7 @@ from the pack's and every lemma the pack does not rank, and exits 1 until there 
 cargo run -q -p parley-cli -- freq check --lang es --pack data-cache/packs/es-2026-11-05.sqlite3
 ```
 
-Until the packs are published as release assets, a locally built pack that
+The app downloads the published packs itself. For development, a locally built pack that
 `content/packs.lock.toml` pins is installed into a course started in the app with
 
 ```sh

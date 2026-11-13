@@ -192,8 +192,9 @@ absent from `freq`. Exit 0 when both lists are empty, else 1. A missing pack or 
 
 ### `parley pack install <file> --data-dir <dir> [--lock <file>]`
 
-For development, until packs are published as release assets. Reads the pack's language from its
-`meta`; the lock (default `content/packs.lock.toml`) must have an entry for that language whose
+For development: installs a locally built pack (the app downloads the published ones). Reads the
+pack's language from its `meta`; the lock (default `content/packs.lock.toml`) must have an entry
+for that language whose
 `sha256` and `bytes` match the file, else stderr `error: This pack does not match
 packs.lock.toml.`, exit 1, nothing written. The course must be started in
 `<dir>/parley.sqlite3`, else stderr `error: Start the {Language} course in Parley first.`, exit 1.
@@ -211,11 +212,12 @@ One table per language: `version` (the pack's `built_at`), `url`
 
 ## Out of scope
 
-- Publishing the packs as release assets (maintainer, module 14; until then `pack install` is used.
-  The desktop app has no network until module 06, so its Download button reports "You're
-  offline. Parley works without the pack, with fewer example sentences."; from module 06 until
-  the packs are published, "The course pack could not be downloaded. Try again later.").
-- Making the packs smaller (module 14, before anything is published; see Design notes).
+- Publishing the packs as release assets (maintainer): they are published on the `packs-<version>`
+  tag the lock's URLs name (`packs-2026-11-05` holds the three packs the lock pins), and the app's
+  Download fetches them; `pack install` installs a locally built pack for development.
+- Making the packs smaller: the full-size packs are published now; module 14 brings each to at most
+  60 MB before the first app release, publishes them under a new `packs-<date>` tag and re-pins the
+  lock (see Design notes).
 - The About page listing unreviewed units (module 14, test 7); B1 and other languages;
   AI-generated content (07); filling ranks automatically (`freq check` reports, the author edits).
 
@@ -273,9 +275,12 @@ One table per language: `version` (the pack's `built_at`), `url`
   The packs are far above ADR-0007's "tens of megabytes": most of the size is the `forms` table
   (the whole extract, as module 01 specifies) and, for German, `sentence_lemmas`, because the
   extract lists every German personal pronoun as a form of every other one. The maintainer
-  decided on 2026-11-06 that this module closes with the packs as built and pinned at these sizes;
-  shrinking them (only the forms of ranked lemmas, a pronoun filter, or a compressed download) is
-  in module 14's Scope, before anything is published, since it changes module 01's pack format.
+  decided on 2026-11-06 that this module closes with the packs as built and pinned at these sizes,
+  and then to publish them as built: `packs-2026-11-05` holds these full-size packs. Shrinking them
+  (only the forms of ranked lemmas, a pronoun filter, or a compressed download) is in module 14's
+  Scope, since it changes module 01's pack format: module 14 brings each pack to at most 60 MB
+  before the first app release, publishes the smaller packs under a new `packs-<date>` tag and
+  re-pins the lock.
 - **Content decisions.** Wiktionary lists Spanish reflexive and French pronominal forms with their
   pronoun (`me llamo`, `m'appelle`), so those verbs are taught through the base verb (`llamar`,
   `levantar`, `appeler`) and the grammar note explains the reflexive use. French feminine and plural

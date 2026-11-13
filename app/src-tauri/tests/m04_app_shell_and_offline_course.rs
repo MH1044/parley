@@ -824,12 +824,12 @@ fn t03_no_response_is_offline_and_another_status_is_a_missing_pack() {
             offline,
         ),
         (
-            FakeNet::serving(PACK_URL, 404, b"not found".to_vec()).boxed(),
+            FakeNet::serving(PACK_URL, 500, pack.bytes.clone()).boxed(),
             "pack_missing",
             unavailable,
         ),
         (
-            FakeNet::serving(PACK_URL, 500, pack.bytes.clone()).boxed(),
+            FakeNet::serving(PACK_URL, 503, b"unavailable".to_vec()).boxed(),
             "pack_missing",
             unavailable,
         ),
@@ -841,6 +841,42 @@ fn t03_no_response_is_offline_and_another_status_is_a_missing_pack() {
         ok(app.course_start("es"));
         refused(app.pack_download("es", &mut |_| {}), code, message);
         assert_eq!(files_in(&dir.path().join("packs")), Vec::<String>::new());
+        // The app works without the pack.
+        let run = ok(app.lesson_start("es.a1.u01.s01", "learn"));
+        assert_run_shape(&run, "lesson");
+    }
+}
+
+#[test]
+fn t03_a_pack_url_that_answers_404_or_410_is_not_published() {
+    let scratch = tempdir();
+    let pack = fixture_pack(scratch.path());
+    let lock = pack_lock("es", "2026-10-01", PACK_URL, &pack.info);
+    let clock = TestClock::at("2026-10-12T09:00:00Z", 0);
+    for status in [404, 410] {
+        let dir = tempdir();
+        let net = FakeNet::serving(PACK_URL, status, b"not found".to_vec());
+        let mut app = open(dir.path(), &clock, &lock, net.boxed(), 3);
+        ok(app.app_start());
+        ok(app.course_start("es"));
+        let outcome = ok(app.pack_download("es", &mut |_| {}));
+        assert_eq!(outcome.lang, "es");
+        assert!(
+            matches!(outcome.state, PackState::NotPublished),
+            "{status}: {}",
+            show(&outcome)
+        );
+        assert_eq!(
+            (outcome.version, outcome.bytes, outcome.size),
+            (None, None, None),
+            "{status}"
+        );
+        assert_eq!(net.requests(), vec![PACK_URL.to_string()], "{status}");
+        assert_eq!(files_in(&dir.path().join("packs")), Vec::<String>::new());
+        assert!(!matches!(
+            ok(app.pack_status("es")).state,
+            PackState::Installed
+        ));
         // The app works without the pack.
         let run = ok(app.lesson_start("es.a1.u01.s01", "learn"));
         assert_run_shape(&run, "lesson");

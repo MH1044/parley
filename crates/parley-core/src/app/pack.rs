@@ -1,7 +1,7 @@
 //! Course packs: `pack_status`, `pack_download`, the sentences a lesson takes from an installed
 //! pack, and their attribution (docs/modules/04-app-shell-and-offline-course.md, Design notes);
-//! and `parley pack install`, which installs a locally built pack for development until packs
-//! are published (docs/modules/05-course-content-a1-a2.md).
+//! and `parley pack install`, which installs a locally built pack for development
+//! (docs/modules/05-course-content-a1-a2.md).
 //!
 //! A download is checked against the SHA-256 in `content/packs.lock.toml` before anything is
 //! written; it is written as `packs/<lang>-<version>.sqlite3.part` and renamed into place, so a
@@ -175,6 +175,17 @@ fn sha256_hex(bytes: &[u8]) -> String {
         .collect()
 }
 
+/// The status of a language whose pack is not published: no version, size or bytes.
+fn not_published(lang: Lang) -> PackStatus {
+    PackStatus {
+        lang: lang.as_str().to_string(),
+        state: PackState::NotPublished,
+        version: None,
+        bytes: None,
+        size: None,
+    }
+}
+
 impl Parley {
     /// Whether the language's pack is installed (the course's `pack_version` names a file that
     /// opens as a pack), available in the lock, or not published.
@@ -202,20 +213,15 @@ impl Parley {
                 bytes: Some(entry.bytes),
                 size: Some(megabytes(entry.bytes)),
             },
-            None => PackStatus {
-                lang: lang.as_str().to_string(),
-                state: PackState::NotPublished,
-                version: None,
-                bytes: None,
-                size: None,
-            },
+            None => not_published(lang),
         })
     }
 
     /// Downloads the language's pack from the lock's URL, reporting progress before the request
     /// and once the body has arrived; checks the SHA-256 before writing anything; writes the
     /// `.part` file, renames it into place, removes the course's previous pack and records the
-    /// new version.
+    /// new version. A URL that answers 404 or 410 means the pack is not published yet: nothing is
+    /// written and the not-published status is returned, so the learner goes on without it.
     pub fn pack_download(
         &mut self,
         lang: &str,
@@ -256,11 +262,18 @@ impl Parley {
                     "You're offline. Parley works without the pack, with fewer example sentences.",
                 )
             })?;
-        if response.status != 200 {
-            return Err(AppError::new(
-                ErrorCode::PackMissing,
-                "The course pack could not be downloaded. Try again later.",
-            ));
+        match response.status {
+            200 => {}
+            // The lock names a release asset that does not exist (yet, or any more): trying
+            // again cannot help until it is published, so this is the not-published outcome, not
+            // a failure to retry.
+            404 | 410 => return Ok(not_published(lang)),
+            _ => {
+                return Err(AppError::new(
+                    ErrorCode::PackMissing,
+                    "The course pack could not be downloaded. Try again later.",
+                ));
+            }
         }
         progress(report(entry.bytes));
         if !sha256_hex(&response.body).eq_ignore_ascii_case(entry.sha256.trim()) {
@@ -534,8 +547,9 @@ mod tests {
         );
         assert!(!dir.path().join("packs").exists(), "nothing written");
 
+        // A server error may pass, so it is worth trying again.
         let dir = tempfile::tempdir().unwrap();
-        let mut app = parley_with(dir.path(), &lock(&bytes), net(404, Vec::new()));
+        let mut app = parley_with(dir.path(), &lock(&bytes), net(500, bytes.clone()));
         app.course_start("es").unwrap();
         let err = app.pack_download("es", &mut |_| {}).unwrap_err();
         assert_eq!(
@@ -545,6 +559,7 @@ mod tests {
                 "The course pack could not be downloaded. Try again later."
             )
         );
+        assert!(!dir.path().join("packs").exists(), "nothing written");
 
         let dir = tempfile::tempdir().unwrap();
         let offline = Box::new(ScriptedNet {
@@ -576,6 +591,62 @@ mod tests {
             )
         );
         assert!(NO_PACKS.contains("parley.packs/1"));
+    }
+
+    #[test]
+    fn a_pack_url_that_answers_404_or_410_means_the_pack_is_not_published() {
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        for status in [404, 410] {
+            let dir = tempfile::tempdir().unwrap();
+            let requests = Arc::new(Mutex::new(Vec::new()));
+            let answering = Box::new(ScriptedNet {
+                response: Ok(HttpResponse {
+                    status,
+                    headers: Vec::new(),
+                    body: b"Not Found".to_vec(),
+                }),
+                requests: Arc::clone(&requests),
+            });
+            let mut app = parley_with(dir.path(), &lock(&bytes), answering);
+            app.course_start("es").unwrap();
+            let mut seen = Vec::new();
+            let outcome = app
+                .pack_download("es", &mut |p| seen.push((p.bytes_done, p.bytes_total)))
+                .unwrap();
+            assert_eq!(
+                outcome,
+                PackStatus {
+                    lang: "es".into(),
+                    state: PackState::NotPublished,
+                    version: None,
+                    bytes: None,
+                    size: None,
+                },
+                "{status}"
+            );
+            assert_eq!(
+                *requests.lock().unwrap(),
+                ["https://example.com/es.sqlite3"],
+                "{status}: one request"
+            );
+            assert_eq!(seen, [(0, 8_200_000)], "{status}: no body arrived");
+            assert!(
+                !dir.path().join("packs").exists(),
+                "{status}: nothing written"
+            );
+            assert_ne!(
+                app.pack_status("es").unwrap().state,
+                PackState::Installed,
+                "{status}"
+            );
+            let store = app.store.as_ref().unwrap();
+            assert_eq!(
+                store.course(Lang::Es).unwrap().unwrap().pack_version,
+                None,
+                "{status}: no version recorded"
+            );
+        }
     }
 
     /// A lock that pins `bytes` exactly, at version 2026-11-05.

@@ -38,8 +38,9 @@ Everything below works with no network and no AI. Parley asks about AI only when
 nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
 English); *Course pack*, which offers the language's sentence pack with its size first
 ("Download the Spanish course pack (246.8 MB)?"; for a language with no pack in
-`content/packs.lock.toml` it says "No course pack is published for Spanish yet. Parley works
-without it, with fewer example sentences." instead); *Daily goal* (10, 20, 30 or
+`content/packs.lock.toml`, or after **Download** when the pack's address answers that there is no
+such file, it says "No course pack is published for Spanish yet. Parley works without it, with
+fewer example sentences." instead, and **Continue** goes on without it); *Daily goal* (10, 20, 30 or
 50 XP a day, 20 by default); and *Where to start*: **Take the placement test (about 5 minutes)**
 or **Start from the beginning**. The placement test asks you to translate a word of one skill
 after another into English (**I don't know** is always fine) and ends with where you start, such
@@ -444,10 +445,12 @@ lists are empty; the command reports, and the author edits the ranks.
 ### Installing a pack for development: `parley pack install`
 
 The app downloads a pack from the release URL in `content/packs.lock.toml` and checks its
-SHA-256, but until the packs are published as release assets, **Download** says "The course pack
-could not be downloaded. Try again later." (offline: "You're offline. Parley works without the
-pack, with fewer example sentences."). A pack built with `parley pack build` and pinned in
-`content/packs.lock.toml` can be installed by hand instead:
+SHA-256. When that URL answers 404 or 410 (the release asset is missing), **Download** says
+"No course pack is published for Spanish yet. Parley works without it, with fewer example
+sentences."; any other failed answer says "The course pack could not be downloaded. Try again
+later." (offline: "You're offline. Parley works without the pack, with fewer example
+sentences."). A pack built with `parley pack build` and pinned in `content/packs.lock.toml` can be
+installed by hand instead:
 
 1. Start the course in the app (choose the language in onboarding), then close the app.
 2. Install the pack into the app data folder:
@@ -706,6 +709,4 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: speaking and pronunciation, then conversations. The sentence packs are published as
-release assets before the first release; until then the app's Download button cannot fetch them,
-and `parley pack install` puts a locally built pack in place.
+In the order of `docs/ROADMAP.md`: speaking and pronunciation, then conversations.
