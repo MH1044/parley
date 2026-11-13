@@ -196,8 +196,9 @@ impl Parley {
     pub fn tts_begin(&mut self, text: &str, lang: &str, slow: bool, session_id: Option<&str>,
                      ai: Option<AiAccess>) -> Result<TtsBegin, AppError>;
     pub fn tts_complete(&mut self, job: SpeechJob, outcome: SpeechOutcome) -> Result<TtsPlayed, AppError>;
+    /// Begin, run, complete; or wait for the fetch of the same sentence and begin again.
     pub fn tts_play_with(&mut self, text: &str, lang: &str, slow: bool, session_id: Option<&str>,
-                         ai: Option<AiAccess>) -> Result<TtsPlayed, AppError>;   // begin, run, complete
+                         ai: Option<AiAccess>) -> Result<TtsPlayed, AppError>;
     pub fn tts_stop(&mut self);
     pub fn prefetch_begin(&mut self, session_id: &str, exercise_id: &str, ai: Option<AiAccess>)
         -> Result<PrefetchBegin, AppError>;
@@ -210,11 +211,15 @@ impl Parley {
     /// natural voice configured for `lang` (`natural_voice` is Some).
     pub fn listen_available(&self, lang: Lang) -> bool;
 }
-pub enum TtsBegin { Done(TtsPlayed), Pending(SpeechJob) }
+pub enum TtsBegin { Done(TtsPlayed), Pending(SpeechJob), Waiting(SpeechWait) }
 pub enum PrefetchBegin { Done(Prefetched), Pending(SpeechJob) }
-pub struct SpeechJob { /* the client, the request, the key, the decoder; no lock */ }
+pub struct SpeechJob { /* the client, the request, the key, the decoder, its fetch; no lock */ }
 impl SpeechJob { pub fn request(&self) -> &SpeechRequest; pub fn run(&self) -> SpeechOutcome; }
+impl Drop for SpeechJob { /* ends its fetch, completed or not */ }
 pub struct SpeechOutcome { /* the reply or the error, and whether it passed §6.7 */ }
+/// A fetch of the same sentence to wait for, with no lock held, before beginning again.
+pub struct SpeechWait { /* the fetch */ }
+impl SpeechWait { pub fn wait(self); }   // blocks until the fetch has ended
 ```
 
 `tts_begin`, in order:
@@ -226,7 +231,8 @@ pub struct SpeechOutcome { /* the reply or the error, and whether it passed §6.
 3. Natural: model and voice from `natural_voice`; speed = `audio.slow_speed` when `slow` and
    `speed_honoured`, else 1.0; stretch = 1 ÷ `slow_speed` when `slow` and not `speed_honoured`,
    else 1.0. When `cache/audio/<key>.mp3` reads through `Fs`, the player plays it:
-   `Done(TtsPlayed { source: natural, cached: true })`, no request. Otherwise `Pending(job)`.
+   `Done(TtsPlayed { source: natural, cached: true })`, no request. Otherwise, when the key is
+   being fetched (below), `Waiting(wait)`, no request; otherwise `Pending(job)`.
 4. Os (and every fallback): the voice is `audio.os_voice.<lang>` when that id is installed, else
    the first of `voices_for(os.list(), lang)`; none: `no_voice` with `no_voice_message(lang,
    Platform::current())`. `os.speak(text, voice, os_rate(os.rates(), slow, slow_speed))`.
@@ -246,15 +252,28 @@ and no prefetch is made, until the status no longer says it. Any other error (of
 provider error) falls back with the notice. A player error is `no_voice` "Parley could not play the
 sound. Check that a speaker or headphones are connected."
 
+Sentences being fetched: the service keeps in memory the cache keys of the natural sentences being
+fetched. Every `Pending(job)` that `tts_begin` or `prefetch_begin` returns marks its key as being
+fetched, and the mark ends when the job is completed or dropped (a call whose thread failed never
+leaves a play waiting); a completion stores a valid clip before the mark ends. For a key being
+fetched, `prefetch_begin` gives `Prefetched { prefetched: false }` and `tts_begin` gives
+`Waiting(wait)`, both with no request. The caller calls `wait.wait()` with no lock held, which
+returns once the mark has ended, then calls `tts_begin` again with the same arguments, so the play
+goes exactly as if the fetch had ended just before it: a stored clip plays from the cache
+(`cached: true`, no request); after a 402 the client's status says `needs_credit`, so the OS voice
+speaks with no request; after a clip that failed §6.7 (counted in `ai_attempts`) its own request
+carries attempt n + 1's idempotency key; after any other failure it makes its own request. Only the
+same key waits: a slow play has its own speed, so its own key. `tts_play_with` loops the same way.
+
 `prefetch_begin(session_id, exercise_id, ai)`: the run of `session_id` must be in progress
 (`not_found` "This lesson is no longer in progress." otherwise); the exercise after `exercise_id`
 in the run's order, if any, has a sentence to prefetch when it is `listen_type` (its `text`), or,
 with `audio.autoplay` on, `pick_meaning` or `translate_to_en` (their `prompt_target`). When that
 exercise exists, has a sentence, the source for the run's language is natural (as in `tts_begin`,
-normal speed) and its file is not cached: `Pending(job)`; otherwise `Done(Prefetched { prefetched:
-false })`. `prefetch_complete` stores and records a valid reply exactly as `tts_complete` does but
-plays nothing: `Prefetched { prefetched: true }`; a failure stores nothing and is not shown:
-`Prefetched { prefetched: false }`.
+normal speed) and its file is neither cached nor being fetched: `Pending(job)`; otherwise
+`Done(Prefetched { prefetched: false })`. `prefetch_complete` stores and records a valid reply
+exactly as `tts_complete` does but plays nothing: `Prefetched { prefetched: true }`; a failure
+stores nothing and is not shown: `Prefetched { prefetched: false }`.
 
 `session_skip(kind)`: `listen` turns `listen_type` off until now + 60 minutes (injected clock, kept
 in memory); `speak` records the same for module 10 and changes nothing yet; anything else is the
@@ -297,6 +316,8 @@ pub const AUDIO_ENDED_EVENT: &str = "audio://ended";
 `tts_play` and `tts_prefetch` ask the AI service for a client only when `audio.voice_source =
 natural` and `ai.provider` is `publik` or `own_key`; the call runs with no lock held between begin
 and complete, as module 08's judge does, and the status is emitted (`ai://status`) after a call.
+`tts_play` meets a `Waiting` begin by waiting with no lock held, then asking for the client and
+beginning again.
 `COMMANDS` gains the six names after `explain_answer`, in the order of this table.
 
 ### parley-audio
@@ -409,6 +430,17 @@ read aloud."; "Parley could not play the sound. Check that a speaker or headphon
   over 500 characters, a `listen_type` while **Can't listen now** is on, and any client that is
   missing or failed give `prefetched: false` with no request. `session_skip` keeps its times in
   memory, so a restart brings listening back.
+- One request and one charge per sentence, however the prefetch and the play overlap. A learner who
+  answers quickly reaches the next exercise, whose autoplay asks for its sentence, before that
+  sentence's prefetch has come back, and a double click on **Play** asks twice; asking the provider
+  each time would buy, charge (in `speech_charges` and the lesson's cost) and store the same clip
+  twice. So a sentence already being fetched is waited for, never asked for again: the play starts
+  when the fetch ends, from the stored clip. If the fetch fails, the play decides afresh as it
+  would have alone: the system voice after a 402, its own request with a new idempotency key after
+  an unusable clip, its own request after any other error. Nothing is charged twice for one usable
+  clip. What is being fetched is kept in memory only, and a fetch ends with its call even when the
+  call never completes, so a play never waits for a reply that will not come. A slow play is
+  another sentence to fetch (its own speed and cache key), so it never waits for a normal one.
 - `WavDecoder` reads `WAVE_FORMAT_PCM` and `WAVE_FORMAT_EXTENSIBLE` with a PCM sub-format, skips
   other chunks (padding included), and counts no more data than is present. `MediaDecoder` decodes
   the whole clip and adds up its samples span by span (a stream may change rate or channels), so a
@@ -488,6 +520,14 @@ Contract tests 1 to 18 keep passing; this module adds test 28 of `docs/PUBLIK-IN
     session's cost (contract test 34), and a charged reply that fails §6.7 adds it too.
 20. parley-audio: `MediaDecoder` measures a generated 1.5 s WAV as 1500 ms ± 1 ms and refuses bytes
     that are not audio; `decode_mono_i16` mixes a stereo WAV to mono.
+21. A sentence being fetched is asked for once: a play of it while its prefetch is in flight waits,
+    then plays the stored clip (one request, one charge in `speech_charges` and the lesson's cost,
+    one file); a second prefetch gives `prefetched: false` with no request; a second play (a double
+    click) waits, then plays the stored clip; a job dropped unfinished wakes the waiting play, which
+    then makes its own request; after an unusable prefetch the play's request carries attempt 2's
+    idempotency key, and after a 402 the play uses the OS voice with no request; on two threads,
+    the play returns only after the prefetch's call does, with one request in all; a slow play of
+    a sentence being fetched at normal speed does not wait.
 
 ## Status
 

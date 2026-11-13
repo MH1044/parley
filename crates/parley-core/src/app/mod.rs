@@ -36,7 +36,7 @@ mod placement;
 mod stats;
 mod story;
 
-pub use audio::{PrefetchBegin, SpeechJob, SpeechOutcome, TtsBegin};
+pub use audio::{PrefetchBegin, SpeechJob, SpeechOutcome, SpeechWait, TtsBegin};
 pub use judge::{ExplainJob, ExplainOutcome, Explained, JudgeBegin, JudgeJob, JudgeOutcome};
 pub use lesson::{AiAccess, JobOutcome, LessonBegin, LessonJob};
 pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
@@ -145,6 +145,8 @@ pub struct Parley {
     pub(crate) audio: Audio,
     /// **Can't listen now** and **Can't speak now**: until when each is on.
     pub(crate) skips: audio::Skips,
+    /// The natural sentences being fetched, by cache key, so each is asked for once (module 09).
+    pub(crate) flights: audio::Flights,
 }
 
 // Messages (docs/modules/04-app-shell-and-offline-course.md, Interfaces).
@@ -248,6 +250,7 @@ impl Parley {
             placements: HashMap::new(),
             audio: Audio::default(),
             skips: audio::Skips::new(),
+            flights: audio::Flights::new(),
         }
     }
 

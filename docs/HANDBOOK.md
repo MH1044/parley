@@ -197,14 +197,16 @@ files."). A natural voice comes from the chosen provider: publik API (`tts-1`, v
 `content/voices.toml`), or your own key when a speech model is set (Settings > AI). Each sentence
 is fetched once, checked (audio of a plausible length for its words) and kept as a file, so it is
 never paid for twice and plays offline later; the next exercise's sentence is fetched while you
-answer. Settings > Audio shows "Natural voices cost about $0.00054 a sentence (measured).", the
-average of what your sentences were charged ($0.00054, the measured charge of one sentence, until
-your own are recorded), and each sentence's charge is added to the lesson's cost. When a natural
-voice cannot be used (offline, a slow provider, audio that fails the check), the system voice reads
-the sentence with "Natural voice unavailable, using the system voice."; with no publik balance
-left, the balance message shows once and the system voice reads every sentence, without asking
-publik API again, until there is a balance. With no speaker or headphones connected, **Play** says
-"Parley could not play the sound. Check that a speaker or headphones are connected."
+answer, and reaching that exercise (or pressing **Play** again) before the sentence has arrived
+waits for it rather than paying for it a second time. Settings > Audio shows "Natural voices cost
+about $0.00054 a sentence (measured).", the average of what your sentences were charged ($0.00054,
+the measured charge of one sentence, until your own are recorded), and each sentence's charge is
+added to the lesson's cost. When a natural voice cannot be used (offline, a slow provider, audio
+that fails the check), the system voice reads the sentence with "Natural voice unavailable, using
+the system voice."; with no publik balance left, the balance message shows once and the system
+voice reads every sentence, without asking publik API again, until there is a balance. With no
+speaker or headphones connected, **Play** says "Parley could not play the sound. Check that a
+speaker or headphones are connected."
 
 **Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
 Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json`,

@@ -8,7 +8,9 @@
 //! OS voice never reaches any provider (invariants I9 and I12). A natural sentence that is not
 //! cached is fetched as module 08's judge calls: begun with the service locked, the call made on
 //! a blocking thread with nothing locked, completed with the service locked again; the AI status
-//! is emitted after the call.
+//! is emitted after the call. A play of a sentence that is already being fetched (its prefetch,
+//! or a click a moment earlier) waits for that fetch with nothing locked and then begins again,
+//! so the sentence is asked for and charged once.
 
 use parley_core::api::{AudioStatus, Prefetched, TtsPlayed, Voice};
 use parley_core::app::{AiAccess, PrefetchBegin, TtsBegin};
@@ -46,14 +48,19 @@ pub async fn tts_play(
 ) -> Result<TtsPlayed, AppError> {
     tauri::async_runtime::spawn_blocking(move || {
         let state = app.state::<AppState>();
-        let ai = speech_access(&state);
-        match state.with(|p| p.tts_begin(&text, &lang, slow, session_id.as_deref(), ai))? {
-            TtsBegin::Done(played) => Ok(played),
-            TtsBegin::Pending(job) => {
-                let outcome = job.run();
-                let played = state.with(|p| p.tts_complete(job, outcome));
-                emit_status(&app, &state);
-                played
+        loop {
+            let ai = speech_access(&state);
+            match state.with(|p| p.tts_begin(&text, &lang, slow, session_id.as_deref(), ai))? {
+                TtsBegin::Done(played) => return Ok(played),
+                TtsBegin::Pending(job) => {
+                    let outcome = job.run();
+                    let played = state.with(|p| p.tts_complete(job, outcome));
+                    emit_status(&app, &state);
+                    return played;
+                }
+                // Begun again once the fetch has ended: the stored clip plays from the cache, or
+                // the play decides afresh, as if the fetch had ended just before it.
+                TtsBegin::Waiting(wait) => wait.wait(),
             }
         }
     })

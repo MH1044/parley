@@ -9,10 +9,15 @@
 //! the job's `run` makes the one call (never retried, I4) and checks the audio, and the completion
 //! stores, records and plays it. Audio that fails §6.7 is never stored (I2); every reply that was
 //! charged counts towards the measured cost and the lesson's cost, used or not.
+//!
+//! One request per sentence however the calls overlap: from the moment a begin returns a job until
+//! that job is completed or dropped, its sentence is being fetched. A prefetch of it then asks for
+//! nothing, and a play of it waits for the fetch (with no lock held) and begins again, so it plays
+//! the stored clip or decides afresh as if the fetch had ended just before it.
 
 use std::collections::HashMap;
 use std::path::Path;
-use std::sync::Arc;
+use std::sync::{Arc, Condvar, Mutex, PoisonError};
 
 use super::lesson::{AiAccess, open_cache, open_existing_cache};
 use super::{AI_CACHE_FILE, Parley, cannot_write, open_store, remove_file, unknown_value};
@@ -38,11 +43,12 @@ const MAX_TEXT_CHARS: usize = 500;
 /// memory only: a restart brings them back.
 pub(crate) type Skips = HashMap<&'static str, i64>;
 
-/// What a play's first step gives: the play done (cached, or the OS voice), or a call to make with
-/// no lock held.
+/// What a play's first step gives: the play done (cached, or the OS voice), a call to make with no
+/// lock held, or a fetch of the same sentence to wait for with no lock held before beginning again.
 pub enum TtsBegin {
     Done(TtsPlayed),
     Pending(SpeechJob),
+    Waiting(SpeechWait),
 }
 
 /// What a prefetch's first step gives: nothing to fetch, or a call to make with no lock held.
@@ -68,12 +74,70 @@ pub struct SpeechJob {
     stretch: f32,
     /// The lesson whose cost a charge is added to.
     session_id: Option<String>,
+    /// The fetch of `key`, ended when the job is dropped (after its completion, or without one).
+    flight: Arc<Flight>,
 }
 
 /// What a speech job's call gave: the reply or the error, and whether the reply passed §6.7.
 pub struct SpeechOutcome {
     reply: Result<AudioReply, AiError>,
     valid: bool,
+}
+
+/// A natural sentence being fetched: ended once the job fetching it has been completed or
+/// dropped. Plays of the same sentence wait for it instead of asking for the sentence again.
+#[derive(Default)]
+pub(crate) struct Flight {
+    ended: Mutex<bool>,
+    changed: Condvar,
+}
+
+impl Flight {
+    fn end(&self) {
+        *self.ended.lock().unwrap_or_else(PoisonError::into_inner) = true;
+        self.changed.notify_all();
+    }
+
+    fn has_ended(&self) -> bool {
+        *self.ended.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
+    fn wait(&self) {
+        let mut ended = self.ended.lock().unwrap_or_else(PoisonError::into_inner);
+        while !*ended {
+            ended = self
+                .changed
+                .wait(ended)
+                .unwrap_or_else(PoisonError::into_inner);
+        }
+    }
+}
+
+/// The natural sentences being fetched, by cache key. Kept in memory only; an entry whose fetch
+/// has ended counts as not being fetched and is forgotten at the next begin that looks.
+pub(crate) type Flights = HashMap<String, Arc<Flight>>;
+
+/// A play of a sentence that is being fetched: wait with no lock held, then call `tts_begin` again
+/// with the same arguments.
+pub struct SpeechWait {
+    flight: Arc<Flight>,
+}
+
+impl SpeechWait {
+    /// Blocks until the fetch has ended: its job completed (a valid clip is stored by then, and a
+    /// failure recorded) or dropped without completing.
+    pub fn wait(self) {
+        self.flight.wait();
+    }
+}
+
+impl Drop for SpeechJob {
+    /// A job ends its fetch however it goes, so a call whose thread failed never leaves a play
+    /// waiting. A completion drops the job only after storing the clip, so a play woken here
+    /// finds the file.
+    fn drop(&mut self) {
+        self.flight.end();
+    }
 }
 
 impl SpeechJob {
@@ -254,6 +318,12 @@ impl Parley {
                 self.play_bytes(&bytes, stretch)?;
                 return Ok(TtsBegin::Done(natural(true)));
             }
+            // Its prefetch, or a play a moment earlier, is fetching this very sentence: asking
+            // again would buy and charge it twice.
+            if let Some(flight) = self.fetching(&key) {
+                return Ok(TtsBegin::Waiting(SpeechWait { flight }));
+            }
+            let flight = self.begin_fetch(&key);
             return Ok(TtsBegin::Pending(SpeechJob {
                 request: Box::new(self.speech_attempt(
                     client.kind(),
@@ -272,9 +342,24 @@ impl Parley {
                 voice,
                 stretch,
                 session_id: session_id.map(str::to_string),
+                flight,
             }));
         }
         self.os_play(text, lang, slow).map(TtsBegin::Done)
+    }
+
+    /// The fetch of `key` in progress, if any; fetches that have ended are forgotten first.
+    fn fetching(&mut self, key: &str) -> Option<Arc<Flight>> {
+        self.flights.retain(|_, flight| !flight.has_ended());
+        self.flights.get(key).cloned()
+    }
+
+    /// Marks `key` as being fetched until the job given the returned flight is completed or
+    /// dropped.
+    fn begin_fetch(&mut self, key: &str) -> Arc<Flight> {
+        let flight = Arc::new(Flight::default());
+        self.flights.insert(key.to_string(), flight.clone());
+        flight
     }
 
     /// The P5 request of a sentence. Once replies for it have failed §6.7, the next request is
@@ -407,7 +492,10 @@ impl Parley {
         }
     }
 
-    /// `tts_play` in one go: begin, the call when there is one, complete (the CLI and tests).
+    /// `tts_play` in one go (the CLI and tests): begin, then the call and its completion when
+    /// there is one, or the wait for the fetch of the same sentence and a new begin. The service
+    /// is held throughout, so a wait here ends only when the job fetching the sentence is dropped
+    /// elsewhere; the window's command waits with no lock held instead.
     pub fn tts_play_with(
         &mut self,
         text: &str,
@@ -416,11 +504,14 @@ impl Parley {
         session_id: Option<&str>,
         ai: Option<AiAccess>,
     ) -> Result<TtsPlayed, AppError> {
-        match self.tts_begin(text, lang, slow, session_id, ai)? {
-            TtsBegin::Done(played) => Ok(played),
-            TtsBegin::Pending(job) => {
-                let outcome = job.run();
-                self.tts_complete(job, outcome)
+        loop {
+            match self.tts_begin(text, lang, slow, session_id, ai.clone())? {
+                TtsBegin::Done(played) => return Ok(played),
+                TtsBegin::Pending(job) => {
+                    let outcome = job.run();
+                    return self.tts_complete(job, outcome);
+                }
+                TtsBegin::Waiting(wait) => wait.wait(),
             }
         }
     }
@@ -441,8 +532,8 @@ impl Parley {
     /// The first step of `tts_prefetch`: the sentence of the exercise after `exercise_id` in the
     /// run's order (a `listen_type`'s text, or with autoplay on a `pick_meaning` or
     /// `translate_to_en` prompt), fetched at normal speed when the source is natural and the
-    /// sentence is not cached yet; nothing otherwise. A run that is not in progress is
-    /// "This lesson is no longer in progress."
+    /// sentence is neither cached nor being fetched; nothing otherwise. A run that is not in
+    /// progress is "This lesson is no longer in progress."
     pub fn prefetch_begin(
         &mut self,
         session_id: &str,
@@ -490,9 +581,10 @@ impl Parley {
         };
         let speed = 1.0;
         let key = speech_key(client.kind(), &model, text, &voice, speed);
-        if self.env.fs.read(Path::new(&audio_file(&key))).is_ok() {
+        if self.env.fs.read(Path::new(&audio_file(&key))).is_ok() || self.fetching(&key).is_some() {
             return Ok(nothing);
         }
+        let flight = self.begin_fetch(&key);
         Ok(PrefetchBegin::Pending(SpeechJob {
             request: Box::new(self.speech_attempt(
                 client.kind(),
@@ -511,6 +603,7 @@ impl Parley {
             voice,
             stretch: 1.0,
             session_id: Some(session_id.to_string()),
+            flight,
         }))
     }
 
@@ -1214,6 +1307,56 @@ mod tests {
                 .prefetched
         );
         assert_eq!(client.requests(), 2);
+    }
+
+    #[test]
+    fn a_fetch_ends_with_its_job_completed_or_dropped_and_is_then_forgotten() {
+        let mut r = rig();
+        natural_on(&mut r.app);
+        let client = Speech::new(vec![wav(2_000, None), wav(1_000, None)]);
+        let begin = |app: &mut Parley, text: &str| {
+            app.tts_begin(text, "es", false, None, access(&client))
+                .unwrap()
+        };
+        let TtsBegin::Pending(coffee) = begin(&mut r.app, COFFEE) else {
+            panic!("a call")
+        };
+        let TtsBegin::Pending(hola) = begin(&mut r.app, "Hola.") else {
+            panic!("a call")
+        };
+        let completed = r.app.flights[&coffee.key].clone();
+        let dropped = r.app.flights[&hola.key].clone();
+        assert!(!completed.has_ended() && !dropped.has_ended());
+        let TtsBegin::Waiting(_) = begin(&mut r.app, COFFEE) else {
+            panic!("the sentence is being fetched")
+        };
+
+        let outcome = coffee.run();
+        r.app.tts_complete(coffee, outcome).unwrap();
+        assert!(completed.has_ended(), "a completed job ends its fetch");
+        completed.wait();
+        drop(hola);
+        assert!(dropped.has_ended(), "so does a job dropped unfinished");
+        assert_eq!(r.app.flights.len(), 2, "kept until a begin looks");
+
+        // The next begin that looks forgets both and fetches the dropped sentence afresh.
+        let TtsBegin::Pending(again) = begin(&mut r.app, "Hola.") else {
+            panic!("a call")
+        };
+        assert_eq!(
+            r.app.flights.keys().collect::<Vec<_>>(),
+            [&again.key],
+            "only the new fetch is kept"
+        );
+        let TtsBegin::Done(played) = begin(&mut r.app, COFFEE) else {
+            panic!("the stored clip plays")
+        };
+        assert_eq!(played, natural(true));
+        assert_eq!(
+            client.requests(),
+            1,
+            "dropped and waiting begins asked for nothing"
+        );
     }
 
     /// A lesson's kinds, every answer right, so the next lesson moves on.

@@ -1,10 +1,11 @@
 //! Acceptance tests of module 09 in the core (docs/modules/09-listening-and-voices.md, Acceptance
-//! tests 1 to 10, 12 to 15 and 17 to 19; tests 11 and 20 are in crates/parley-audio and test 16 in
-//! app/src/test/m09): OS voices per language and their rates, the no-voice messages, the natural
+//! tests 1 to 10, 12 to 15, 17 to 19 and 21; tests 11 and 20 are in crates/parley-audio and test 16
+//! in app/src/test/m09): OS voices per language and their rates, the no-voice messages, the natural
 //! voice (P5) with its request, cache key, checks, fallbacks and charges, slow mode, the prefetch of
-//! the next sentence, Can't listen now and the composer's listen_type switch, clearing the audio
-//! cache, and the errors. Test 28 of docs/PUBLIK-INTEGRATION.md §11 is tests 4 to 6 here; contract
-//! test 34 is test 19.
+//! the next sentence, a sentence already being fetched waited for rather than asked for again,
+//! Can't listen now and the composer's listen_type switch, clearing the audio cache, and the
+//! errors. Test 28 of docs/PUBLIK-INTEGRATION.md §11 is tests 4 to 6 here; contract test 34 is
+//! test 19.
 //!
 //! References: the spec (its Interfaces, Messages and the figures worked out in its acceptance
 //! tests), docs/PUBLIK-INTEGRATION.md §6.1, §6.7 and §9, module 03's grading rules, module 06's
@@ -26,7 +27,9 @@ use std::collections::{BTreeMap, VecDeque};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicI64, AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, mpsc};
+use std::thread;
+use std::time::Duration;
 
 use parley_core::ai::{
     AiClient, AiError, AiStatus, AudioReply, Cache, ChatReply, ChatRequest, MEASURED_SPEECH_MICROS,
@@ -37,7 +40,9 @@ use parley_core::ai::{
     speech_request, speech_valid,
 };
 use parley_core::api::{AUDIO_ENDED_EVENT, COMMANDS, TtsPlayed};
-use parley_core::app::{AiAccess, Config, CourseFiles, Env, Parley};
+use parley_core::app::{
+    AiAccess, Config, CourseFiles, Env, Parley, PrefetchBegin, SpeechJob, SpeechWait, TtsBegin,
+};
 use parley_core::audio::{
     Audio, AudioDecoder, AudioError, OsVoice, OsVoices, Platform, Player, RateRange, WavDecoder,
     no_voice_message, os_rate, voices_for,
@@ -2125,4 +2130,505 @@ fn t04_natural_voices_without_consent_use_the_os_voice_quietly() {
     assert_eq!(played.ai_error, None);
     assert_spoken(&setup.voices, &[(COFFEE, ES_ES, 1.0)]);
     assert!(setup.player.played().is_empty());
+}
+
+// ---------------------------------------------------------------------------------------------
+// Acceptance test 21: a sentence already being fetched is waited for, never asked for again.
+// ---------------------------------------------------------------------------------------------
+
+/// How long a test waits for another thread before it fails instead of hanging.
+const PATIENCE: Duration = Duration::from_secs(30);
+
+/// A lesson in progress, the exercise shown, and the sentence of the exercise after it: the one a
+/// prefetch for the shown exercise fetches, and autoplay then plays.
+fn lesson_with_next_sentence(setup: &mut Setup) -> (String, String, String) {
+    let lesson = setup
+        .app
+        .lesson_start(SKILL, "learn")
+        .unwrap_or_else(|e| panic!("the lesson starts: {e}"));
+    let n = before_a_sentence(&lesson.exercises);
+    let next = sentence_of(&lesson.exercises[n + 1])
+        .expect("a sentence")
+        .to_string();
+    (lesson.session_id, lesson.exercises[n].id.clone(), next)
+}
+
+/// The prefetch for `shown`, which must be a call to make.
+fn prefetch_job(
+    setup: &mut Setup,
+    session: &str,
+    shown: &str,
+    client: &Arc<SpeechClient>,
+) -> SpeechJob {
+    match setup
+        .app
+        .prefetch_begin(session, shown, access(client))
+        .unwrap_or_else(|e| panic!("the prefetch begins: {e}"))
+    {
+        PrefetchBegin::Pending(job) => job,
+        PrefetchBegin::Done(done) => panic!("a call to make, not {done:?}"),
+    }
+}
+
+/// The first step of a Spanish play with the client.
+fn begin(
+    setup: &mut Setup,
+    text: &str,
+    slow: bool,
+    session: Option<&str>,
+    client: &Arc<SpeechClient>,
+) -> TtsBegin {
+    setup
+        .app
+        .tts_begin(text, "es", slow, session, access(client))
+        .unwrap_or_else(|e| panic!("{text} begins: {e}"))
+}
+
+fn variant(begun: &TtsBegin) -> &'static str {
+    match begun {
+        TtsBegin::Done(_) => "played at once",
+        TtsBegin::Pending(_) => "a call to make",
+        TtsBegin::Waiting(_) => "waiting",
+    }
+}
+
+#[track_caller]
+fn played_at_once(begun: TtsBegin) -> TtsPlayed {
+    match begun {
+        TtsBegin::Done(played) => played,
+        other => panic!("played at once, not {}", variant(&other)),
+    }
+}
+
+#[track_caller]
+fn a_call(begun: TtsBegin) -> SpeechJob {
+    match begun {
+        TtsBegin::Pending(job) => job,
+        other => panic!("a call to make, not {}", variant(&other)),
+    }
+}
+
+#[track_caller]
+fn waiting(begun: TtsBegin) -> SpeechWait {
+    match begun {
+        TtsBegin::Waiting(wait) => wait,
+        other => panic!("waiting, not {}", variant(&other)),
+    }
+}
+
+/// Test 21: a prefetch in flight, then the play of the same sentence (the learner reached the
+/// exercise first): the play waits instead of asking again, and once the prefetch has stored the
+/// clip it plays from the cache. One request, one charge, counted once in the lesson, one file.
+#[test]
+fn t21_a_play_while_its_sentence_is_prefetched_waits_and_plays_the_stored_clip() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, next) = lesson_with_next_sentence(&mut setup);
+    let client = SpeechClient::replying(&["valid.json", "valid-640.json"]);
+    let job = prefetch_job(&mut setup, &session, &shown, &client);
+
+    let wait = waiting(begin(&mut setup, &next, false, Some(&session), &client));
+    assert_eq!(client.requests(), 0, "waiting makes no request");
+    assert!(setup.player.played().is_empty());
+    assert!(setup.voices.spoken().is_empty(), "no OS voice either");
+
+    let outcome = job.run();
+    let prefetched = setup
+        .app
+        .prefetch_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the prefetch completes: {e}"));
+    assert!(prefetched.prefetched);
+    wait.wait();
+    let played = played_at_once(begin(&mut setup, &next, false, Some(&session), &client));
+    assert_played(&played, VoiceSource::Natural, true, None);
+    assert_eq!(played.ai_error, None);
+
+    assert_eq!(client.requests(), 1, "one request for the sentence");
+    assert_eq!(cache(&setup.dir).speech_charges(), [600], "one charge");
+    assert_eq!(
+        session_cost(&tables(&mut setup.app, &setup.dir), &session),
+        600,
+        "the lesson's cost counts it once"
+    );
+    assert_eq!(audio_files(&setup.dir), 1, "one stored clip");
+    assert_eq!(cache(&setup.dir).audio_len(), 1);
+    assert_eq!(setup.player.played(), [(wav(1_500), 1.0)]);
+}
+
+/// Test 21: a second prefetch of a sentence being fetched (the exercise shown twice) is
+/// `prefetched: false` with no request.
+#[test]
+fn t21_a_second_prefetch_of_a_sentence_being_fetched_makes_no_request() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, _) = lesson_with_next_sentence(&mut setup);
+    let client = SpeechClient::replying(&["valid.json", "valid-640.json"]);
+    let job = prefetch_job(&mut setup, &session, &shown, &client);
+
+    match setup
+        .app
+        .prefetch_begin(&session, &shown, access(&client))
+        .unwrap_or_else(|e| panic!("the second prefetch begins: {e}"))
+    {
+        PrefetchBegin::Done(done) => assert!(!done.prefetched),
+        PrefetchBegin::Pending(_) => panic!("the sentence is already being fetched"),
+    }
+    let again = setup
+        .app
+        .tts_prefetch_with(&session, &shown, access(&client))
+        .unwrap_or_else(|e| panic!("the third prefetch: {e}"));
+    assert!(!again.prefetched);
+    assert_eq!(client.requests(), 0);
+
+    let outcome = job.run();
+    let first = setup
+        .app
+        .prefetch_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the prefetch completes: {e}"));
+    assert!(first.prefetched);
+    assert_eq!(client.requests(), 1);
+    assert_eq!(cache(&setup.dir).speech_charges(), [600]);
+    assert_eq!(
+        session_cost(&tables(&mut setup.app, &setup.dir), &session),
+        600
+    );
+    assert_eq!(audio_files(&setup.dir), 1);
+}
+
+/// Test 21: a play while a play of the same sentence is in flight (a double click): the second
+/// waits, then plays the stored clip; one request, one charge.
+#[test]
+fn t21_a_second_play_of_a_sentence_being_fetched_waits_and_plays_the_stored_clip() {
+    let mut setup = Setup::new().natural();
+    let client = SpeechClient::replying(&["valid.json", "valid-640.json"]);
+    let job = a_call(begin(&mut setup, COFFEE, false, None, &client));
+    let wait = waiting(begin(&mut setup, COFFEE, false, None, &client));
+    assert_eq!(client.requests(), 0);
+
+    let outcome = job.run();
+    let first = setup
+        .app
+        .tts_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the first play completes: {e}"));
+    assert_played(&first, VoiceSource::Natural, false, None);
+    wait.wait();
+    let second = played_at_once(begin(&mut setup, COFFEE, false, None, &client));
+    assert_played(&second, VoiceSource::Natural, true, None);
+
+    assert_eq!(client.requests(), 1, "one request for two clicks");
+    assert_eq!(cache(&setup.dir).speech_charges(), [600]);
+    assert_eq!(audio_files(&setup.dir), 1);
+    assert_eq!(
+        setup.player.played(),
+        [(wav(1_500), 1.0), (wav(1_500), 1.0)]
+    );
+}
+
+/// Test 21: a fetch whose job is dropped without being completed (the call's thread failed) never
+/// leaves a play waiting: the waiter wakes, and beginning again makes its own request, attempt 1
+/// (a call never made is no failed attempt).
+#[test]
+fn t21_a_fetch_dropped_unfinished_wakes_the_waiting_play_which_then_asks_itself() {
+    let mut setup = Setup::new().natural();
+    let client = SpeechClient::replying(&["valid.json"]);
+    let job = a_call(begin(&mut setup, COFFEE, false, None, &client));
+    let wait = waiting(begin(&mut setup, COFFEE, false, None, &client));
+
+    let (woke, woken) = mpsc::channel();
+    let waiter = thread::spawn(move || {
+        wait.wait();
+        let _ = woke.send(());
+    });
+    assert!(
+        woken.try_recv().is_err(),
+        "nothing wakes the play before the job ends"
+    );
+    drop(job);
+    woken
+        .recv_timeout(PATIENCE)
+        .expect("the waiting play wakes when the job is dropped");
+    waiter.join().expect("the waiting thread ends");
+    assert_eq!(client.requests(), 0, "the dropped job made no call");
+
+    let own = a_call(begin(&mut setup, COFFEE, false, None, &client));
+    assert_eq!(
+        *own.request(),
+        speech_request(PUBLIK, MODEL, COFFEE, VOICE, 1.0)
+    );
+    let outcome = own.run();
+    let played = setup
+        .app
+        .tts_complete(own, outcome)
+        .unwrap_or_else(|e| panic!("the play completes: {e}"));
+    assert_played(&played, VoiceSource::Natural, false, None);
+    assert_eq!(client.requests(), 1);
+    assert_eq!(audio_files(&setup.dir), 1);
+}
+
+/// Test 21 with test 6 and §6.1: the prefetch's reply fails §6.7 while the play waits; after the
+/// wait the play makes its own request, with attempt 2's idempotency key, and plays the clip it
+/// gets. Both replies were charged and both reach the lesson; the measured cost keeps one row
+/// for the sentence.
+#[test]
+fn t21_after_an_unusable_prefetch_the_waiting_play_asks_again_as_attempt_2() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, next) = lesson_with_next_sentence(&mut setup);
+    let client = SpeechClient::replying(&["clip-50ms.json", "valid.json"]);
+    let job = prefetch_job(&mut setup, &session, &shown, &client);
+    let wait = waiting(begin(&mut setup, &next, false, Some(&session), &client));
+
+    let outcome = job.run();
+    let prefetched = setup
+        .app
+        .prefetch_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the prefetch completes: {e}"));
+    assert!(!prefetched.prefetched, "the 50 ms clip is unusable");
+    wait.wait();
+
+    let own = a_call(begin(&mut setup, &next, false, Some(&session), &client));
+    let key_json = speech_key_json(PUBLIK, MODEL, &next, VOICE, 1.0);
+    assert_eq!(
+        own.request().idempotency_key,
+        Some(idempotency_key(&key_json, 2))
+    );
+    let outcome = own.run();
+    let played = setup
+        .app
+        .tts_complete(own, outcome)
+        .unwrap_or_else(|e| panic!("the play completes: {e}"));
+    assert_played(&played, VoiceSource::Natural, false, None);
+
+    let keys: Vec<Option<String>> = client
+        .sent()
+        .iter()
+        .map(|request| request.idempotency_key.clone())
+        .collect();
+    assert_eq!(
+        keys,
+        [
+            Some(idempotency_key(&key_json, 1)),
+            Some(idempotency_key(&key_json, 2))
+        ]
+    );
+    assert_eq!(
+        session_cost(&tables(&mut setup.app, &setup.dir), &session),
+        520 + 600
+    );
+    assert_eq!(cache(&setup.dir).speech_charges(), [600]);
+    assert_eq!(audio_files(&setup.dir), 1);
+    assert!(setup.voices.spoken().is_empty());
+}
+
+/// Test 21 with test 7: the prefetch gets a 402 while the play waits; the 402 set needs_credit,
+/// so after the wait the play speaks with the OS voice, with no request, no notice and no banner
+/// (a prefetch's failure is not shown).
+#[test]
+fn t21_after_a_402_prefetch_the_waiting_play_uses_the_os_voice_with_no_request() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, next) = lesson_with_next_sentence(&mut setup);
+    let client = SpeechClient::replying(&["402.json", "valid.json"]);
+    let job = prefetch_job(&mut setup, &session, &shown, &client);
+    let wait = waiting(begin(&mut setup, &next, false, Some(&session), &client));
+
+    let outcome = job.run();
+    let prefetched = setup
+        .app
+        .prefetch_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the prefetch completes: {e}"));
+    assert!(!prefetched.prefetched);
+    assert!(client.status().needs_credit);
+    wait.wait();
+
+    let played = played_at_once(begin(&mut setup, &next, false, Some(&session), &client));
+    assert_played(&played, VoiceSource::Os, false, None);
+    assert_eq!(played.ai_error, None);
+    assert_eq!(client.requests(), 1, "only the prefetch asked");
+    assert_spoken(&setup.voices, &[(next.as_str(), ES_ES, 1.0)]);
+    assert!(setup.player.played().is_empty());
+    assert_eq!(audio_files(&setup.dir), 0);
+}
+
+/// Test 21: a slow play is another sentence to fetch (another speed, another cache key), so a
+/// fetch of the same text at normal speed does not hold it up: it makes its own request.
+#[test]
+fn t21_a_slow_play_of_a_sentence_being_fetched_at_normal_speed_does_not_wait() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, next) = lesson_with_next_sentence(&mut setup);
+    let client = SpeechClient::replying(&["valid.json", "valid-640.json"]);
+    let job = prefetch_job(&mut setup, &session, &shown, &client);
+
+    let slow = a_call(begin(&mut setup, &next, true, Some(&session), &client));
+    assert_eq!(
+        *slow.request(),
+        speech_request(PUBLIK, MODEL, &next, VOICE, 0.75)
+    );
+    let outcome = slow.run();
+    let played = setup
+        .app
+        .tts_complete(slow, outcome)
+        .unwrap_or_else(|e| panic!("the slow play completes: {e}"));
+    assert_played(&played, VoiceSource::Natural, false, None);
+
+    let outcome = job.run();
+    let prefetched = setup
+        .app
+        .prefetch_complete(job, outcome)
+        .unwrap_or_else(|e| panic!("the prefetch completes: {e}"));
+    assert!(prefetched.prefetched);
+    let speeds: Vec<f64> = client.sent().iter().map(|request| request.speed).collect();
+    assert_eq!(speeds, [0.75, 1.0]);
+    assert_eq!(audio_files(&setup.dir), 2, "one clip per speed");
+    assert_eq!(
+        session_cost(&tables(&mut setup.app, &setup.dir), &session),
+        600 + 640
+    );
+}
+
+/// A client that holds every speech call until the test lets it go, saying when one arrives.
+struct HeldClient {
+    inner: Arc<SpeechClient>,
+    arrived: Mutex<mpsc::Sender<()>>,
+    release: Mutex<mpsc::Receiver<()>>,
+    released: AtomicBool,
+}
+
+impl AiClient for HeldClient {
+    fn chat(&self, req: ChatRequest) -> Result<ChatReply, AiError> {
+        self.inner.chat(req)
+    }
+
+    fn chat_stream(
+        &self,
+        req: ChatRequest,
+        on_delta: &mut dyn FnMut(&str),
+    ) -> Result<ChatReply, AiError> {
+        self.inner.chat_stream(req, on_delta)
+    }
+
+    fn transcribe(&self, req: TranscribeRequest) -> Result<TranscriptReply, AiError> {
+        self.inner.transcribe(req)
+    }
+
+    fn speech(&self, req: SpeechRequest) -> Result<AudioReply, AiError> {
+        let _ = self.arrived.lock().unwrap().send(());
+        // A test that gave up drops its sender: the call then goes on at once.
+        let _ = self.release.lock().unwrap().recv();
+        self.released.store(true, Ordering::SeqCst);
+        self.inner.speech(req)
+    }
+
+    fn kind(&self) -> ProviderKind {
+        self.inner.kind()
+    }
+
+    fn status(&self) -> AiStatus {
+        self.inner.status()
+    }
+
+    fn chat_model(&self, tier: &str) -> String {
+        self.inner.chat_model(tier)
+    }
+}
+
+/// `tts_play` as the window's command runs it: begin with the service locked; a call made with
+/// nothing locked and completed with the service locked again; a wait made with nothing locked,
+/// then begin again. `on_wait` runs before each wait.
+fn play_as_the_window_does(
+    app: &Mutex<&mut Parley>,
+    text: &str,
+    session: &str,
+    ai: &(dyn Fn() -> Option<AiAccess> + Sync),
+    on_wait: &(dyn Fn() + Sync),
+) -> TtsPlayed {
+    loop {
+        let begun = app
+            .lock()
+            .unwrap()
+            .tts_begin(text, "es", false, Some(session), ai())
+            .unwrap_or_else(|e| panic!("{text} begins: {e}"));
+        match begun {
+            TtsBegin::Done(played) => return played,
+            TtsBegin::Pending(job) => {
+                let outcome = job.run();
+                return app
+                    .lock()
+                    .unwrap()
+                    .tts_complete(job, outcome)
+                    .unwrap_or_else(|e| panic!("{text} completes: {e}"));
+            }
+            TtsBegin::Waiting(wait) => {
+                on_wait();
+                wait.wait();
+            }
+        }
+    }
+}
+
+/// Test 21 on real threads: the prefetch's call is held on one thread while the play begins on
+/// another; the play returns only after the call is let go, with the clip the prefetch stored, and
+/// the provider got one request in all.
+#[test]
+fn t21_on_two_threads_the_play_returns_after_the_prefetch_with_its_stored_clip() {
+    let mut setup = Setup::new().natural();
+    let (session, shown, next) = lesson_with_next_sentence(&mut setup);
+    let inner = SpeechClient::replying(&["valid.json", "valid-640.json"]);
+    let (arrived_tx, arrived) = mpsc::channel();
+    let (release, release_rx) = mpsc::channel::<()>();
+    let held = Arc::new(HeldClient {
+        inner: inner.clone(),
+        arrived: Mutex::new(arrived_tx),
+        release: Mutex::new(release_rx),
+        released: AtomicBool::new(false),
+    });
+    let ai = || -> Option<AiAccess> {
+        let client: Arc<dyn AiClient> = held.clone();
+        Some(Ok(client))
+    };
+    let (waiting_tx, waiting_rx) = mpsc::channel();
+    let app = Mutex::new(&mut setup.app);
+
+    let (prefetched, played, after_release) = thread::scope(|s| {
+        // Moved in, so a failed expectation below drops it and lets a held call go.
+        let release = release;
+        let prefetch = s.spawn(|| {
+            let begun = app
+                .lock()
+                .unwrap()
+                .prefetch_begin(&session, &shown, ai())
+                .unwrap_or_else(|e| panic!("the prefetch begins: {e}"));
+            let PrefetchBegin::Pending(job) = begun else {
+                panic!("the prefetch makes a call");
+            };
+            let outcome = job.run();
+            app.lock()
+                .unwrap()
+                .prefetch_complete(job, outcome)
+                .unwrap_or_else(|e| panic!("the prefetch completes: {e}"))
+        });
+        arrived
+            .recv_timeout(PATIENCE)
+            .expect("the prefetch's request is in flight");
+        let play = s.spawn(|| {
+            let played = play_as_the_window_does(&app, &next, &session, &ai, &|| {
+                let _ = waiting_tx.send(());
+            });
+            (played, held.released.load(Ordering::SeqCst))
+        });
+        waiting_rx
+            .recv_timeout(PATIENCE)
+            .expect("the play waits for the prefetch");
+        release.send(()).expect("the held call is let go");
+        let prefetched = prefetch.join().expect("the prefetch thread ends");
+        let (played, after_release) = play.join().expect("the play thread ends");
+        (prefetched, played, after_release)
+    });
+
+    assert!(prefetched.prefetched);
+    assert!(
+        after_release,
+        "the play returned only after the call was let go"
+    );
+    assert_played(&played, VoiceSource::Natural, true, None);
+    assert_eq!(inner.requests(), 1, "one request in all");
+    assert_eq!(audio_files(&setup.dir), 1);
+    assert_eq!(cache(&setup.dir).speech_charges(), [600]);
+    assert_eq!(setup.player.played(), [(wav(1_500), 1.0)]);
 }
