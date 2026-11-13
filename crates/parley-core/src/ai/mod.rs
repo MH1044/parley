@@ -1,7 +1,8 @@
 //! AI in the core (docs/modules/06-publik-and-providers.md; docs/PUBLIK-INTEGRATION.md §6): the
 //! [`AiClient`] trait every feature calls, the [`call`] pipeline, the response [`Cache`], prompt
 //! files and their schemas, and amounts in dollars; the features themselves: fresh lessons and
-//! stories (module 07), the answer judge and Explain my answer (module 08).
+//! stories (module 07), the answer judge and Explain my answer (module 08), natural voices
+//! (module 09).
 //!
 //! The core makes no HTTP request of its own: the `parley-publik` crate implements [`AiClient`]
 //! for publik API, the learner's own key and a local model server, and the desktop app passes the
@@ -18,12 +19,15 @@ mod lesson;
 mod money;
 mod prompts;
 mod schema;
+mod speech;
 mod story;
 #[cfg(test)]
 pub(crate) mod test_client;
 mod validate;
 
-pub use cache::{Cache, CacheEntry, cache_key, cache_key_json, canonical_json, idempotency_key};
+pub use cache::{
+    AudioEntry, Cache, CacheEntry, cache_key, cache_key_json, canonical_json, idempotency_key,
+};
 pub use call::{Called, ConnectionCheck, RuleFailure, call, check_connection};
 pub use client::{
     AiClient, AiError, AiStatus, AudioReply, ChatMessage, ChatReply, ChatRequest, LocalModel,
@@ -47,6 +51,11 @@ pub use lesson::{
 pub use money::format_dollars;
 pub use prompts::{Prompt, PromptError, RenderError, ping};
 pub use schema::parse_reply;
+pub use speech::{
+    MEASURED_SPEECH_MICROS, NATURAL_UNAVAILABLE, SPEECH_FEATURE, SPEECH_TIMEOUT_S, VoiceSource,
+    VoicesConfig, audio_file, bundled_voices, choose_source, natural_voice, parse_voices_toml,
+    speech_bounds_ms, speech_cost_line, speech_key, speech_key_json, speech_request, speech_valid,
+};
 pub use story::{
     STORY_PROMPT_ID, Story, StoryCtx, StoryPrompt, StoryQuestion, check_story, generate_story,
     story_prompt_file, story_xp,
@@ -56,5 +65,6 @@ pub use validate::{allowed_from_list, coverage_with_stems};
 pub(crate) use explain::explain_charged;
 pub(crate) use judge::request_judgement_charged;
 pub(crate) use lesson::request_lesson_charged;
+pub(crate) use speech::per_language;
 pub(crate) use story::{has_story, story_schema_valid};
 pub(crate) use validate::{AiCheck, check_ai_exercise, stems_of};

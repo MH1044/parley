@@ -1,5 +1,6 @@
 //! App-level commands: `app_start`, `app_info`, `file_pick`, `data_delete_all` and
-//! `cache_clear`; `session_skip` and `update_check` follow in later modules.
+//! `cache_clear`; `session_skip` is with the audio commands, and `update_check` follows in a later
+//! module.
 
 use parley_core::api::{AppInfo, CacheCleared, Launch};
 use parley_core::error::{AppError, ErrorCode};

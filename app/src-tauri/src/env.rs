@@ -74,6 +74,22 @@ impl Fs for DirFs {
     fn remove(&self, path: &Path) -> Result<(), FsError> {
         std::fs::remove_file(self.full(path)).map_err(|e| fs_error(path, e))
     }
+
+    /// The names of the files (not folders) in `dir`, sorted; a missing folder is empty.
+    fn list(&self, dir: &Path) -> Result<Vec<String>, FsError> {
+        let entries = match std::fs::read_dir(self.full(dir)) {
+            Ok(entries) => entries,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+            Err(e) => return Err(fs_error(dir, e)),
+        };
+        let mut names: Vec<String> = entries
+            .filter_map(Result::ok)
+            .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_file()))
+            .map(|entry| entry.file_name().to_string_lossy().into_owned())
+            .collect();
+        names.sort();
+        Ok(names)
+    }
 }
 
 /// A generator seeded from the system time, for lessons and session ids.
@@ -109,6 +125,21 @@ mod tests {
             Err(FsError::NotFound(PathBuf::from("packs/es.sqlite3")))
         );
         assert!(matches!(fs.write(dir.path(), b"x"), Err(FsError::Io(_))));
+    }
+
+    #[test]
+    fn dir_fs_lists_the_files_of_a_folder() {
+        let dir = tempfile::tempdir().unwrap();
+        let fs = DirFs::new(dir.path().to_path_buf());
+        assert_eq!(fs.list(Path::new("cache/audio")), Ok(Vec::new()));
+        fs.write(Path::new("cache/audio/b.mp3"), b"b").unwrap();
+        fs.write(Path::new("cache/audio/a.mp3"), b"a").unwrap();
+        fs.write(Path::new("cache/audio/inner/c.mp3"), b"c")
+            .unwrap();
+        assert_eq!(
+            fs.list(Path::new("cache/audio")),
+            Ok(vec!["a.mp3".to_string(), "b.mp3".to_string()])
+        );
     }
 
     #[test]

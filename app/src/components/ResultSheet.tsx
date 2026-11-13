@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { AiStatus, AppError, Exercise, Grade, Verdict } from '../api/commands'
 import { t, type StringKey } from '../strings'
 import AiBanner from './AiBanner'
@@ -39,6 +40,8 @@ interface Props {
   onExplain?: () => void
   /** Reconnect succeeded: the new status. */
   onStatus?: (status: AiStatus) => void
+  /** Play and Slow for the correct answer, when it is in the course language (module 09). */
+  answerPlay?: ReactNode
 }
 
 /**
@@ -60,6 +63,7 @@ export default function ResultSheet({
   onCheckWithAi,
   onExplain,
   onStatus,
+  answerPlay,
 }: Props) {
   if (checking || !grade) {
     return (
@@ -100,6 +104,7 @@ export default function ResultSheet({
       {grade.expected && (
         <p className="also-correct">{t('result.also_correct', { expected: grade.expected })}</p>
       )}
+      {answerPlay}
       {author !== undefined && (
         <p className="attribution">
           {author

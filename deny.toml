@@ -35,6 +35,19 @@ allow = [
 confidence-threshold = 0.8
 unused-allowed-license = "allow"
 
+# speech-dispatcher and its -sys crate (pulled in by tts for Linux only, where Parley never builds
+# tts) write the deprecated SPDX id "LGPL-2.1"; the expression with the current id says the same
+# thing, and the crates are taken under MIT either way.
+[[licenses.clarify]]
+crate = "speech-dispatcher"
+expression = "LGPL-2.1-only OR MIT OR Apache-2.0"
+license-files = []
+
+[[licenses.clarify]]
+crate = "speech-dispatcher-sys"
+expression = "LGPL-2.1-only OR MIT OR Apache-2.0"
+license-files = []
+
 [sources]
 unknown-registry = "deny"
 unknown-git = "deny"

@@ -19,7 +19,7 @@ use parley_core::ai::{
     ProviderKind, SpeechRequest, TranscribeRequest, TranscriptReply,
 };
 use parley_core::env::{HttpRequest, HttpResponse, NetError};
-use serde_json::{Value, json};
+use serde_json::Value;
 
 use crate::errors::{body_json, net_error, provider_error, publik_error, redact_error};
 use crate::http::{self, header};
@@ -334,14 +334,8 @@ impl AiClient for ProviderClient {
     }
 
     fn speech(&self, req: SpeechRequest) -> Result<AudioReply, AiError> {
-        let body = serde_json::to_vec(&json!({
-            "model": req.model,
-            "input": req.input,
-            "voice": req.voice,
-            "response_format": req.response_format,
-            "speed": req.speed,
-        }))
-        .expect("a speech request serialises");
+        // Exactly the core's body of §6.7, so the bytes sent are the request the cache key names.
+        let body = serde_json::to_vec(&req.body()).expect("a speech request serialises");
         let response = self.json_post(
             "/audio/speech",
             body,
@@ -387,6 +381,7 @@ mod tests {
     use super::*;
     use crate::http::test_server::{Reply, closed_url, serve};
     use parley_core::ai::{ChatMessage, image_part};
+    use serde_json::json;
     use std::time::Instant;
 
     fn ping(model: &str, key: Option<&str>) -> ChatRequest {
@@ -657,6 +652,11 @@ mod tests {
         );
         let speech: Value = serde_json::from_slice(&seen[2].body).unwrap();
         assert_eq!(speech["model"], "tts-x");
+        assert_eq!(
+            speech,
+            json!({"model": "tts-x", "input": "Hola.", "voice": "v1", "response_format": "mp3", "speed": 0.75}),
+            "exactly the core's body of §6.7"
+        );
         assert_eq!(seen[2].path, "/v1/audio/speech");
     }
 }

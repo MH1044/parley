@@ -4,6 +4,7 @@
 
 pub mod ai;
 pub mod app;
+pub mod audio;
 pub mod backup;
 pub mod course;
 pub mod lesson;

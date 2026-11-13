@@ -1,6 +1,7 @@
 //! The AI response cache, `cache/ai.sqlite3` (docs/ARCHITECTURE.md §4;
-//! docs/PUBLIK-INTEGRATION.md §6.1): the `ai_cache`, `audio_cache` and `ai_attempts` tables, the
-//! canonical JSON of a cache key, and the idempotency key derived from it.
+//! docs/PUBLIK-INTEGRATION.md §6.1): the `ai_cache`, `audio_cache`, `speech_charges` and
+//! `ai_attempts` tables, the canonical JSON of a cache key, and the idempotency key derived from
+//! it.
 //!
 //! Identical input never spends twice (invariant I5): a valid answer is stored under the SHA-256 of
 //! the canonical JSON of {feature, v, provider, model, input}, and caches are per provider because
@@ -31,6 +32,8 @@ CREATE TABLE IF NOT EXISTS ai_cache (key TEXT PRIMARY KEY, provider TEXT, model 
 CREATE TABLE IF NOT EXISTS audio_cache (key TEXT PRIMARY KEY, provider TEXT, voice TEXT, speed REAL,
   file TEXT, bytes INTEGER, created_at INTEGER);
 CREATE TABLE IF NOT EXISTS ai_attempts (key TEXT PRIMARY KEY, attempts INTEGER);
+CREATE TABLE IF NOT EXISTS speech_charges (key TEXT PRIMARY KEY, charge_micros INTEGER NOT NULL,
+  created_at INTEGER NOT NULL);
 ";
 
 enum Backing {
@@ -66,6 +69,20 @@ pub struct CacheEntry<'a> {
     /// The answer's JSON.
     pub response: &'a str,
     pub charge_micros: Option<i64>,
+}
+
+/// One cached sentence of natural voice (module 09): its file under `cache/audio/` is the cache
+/// itself; this row is its record for clearing.
+#[derive(Debug, Clone, PartialEq)]
+pub struct AudioEntry<'a> {
+    pub key: &'a str,
+    pub provider: ProviderKind,
+    pub voice: &'a str,
+    pub speed: f64,
+    /// `cache/audio/<key>.mp3`, relative to the data directory.
+    pub file: &'a str,
+    /// The file's size.
+    pub bytes: u64,
 }
 
 /// Opens the file, creating its folder (SQLite creates the file, not its folder) and the tables.
@@ -115,6 +132,15 @@ impl Cache {
                 Ok(f(&conn)?)
             }
         }
+    }
+
+    /// The cache in the file at `path` when that file exists; none otherwise, so reading the
+    /// cache never creates it.
+    pub(crate) fn open_existing(path: &Path, clock: Box<dyn Clock + Send + Sync>) -> Option<Cache> {
+        if !path.is_file() {
+            return None;
+        }
+        Cache::open(path, clock).ok()
     }
 
     /// The stored answer JSON for a key.
@@ -195,6 +221,65 @@ impl Cache {
             )
             .map(|_| ())
         })
+    }
+
+    /// Records a cached sentence (replacing any earlier row under the key).
+    pub fn put_audio(&self, entry: &AudioEntry<'_>) -> Result<(), StoreError> {
+        let now = self.clock.now_ms();
+        let bytes = i64::try_from(entry.bytes).unwrap_or(i64::MAX);
+        self.with(|conn| {
+            conn.execute(
+                "INSERT OR REPLACE INTO audio_cache (key, provider, voice, speed, file, bytes,
+                   created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+                params![
+                    entry.key,
+                    entry.provider.as_str(),
+                    entry.voice,
+                    entry.speed,
+                    entry.file,
+                    bytes,
+                    now
+                ],
+            )
+            .map(|_| ())
+        })
+    }
+
+    /// Rows in `audio_cache`.
+    pub fn audio_len(&self) -> usize {
+        self.with(|conn| conn.query_row("SELECT COUNT(*) FROM audio_cache", [], |row| row.get(0)))
+            .map_or(0, |n: i64| usize::try_from(n).unwrap_or(0))
+    }
+
+    /// Removes every `audio_cache` row; returns how many there were. The files themselves are the
+    /// caller's to remove.
+    pub fn clear_audio(&self) -> Result<usize, StoreError> {
+        self.with(|conn| conn.execute("DELETE FROM audio_cache", []))
+    }
+
+    /// Records what one sentence was charged (`x-publik-charge-micros`), whether its audio could
+    /// be used or not; a sentence charged again keeps its latest charge.
+    pub fn add_speech_charge(&self, key: &str, micros: i64) -> Result<(), StoreError> {
+        let now = self.clock.now_ms();
+        self.with(|conn| {
+            conn.execute(
+                "INSERT OR REPLACE INTO speech_charges (key, charge_micros, created_at)
+                 VALUES (?1, ?2, ?3)",
+                params![key, micros, now],
+            )
+            .map(|_| ())
+        })
+    }
+
+    /// Every recorded sentence charge, oldest first: the measured cost line's figures.
+    pub fn speech_charges(&self) -> Vec<i64> {
+        self.with(|conn| {
+            let mut stmt =
+                conn.prepare("SELECT charge_micros FROM speech_charges ORDER BY created_at, key")?;
+            let rows = stmt.query_map([], |row| row.get::<_, i64>(0))?;
+            rows.collect::<rusqlite::Result<Vec<i64>>>()
+        })
+        .unwrap_or_default()
     }
 }
 
@@ -385,6 +470,43 @@ mod tests {
         assert_eq!(again.get("k"), None);
         assert_eq!(again.len(), 0);
         assert!(path.exists(), "the next operation starts a fresh file");
+    }
+
+    #[test]
+    fn audio_rows_and_speech_charges_are_kept_and_cleared() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("cache").join("ai.sqlite3");
+        assert!(Cache::open_existing(&path, Box::new(Fixed)).is_none());
+        assert!(!path.exists(), "looking does not create the file");
+        let cache = Cache::open(&path, Box::new(Fixed)).unwrap();
+        assert_eq!((cache.audio_len(), cache.speech_charges()), (0, vec![]));
+        for (key, voice) in [("a", "alloy"), ("b", "nova"), ("a", "alloy")] {
+            cache
+                .put_audio(&AudioEntry {
+                    key,
+                    provider: ProviderKind::Publik,
+                    voice,
+                    speed: 0.75,
+                    file: &format!("cache/audio/{key}.mp3"),
+                    bytes: 32_000,
+                })
+                .unwrap();
+        }
+        assert_eq!(cache.audio_len(), 2, "a key is one row");
+        cache.add_speech_charge("a", 600).unwrap();
+        cache.add_speech_charge("b", 640).unwrap();
+        cache.add_speech_charge("b", 650).unwrap();
+        let again = Cache::open_existing(&path, Box::new(Fixed)).unwrap();
+        assert_eq!(again.speech_charges(), vec![600, 650]);
+        assert_eq!(again.clear_audio().unwrap(), 2);
+        assert_eq!(again.audio_len(), 0);
+        assert_eq!(again.clear_audio().unwrap(), 0);
+        assert_eq!(
+            again.speech_charges(),
+            vec![600, 650],
+            "charges outlive the rows"
+        );
+        assert_eq!(again.len(), 0, "the answer cache is untouched");
     }
 
     #[test]

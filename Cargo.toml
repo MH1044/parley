@@ -19,6 +19,7 @@ rust-version = "1.90"
 [workspace.dependencies]
 parley-core = { path = "crates/parley-core" }
 parley-publik = { path = "crates/parley-publik" }
+parley-audio = { path = "crates/parley-audio" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # YAML for the syllabus and numbers files; reads `no`, `on` and `yes` as the strings they are
@@ -65,6 +66,12 @@ windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_
 # The local UTC offset of the desktop clock; the clock feature only.
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 toml = "1"
+# Playback of MP3 and WAV through the default output device (cpal), and the decoder that measures
+# a natural-voice clip; only the playback, MP3 and WAV features, no recording.
+rodio = { version = "0.23", default-features = false, features = ["playback", "mp3", "wav"] }
+# OS voices on Windows (WinRT), macOS and Android; one maintainer, so ADR-0014 names the exit. Not
+# built on Linux, which speaks through Speech Dispatcher's spd-say command instead.
+tts = { version = "0.26", default-features = false }
 unicode-normalization = "0.1"
 unicode-segmentation = "1"
 # test-only

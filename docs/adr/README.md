@@ -18,6 +18,7 @@ reverse, each with what was rejected and why. `docs/ARCHITECTURE.md` §9 summari
 | [0011](0011-no-server.md) | No server: streaks, XP and records are local; no leagues | Accepted |
 | [0012](0012-module-order.md) | Module order: the offline app before publik API | Accepted |
 | [0013](0013-own-key-keychain.md) | The learner's own key in the OS keychain through keyring | Accepted |
+| [0014](0014-os-voices.md) | OS voices through tts, and Speech Dispatcher's spd-say on Linux | Accepted |
 
 ## Rules
 

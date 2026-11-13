@@ -72,7 +72,7 @@ fn judge(
 }
 
 /// Emits the AI status after a call, so a 402 or a reconnect shows on every view at once.
-fn emit_status(app: &AppHandle, state: &AppState) {
+pub(crate) fn emit_status(app: &AppHandle, state: &AppState) {
     let ai = state.with(|p| p.settings_get().ai);
     let status = state.with_ai(|service| service.status(&ai, false));
     // A window that cannot hear the event still gets the command's result.

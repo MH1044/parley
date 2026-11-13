@@ -11,7 +11,9 @@ API, your own OpenAI-compatible key or a local model server; with it, lessons ar
 for you and each unit ends with a short graded story, every AI exercise is checked before you
 see it, a free translation the offline grader cannot match is checked by an AI judge (and
 remembered, so the same answer is accepted offline next time), and **Explain** says why an answer
-was almost right or wrong. Natural voices and listening come next. The course covers A1 and A2 in
+was almost right or wrong. Every sentence in the course language can be heard, at normal speed or
+slowly, through your computer's own voice or, if you choose, a natural voice; lessons include
+listen-and-type exercises. Speaking checks come next. The course covers A1 and A2 in
 Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
@@ -244,6 +246,27 @@ freezes and weekly records a list of sessions gives: every 7 days in a row earn 
 2 banked) that covers a missed day; freezes are never bought. There are no hearts, no energy and
 no limit on lessons. `docs/HANDBOOK.md` shows each command with its output.
 
+## Listening
+
+Every sentence in the course language has **Play** and **Slow** beside it: the prompt of a
+pick-the-meaning or translate-into-English exercise, and the correct answer on the result sheet
+when it is in the course language. With **Play prompts aloud** on (the default), each plays once
+by itself. A lesson includes up to two **Type what you hear** exercises while a voice is available;
+**Can't listen now** skips them for an hour, with no grade.
+
+The voice is your computer's own by default, free and offline: Windows' speech voices (Settings >
+Time & language > Speech adds one), the macOS system voices, or Speech Dispatcher on Linux. When
+none is installed for the language, Parley says how to add one. Settings > Audio chooses **System
+voice** or **Natural voice**, the voice of each language, the **Slow speed** (0.5 to 1.0, 0.75 by
+default), **Play prompts aloud**, and **Clear audio cache**. A natural voice comes from your AI
+provider (publik API, or your own key with a speech model); each sentence is fetched once, checked
+(it must be audio of a plausible length) and kept in the audio cache, so it is never paid for twice
+and replays offline, and the next exercise's sentence is fetched while you answer. Settings > Audio
+shows what a sentence costs ("Natural voices cost about $0.00054 a sentence (measured)."), from
+the charges your own sentences have had. When a natural voice cannot be used, the system voice
+reads the sentence instead ("Natural voice unavailable, using the system voice."); at $0.00 the
+system voice is used without asking again.
+
 ## AI providers
 
 Parley works without AI, and never asks about it at launch or during onboarding. When you choose
@@ -294,7 +317,7 @@ opening a window.
 | `crates/parley-audio` | Microphone, playback, OS voices, local transcription, media decoding |
 | `crates/parley-cli` | The `parley` command-line tool and the `parley-fixtures` generator |
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
-| `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; licence and attribution |
+| `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; `voices.toml`, the natural voice of each language; licence and attribution |
 | `schemas/` | JSON Schemas for the content formats, lessons, settings and backups; `schemas/ai/` one per AI answer |
 | `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md` the connection check, `lesson.v1.md` fresh lessons, `story.v1.md` graded stories, `judge.v1.md` answer checks, `explain.v1.md` explanations), compiled into the app |
 | `scripts/` | `verify`, the licence gates, the release-notes check, `publik-proof` (the maintainer's one real publik API call); `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |

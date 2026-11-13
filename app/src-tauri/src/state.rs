@@ -1,14 +1,19 @@
 //! The app's state: one `Parley` behind a mutex, built from the data directory, the bundled
-//! course and the real environment, and one `AiService` behind another.
+//! course and the real environment, and one `AiService` behind another. The window's setup hook
+//! gives the service the computer's speakers and voices ([`desktop_audio`]); a state built without
+//! a window (the command tests) keeps the core's silent default.
 //!
 //! Lock order: an AI command takes the AI lock, then the `Parley` lock briefly inside it (to read
 //! and save the AI settings); nothing takes them the other way round, so the two cannot deadlock.
 
 use std::path::PathBuf;
-use std::sync::{Mutex, PoisonError};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::time::Duration;
 
+use parley_audio::{MediaDecoder, RodioPlayer, SystemVoices};
+use parley_core::ai::bundled_voices;
 use parley_core::app::{Config, Env, Parley};
+use parley_core::audio::Audio;
 use parley_publik::PublikEnv;
 use parley_publik::http::HttpNet;
 use parley_publik::keychain::OsKeychain;
@@ -19,6 +24,18 @@ use crate::env::{DirFs, SystemClock, time_seeded_rng};
 
 /// Own-key and local calls retry after these waits (docs/PUBLIK-INTEGRATION.md §3).
 pub const AI_BACKOFF: [Duration; 2] = [Duration::from_secs(1), Duration::from_secs(4)];
+
+/// The computer's audio: its OS voices, its speakers (opened at the first play), the decoder that
+/// measures natural-voice clips, and the bundled `content/voices.toml`. `on_end` runs when a clip
+/// or an utterance ends by itself.
+pub fn desktop_audio(on_end: Arc<dyn Fn() + Send + Sync>) -> Audio {
+    Audio {
+        os: Arc::new(SystemVoices::new(on_end.clone())),
+        player: Arc::new(RodioPlayer::new(on_end)),
+        decoder: Arc::new(MediaDecoder),
+        natural: bundled_voices(),
+    }
+}
 
 pub struct AppState {
     parley: Mutex<Parley>,

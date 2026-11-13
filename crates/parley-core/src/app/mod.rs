@@ -1,6 +1,7 @@
 //! The service every Tauri command calls (docs/modules/04-app-shell-and-offline-course.md): one
 //! [`Parley`] per app, behind a mutex, holding the bundled course, the learner's store and
-//! settings, and the lessons and placement tests in progress.
+//! settings, the lessons and placement tests in progress, and from module 09 the audio it plays
+//! through.
 //!
 //! The Tauri commands only marshal: each one calls one method here and passes its result or
 //! [`AppError`] back. Everything the service needs from the outside world arrives in [`Env`]
@@ -14,6 +15,7 @@ use std::sync::Arc;
 use serde_json::json;
 
 use crate::api::{self, AppInfo, CacheCleared, ExportSummary, ImportReport, Launch};
+use crate::audio::Audio;
 use crate::backup::{Backup, BackupError, parse_backup};
 use crate::content::{Forms, Item, Lang, Syllabus, derive_items, load_numbers, parse_syllabus};
 use crate::env::{Clock, Fs, FsError, Net, Rng};
@@ -25,6 +27,7 @@ use crate::settings::{
 use crate::srs::Placement;
 use crate::store::{Store, StoreError};
 
+mod audio;
 mod course;
 mod judge;
 mod lesson;
@@ -33,6 +36,7 @@ mod placement;
 mod stats;
 mod story;
 
+pub use audio::{PrefetchBegin, SpeechJob, SpeechOutcome, TtsBegin};
 pub use judge::{ExplainJob, ExplainOutcome, Explained, JudgeBegin, JudgeJob, JudgeOutcome};
 pub use lesson::{AiAccess, JobOutcome, LessonBegin, LessonJob};
 pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
@@ -135,6 +139,10 @@ pub struct Parley {
     pub(crate) pending: HashMap<String, u64>,
     pub(crate) next_job: u64,
     pub(crate) placements: HashMap<String, ActivePlacement>,
+    /// The speakers, OS voices and decoder (module 09).
+    pub(crate) audio: Audio,
+    /// **Can't listen now** and **Can't speak now**: until when each is on.
+    pub(crate) skips: audio::Skips,
 }
 
 // Messages (docs/modules/04-app-shell-and-offline-course.md, Interfaces).
@@ -236,6 +244,8 @@ impl Parley {
             pending: HashMap::new(),
             next_job: 0,
             placements: HashMap::new(),
+            audio: Audio::default(),
+            skips: audio::Skips::new(),
         }
     }
 
@@ -278,8 +288,9 @@ impl Parley {
         api::app_info(&self.config.data_dir)
     }
 
-    /// Deletes the store, the settings file, the pack files and the AI cache, then opens a fresh
-    /// store. `confirm_text` must be `delete` after trimming.
+    /// Deletes the store, the settings file, the pack files and the AI caches (answers and
+    /// natural-voice audio), then opens a fresh store. `confirm_text` must be `delete` after
+    /// trimming.
     pub fn data_delete_all(&mut self, confirm_text: &str) -> Result<(), AppError> {
         if confirm_text.trim() != "delete" {
             return Err(AppError::new(
@@ -327,6 +338,11 @@ impl Parley {
             paths.push(path.clone());
             paths.push(format!("{path}.part"));
         }
+        if let Ok(names) = fs.list(Path::new(audio::AUDIO_DIR)) {
+            for name in names {
+                paths.push(format!("{}/{name}", audio::AUDIO_DIR));
+            }
+        }
         let mut first_failure: Option<AppError> = None;
         for path in &paths {
             if let Err(e) = remove_file(fs, path) {
@@ -342,18 +358,22 @@ impl Parley {
         Ok(())
     }
 
-    /// Removes a cache: `ai` and `all` remove `cache/ai.sqlite3` (module 09 adds `audio`).
+    /// Removes a cache and says how many files went: `ai` removes `cache/ai.sqlite3`; `audio`
+    /// removes every file in `cache/audio/` and the `audio_cache` rows (module 09); `all` does
+    /// both. Progress (`parley.sqlite3`) is never touched.
     pub fn cache_clear(&mut self, kind: &str) -> Result<CacheCleared, AppError> {
-        let files = match kind {
-            "ai" | "all" => vec![AI_CACHE_FILE],
-            "audio" => Vec::new(),
+        let (audio, ai) = match kind {
+            "ai" => (false, true),
+            "audio" => (true, false),
+            "all" => (true, true),
             other => return Err(unknown_value(other, "kind")),
         };
         let mut files_removed = 0;
-        for file in files {
-            if remove_file(&*self.env.fs, file)? {
-                files_removed += 1;
-            }
+        if audio {
+            files_removed += self.clear_audio_files()?;
+        }
+        if ai && remove_file(&*self.env.fs, AI_CACHE_FILE)? {
+            files_removed += 1;
         }
         Ok(CacheCleared { files_removed })
     }
@@ -555,6 +575,20 @@ pub(crate) mod test_support {
         }
         fn remove(&self, path: &Path) -> Result<(), FsError> {
             std::fs::remove_file(self.full(path)).map_err(|e| fs_error(path, e))
+        }
+        fn list(&self, dir: &Path) -> Result<Vec<String>, FsError> {
+            let entries = match std::fs::read_dir(self.full(dir)) {
+                Ok(entries) => entries,
+                Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+                Err(e) => return Err(fs_error(dir, e)),
+            };
+            let mut names: Vec<String> = entries
+                .filter_map(Result::ok)
+                .filter(|entry| entry.path().is_file())
+                .map(|entry| entry.file_name().to_string_lossy().into_owned())
+                .collect();
+            names.sort();
+            Ok(names)
         }
     }
 

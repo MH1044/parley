@@ -10,9 +10,13 @@ pub mod commands;
 pub mod env;
 pub mod state;
 
-use tauri::Manager;
+use std::sync::Arc;
 
-/// Opens the window: the app state over the app data directory, the dialog plugin for
+use parley_core::api::AUDIO_ENDED_EVENT;
+use tauri::{Emitter, Manager};
+
+/// Opens the window: the app state over the app data directory with the computer's speakers and
+/// voices (whose end of a clip or utterance is the `audio://ended` event), the dialog plugin for
 /// `file_pick`, and every command of `parley_core::api::COMMANDS`.
 pub fn run() {
     tauri::Builder::default()
@@ -21,7 +25,14 @@ pub fn run() {
             let data_dir = app.path().app_data_dir()?;
             // A directory that cannot be created shows the data-file screen at app_start.
             let _ = std::fs::create_dir_all(&data_dir);
-            app.manage(state::AppState::new(data_dir));
+            let state = state::AppState::new(data_dir);
+            let handle = app.handle().clone();
+            let ended: Arc<dyn Fn() + Send + Sync> = Arc::new(move || {
+                // A window that cannot hear the event only keeps its Stop button longer.
+                let _ = handle.emit(AUDIO_ENDED_EVENT, ());
+            });
+            state.with(|p| p.set_audio(state::desktop_audio(ended)));
+            app.manage(state);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -65,6 +76,12 @@ pub fn run() {
             commands::lesson::ai_lesson_checks,
             commands::lesson::exercise_check,
             commands::lesson::explain_answer,
+            commands::audio::voices_list,
+            commands::audio::tts_play,
+            commands::audio::tts_stop,
+            commands::audio::tts_prefetch,
+            commands::audio::audio_status,
+            commands::audio::session_skip,
         ])
         .run(tauri::generate_context!())
         .expect("Parley could not open its window");

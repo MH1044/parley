@@ -9,7 +9,7 @@ use std::path::Path;
 
 use serde::{Deserialize, Serialize};
 
-use crate::ai::Story;
+use crate::ai::{Story, VoiceSource};
 use crate::content::{Cefr, Lang};
 use crate::env::{LocalDate, local_date_at};
 use crate::error::AppError;
@@ -61,10 +61,20 @@ pub const COMMANDS: &[&str] = &[
     // Module 08: judging and explanations.
     "exercise_check",
     "explain_answer",
+    // Module 09: listening and voices.
+    "voices_list",
+    "tts_play",
+    "tts_stop",
+    "tts_prefetch",
+    "audio_status",
+    "session_skip",
 ];
 
 /// The event every AI command that changes the status emits it on, with the [`crate::ai::AiStatus`].
 pub const AI_STATUS_EVENT: &str = "ai://status";
+
+/// The event `tts_play` emits when the clip or the OS voice it started ends (module 09).
+pub const AUDIO_ENDED_EVENT: &str = "audio://ended";
 
 /// The version shared by every crate and the app (the workspace version in Cargo.toml).
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -386,6 +396,40 @@ pub struct ImportReport {
     pub skipped_cards: usize,
 }
 
+/// One voice of `voices_list`: an installed OS voice (`source` "os") or the natural voice the
+/// settings name (`source` "natural").
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Voice {
+    pub id: String,
+    pub name: String,
+    pub source: String,
+    pub installed: bool,
+}
+
+/// Result of `tts_play`: what spoke, whether it came from the audio cache, the notice of a
+/// fallback to the OS voice, and the AI error to show as a banner (a 402).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TtsPlayed {
+    pub source: VoiceSource,
+    pub cached: bool,
+    pub notice: Option<String>,
+    pub ai_error: Option<AppError>,
+}
+
+/// Result of `tts_prefetch`: whether a sentence was fetched and cached.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Prefetched {
+    pub prefetched: bool,
+}
+
+/// Result of `audio_status`: the measured cost line, and until when listening exercises are off
+/// (ms since the epoch), while they are.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AudioStatus {
+    pub cost_line: String,
+    pub listen_off_until: Option<i64>,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -454,13 +498,35 @@ mod tests {
             serde_json::to_string(&status).unwrap(),
             r#"{"lang":"es","state":"not_published","version":null,"bytes":null,"size":null}"#
         );
-        assert_eq!(COMMANDS.len(), 40);
+        assert_eq!(COMMANDS.len(), 46);
         assert_eq!(COMMANDS[0], "app_start");
         assert_eq!(COMMANDS[22], "backup_import");
         assert_eq!(COMMANDS[23], "ai_status");
         assert_eq!(COMMANDS[33], "ai_open_link");
         assert_eq!(COMMANDS[34], "lesson_use_course_pack");
         assert_eq!(COMMANDS[37], "ai_lesson_checks");
-        assert_eq!(&COMMANDS[38..], ["exercise_check", "explain_answer"]);
+        assert_eq!(&COMMANDS[38..40], ["exercise_check", "explain_answer"]);
+        assert_eq!(
+            &COMMANDS[40..],
+            [
+                "voices_list",
+                "tts_play",
+                "tts_stop",
+                "tts_prefetch",
+                "audio_status",
+                "session_skip"
+            ]
+        );
+        let played = TtsPlayed {
+            source: VoiceSource::Os,
+            cached: false,
+            notice: None,
+            ai_error: None,
+        };
+        assert_eq!(
+            serde_json::to_string(&played).unwrap(),
+            r#"{"source":"os","cached":false,"notice":null,"ai_error":null}"#
+        );
+        assert_eq!(AUDIO_ENDED_EVENT, "audio://ended");
     }
 }

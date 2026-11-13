@@ -52,6 +52,13 @@ export const COMMANDS = [
   // Module 08: judging and explanations.
   'exercise_check',
   'explain_answer',
+  // Module 09: listening and voices.
+  'voices_list',
+  'tts_play',
+  'tts_stop',
+  'tts_prefetch',
+  'audio_status',
+  'session_skip',
 ] as const
 
 export type Command = (typeof COMMANDS)[number]
@@ -61,6 +68,9 @@ export const PACK_PROGRESS_EVENT = 'pack://progress'
 
 /** The event every AI command that changes the status emits it on. */
 export const AI_STATUS_EVENT = 'ai://status'
+
+/** The event `tts_play` emits when the clip or the OS voice it started ends. */
+export const AUDIO_ENDED_EVENT = 'audio://ended'
 
 // Errors -----------------------------------------------------------------------------------------
 
@@ -474,6 +484,40 @@ export interface OwnKeyInput {
 /** The links of publik API the core holds; the interface names one, never a URL. */
 export type AiLink = 'claim' | 'top_up' | 'add_credit'
 
+/** One voice of `voices_list`: an installed OS voice, or the natural voice the settings name. */
+export interface Voice {
+  id: string
+  name: string
+  source: 'os' | 'natural'
+  installed: boolean
+}
+
+export type VoiceSource = 'os' | 'natural'
+
+/** The result of `tts_play`. */
+export interface TtsPlayed {
+  source: VoiceSource
+  /** The natural sentence came from the audio cache. */
+  cached: boolean
+  /** "Natural voice unavailable, using the system voice." after a fallback. */
+  notice: string | null
+  /** The AI error to show as a banner (a 402). */
+  ai_error: AppError | null
+}
+
+/** The result of `tts_prefetch`. */
+export interface Prefetched {
+  prefetched: boolean
+}
+
+/** The result of `audio_status`. */
+export interface AudioStatus {
+  /** "Natural voices cost about $0.00054 a sentence (measured)." */
+  cost_line: string
+  /** Until when listening exercises are off (ms since the epoch), while they are. */
+  listen_off_until: number | null
+}
+
 // Commands, in COMMANDS order --------------------------------------------------------------------
 
 /**
@@ -682,6 +726,42 @@ export function aiOpenLink(kind: AiLink): Promise<null> {
   return call<null>('ai_open_link', { kind })
 }
 
+/** The installed OS voices of a language, then the natural voice when natural voices are on. */
+export function voicesList(lang: string): Promise<Voice[]> {
+  return call<Voice[]>('voices_list', { lang })
+}
+
+/**
+ * Reads a sentence aloud; resolves once it has started. `audio://ended` follows when it ends.
+ * `sessionId` is null outside a lesson.
+ */
+export function ttsPlay(
+  text: string,
+  lang: string,
+  slow: boolean,
+  sessionId: string | null,
+): Promise<TtsPlayed> {
+  return call<TtsPlayed>('tts_play', { text, lang, slow, session_id: sessionId })
+}
+
+export function ttsStop(): Promise<null> {
+  return call<null>('tts_stop', {})
+}
+
+/** Fetches the next exercise's sentence into the audio cache when natural voices are on. */
+export function ttsPrefetch(sessionId: string, exerciseId: string): Promise<Prefetched> {
+  return call<Prefetched>('tts_prefetch', { session_id: sessionId, exercise_id: exerciseId })
+}
+
+export function audioStatus(): Promise<AudioStatus> {
+  return call<AudioStatus>('audio_status', {})
+}
+
+/** Can't listen now (`listen`) or Can't speak now (`speak`): off for 60 minutes. */
+export function sessionSkip(kind: 'listen' | 'speak'): Promise<null> {
+  return call<null>('session_skip', { kind })
+}
+
 // Events -----------------------------------------------------------------------------------------
 
 /**
@@ -696,6 +776,19 @@ export async function onPackProgress(
       handler(event.payload),
     )
     return unlisten
+  } catch {
+    return () => {}
+  }
+}
+
+/**
+ * Listens for the end of a clip or of the OS voice until the returned function is called. Where
+ * events are not available the handler is simply never called.
+ */
+export async function onAudioEnded(handler: () => void): Promise<() => void> {
+  try {
+    const unlisten = await listen<null>(AUDIO_ENDED_EVENT, () => handler())
+    return typeof unlisten === 'function' ? unlisten : () => {}
   } catch {
     return () => {}
   }

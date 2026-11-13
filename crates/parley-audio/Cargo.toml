@@ -9,3 +9,10 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+parley-core = { workspace = true }
+rodio = { workspace = true }
+
+# OS voices through tts on Windows, macOS and Android. Linux speaks through Speech Dispatcher's
+# spd-say command instead, so its build needs no libspeechd and no libclang (ADR-0014).
+[target.'cfg(not(target_os = "linux"))'.dependencies]
+tts = { workspace = true }

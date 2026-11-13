@@ -1,0 +1,26 @@
+# Natural voices (docs/modules/09-listening-and-voices.md; docs/PUBLIK-INTEGRATION.md §6.7): the
+# speech model and the default voice of each course language for `POST /audio/speech`, read at
+# build time by `bundled_voices` in crates/parley-core/src/ai/speech.rs.
+#
+# Format:
+#   model = "<id>"      the speech model id, exactly as publik API takes it (never a tier)
+#   speed = true|false  whether the provider honours the request's `speed`; when false, slow mode
+#                       sends 1.0 and stretches the clip locally (WSOLA) instead; default false
+#   [<lang>]            one table per course language (es, fr, de), each with
+#   voice = "<id>"      the voice id for that language
+#
+# From the setup run of 2026-11-12: `/audio/speech` accepts `tts-1` with the multilingual voice
+# `alloy`. Whether `speed` is honoured was not probed; the provider's published speech API takes
+# it from 0.25 to 4.0, so it is set to true.
+
+model = "tts-1"
+speed = true
+
+[es]
+voice = "alloy"
+
+[fr]
+voice = "alloy"
+
+[de]
+voice = "alloy"

@@ -23,6 +23,7 @@ tauri-build = { workspace = true }
 
 [dependencies]
 chrono = { workspace = true }
+parley-audio = { workspace = true }
 parley-core = { workspace = true }
 parley-publik = { workspace = true }
 serde = { workspace = true }

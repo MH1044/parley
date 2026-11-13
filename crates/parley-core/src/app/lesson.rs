@@ -65,6 +65,11 @@ pub(crate) fn open_cache(path: &Path, now_ms: i64) -> Cache {
         .unwrap_or_else(|_| Cache::in_memory(Box::new(At(now_ms))))
 }
 
+/// The AI cache at `path` when its file exists; none otherwise, so a read creates no file.
+pub(crate) fn open_existing_cache(path: &Path, now_ms: i64) -> Option<Cache> {
+    Cache::open_existing(path, Box::new(At(now_ms)))
+}
+
 pub(crate) enum JobWork {
     Lesson { prompt: LessonPrompt, plan: Plan },
     Story(StoryJob),
@@ -272,8 +277,14 @@ impl Parley {
         Ok((lang, course))
     }
 
-    /// The plan of a skill's lesson now: learn mode introduces new items, review mode none.
+    /// The plan of a skill's lesson now: learn mode introduces new items, review mode none. The
+    /// first two `translate_to_en` entries turn into `listen_type` while listening is available
+    /// for the language (module 09: a voice exists and **Can't listen now** is not on).
     fn plan_for(&mut self, lang: Lang, skill_id: &str, learn: bool) -> Result<Plan, AppError> {
+        let capabilities = Capabilities {
+            audio_out: self.listen_available(lang),
+            ..Capabilities::default()
+        };
         let request = ComposeRequest {
             lang,
             skill_id: skill_id.to_string(),
@@ -283,7 +294,7 @@ impl Parley {
             } else {
                 0
             },
-            capabilities: Capabilities::default(),
+            capabilities,
         };
         let now = self.env.clock.now_ms();
         let store = open_store(&mut self.store)?;

@@ -1,6 +1,8 @@
 import { useId } from 'react'
 import type { Exercise } from '../../api/commands'
+import ListenType from '../../components/ListenType'
 import MatchPairs from '../../components/MatchPairs'
+import PlayButton from '../../components/PlayButton'
 import WordBank from '../../components/WordBank'
 import { t } from '../../strings'
 import { usesWordBank, type Draft } from './draft'
@@ -15,6 +17,12 @@ interface Props {
   draft: Draft
   checked: boolean
   onDraft: (draft: Draft) => void
+  /** The session a natural voice's charge is added to (null when there is none). */
+  sessionId?: string | null
+  /** Read the target-language prompt aloud once when the exercise is shown. */
+  autoPlay?: boolean
+  /** Can't listen now, on a listening exercise. */
+  onCantListen?: () => void
 }
 
 interface AnswerBoxProps {
@@ -46,7 +54,11 @@ function AnswerBox({ value, lang, disabled, onChange }: AnswerBoxProps) {
   )
 }
 
-/** The instruction, the prompt and the answer input of one exercise. */
+/**
+ * The instruction, the prompt and the answer input of one exercise. A prompt in the course
+ * language has Play and Slow beside it, and a listening exercise hides its sentence: it is heard,
+ * not read.
+ */
 export default function ExerciseView({
   exercise,
   lang,
@@ -55,6 +67,9 @@ export default function ExerciseView({
   draft,
   checked,
   onDraft,
+  sessionId = null,
+  autoPlay = false,
+  onCantListen,
 }: Props) {
   const textBox = (answerLang: string) => (
     <AnswerBox
@@ -70,6 +85,12 @@ export default function ExerciseView({
       return (
         <div className="exercise">
           <h1>{t('exercise.pick_meaning', { target: exercise.prompt_target })}</h1>
+          <PlayButton
+            text={exercise.prompt_target}
+            lang={lang}
+            sessionId={sessionId}
+            autoPlay={autoPlay}
+          />
           <div role="radiogroup" aria-label={t('exercise.options')} className="options">
             {exercise.options.map((option, index) => (
               <label key={`${exercise.id}-${index}`} className="option">
@@ -113,6 +134,12 @@ export default function ExerciseView({
           <p className="prompt" lang={lang}>
             {exercise.prompt_target}
           </p>
+          <PlayButton
+            text={exercise.prompt_target}
+            lang={lang}
+            sessionId={sessionId}
+            autoPlay={autoPlay}
+          />
           {textBox('en')}
         </div>
       )
@@ -132,13 +159,16 @@ export default function ExerciseView({
       )
     case 'listen_type':
       return (
-        <div className="exercise">
-          <h1>{t('exercise.listen_type')}</h1>
-          <p className="prompt" lang={lang}>
-            {exercise.text}
-          </p>
-          {textBox(lang)}
-        </div>
+        <ListenType
+          text={exercise.text}
+          lang={lang}
+          sessionId={sessionId}
+          autoPlay={autoPlay}
+          value={draft.text}
+          checked={checked}
+          onChange={(text) => onDraft({ ...draft, text })}
+          onCantListen={() => onCantListen?.()}
+        />
       )
     case 'speak':
       return (

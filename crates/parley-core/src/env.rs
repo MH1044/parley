@@ -220,6 +220,12 @@ pub trait Fs {
     fn write(&self, path: &Path, bytes: &[u8]) -> Result<(), FsError>;
     fn rename(&self, from: &Path, to: &Path) -> Result<(), FsError>;
     fn remove(&self, path: &Path) -> Result<(), FsError>;
+    /// The names of the files in `dir` (relative to the data directory), sorted; a missing
+    /// directory is an empty list (module 09, clearing the audio cache). The default lists
+    /// nothing, so a filesystem that never holds cached audio need not implement it.
+    fn list(&self, _dir: &Path) -> Result<Vec<String>, FsError> {
+        Ok(Vec::new())
+    }
 }
 
 /// An outbound HTTP request. The transport (module 06) turns it into a real call.

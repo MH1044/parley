@@ -146,6 +146,20 @@ pub struct SpeechRequest {
     pub idempotency_key: Option<String>,
 }
 
+impl SpeechRequest {
+    /// The JSON body of docs/PUBLIK-INTEGRATION.md §6.7: {"model", "input", "voice",
+    /// "response_format", "speed"}. Every provider sends exactly this.
+    pub fn body(&self) -> Value {
+        json!({
+            "model": self.model,
+            "input": self.input,
+            "voice": self.voice,
+            "response_format": self.response_format,
+            "speed": self.speed,
+        })
+    }
+}
+
 /// Synthesised audio as returned.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AudioReply {

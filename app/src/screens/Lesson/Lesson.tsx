@@ -8,13 +8,17 @@ import {
   explainAnswer,
   lessonFinish,
   onAiStatus,
+  sessionSkip,
   settingsGet,
+  ttsPrefetch,
+  type Exercise,
   type Grade,
   type LessonStarted,
   type LessonSummary,
 } from '../../api/commands'
 import AiBanner from '../../components/AiBanner'
 import AiSetupDialog from '../../components/AiSetupDialog'
+import PlayButton from '../../components/PlayButton'
 import ResultSheet, { type ExplainView } from '../../components/ResultSheet'
 import { languageName, t } from '../../strings'
 import ExerciseView from './ExerciseView'
@@ -29,6 +33,20 @@ interface Props {
   onExit: () => void
 }
 
+/** The correct answer of an exercise when it is in the course language, to be heard on the sheet. */
+function answerInTarget(exercise: Exercise): string | null {
+  switch (exercise.type) {
+    case 'translate_to_target':
+      return exercise.target
+    case 'fill_gap':
+      return exercise.full_sentence
+    case 'listen_type':
+      return exercise.text
+    default:
+      return null
+  }
+}
+
 /**
  * The lesson player, for lessons and reviews: one exercise at a time, its result sheet, then the
  * summary. Keyboard: Enter checks an answer and continues from the result sheet, keys 1 to 4
@@ -38,6 +56,11 @@ interface Props {
  * up: the sheet says "Checking…" meanwhile. An unchecked answer offers Check with AI, an answer
  * that was almost right or wrong offers Explain; either opens the AI setup dialog when AI is not
  * set up yet, and runs again after its Continue.
+ *
+ * Listening (module 09): every exercise shown asks for the next one's sentence to be prefetched;
+ * with Play prompts aloud on, a prompt in the course language plays once when shown, and the
+ * correct answer once on the result sheet when it is in the course language. Can't listen now
+ * skips this and every later listening exercise of the lesson, with no grade.
  */
 export default function Lesson({ started, lang, onExit }: Props) {
   const exercises = started.exercises
@@ -49,6 +72,10 @@ export default function Lesson({ started, lang, onExit }: Props) {
   const [quitting, setQuitting] = useState(false)
   const [summary, setSummary] = useState<LessonSummary | null>(null)
   const [wordBank, setWordBank] = useState(false)
+  // Play prompts aloud (audio.autoplay), read when the lesson opens.
+  const [autoplay, setAutoplay] = useState(false)
+  // Can't listen now was chosen: listening exercises are skipped for the rest of the lesson.
+  const [listenOff, setListenOff] = useState(false)
   // The AI judge is deciding the answer (a translation's submission, or Check with AI).
   const [checking, setChecking] = useState(false)
   const [explain, setExplain] = useState<ExplainView | null>(null)
@@ -84,7 +111,9 @@ export default function Lesson({ started, lang, onExit }: Props) {
     let cancelled = false
     settingsGet().then(
       (settings) => {
-        if (!cancelled && settings?.answer_input === 'word_bank') setWordBank(true)
+        if (cancelled) return
+        if (settings?.answer_input === 'word_bank') setWordBank(true)
+        if (settings?.audio?.autoplay) setAutoplay(true)
       },
       () => {},
     )
@@ -92,6 +121,14 @@ export default function Lesson({ started, lang, onExit }: Props) {
       cancelled = true
     }
   }, [])
+
+  // Each exercise shown asks for the next one's sentence to be fetched ahead; a failure is
+  // nobody's business but the cache's.
+  useEffect(() => {
+    const shown = exercises[index]
+    if (!shown || !started.session_id) return
+    ttsPrefetch(started.session_id, shown.id).catch(() => {})
+  }, [index, exercises, started.session_id])
 
   async function check() {
     if (busy || grade || !exercise) return
@@ -205,11 +242,20 @@ export default function Lesson({ started, lang, onExit }: Props) {
     }
   }
 
-  function next() {
-    if (busy) return
-    if (index + 1 < exercises.length) {
+  /** The exercise after `from`, past the listening ones while they are skipped. */
+  function after(from: number, skipListening: boolean): number {
+    let to = from + 1
+    while (skipListening && to < exercises.length && exercises[to].type === 'listen_type') {
+      to += 1
+    }
+    return to
+  }
+
+  /** Shows exercise `to`, or finishes when there is none. */
+  function goTo(to: number) {
+    if (to < exercises.length) {
       onScreen.current = null
-      setIndex(index + 1)
+      setIndex(to)
       setDraft(EMPTY_DRAFT)
       setGrade(null)
       setError(null)
@@ -217,6 +263,23 @@ export default function Lesson({ started, lang, onExit }: Props) {
     } else {
       void finish()
     }
+  }
+
+  function next() {
+    if (busy) return
+    goTo(after(index, listenOff))
+  }
+
+  /** Can't listen now: off for an hour, and this lesson goes on without its listening exercises. */
+  async function cantListen() {
+    if (busy || grade) return
+    try {
+      await sessionSkip('listen')
+    } catch {
+      // The lesson skips them all the same.
+    }
+    setListenOff(true)
+    goTo(after(index, true))
   }
 
   // The keyboard, while an exercise is on screen. Enter is taken from any focused element, and
@@ -298,6 +361,9 @@ export default function Lesson({ started, lang, onExit }: Props) {
           draft={draft}
           checked={grade !== null}
           onDraft={setDraft}
+          sessionId={started.session_id || null}
+          autoPlay={autoplay}
+          onCantListen={() => void cantListen()}
         />
       ) : null}
       {error && (
@@ -320,6 +386,17 @@ export default function Lesson({ started, lang, onExit }: Props) {
           onCheckWithAi={() => void checkWithAi()}
           onExplain={() => void explainThis()}
           onStatus={(status) => setClaimState(status.claim_state)}
+          answerPlay={
+            exercise && grade && answerInTarget(exercise) ? (
+              <PlayButton
+                key={`answer-${exercise.id}`}
+                text={answerInTarget(exercise) ?? ''}
+                lang={lang}
+                sessionId={started.session_id || null}
+                autoPlay={autoplay}
+              />
+            ) : undefined
+          }
         />
       ) : exercise ? (
         <div className="actions">

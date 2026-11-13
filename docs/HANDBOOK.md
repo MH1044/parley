@@ -11,7 +11,9 @@ Building from source (see `README.md`) gives:
   lessons and reviews, the streak and stats, settings, and backups (below), and lets you set up AI
   when you choose to: publik API, your own key or a local model, with a connection check; with
   AI set up, fresh lessons, graded stories, course packs to share lessons, AI checks of free
-  translations, and explanations of answers that were almost right or wrong;
+  translations, and explanations of answers that were almost right or wrong; and it reads every
+  sentence of the course language aloud, at normal speed or slowly, through your computer's own
+  voice or a natural voice, with listen-and-type exercises in the lessons;
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -169,10 +171,43 @@ is for French; your active course is Spanish."), a file that is not a pack ("Thi
 course pack.") or one over 5 MB ("This course pack is larger than 5 MB.") is refused and nothing
 changes. Course content is CC BY-SA 4.0, and a pack says so.
 
+**Listening.** A sentence in the course language has **Play** ("Play the sentence") and **Slow**
+("Play it slowly") beside it: the prompt of a pick-the-meaning or translate-into-English exercise,
+and on the result sheet the correct answer of a translation into the course language, a gap
+filled, or a listening exercise. While it plays, **Stop** takes their place. With **Play prompts
+aloud** on (the default), a prompt plays once when its exercise appears and the correct answer
+once when the result sheet does. A lesson has up to two **Type what you hear** exercises while a
+voice is available for the course language: the sentence is heard, not shown, and you type it
+(accents and typos are graded as in any typed answer: "buenos dias" for "Buenos días." is almost).
+**Can't listen now** skips this and every later listening exercise of the lesson with no grade, and
+lessons have none for the next hour.
+
+The voice is your computer's own by default, free and offline. Without a voice for the language,
+**Play** says how to add one: "No Spanish voice is installed. On Windows, open Settings > Time &
+language > Speech and add a voice." (on macOS, System Settings > Accessibility > Spoken Content >
+System voice > Manage Voices; on Linux, install Speech Dispatcher and a voice, or turn on natural
+voices). *Settings > Audio*: **System voice** or **Natural voice** (choosing natural voices before
+AI is set up opens the AI setup dialog; **Not now** keeps the system voice), the voice of each
+language ("No voice installed" and the help above when there is none), **Slow speed** (0.5 to 1.0
+in steps of 0.05; 0.75 by default), **Play prompts aloud**, and **Clear audio cache** ("Removed 12
+files."). A natural voice comes from the chosen provider: publik API (`tts-1`, voice `alloy`, from
+`content/voices.toml`), or your own key when a speech model is set (Settings > AI). Each sentence
+is fetched once, checked (audio of a plausible length for its words) and kept as a file, so it is
+never paid for twice and plays offline later; the next exercise's sentence is fetched while you
+answer. Settings > Audio shows "Natural voices cost about $0.00054 a sentence (measured).", the
+average of what your sentences were charged ($0.00054, the measured charge of one sentence, until
+your own are recorded), and each sentence's charge is added to the lesson's cost. When a natural
+voice cannot be used (offline, a slow provider, audio that fails the check), the system voice reads
+the sentence with "Natural voice unavailable, using the system voice."; with no publik balance
+left, the balance message shows once and the system voice reads every sentence, without asking
+publik API again, until there is a balance. With no speaker or headphones connected, **Play** says
+"Parley could not play the sound. Check that a speaker or headphones are connected."
+
 **Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
 Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json`,
 once downloaded, `packs/`, and, once AI is used, `cache/ai.sqlite3` (AI answers, so the same
-question is never paid for twice; **Clear caches** removes it) and `publik-status.json` (the
+question is never paid for twice; **Clear caches** removes it), `cache/audio/` (natural-voice
+sentences; **Clear audio cache** and **Clear caches** remove them) and `publik-status.json` (the
 publik API balance and status, never a key). publik API's own key for this computer is in publik's
 credential file (`%LOCALAPPDATA%\publik\apps\parley.json` on Windows,
 `~/.config/publik/apps/parley.json` on Linux), and your own key in the operating system's
@@ -671,7 +706,6 @@ to 20; a file that is not a days file exits 1 with what is wrong.
 
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: natural voices and listening, then speaking and
-pronunciation. The sentence packs are published as
+In the order of `docs/ROADMAP.md`: speaking and pronunciation, then conversations. The sentence packs are published as
 release assets before the first release; until then the app's Download button cannot fetch them,
 and `parley pack install` puts a locally built pack in place.

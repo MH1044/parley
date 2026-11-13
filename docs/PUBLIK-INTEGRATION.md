@@ -145,7 +145,8 @@ app token. Use your own key for now." Each offers **Use my own key** and **Use a
 
 ## 5. Feature map
 
-Cost per action is the planning figure from section 8 (P5, P6 and P10 are pass-through estimates).
+Cost per action is the planning figure from section 8 (P6 and P10 are pass-through estimates; P5 is
+the measured charge of one sentence).
 
 | Row | Feature | Trigger | Endpoint | Tier | Sent | Back | Cache key input | Cost per action |
 |---|---|---|---|---|---|---|---|---|
@@ -154,7 +155,7 @@ Cost per action is the planning figure from section 8 (P5, P6 and P10 are pass-t
 | P2 | Graded story (F12) | Story node | `/chat/completions` | balanced | theme, focus and allowed lemmas | story JSON | skill, seq, lemma-set hash | $0.0097 |
 | P3 | Answer judge (F13) | free answer not matched offline | `/chat/completions` | fast | source sentence, accepted answers, the answer | verdict JSON | direction, source, accepted, answer | $0.00015 |
 | P4 | Explain my answer (F14) | "Explain" | `/chat/completions` | fast | exercise, expected, answer, verdict, grammar note | explanation JSON | exercise, answer, verdict | $0.00022 |
-| P5 | Natural voice (F15) | an audio exercise, or replay | `/audio/speech` | pass-through | one sentence | MP3 | text, voice, speed | about $0.00063 (estimate) |
+| P5 | Natural voice (F15) | an audio exercise, or replay | `/audio/speech` | pass-through | one sentence | MP3 | text, voice, speed | $0.00054 (measured, `tts-1`, `alloy`) |
 | P6 | Speaking check (F16) | "Check" after recording | `/audio/transcriptions` | pass-through | the recording, 16 kHz mono WAV | text | audio hash, language (session memory only) | about $0.00040 (estimate) |
 | P7 | Role-play turn (F17) | "Send" | `/chat/completions`, streamed | balanced | scenario, goals, known lemmas, history, the turn | reply JSON | the whole message list | $0.0049 average |
 | P8 | Role-play summary (F17) | "End" | `/chat/completions` | balanced | transcript, goals | summary JSON | transcript | $0.0073 |
@@ -169,9 +170,11 @@ Cost per action is the planning figure from section 8 (P5, P6 and P10 are pass-t
 - **Headers**: `Authorization: Bearer <key>`, `Content-Type: application/json` (multipart for
   transcription), and on Publik calls `x-publik-idempotency-key` (below).
 - **Body**: on chat, `model` is the tier name (Publik), the configured model (own key) or the chosen
-  local model. On `/audio/*`, `model` (and the voice) are exactly the ids `GET /models` listed in the
-  live checks at the start of modules 09 and 10, even if they look like vendor names; if it lists none for an
-  endpoint, that module stops until the maintainer has decided, instead of guessing. `temperature` as listed per call. `response_format: {"type": "json_object"}` is sent only if
+  local model. On `/audio/*`, `model` (and the voice) are exactly the ids the live checks
+  confirmed, even if they look like vendor names: `GET /models` lists no audio id, so the
+  maintainer's setup run of 2026-11-12 probed the standard ids instead (module 06 Design notes:
+  speech `tts-1` with voice `alloy`, transcription `gpt-4o-mini-transcribe`); an endpoint with no
+  confirmed id waits for the maintainer's decision instead of a guess. `temperature` as listed per call. `response_format: {"type": "json_object"}` is sent only if
   the module 06 probe showed the tier honours it; the prompts ask for JSON either way.
 - **Prompt files**: `prompts/<feature>.v<N>.md`, loaded with `include_str!` at build time. Format:
 
@@ -486,9 +489,9 @@ Schema: `explanation` 1 to 700 characters, `tip` optional up to 120. Validation:
 {"model": "{speech_model}", "input": "Quiero un café con leche.", "voice": "{voice_id}", "response_format": "mp3", "speed": 0.75}
 ```
 
-`speech_model` and the voice ids are the ids `GET /models` lists for `/audio/speech` in the module 09
-live check (then one probe call per language), recorded in `content/voices.toml`
-(`[es] voice = "..."`). `speed` is 1.0 or the slow
+`speech_model` and the voice ids are the ids the setup run confirmed for `/audio/speech` (`tts-1`
+and the multilingual voice `alloy`, used for every course language; `GET /models` lists no audio
+id), recorded in `content/voices.toml` (`[es] voice = "..."`). `speed` is 1.0 or the slow
 setting (0.75); if the probe shows `speed` is ignored, slow mode time-stretches playback locally
 (WSOLA, Verhelst and Roelands 1993) instead and the request always sends 1.0. Validation: HTTP 200,
 `Content-Type` `audio/*`, the bytes decode, and the duration lies between 0.2 s and
@@ -717,19 +720,25 @@ Role-play input grows with the history: each turn sends about 550 words (system 
 10 × 550 + 55 × (0 + 1 + … + 9) = 5,500 + 2,475 = 7,975 words. The photo row assumes the image counts
 as about 1,200 words of input, which is a guess to be replaced by the module 12 measurement.
 
-Pass-through audio, **estimates** from provider list prices, not Publik's: transcription $0.006 per
-minute (OpenAI's `whisper-1` and `gpt-4o-transcribe`; `gpt-4o-mini-transcribe` is $0.003, per
-costgoat.com, 5 September 2026), speech about $0.015 per minute of audio (`gpt-4o-mini-tts`, OpenAI
-developer forum, March 2025). Per action: P5, a 2.5 s sentence, 2.5 ÷ 60 × $0.015 = $0.00063; P6, a
-4 s take, 4 ÷ 60 × $0.006 = $0.00040. Module 09 measures P5 and module 10 measures P6 with
-`x-publik-charge-micros` and replaces these figures here and in the UI.
+Pass-through audio. **Speech, measured:** one short sentence of `tts-1` with the voice `alloy` was
+charged 540 micros ($0.00054, `x-publik-charge-micros`) in the setup run of 2026-11-12, so P5 is
+$0.00054 per action. The app shows each install's own figure, the mean of the charges it has
+recorded, and the setup run's until it has one: "Natural voices cost about $0.00054 a sentence
+(measured)." in Settings > Audio. The rest are **estimates** from provider list prices, not
+Publik's: transcription $0.006 per minute (OpenAI's `whisper-1` and `gpt-4o-transcribe`;
+`gpt-4o-mini-transcribe` is $0.003, per costgoat.com, 5 September 2026), and speech by the minute
+about $0.015 per minute of audio (`gpt-4o-mini-tts`, OpenAI developer forum, March 2025), which the
+daily totals below still use, because a reply read aloud is longer than one lesson sentence. Per
+action: P6, a 4 s take, 4 ÷ 60 × $0.006 = $0.00040. Module 10 measures P6 with
+`x-publik-charge-micros` and replaces that figure here and in the UI.
 
 A daily learner: 2 lessons (2 × $0.015 = $0.030), 20 judgements (20 × $0.00015 = $0.0030), 3
 explanations (3 × $0.00022 = $0.00066), one 10-turn conversation with its summary ($0.049 + $0.0073
 = $0.056): $0.030 + $0.0030 + $0.00066 + $0.056 = **$0.090 of chat a day**. Audio: 10 speaking
 checks of 4 s and 10 spoken turns of 5 s is 90 s = 1.5 minutes of transcription (1.5 × $0.006 =
 $0.0090); 20 new lesson sentences of 2.5 s and 10 replies of 12 s is 170 s = 2.8 minutes of speech
-(2.8 × $0.015 = $0.042).
+(2.8 × $0.015 = $0.042, still the per-minute estimate; at the measured $0.00054 a sentence the 20
+lesson sentences alone are 20 × $0.00054 = $0.011).
 
 | Configuration | Per day | 30 days | 20 active days |
 |---|---|---|---|
