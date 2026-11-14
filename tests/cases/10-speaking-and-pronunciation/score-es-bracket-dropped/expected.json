@@ -1,0 +1,13 @@
+{
+  "words": [
+    {
+      "expected": "hola",
+      "heard": "hola",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

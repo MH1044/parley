@@ -1,0 +1,6 @@
+{
+  "lang": "es",
+  "expected": "yo soy estudiante",
+  "heard": "yo es estudiante",
+  "pass_mark": 0.8
+}

@@ -1,7 +1,8 @@
 //! The app's state: one `Parley` behind a mutex, built from the data directory, the bundled
 //! course and the real environment, and one `AiService` behind another. The window's setup hook
-//! gives the service the computer's speakers and voices ([`desktop_audio`]); a state built without
-//! a window (the command tests) keeps the core's silent default.
+//! gives the service the computer's speakers and voices ([`desktop_audio`]) and its microphone
+//! ([`desktop_speaking`]); a state built without a window (the command tests) keeps the core's
+//! silent defaults.
 //!
 //! Lock order: an AI command takes the AI lock, then the `Parley` lock briefly inside it (to read
 //! and save the AI settings); nothing takes them the other way round, so the two cannot deadlock.
@@ -10,10 +11,11 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex, PoisonError};
 use std::time::Duration;
 
-use parley_audio::{MediaDecoder, RodioPlayer, SystemVoices};
+use parley_audio::{MediaDecoder, Microphone, RodioPlayer, SystemVoices};
 use parley_core::ai::bundled_voices;
 use parley_core::app::{Config, Env, Parley};
-use parley_core::audio::Audio;
+use parley_core::audio::{Audio, LocalTranscriber, Speaking};
+use parley_core::speech::bundled_models;
 use parley_publik::PublikEnv;
 use parley_publik::http::HttpNet;
 use parley_publik::keychain::OsKeychain;
@@ -34,6 +36,21 @@ pub fn desktop_audio(on_end: Arc<dyn Fn() + Send + Sync>) -> Audio {
         player: Arc::new(RodioPlayer::new(on_end)),
         decoder: Arc::new(MediaDecoder),
         natural: bundled_voices(),
+    }
+}
+
+/// The computer's microphone (opened at each take), local Whisper when the build has the
+/// `local-whisper` feature, and the bundled `models/registry.toml`.
+pub fn desktop_speaking() -> Speaking {
+    #[cfg(feature = "local-whisper")]
+    let whisper: Option<Arc<dyn LocalTranscriber>> =
+        Some(Arc::new(parley_audio::WhisperLocal::new()));
+    #[cfg(not(feature = "local-whisper"))]
+    let whisper: Option<Arc<dyn LocalTranscriber>> = None;
+    Speaking {
+        capture: Arc::new(Microphone::system()),
+        whisper,
+        models: bundled_models(),
     }
 }
 

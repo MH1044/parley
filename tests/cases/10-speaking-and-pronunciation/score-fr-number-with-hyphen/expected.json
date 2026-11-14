@@ -1,0 +1,28 @@
+{
+  "words": [
+    {
+      "expected": "J'ai",
+      "heard": "j'ai",
+      "status": "ok"
+    },
+    {
+      "expected": "soixante",
+      "heard": "soixante",
+      "status": "ok"
+    },
+    {
+      "expected": "dix",
+      "heard": "dix",
+      "status": "ok"
+    },
+    {
+      "expected": "ans",
+      "heard": "ans",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

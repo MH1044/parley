@@ -10,7 +10,7 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
-use super::types::{Exercise, Lesson};
+use super::types::{Body, Exercise, Lesson};
 use crate::content::{Forms, Lang};
 use crate::env::{Clock, LocalDate, local_date};
 use crate::error::AppError;
@@ -18,7 +18,8 @@ use crate::game::{SessionKind, SessionResult, WEEKLY_RECORD, xp_for};
 use crate::grading::{
     AccentLeniency, Answer, Grade, Verdict, accept_learner_answer, grade, grade_ctx, normalise,
 };
-use crate::srs::{self, Outcome, SrsParams, rating_for};
+use crate::speech::{SpeakScore, speak_grade, speak_rating};
+use crate::srs::{self, Facet, Outcome, SrsParams, rating_for};
 use crate::store::{ReviewContext, SessionEnd, SessionStart, Store, StoreError};
 
 /// The learner's settings a run uses.
@@ -292,6 +293,56 @@ impl LessonRun {
             judge_tags: Vec::new(),
         });
         Ok(graded)
+    }
+
+    /// A scored take of a `speak` exercise (module 10). The first one reviews the card (item,
+    /// productive) with `speak_rating`, verdict `speak_verdict`, exercise type `speak`, no hint
+    /// and no response time, and becomes the exercise's answer (`Answer::Text(heard)`) with
+    /// `speak_grade`: returned with `true`. A later take, or a take of an exercise already
+    /// answered, reviews nothing and returns the grade the exercise already has, with `false`:
+    /// **Try again** is practice. An unknown exercise, or one that is not `speak`, is no longer
+    /// available.
+    pub fn spoken(
+        &mut self,
+        store: &mut Store,
+        settings: &RunSettings,
+        exercise_id: &str,
+        heard: &str,
+        scored: &SpeakScore,
+        clock: &dyn Clock,
+    ) -> Result<(Grade, bool), RunError> {
+        let index = self.index_of(exercise_id)?;
+        if let Some(answered) = &self.answered[index] {
+            return Ok((answered.grade.clone(), false));
+        }
+        let ex = &self.exercises[index];
+        let Body::Speak { text, .. } = &ex.body else {
+            return Err(RunError::NotAvailable);
+        };
+        let mut graded = speak_grade(text, scored);
+        let rating = speak_rating(scored.score, scored.pass);
+        let now = clock.now_ms();
+        store.introduce(&ex.item_id, now)?;
+        if let Some(verdict) = graded.verdict.srs() {
+            let context = self.review_context(ex, verdict, None);
+            store.review(
+                &ex.item_id,
+                Facet::Productive,
+                rating,
+                now,
+                &context,
+                &settings.srs,
+            )?;
+        }
+        graded.rating = Some(rating);
+        self.answered[index] = Some(Answered {
+            answer: Answer::Text(heard.to_string()),
+            response_ms: None,
+            used_hint: false,
+            grade: graded.clone(),
+            judge_tags: Vec::new(),
+        });
+        Ok((graded, true))
     }
 
     /// The exercise `exercise_id` and, once answered, its answer, grade and the judge's tags. An
@@ -732,6 +783,65 @@ mod tests {
             .filter(|c| c.reps > 0)
             .collect();
         assert_eq!(replay(&store.review_log().unwrap(), &settings.srs), cards);
+    }
+
+    #[test]
+    fn the_first_scored_take_rates_and_later_takes_return_its_grade() {
+        let mut store = started();
+        let settings = RunSettings::default();
+        let clock = day(1);
+        let mut with_speak = lesson(1);
+        with_speak.exercises.push(exercise(
+            "e4",
+            "e:2",
+            Body::Speak {
+                text: "Buenos días.".into(),
+                prompt_en: "Good morning.".into(),
+            },
+        ));
+        let mut run = LessonRun::start_lesson(&mut store, &with_speak, "s1", &clock).unwrap();
+        let numbers = crate::content::Numbers::default();
+        let half = crate::speech::score(Lang::Es, "Buenos días.", "buenos", &numbers, 0.8);
+        let (grade, rated) = run
+            .spoken(&mut store, &settings, "e4", "buenos", &half, &clock)
+            .unwrap();
+        assert!(rated);
+        assert_eq!(
+            (grade.verdict, grade.rating),
+            (Verdict::Almost, Some(Rating::Hard))
+        );
+        assert_eq!(grade.words, ["días"]);
+        let log = store.review_log().unwrap();
+        assert_eq!(log.len(), 1);
+        assert_eq!(
+            (
+                log[0].facet,
+                log[0].rating,
+                log[0].exercise_type.as_str(),
+                log[0].response_ms
+            ),
+            (Facet::Productive, Rating::Hard, "speak", None)
+        );
+        let full = crate::speech::score(Lang::Es, "Buenos días.", "buenos días", &numbers, 0.8);
+        let (again, rated) = run
+            .spoken(&mut store, &settings, "e4", "buenos días", &full, &clock)
+            .unwrap();
+        assert!(!rated);
+        assert_eq!(again, grade, "the first take's grade");
+        assert_eq!(
+            store.review_log().unwrap().len(),
+            1,
+            "practice reviews nothing"
+        );
+        for other in ["e1", "e9"] {
+            assert_eq!(
+                run.spoken(&mut store, &settings, other, "x", &full, &clock)
+                    .unwrap_err(),
+                RunError::NotAvailable
+            );
+        }
+        let summary = run.finish(&mut store, &settings, &clock).unwrap();
+        assert_eq!((summary.correct, summary.total), (0, 4));
     }
 
     #[test]

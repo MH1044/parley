@@ -13,13 +13,14 @@ pub mod state;
 use std::sync::Arc;
 
 use parley_core::api::AUDIO_ENDED_EVENT;
-use tauri::{Emitter, Manager};
+use tauri::{Emitter, Manager, RunEvent};
 
 /// Opens the window: the app state over the app data directory with the computer's speakers and
-/// voices (whose end of a clip or utterance is the `audio://ended` event), the dialog plugin for
-/// `file_pick`, and every command of `parley_core::api::COMMANDS`.
+/// voices (whose end of a clip or utterance is the `audio://ended` event) and its microphone, the
+/// dialog plugin for `file_pick`, and every command of `parley_core::api::COMMANDS`. Quitting
+/// stops a take in progress and removes the takes unless the learner keeps them.
 pub fn run() {
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
@@ -31,7 +32,10 @@ pub fn run() {
                 // A window that cannot hear the event only keeps its Stop button longer.
                 let _ = handle.emit(AUDIO_ENDED_EVENT, ());
             });
-            state.with(|p| p.set_audio(state::desktop_audio(ended)));
+            state.with(|p| {
+                p.set_audio(state::desktop_audio(ended));
+                p.set_speaking(state::desktop_speaking());
+            });
             app.manage(state);
             Ok(())
         })
@@ -82,7 +86,21 @@ pub fn run() {
             commands::audio::tts_prefetch,
             commands::audio::audio_status,
             commands::audio::session_skip,
+            commands::mic::mic_start,
+            commands::mic::mic_stop,
+            commands::mic::recording_play,
+            commands::speak::speak_check,
+            commands::models::whisper_models,
+            commands::models::whisper_download,
+            commands::speak::speaking_status,
         ])
-        .run(tauri::generate_context!())
+        .build(tauri::generate_context!())
         .expect("Parley could not open its window");
+    app.run(|handle, event| {
+        if let RunEvent::Exit = event
+            && let Some(state) = handle.try_state::<state::AppState>()
+        {
+            state.with(|p| p.on_exit());
+        }
+    });
 }

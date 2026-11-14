@@ -1,0 +1,38 @@
+{
+  "words": [
+    {
+      "expected": "Est",
+      "heard": "est",
+      "status": "ok"
+    },
+    {
+      "expected": "ce",
+      "heard": "ce",
+      "status": "ok"
+    },
+    {
+      "expected": "que",
+      "heard": "que",
+      "status": "ok"
+    },
+    {
+      "expected": "l'eau",
+      "heard": "l'eau",
+      "status": "ok"
+    },
+    {
+      "expected": "est",
+      "heard": "est",
+      "status": "ok"
+    },
+    {
+      "expected": "froide",
+      "heard": "froide",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

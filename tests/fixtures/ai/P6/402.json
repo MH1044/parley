@@ -1,0 +1,6 @@
+{
+  "status": 402,
+  "error": "needs_credit",
+  "message": "Your publik balance is $0.00. Add a plan or pack to keep using AI features.",
+  "top_up_url": "https://publikhq.com/wallet/add-credit?from=402"
+}

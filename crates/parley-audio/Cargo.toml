@@ -8,9 +8,19 @@ repository.workspace = true
 rust-version.workspace = true
 publish = false
 
+[features]
+# Local speech checks through whisper.cpp (docs/modules/10-speaking-and-pronunciation.md). Off by
+# default: building whisper.cpp needs cmake and libclang, which a plain Rust setup lacks. The CI
+# job `whisper` builds and tests it; the desktop app forwards it.
+local-whisper = ["dep:whisper-rs"]
+
 [dependencies]
+cpal = { workspace = true }
+hound = { workspace = true }
 parley-core = { workspace = true }
 rodio = { workspace = true }
+rubato = { workspace = true }
+whisper-rs = { workspace = true, optional = true }
 
 # OS voices through tts on Windows, macOS and Android. Linux speaks through Speech Dispatcher's
 # spd-say command instead, so its build needs no libspeechd and no libclang (ADR-0014).

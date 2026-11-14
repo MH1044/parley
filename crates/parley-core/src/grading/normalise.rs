@@ -16,8 +16,10 @@ const APOSTROPHES: [char; 3] = ['\u{2019}', '\u{2018}', '\u{02BC}'];
 /// No-break spaces read as a space.
 const NO_BREAK_SPACES: [char; 2] = ['\u{00A0}', '\u{202F}'];
 
-/// The normaliser's steps, with or without the lowercase step.
-fn clean(s: &str, lower: bool) -> String {
+/// The normaliser's steps, with or without the lowercase step. With `decimals`, a `.` or `,`
+/// between two ASCII digits also stays inside its word (`3,5`), so a speaking check keeps a
+/// decimal as written instead of reading two numbers.
+fn clean(s: &str, lower: bool, decimals: bool) -> String {
     let nfc: String = s
         .nfc()
         .map(|c| {
@@ -39,7 +41,13 @@ fn clean(s: &str, lower: bool) -> String {
             && i > 0
             && chars[i - 1].is_alphabetic()
             && chars.get(i + 1).is_some_and(|next| next.is_alphabetic());
-        let kept = c.is_alphanumeric() || is_combining_mark(c) || c.is_whitespace() || inner;
+        let decimal = decimals
+            && (c == '.' || c == ',')
+            && i > 0
+            && chars[i - 1].is_ascii_digit()
+            && chars.get(i + 1).is_some_and(char::is_ascii_digit);
+        let kept =
+            c.is_alphanumeric() || is_combining_mark(c) || c.is_whitespace() || inner || decimal;
         // A space, not nothing, so `Hola,¿qué` stays two words.
         out.push(if kept { c } else { ' ' });
     }
@@ -53,15 +61,21 @@ fn clean(s: &str, lower: bool) -> String {
 /// language, English included.
 pub fn normalise(lang: Lang, s: &str) -> String {
     let _ = lang;
-    clean(s, true)
+    clean(s, true, false)
+}
+
+/// The normaliser's steps, with the lowercase step only when `lower`: the first step of the words
+/// a speaking check compares (module 10), whose expected words keep their case for display.
+pub(crate) fn normalise_cased(s: &str, lower: bool) -> String {
+    clean(s, lower, true)
 }
 
 /// The words of `s` as written: the normaliser's steps without the lowercase step, so the i-th
 /// display word is the i-th word of the normal form, in the case the text uses. Messages name
 /// words in this form.
 pub(crate) fn display_words(s: &str) -> Vec<String> {
-    let display = clean(s, false);
-    let normal = clean(s, true);
+    let display = clean(s, false, false);
+    let normal = clean(s, true, false);
     let words: Vec<String> = display.split(' ').map(str::to_string).collect();
     // Lowercasing never adds or removes a word boundary; the fallback only guards that belief.
     if words.len() == normal.split(' ').count() {

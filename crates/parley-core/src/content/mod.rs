@@ -38,7 +38,7 @@ pub use checklist::{Checklist, ChecklistEntry, EntryKind, check_checklist, load_
 pub use forms::{FormRow, Forms};
 pub use items::{Accepted, Item, ItemKind, TaughtForms, derive_items};
 pub use lock::{IdsLock, LockReport, lock_items};
-pub use numbers::{load_exclude, load_numbers};
+pub use numbers::{Numbers, load_exclude, load_number_words, load_numbers};
 pub use pack::{
     Dropped, PackEntry, PackError, PackInfo, PackInput, PackReport, PacksLock, build_pack,
     pack_info, parse_packs_lock, verify_pack,

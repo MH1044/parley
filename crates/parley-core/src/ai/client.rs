@@ -112,8 +112,9 @@ pub struct ChatReply {
     pub request_id: Option<String>,
 }
 
-/// An `/audio/transcriptions` request (multipart: `file`, `model`, `language`, `response_format`).
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// An `/audio/transcriptions` request (multipart: `model`, `language`, `response_format`,
+/// `temperature`, then `file`).
+#[derive(Debug, Clone, PartialEq)]
 pub struct TranscribeRequest {
     /// Exactly the id the caller gives (on publik API, an id `GET /models` lists), never a tier.
     pub model: String,
@@ -122,8 +123,27 @@ pub struct TranscribeRequest {
     pub mime: String,
     pub language: String,
     pub response_format: String,
+    pub temperature: f64,
     pub timeout_s: u64,
     pub idempotency_key: Option<String>,
+}
+
+impl TranscribeRequest {
+    /// The text parts of the multipart body (docs/PUBLIK-INTEGRATION.md §6.8), in this order:
+    /// `model`, `language`, `response_format`, `temperature` (a whole temperature written as an
+    /// integer, `0`). Every provider sends exactly these, then the `file` part, and never a
+    /// `prompt`, so recognition is not biased towards the expected sentence.
+    pub fn fields(&self) -> Vec<(&'static str, String)> {
+        vec![
+            ("model", self.model.clone()),
+            ("language", self.language.clone()),
+            ("response_format", self.response_format.clone()),
+            (
+                "temperature",
+                temperature_json(self.temperature).to_string(),
+            ),
+        ]
+    }
 }
 
 /// A transcription answer: the response body as JSON.
@@ -436,6 +456,33 @@ mod tests {
         let mut warm = req;
         warm.temperature = 0.7;
         assert_eq!(warm.body(false)["temperature"], json!(0.7));
+    }
+
+    #[test]
+    fn transcription_fields_are_the_four_text_parts_in_order() {
+        let mut req = TranscribeRequest {
+            model: "gpt-4o-mini-transcribe".into(),
+            audio: vec![1, 2, 3],
+            file_name: "take.wav".into(),
+            mime: "audio/wav".into(),
+            language: "es".into(),
+            response_format: "json".into(),
+            temperature: 0.0,
+            timeout_s: 30,
+            idempotency_key: None,
+        };
+        let fields = |req: &TranscribeRequest| -> Vec<(&str, String)> { req.fields() };
+        assert_eq!(
+            fields(&req),
+            [
+                ("model", "gpt-4o-mini-transcribe".to_string()),
+                ("language", "es".to_string()),
+                ("response_format", "json".to_string()),
+                ("temperature", "0".to_string())
+            ]
+        );
+        req.temperature = 0.2;
+        assert_eq!(fields(&req)[3], ("temperature", "0.2".to_string()));
     }
 
     #[test]

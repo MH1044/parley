@@ -1,0 +1,13 @@
+{
+  "words": [
+    {
+      "expected": "días",
+      "heard": "dias",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

@@ -1,5 +1,6 @@
 # CI (docs/TESTING.md §8): the full check on Windows and Linux for every push to main and every
-# pull request, and the launch smoke (e2e). Later modules add the whisper, android and macos jobs.
+# pull request, the launch smoke (e2e), and local Whisper (whisper, module 10). Later modules add
+# the android and macos jobs.
 
 name: CI
 
@@ -164,3 +165,64 @@ jobs:
       - name: launch smoke (Windows)
         if: runner.os == 'Windows'
         run: npm --prefix app run e2e
+
+  # Local Whisper (docs/modules/10-speaking-and-pronunciation.md, Design notes): parley-audio with
+  # the feature local-whisper, which builds whisper.cpp and so needs cmake and libclang, which the
+  # verify job does without. The tiny model is cached under its SHA-256 from models/registry.toml
+  # and downloaded and checked by parley itself on a miss. espeak-ng is a separate program the
+  # speaking gate runs to synthesise its sentences; nothing links it.
+  whisper:
+    name: whisper (ubuntu-latest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Linux prerequisites for whisper.cpp, audio and the speaking gate
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libclang-dev libasound2-dev espeak-ng
+
+      - name: Rust toolchain from rust-toolchain.toml
+        run: |
+          rustup toolchain install
+          rustup show active-toolchain
+          cargo --version
+          cargo clippy --version
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: whisper
+
+      - name: cargo-deny
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny@0.20.2
+
+      - name: the tiny model's SHA-256
+        id: tiny
+        run: |
+          sha=$(awk '/^\[whisper\.tiny\]/ { in_tiny = 1; next } /^\[/ { in_tiny = 0 }
+            in_tiny && $1 == "sha256" { gsub(/"/, "", $3); print $3 }' models/registry.toml)
+          test -n "$sha"
+          echo "sha256=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: the tiny model, from the cache
+        id: model
+        uses: actions/cache@v4
+        with:
+          path: models/whisper/ggml-tiny.bin
+          key: whisper-ggml-tiny-${{ steps.tiny.outputs.sha256 }}
+
+      - name: the tiny model, downloaded and checked
+        if: steps.model.outputs.cache-hit != 'true'
+        run: cargo run -q -p parley-cli -- whisper download tiny
+
+      - name: licences with every feature
+        run: cargo deny --all-features check licenses
+
+      - name: clippy with local Whisper
+        run: cargo clippy -p parley-audio --features local-whisper --all-targets -- -D warnings
+
+      - name: tests with local Whisper
+        # --show-output prints the speaking gate's mean (or its skip line) in the log.
+        run: cargo test -p parley-audio --features local-whisper -- --show-output

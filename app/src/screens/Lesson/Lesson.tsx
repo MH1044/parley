@@ -10,11 +10,16 @@ import {
   onAiStatus,
   sessionSkip,
   settingsGet,
+  speakCheck,
+  speakingStatus,
   ttsPrefetch,
+  type AppError,
   type Exercise,
   type Grade,
   type LessonStarted,
   type LessonSummary,
+  type Recording,
+  type SpeakResult,
 } from '../../api/commands'
 import AiBanner from '../../components/AiBanner'
 import AiSetupDialog from '../../components/AiSetupDialog'
@@ -61,6 +66,11 @@ function answerInTarget(exercise: Exercise): string | null {
  * with Play prompts aloud on, a prompt in the course language plays once when shown, and the
  * correct answer once on the result sheet when it is in the course language. Can't listen now
  * skips this and every later listening exercise of the lesson, with no grade.
+ *
+ * Speaking (module 10): a speaking exercise is answered with a take; Check sends it to be
+ * transcribed and scored, and the result sheet shows its grade. Can't speak now skips this and
+ * every later speaking exercise of the lesson with no grade, and so does a lesson opened while
+ * speaking exercises are off, skipped for the hour, or without a microphone.
  */
 export default function Lesson({ started, lang, onExit }: Props) {
   const exercises = started.exercises
@@ -76,6 +86,17 @@ export default function Lesson({ started, lang, onExit }: Props) {
   const [autoplay, setAutoplay] = useState(false)
   // Can't listen now was chosen: listening exercises are skipped for the rest of the lesson.
   const [listenOff, setListenOff] = useState(false)
+  // Speaking exercises are skipped for the rest of the lesson (Can't speak now, speaking off, no
+  // microphone).
+  const [speakOff, setSpeakOff] = useState(false)
+  // The take of the speaking exercise on screen, its checked result, and what went wrong.
+  const [take, setTake] = useState<Recording | null>(null)
+  const [speakResult, setSpeakResult] = useState<SpeakResult | null>(null)
+  const [speakError, setSpeakError] = useState<AppError | null>(null)
+  // `speaking.pass_threshold`, for the score line.
+  const [passMark, setPassMark] = useState(0.8)
+  // The exercise shown, the skips and the grade, for the callbacks of commands that answer later.
+  const latest = useRef({ index: 0, listenOff: false, graded: false })
   // The AI judge is deciding the answer (a translation's submission, or Check with AI).
   const [checking, setChecking] = useState(false)
   const [explain, setExplain] = useState<ExplainView | null>(null)
@@ -95,6 +116,10 @@ export default function Lesson({ started, lang, onExit }: Props) {
     onScreen.current = exercises[index]?.id ?? null
   }, [index, exercises])
 
+  useEffect(() => {
+    latest.current = { index, listenOff, graded: grade !== null || speakResult !== null }
+  })
+
   // The status arrives after every AI call; the 402 link's label follows its claim state.
   useEffect(() => {
     let cancelled = false
@@ -109,17 +134,35 @@ export default function Lesson({ started, lang, onExit }: Props) {
 
   useEffect(() => {
     let cancelled = false
+    const speaking = exercises.some((shown) => shown.type === 'speak')
     settingsGet().then(
       (settings) => {
         if (cancelled) return
         if (settings?.answer_input === 'word_bank') setWordBank(true)
         if (settings?.audio?.autoplay) setAutoplay(true)
+        if (typeof settings?.speaking?.pass_threshold === 'number') {
+          setPassMark(settings.speaking.pass_threshold)
+        }
+        if (speaking && settings?.speaking?.enabled === false) speakingOff()
       },
       () => {},
     )
+    // Only a lesson with speaking exercises asks whether they can be done now.
+    if (speaking) {
+      speakingStatus().then(
+        (status) => {
+          if (cancelled || !status) return
+          const skipped = status.speak_off_until !== null && status.speak_off_until > Date.now()
+          if (skipped || !status.microphone) speakingOff()
+        },
+        () => {},
+      )
+    }
     return () => {
       cancelled = true
     }
+    // The lesson's exercises never change while it runs; speakingOff reads the latest state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Each exercise shown asks for the next one's sentence to be fetched ahead; a failure is
@@ -132,6 +175,10 @@ export default function Lesson({ started, lang, onExit }: Props) {
 
   async function check() {
     if (busy || grade || !exercise) return
+    if (exercise.type === 'speak') {
+      await checkSpeech(false)
+      return
+    }
     const answer = answerOf(exercise, draft, wordBank)
     if (!answer) {
       setError(
@@ -162,6 +209,70 @@ export default function Lesson({ started, lang, onExit }: Props) {
       setBusy(false)
       setChecking(false)
     }
+  }
+
+  /**
+   * Check on a speaking exercise: the take is transcribed (by the provider, or by the local model
+   * with `local`) and scored, and the grade shows on the result sheet. No consent yet opens the
+   * AI setup dialog and checks again after its Continue.
+   */
+  async function checkSpeech(local: boolean) {
+    if (busy || !exercise || exercise.type !== 'speak') return
+    if (!take) {
+      setSpeakError({ code: '', message: t('speak.record_first'), action: null })
+      return
+    }
+    const exerciseId = exercise.id
+    setBusy(true)
+    setChecking(true)
+    setSpeakError(null)
+    try {
+      const result = await speakCheck(started.session_id, exerciseId, take.id, local)
+      if (onScreen.current !== exerciseId || !result) return
+      setSpeakResult(result)
+      setGrade(result.grade)
+    } catch (reason) {
+      if (onScreen.current !== exerciseId) return
+      const failed = asAppError(reason) ?? { code: '', message: errorMessage(reason), action: null }
+      if (failed.code === 'needs_consent') {
+        askForSetup(() => void checkSpeech(local))
+      } else {
+        setSpeakError(failed)
+      }
+    } finally {
+      setBusy(false)
+      setChecking(false)
+    }
+  }
+
+  /** Try again after a result: the take and the result go, and a new take is checked again. */
+  function trySpeakingAgain() {
+    setTake(null)
+    setSpeakResult(null)
+    setSpeakError(null)
+    setGrade(null)
+  }
+
+  /**
+   * Speaking exercises are off for the rest of the lesson; the one on screen, unanswered, is
+   * skipped at once. Called when the lesson learns it from the settings or the speaking status.
+   */
+  function speakingOff() {
+    setSpeakOff(true)
+    const { index: current, listenOff: listening, graded } = latest.current
+    if (exercises[current]?.type === 'speak' && !graded) goTo(after(current, listening, true))
+  }
+
+  /** Can't speak now: off for an hour, and this lesson goes on without its speaking exercises. */
+  async function cantSpeak() {
+    if (busy || speakResult) return
+    try {
+      await sessionSkip('speak')
+    } catch {
+      // The lesson skips them all the same.
+    }
+    setSpeakOff(true)
+    goTo(after(index, listenOff, true))
   }
 
   /** Opens the AI setup dialog; its Continue runs `action`, Not now leaves things as they are. */
@@ -242,10 +353,14 @@ export default function Lesson({ started, lang, onExit }: Props) {
     }
   }
 
-  /** The exercise after `from`, past the listening ones while they are skipped. */
-  function after(from: number, skipListening: boolean): number {
+  /** The exercise after `from`, past the listening and speaking ones while they are skipped. */
+  function after(from: number, skipListening: boolean, skipSpeaking: boolean): number {
     let to = from + 1
-    while (skipListening && to < exercises.length && exercises[to].type === 'listen_type') {
+    while (
+      to < exercises.length &&
+      ((skipListening && exercises[to].type === 'listen_type') ||
+        (skipSpeaking && exercises[to].type === 'speak'))
+    ) {
       to += 1
     }
     return to
@@ -260,6 +375,9 @@ export default function Lesson({ started, lang, onExit }: Props) {
       setGrade(null)
       setError(null)
       setExplain(null)
+      setTake(null)
+      setSpeakResult(null)
+      setSpeakError(null)
     } else {
       void finish()
     }
@@ -267,7 +385,7 @@ export default function Lesson({ started, lang, onExit }: Props) {
 
   function next() {
     if (busy) return
-    goTo(after(index, listenOff))
+    goTo(after(index, listenOff, speakOff))
   }
 
   /** Can't listen now: off for an hour, and this lesson goes on without its listening exercises. */
@@ -279,7 +397,7 @@ export default function Lesson({ started, lang, onExit }: Props) {
       // The lesson skips them all the same.
     }
     setListenOff(true)
-    goTo(after(index, true))
+    goTo(after(index, true, speakOff))
   }
 
   // The keyboard, while an exercise is on screen. Enter is taken from any focused element, and
@@ -310,6 +428,11 @@ export default function Lesson({ started, lang, onExit }: Props) {
         if (grade) {
           event.preventDefault()
           next()
+        } else if (exercise.type === 'speak') {
+          if (take) {
+            event.preventDefault()
+            void checkSpeech(false)
+          }
         } else if (answerOf(exercise, draft, wordBank)) {
           event.preventDefault()
           void check()
@@ -364,6 +487,22 @@ export default function Lesson({ started, lang, onExit }: Props) {
           sessionId={started.session_id || null}
           autoPlay={autoplay}
           onCantListen={() => void cantListen()}
+          speak={{
+            take,
+            onTake: setTake,
+            result: speakResult,
+            passMark,
+            error: speakError,
+            onError: setSpeakError,
+            busy,
+            keyboard: !quitting && !setup && !summary,
+            claimState,
+            onUseLocal: () => void checkSpeech(true),
+            onRetry: () => void checkSpeech(false),
+            onTryAgain: trySpeakingAgain,
+            onCantSpeak: () => void cantSpeak(),
+            onStatus: (status) => setClaimState(status.claim_state),
+          }}
         />
       ) : null}
       {error && (
@@ -384,7 +523,7 @@ export default function Lesson({ started, lang, onExit }: Props) {
           onIWasRight={() => void iWasRight()}
           onContinue={next}
           onCheckWithAi={() => void checkWithAi()}
-          onExplain={() => void explainThis()}
+          onExplain={exercise?.type === 'speak' ? undefined : () => void explainThis()}
           onStatus={(status) => setClaimState(status.claim_state)}
           answerPlay={
             exercise && grade && answerInTarget(exercise) ? (

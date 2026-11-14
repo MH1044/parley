@@ -279,11 +279,13 @@ impl Parley {
 
     /// The plan of a skill's lesson now: learn mode introduces new items, review mode none. The
     /// first two `translate_to_en` entries turn into `listen_type` while listening is available
-    /// for the language (module 09: a voice exists and **Can't listen now** is not on).
+    /// for the language (module 09: a voice exists and **Can't listen now** is not on), and up to
+    /// two short `translate_to_target` phrase entries into `speak` while speaking is (module 10:
+    /// a microphone, a transcriber the learner can use, and **Can't speak now** not on).
     fn plan_for(&mut self, lang: Lang, skill_id: &str, learn: bool) -> Result<Plan, AppError> {
         let capabilities = Capabilities {
             audio_out: self.listen_available(lang),
-            ..Capabilities::default()
+            mic: self.speak_available(lang),
         };
         let request = ComposeRequest {
             lang,
@@ -730,8 +732,16 @@ impl Parley {
             .map_err(run_error)
     }
 
-    /// Finishes a run: XP, the day's credit, the streak and the weekly record (module 03).
+    /// Finishes a run: XP, the day's credit, the streak and the weekly record (module 03). Then,
+    /// whatever the result, the speaking takes are removed unless **Keep my recordings** is on
+    /// (module 10).
     pub fn lesson_finish(&mut self, session_id: &str) -> Result<LessonSummary, AppError> {
+        let finished = self.finish_run(session_id);
+        self.remove_takes_unless_kept();
+        finished
+    }
+
+    fn finish_run(&mut self, session_id: &str) -> Result<LessonSummary, AppError> {
         if self.story_runs.contains_key(session_id) {
             return self.story_finish(session_id);
         }

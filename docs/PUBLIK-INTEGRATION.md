@@ -145,8 +145,8 @@ app token. Use your own key for now." Each offers **Use my own key** and **Use a
 
 ## 5. Feature map
 
-Cost per action is the planning figure from section 8 (P6 and P10 are pass-through estimates; P5 is
-the measured charge of one sentence).
+Cost per action is the planning figure from section 8 (P10 is a pass-through estimate; P5 and P6
+are measured: the charge of one sentence and of one take).
 
 | Row | Feature | Trigger | Endpoint | Tier | Sent | Back | Cache key input | Cost per action |
 |---|---|---|---|---|---|---|---|---|
@@ -156,7 +156,7 @@ the measured charge of one sentence).
 | P3 | Answer judge (F13) | free answer not matched offline | `/chat/completions` | fast | source sentence, accepted answers, the answer | verdict JSON | direction, source, accepted, answer | $0.00015 |
 | P4 | Explain my answer (F14) | "Explain" | `/chat/completions` | fast | exercise, expected, answer, verdict, grammar note | explanation JSON | exercise, answer, verdict | $0.00022 |
 | P5 | Natural voice (F15) | an audio exercise, or replay | `/audio/speech` | pass-through | one sentence | MP3 | text, voice, speed | $0.00054 (measured, `tts-1`, `alloy`) |
-| P6 | Speaking check (F16) | "Check" after recording | `/audio/transcriptions` | pass-through | the recording, 16 kHz mono WAV | text | audio hash, language (session memory only) | about $0.00040 (estimate) |
+| P6 | Speaking check (F16) | "Check" after recording | `/audio/transcriptions` | pass-through | the recording, 16 kHz mono WAV | text | audio hash, language (session memory only) | $0.00054 (measured, `gpt-4o-mini-transcribe`) |
 | P7 | Role-play turn (F17) | "Send" | `/chat/completions`, streamed | balanced | scenario, goals, known lemmas, history, the turn | reply JSON | the whole message list | $0.0049 average |
 | P8 | Role-play summary (F17) | "End" | `/chat/completions` | balanced | transcript, goals | summary JSON | transcript | $0.0073 |
 | P9 | Photo to vocabulary (F18) | "Find words" | `/chat/completions` with image | balanced | the resized photo | objects JSON | image hash, language | $0.0093 (estimate: the image counted as 1,200 words) |
@@ -503,13 +503,17 @@ the cache. Streaming is not used; one sentence is small.
 ### 6.8 P6 Speaking check (`POST /audio/transcriptions`, timeout 30 s)
 
 Multipart fields: `file` (`take.wav`, `audio/wav`, 16 kHz mono 16-bit PCM, at most 15 s = 480,044
-bytes), `model` (`{transcribe_model}` from the module 10 live check), `language` (`es`, `fr` or
-`de`), `response_format` `json`, `temperature` `0`. The expected sentence is never sent as a
-prompt, so recognition is not biased towards it. Response `{"text": "..."}`, schema
-`{"type":"object","required":["text"],"properties":{"text":{"type":"string","maxLength":2000}}}`.
-Empty text → "We didn't hear anything. Try again a little closer to the microphone." Scoring is
-local (module 10). `transcribe_model` is the id `GET /models` lists for `/audio/transcriptions`.
-Cache input: `{"audio_sha256", "language"}`, in session memory only (§6.1).
+bytes), `model` (`gpt-4o-mini-transcribe` on publik API; `ai.own_key.transcribe_model` on the
+learner's own key), `language` (`es`, `fr` or `de`), `response_format` `json`, `temperature` `0`,
+written in that order before `file`. The expected sentence is never sent as a prompt, so
+recognition is not biased towards it. Response `{"text": "..."}`, schema
+`{"type":"object","required":["text"],"properties":{"text":{"type":"string","maxLength":2000}}}`
+(`schemas/ai/transcribe.v1.schema.json`). Empty text → "We didn't hear anything. Try again a little
+closer to the microphone." Scoring is local (module 10). `GET /models` lists no audio id, so the
+setup run of 2026-11-12 probed the standard id by maintainer decision (module 06 Design notes):
+`gpt-4o-mini-transcribe` with `language=es`, `response_format=json` and `temperature=0` returned
+the spoken sentence exactly and charged 538 micros. Cache input: `{"audio_sha256", "language"}`,
+in session memory only (§6.1).
 
 ### 6.9 P7 Role-play turn (`prompts/roleplay_turn.v1.md`, balanced, streamed, max_tokens 400, timeout 30 s, first byte 10 s, temperature 0.8)
 
@@ -728,15 +732,19 @@ recorded, and the setup run's until it has one: "Natural voices cost about $0.00
 Publik's: transcription $0.006 per minute (OpenAI's `whisper-1` and `gpt-4o-transcribe`;
 `gpt-4o-mini-transcribe` is $0.003, per costgoat.com, 5 September 2026), and speech by the minute
 about $0.015 per minute of audio (`gpt-4o-mini-tts`, OpenAI developer forum, March 2025), which the
-daily totals below still use, because a reply read aloud is longer than one lesson sentence. Per
-action: P6, a 4 s take, 4 ÷ 60 × $0.006 = $0.00040. Module 10 measures P6 with
-`x-publik-charge-micros` and replaces that figure here and in the UI.
+daily totals below still use, because a reply read aloud is longer than one lesson sentence.
+**Speaking, measured:** one take of `gpt-4o-mini-transcribe` was charged 538 micros ($0.00054) in
+the same setup run, so P6 is $0.00054 per action, in place of the estimate of a 4 s take at the
+per-minute price (4 ÷ 60 × $0.006 = $0.00040). Ten takes were not measured: each install measures
+its own from `x-publik-charge-micros`, and Settings > Speaking shows its mean, or the setup run's
+until it has one: "Speaking checks cost about $0.00054 a take (measured)."
 
 A daily learner: 2 lessons (2 × $0.015 = $0.030), 20 judgements (20 × $0.00015 = $0.0030), 3
 explanations (3 × $0.00022 = $0.00066), one 10-turn conversation with its summary ($0.049 + $0.0073
 = $0.056): $0.030 + $0.0030 + $0.00066 + $0.056 = **$0.090 of chat a day**. Audio: 10 speaking
 checks of 4 s and 10 spoken turns of 5 s is 90 s = 1.5 minutes of transcription (1.5 × $0.006 =
-$0.0090); 20 new lesson sentences of 2.5 s and 10 replies of 12 s is 170 s = 2.8 minutes of speech
+$0.0090, still the per-minute estimate, because spoken turns are module 11's; at the measured
+$0.00054 a take, the 10 speaking checks alone are 10 × $0.00054 = $0.0054); 20 new lesson sentences of 2.5 s and 10 replies of 12 s is 170 s = 2.8 minutes of speech
 (2.8 × $0.015 = $0.042, still the per-minute estimate; at the measured $0.00054 a sentence the 20
 lesson sentences alone are 20 × $0.00054 = $0.011).
 
@@ -745,7 +753,7 @@ lesson sentences alone are 20 × $0.00054 = $0.011).
 | publik API for chat and transcription, OS voices (recommended default) | $0.090 + $0.0090 = $0.099 | $2.97 | $1.98 |
 | publik API for everything, natural voices on | $0.099 + $0.042 = $0.14 | $4.20 | $2.80 |
 | publik API for chat, local Whisper, OS voices | $0.090 | $2.70 | $1.80 |
-| Lighter learner: 2 lessons, 20 judgements, 3 explanations, 10 speaking checks (0.67 minutes, $0.0040), no conversation | $0.030 + $0.0030 + $0.00066 + $0.0040 = $0.038 | $1.14 | $0.76 |
+| Lighter learner: 2 lessons, 20 judgements, 3 explanations, 10 speaking checks (10 × $0.00054 = $0.0054, measured), no conversation | $0.030 + $0.0030 + $0.00066 + $0.0054 = $0.039 | $1.17 | $0.78 |
 
 Duolingo Super is $16.99 a month. Media is extra: a 20-minute episode is about $0.12 to transcribe
 (estimate) plus $0.0026 for 30 tapped translations.

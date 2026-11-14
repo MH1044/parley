@@ -2,9 +2,12 @@
 //! objects implement (OS voices, the player, the decoder that measures a clip), and the pure
 //! helpers around them. No device code lives here: the `parley-audio` crate implements the traits
 //! with `tts`, Speech Dispatcher and `rodio`, and the core's defaults ([`NoVoices`], [`NoPlayer`],
-//! [`WavDecoder`]) need no device at all, so every test runs with fakes.
+//! [`WavDecoder`]) need no device at all, so every test runs with fakes. Module 10 adds the
+//! microphone ([`Capture`]) and local transcription ([`LocalTranscriber`]), gathered in
+//! [`Speaking`], whose default ([`NoCapture`], no local Whisper) needs no device either.
 
 use std::fmt;
+use std::path::Path;
 use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
@@ -12,6 +15,7 @@ use serde::{Deserialize, Serialize};
 use crate::ai::{VoicesConfig, bundled_voices};
 use crate::api::language_name;
 use crate::content::Lang;
+use crate::speech::{ModelRegistry, bundled_models};
 
 /// An installed OS voice. `lang_tag` is its BCP 47 tag as the backend reports it (`es-ES`, `es_MX`).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -265,6 +269,135 @@ pub fn no_voice_message(lang: Lang, platform: Platform) -> String {
     }
 }
 
+// Speaking (docs/modules/10-speaking-and-pronunciation.md): the microphone and local
+// transcription, as traits the `parley-audio` crate implements.
+
+/// Why a take could not be recorded.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CaptureError {
+    /// No input device exists.
+    NoDevice,
+    /// The operating system refused the microphone.
+    Permission,
+    /// Trimming found under 300 ms of speech.
+    TooQuiet,
+    /// `stop` with no capture in progress.
+    NotRecording,
+    /// Any other failure of the input device; the backend's own words, for logs only.
+    Backend(String),
+}
+
+impl fmt::Display for CaptureError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CaptureError::NoDevice => f.write_str("no input device"),
+            CaptureError::Permission => f.write_str("the microphone was refused"),
+            CaptureError::TooQuiet => f.write_str("the take holds no speech"),
+            CaptureError::NotRecording => f.write_str("nothing is being recorded"),
+            CaptureError::Backend(message) => write!(f, "audio input: {message}"),
+        }
+    }
+}
+
+impl std::error::Error for CaptureError {}
+
+/// A finished take: RIFF WAVE, 16 kHz mono 16-bit PCM, trimmed; its length in ms.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Take {
+    pub wav: Vec<u8>,
+    pub duration_ms: u64,
+}
+
+/// The microphone.
+pub trait Capture: Send + Sync {
+    /// Whether a default input device exists; opens nothing.
+    fn has_device(&self) -> bool;
+    /// Opens the default input and records until `stop`, keeping at most `max_ms` of input.
+    /// `on_level` gets the level of each 50 ms of input (dBFS, −60 to 0); `on_limit` runs once
+    /// when `max_ms` is reached. A capture in progress is discarded first. Both run on the audio
+    /// thread, so they must only pass the news on: never stop the capture or wait for a lock.
+    fn start(
+        &self,
+        max_ms: u32,
+        on_level: Box<dyn FnMut(f32) + Send>,
+        on_limit: Box<dyn FnOnce() + Send>,
+    ) -> Result<(), CaptureError>;
+    /// Stops; the take mixed to mono, resampled to 16 kHz, cut to `max_ms`, trimmed. TooQuiet
+    /// when trimming finds under 300 ms of speech; NotRecording with no capture in progress.
+    fn stop(&self) -> Result<Take, CaptureError>;
+}
+
+/// Transcription on this computer (local Whisper).
+pub trait LocalTranscriber: Send + Sync {
+    /// The text of a 16 kHz mono 16-bit WAV in `lang`, with the model file at `model`
+    /// (absolute). The error is for logs only.
+    fn transcribe(&self, model: &Path, wav: &[u8], lang: Lang) -> Result<String, String>;
+}
+
+/// No microphone (the default): `has_device` false, `start` NoDevice, `stop` NotRecording.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct NoCapture;
+
+impl Capture for NoCapture {
+    fn has_device(&self) -> bool {
+        false
+    }
+
+    fn start(
+        &self,
+        _max_ms: u32,
+        _on_level: Box<dyn FnMut(f32) + Send>,
+        _on_limit: Box<dyn FnOnce() + Send>,
+    ) -> Result<(), CaptureError> {
+        Err(CaptureError::NoDevice)
+    }
+
+    fn stop(&self) -> Result<Take, CaptureError> {
+        Err(CaptureError::NotRecording)
+    }
+}
+
+/// What the service records and transcribes with.
+#[derive(Clone)]
+pub struct Speaking {
+    pub capture: Arc<dyn Capture>,
+    /// None in a build without the `local-whisper` feature.
+    pub whisper: Option<Arc<dyn LocalTranscriber>>,
+    /// `models/registry.toml`, parsed (tests may replace it).
+    pub models: ModelRegistry,
+}
+
+impl Default for Speaking {
+    /// No microphone, no local Whisper, and the bundled model registry.
+    fn default() -> Self {
+        Speaking {
+            capture: Arc::new(NoCapture),
+            whisper: None,
+            models: bundled_models(),
+        }
+    }
+}
+
+impl fmt::Debug for Speaking {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Speaking")
+            .field("whisper", &self.whisper.is_some())
+            .field("models", &self.models)
+            .finish_non_exhaustive()
+    }
+}
+
+/// The `mic_permission` message for `platform` (docs/modules/10-speaking-and-pronunciation.md,
+/// Messages).
+pub fn mic_permission_message(platform: Platform) -> String {
+    match platform {
+        Platform::Windows => "Parley can't use the microphone. Open Settings > Privacy & security > Microphone and allow desktop apps to use it.",
+        Platform::MacOs => "Parley can't use the microphone. Open System Settings > Privacy & Security > Microphone and turn on Parley.",
+        Platform::Linux => "Parley can't use the microphone. Check that it is connected, not muted, and not in use by another app.",
+    }
+    .to_string()
+}
+
 #[cfg(test)]
 pub(crate) mod test_support {
     //! Generated WAV bytes for the core's tests.
@@ -400,6 +533,32 @@ mod tests {
             Platform::Linux
         };
         assert_eq!(Platform::current(), expected);
+    }
+
+    #[test]
+    fn speaking_defaults_to_no_microphone_and_no_local_whisper() {
+        let speaking = Speaking::default();
+        assert!(!speaking.capture.has_device());
+        assert_eq!(
+            speaking
+                .capture
+                .start(15_000, Box::new(|_| {}), Box::new(|| {})),
+            Err(CaptureError::NoDevice)
+        );
+        assert_eq!(speaking.capture.stop(), Err(CaptureError::NotRecording));
+        assert!(speaking.whisper.is_none());
+        assert_eq!(speaking.models.whisper.len(), 3);
+        assert!(format!("{speaking:?}").contains("whisper: false"));
+        assert_eq!(
+            mic_permission_message(Platform::Windows),
+            "Parley can't use the microphone. Open Settings > Privacy & security > Microphone and allow desktop apps to use it."
+        );
+        assert!(mic_permission_message(Platform::MacOs).ends_with("turn on Parley."));
+        assert!(mic_permission_message(Platform::Linux).ends_with("not in use by another app."));
+        assert_eq!(
+            CaptureError::TooQuiet.to_string(),
+            "the take holds no speech"
+        );
     }
 
     #[test]

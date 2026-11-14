@@ -1,0 +1,4 @@
+speak
+score
+{input}
+--json

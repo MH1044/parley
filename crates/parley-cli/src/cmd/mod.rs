@@ -1,7 +1,7 @@
 //! The subcommands of `parley` (docs/modules/01-content-model-and-syllabus.md,
 //! docs/modules/02-srs-and-learner-model.md, docs/modules/03-exercise-engine-and-grading.md,
 //! docs/modules/05-course-content-a1-a2.md, 07-lesson-generation.md and
-//! 08-judging-and-explanations.md, Interfaces).
+//! 08-judging-and-explanations.md and 10-speaking-and-pronunciation.md, Interfaces).
 //!
 //! Arguments are parsed by hand. Every command prints one JSON object on standard output and
 //! exits 0 on success, 1 on content errors (the JSON report is still printed) or 2 on usage
@@ -21,8 +21,10 @@ pub mod pack;
 pub mod placement;
 pub mod publik;
 pub mod report;
+pub mod speak;
 pub mod srs;
 pub mod streak;
+pub mod whisper;
 
 use std::io::Write;
 use std::path::Path;

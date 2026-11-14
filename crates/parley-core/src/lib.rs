@@ -16,7 +16,9 @@
 //! every desktop command calls), [`settings`] and [`backup`]. Module 06 adds [`ai`]: the client
 //! trait every AI feature calls, the call pipeline with its cache and idempotency keys, prompt
 //! files and their schemas. Later modules add the AI features, one file each under `ai`; module 09
-//! adds [`audio`], the traits the desktop app's speakers, OS voices and decoder implement.
+//! adds [`audio`], the traits the desktop app's speakers, OS voices and decoder implement; module
+//! 10 adds the microphone and local transcription traits to it, and [`speech`], the scoring of a
+//! speaking check.
 
 #![forbid(unsafe_code)]
 
@@ -33,5 +35,6 @@ pub mod exercise;
 pub mod game;
 pub mod grading;
 pub mod settings;
+pub mod speech;
 pub mod srs;
 pub mod store;

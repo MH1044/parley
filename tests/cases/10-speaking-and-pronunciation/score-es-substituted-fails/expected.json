@@ -1,0 +1,23 @@
+{
+  "words": [
+    {
+      "expected": "yo",
+      "heard": "yo",
+      "status": "ok"
+    },
+    {
+      "expected": "soy",
+      "heard": "es",
+      "status": "substituted"
+    },
+    {
+      "expected": "estudiante",
+      "heard": "estudiante",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 0.667,
+  "pass": false,
+  "rating": 2
+}

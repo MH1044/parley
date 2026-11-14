@@ -1,0 +1,33 @@
+{
+  "words": [
+    {
+      "expected": "quiero",
+      "heard": "quiero",
+      "status": "ok"
+    },
+    {
+      "expected": "un",
+      "heard": null,
+      "status": "missed"
+    },
+    {
+      "expected": "café",
+      "heard": "café",
+      "status": "ok"
+    },
+    {
+      "expected": "con",
+      "heard": "con",
+      "status": "ok"
+    },
+    {
+      "expected": "leche",
+      "heard": "leche",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 0.8,
+  "pass": true,
+  "rating": 3
+}

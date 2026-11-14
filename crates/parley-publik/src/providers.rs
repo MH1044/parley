@@ -295,11 +295,10 @@ impl AiClient for ProviderClient {
     fn transcribe(&self, req: TranscribeRequest) -> Result<TranscriptReply, AiError> {
         let boundary = format!("parley-{}", uuid::Uuid::new_v4().simple());
         let mut body = Vec::with_capacity(req.audio.len() + 1024);
-        for (name, value) in [
-            ("model", req.model.as_str()),
-            ("language", req.language.as_str()),
-            ("response_format", req.response_format.as_str()),
-        ] {
+        // Exactly the core's text parts of §6.8 (model, language, response_format, temperature),
+        // then the file; never a prompt part, so recognition is not biased towards the expected
+        // sentence.
+        for (name, value) in req.fields() {
             body.extend_from_slice(
                 format!(
                     "--{boundary}\r\nContent-Disposition: form-data; name=\"{name}\"\r\n\r\n{value}\r\n"
@@ -618,6 +617,7 @@ mod tests {
                 mime: "audio/wav".into(),
                 language: "es".into(),
                 response_format: "json".into(),
+                temperature: 0.0,
                 timeout_s: 5,
                 idempotency_key: None,
             })
@@ -643,6 +643,11 @@ mod tests {
         assert_eq!(body["stream"], json!(true));
         let multipart = String::from_utf8_lossy(&seen[1].body).to_string();
         assert!(multipart.contains("name=\"model\"\r\n\r\nwhisper-x\r\n"));
+        let temperature = multipart
+            .find("name=\"temperature\"\r\n\r\n0\r\n")
+            .expect("the temperature part");
+        assert!(temperature < multipart.find("name=\"file\"").unwrap());
+        assert!(!multipart.contains("name=\"prompt\""));
         assert!(multipart.contains("filename=\"take.wav\""));
         assert!(
             seen[1]

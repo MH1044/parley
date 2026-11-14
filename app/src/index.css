@@ -494,3 +494,58 @@ button.matched {
   border: 1px solid var(--wrong);
   border-radius: 0.75rem;
 }
+
+/* Speaking (module 10): the hold-to-talk button, the level meter and the words heard. Each word's
+   status has a colour, an icon and a text label, so colour is never the only signal. */
+.speak .hold {
+  min-width: 10rem;
+  padding: 0.75rem 1.25rem;
+  user-select: none;
+  touch-action: none;
+}
+
+.speak .hold.recording {
+  border-color: var(--wrong);
+  color: var(--wrong);
+}
+
+.level-meter {
+  height: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.level-meter-fill {
+  height: 100%;
+  background: var(--accent);
+}
+
+.speak-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.speak-words .word-ok {
+  color: var(--correct);
+}
+
+.speak-words .word-missed {
+  color: var(--wrong);
+}
+
+.speak-words .word-substituted {
+  color: var(--almost);
+}
+
+.speech-models .model {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}

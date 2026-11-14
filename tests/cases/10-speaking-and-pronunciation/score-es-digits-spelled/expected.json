@@ -1,0 +1,23 @@
+{
+  "words": [
+    {
+      "expected": "tengo",
+      "heard": "tengo",
+      "status": "ok"
+    },
+    {
+      "expected": "tres",
+      "heard": "tres",
+      "status": "ok"
+    },
+    {
+      "expected": "gatos",
+      "heard": "gatos",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

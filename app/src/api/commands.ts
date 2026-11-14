@@ -59,6 +59,14 @@ export const COMMANDS = [
   'tts_prefetch',
   'audio_status',
   'session_skip',
+  // Module 10: speaking and pronunciation.
+  'mic_start',
+  'mic_stop',
+  'recording_play',
+  'speak_check',
+  'whisper_models',
+  'whisper_download',
+  'speaking_status',
 ] as const
 
 export type Command = (typeof COMMANDS)[number]
@@ -71,6 +79,15 @@ export const AI_STATUS_EVENT = 'ai://status'
 
 /** The event `tts_play` emits when the clip or the OS voice it started ends. */
 export const AUDIO_ENDED_EVENT = 'audio://ended'
+
+/** The event `mic_start` emits with the level of every 50 ms of input. */
+export const MIC_LEVEL_EVENT = 'mic://level'
+
+/** The event `mic_start` emits once when the take reaches its limit. */
+export const MIC_LIMIT_EVENT = 'mic://limit'
+
+/** The event `whisper_download` reports its progress on. */
+export const MODEL_PROGRESS_EVENT = 'model://progress'
 
 // Errors -----------------------------------------------------------------------------------------
 
@@ -144,6 +161,7 @@ export interface Settings {
     transcriber: 'provider' | 'local'
     pass_threshold: number
     keep_recordings: boolean
+    whisper_model: 'tiny' | 'base' | 'small'
   }
   ai: {
     provider: 'unset' | 'publik' | 'own_key' | 'local'
@@ -518,6 +536,71 @@ export interface AudioStatus {
   listen_off_until: number | null
 }
 
+/** The result of `mic_stop`: the take's id and its length after trimming. */
+export interface Recording {
+  id: string
+  duration_ms: number
+}
+
+export type WordStatus = 'ok' | 'missed' | 'substituted'
+
+/** One expected word of a speaking check, the heard word matched with it, and its status. */
+export interface WordResult {
+  expected: string
+  heard: string | null
+  status: WordStatus
+}
+
+/** The result of `speak_check` (module 10). */
+export interface SpeakResult {
+  words: WordResult[]
+  extra: string[]
+  score: number
+  pass: boolean
+  /** The transcript, with whisper.cpp's [...] spans removed. */
+  heard: string
+  /** The grade the result sheet shows: the first scored take's when this one rated nothing. */
+  grade: Grade
+  rated: boolean
+  transcriber: 'provider' | 'local'
+  cached: boolean
+  notice: string | null
+}
+
+/** One local Whisper model of `whisper_models`. */
+export interface ModelInfo {
+  name: string
+  bytes: number
+  /** "148.0 MB". */
+  size: string
+  downloaded: boolean
+  chosen: boolean
+}
+
+/** The payload of `model://progress`. */
+export interface ModelProgress {
+  name: string
+  bytes_done: number
+  bytes_total: number
+}
+
+/** The result of `speaking_status`. */
+export interface SpeakingStatus {
+  /** "Speaking checks cost about $0.00054 a take (measured)." */
+  cost_line: string
+  /** Until when speaking exercises are off (ms since the epoch), while they are. */
+  speak_off_until: number | null
+  /** This build has local Whisper. */
+  local_available: boolean
+  /** A microphone exists. */
+  microphone: boolean
+}
+
+/** The payload of `mic://level`: the level of 50 ms of input, −60 to 0 dBFS. */
+export interface MicLevel {
+  dbfs: number
+}
+
 // Commands, in COMMANDS order --------------------------------------------------------------------
 
 /**
@@ -762,6 +845,52 @@ export function sessionSkip(kind: 'listen' | 'speak'): Promise<null> {
   return call<null>('session_skip', { kind })
 }
 
+/**
+ * Starts a take of at most `maxS` seconds (15 for an exercise). `mic://level` follows every 50 ms
+ * and `mic://limit` once at the limit.
+ */
+export function micStart(maxS: 15 | 30): Promise<null> {
+  return call<null>('mic_start', { max_s: maxS })
+}
+
+/** Stops the take; it is kept on this computer and sent nowhere. */
+export function micStop(): Promise<Recording> {
+  return call<Recording>('mic_stop', {})
+}
+
+/** Replay my take. */
+export function recordingPlay(recordingId: string): Promise<null> {
+  return call<null>('recording_play', { recording_id: recordingId })
+}
+
+/** Check: transcribes the take and scores it; `local` is Use the local model. */
+export function speakCheck(
+  sessionId: string,
+  exerciseId: string,
+  recordingId: string,
+  local: boolean,
+): Promise<SpeakResult> {
+  return call<SpeakResult>('speak_check', {
+    session_id: sessionId,
+    exercise_id: exerciseId,
+    recording_id: recordingId,
+    local,
+  })
+}
+
+export function whisperModels(): Promise<ModelInfo[]> {
+  return call<ModelInfo[]>('whisper_models', {})
+}
+
+/** Downloads a local Whisper model; progress arrives on `model://progress` (see onModelProgress). */
+export function whisperDownload(name: string): Promise<ModelInfo[]> {
+  return call<ModelInfo[]>('whisper_download', { name })
+}
+
+export function speakingStatus(): Promise<SpeakingStatus> {
+  return call<SpeakingStatus>('speaking_status', {})
+}
+
 // Events -----------------------------------------------------------------------------------------
 
 /**
@@ -788,6 +917,49 @@ export async function onPackProgress(
 export async function onAudioEnded(handler: () => void): Promise<() => void> {
   try {
     const unlisten = await listen<null>(AUDIO_ENDED_EVENT, () => handler())
+    return typeof unlisten === 'function' ? unlisten : () => {}
+  } catch {
+    return () => {}
+  }
+}
+
+/**
+ * Listens to the microphone's level while a take is recorded, until the returned function is
+ * called. Where events are not available the handler is simply never called.
+ */
+export async function onMicLevel(handler: (level: MicLevel) => void): Promise<() => void> {
+  try {
+    const unlisten = await listen<MicLevel>(MIC_LEVEL_EVENT, (event) => handler(event.payload))
+    return typeof unlisten === 'function' ? unlisten : () => {}
+  } catch {
+    return () => {}
+  }
+}
+
+/**
+ * Listens for a take reaching its limit, until the returned function is called. Where events are
+ * not available the handler is simply never called.
+ */
+export async function onMicLimit(handler: () => void): Promise<() => void> {
+  try {
+    const unlisten = await listen<unknown>(MIC_LIMIT_EVENT, () => handler())
+    return typeof unlisten === 'function' ? unlisten : () => {}
+  } catch {
+    return () => {}
+  }
+}
+
+/**
+ * Listens to a model download's progress until the returned function is called. Where events are
+ * not available the handler is simply never called.
+ */
+export async function onModelProgress(
+  handler: (progress: ModelProgress) => void,
+): Promise<() => void> {
+  try {
+    const unlisten = await listen<ModelProgress>(MODEL_PROGRESS_EVENT, (event) =>
+      handler(event.payload),
+    )
     return typeof unlisten === 'function' ? unlisten : () => {}
   } catch {
     return () => {}

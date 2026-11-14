@@ -38,6 +38,10 @@ notes saying the course awaits native-speaker review.
 - The update check: one `GET https://github.com/{repo}/releases/latest` without following the
   redirect, reading the tag from `Location`; `User-Agent: Parley/<version>` and nothing else; off in
   development builds and switchable in Settings > About.
+- Release builds enable local Whisper (`--features local-whisper`, module 10), so the release
+  runners install cmake and libclang; without it a shipped app has no offline speaking checks.
+  whisper.cpp builds for the build machine's own processor unless `GGML_NATIVE=OFF` is set, so
+  release builds set it; the Windows build of the feature is first proven there.
 - CI `macos` job running `scripts/verify` and a bundle build.
 - Usage reports to publik (maintainer decision, 2026-11-09; publik's `skills/telemetry.md` and its
   Rust file fetched again with `curl` at implementation): `app_opened` once per launch and

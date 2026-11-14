@@ -1,0 +1,28 @@
+{
+  "words": [
+    {
+      "expected": "Das",
+      "heard": "das",
+      "status": "ok"
+    },
+    {
+      "expected": "kostet",
+      "heard": "kostet",
+      "status": "ok"
+    },
+    {
+      "expected": "hundertzehn",
+      "heard": "110",
+      "status": "substituted"
+    },
+    {
+      "expected": "Euro",
+      "heard": "euro",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 0.75,
+  "pass": false,
+  "rating": 2
+}

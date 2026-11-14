@@ -1,7 +1,7 @@
 //! The AI response cache, `cache/ai.sqlite3` (docs/ARCHITECTURE.md §4;
-//! docs/PUBLIK-INTEGRATION.md §6.1): the `ai_cache`, `audio_cache`, `speech_charges` and
-//! `ai_attempts` tables, the canonical JSON of a cache key, and the idempotency key derived from
-//! it.
+//! docs/PUBLIK-INTEGRATION.md §6.1): the `ai_cache`, `audio_cache`, `speech_charges`,
+//! `transcribe_charges` and `ai_attempts` tables, the canonical JSON of a cache key, and the
+//! idempotency key derived from it.
 //!
 //! Identical input never spends twice (invariant I5): a valid answer is stored under the SHA-256 of
 //! the canonical JSON of {feature, v, provider, model, input}, and caches are per provider because
@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS audio_cache (key TEXT PRIMARY KEY, provider TEXT, voi
 CREATE TABLE IF NOT EXISTS ai_attempts (key TEXT PRIMARY KEY, attempts INTEGER);
 CREATE TABLE IF NOT EXISTS speech_charges (key TEXT PRIMARY KEY, charge_micros INTEGER NOT NULL,
   created_at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS transcribe_charges (id INTEGER PRIMARY KEY,
+  charge_micros INTEGER NOT NULL);
 ";
 
 enum Backing {
@@ -281,6 +283,29 @@ impl Cache {
         })
         .unwrap_or_default()
     }
+
+    /// Records what one speaking take was charged (module 10), usable reply or not: an amount
+    /// alone, with no key, hash, text or time, because nothing about a take is kept on disk.
+    pub fn add_transcribe_charge(&self, micros: i64) -> Result<(), StoreError> {
+        self.with(|conn| {
+            conn.execute(
+                "INSERT INTO transcribe_charges (charge_micros) VALUES (?1)",
+                params![micros],
+            )
+            .map(|_| ())
+        })
+    }
+
+    /// Every recorded take charge, in the order recorded: the speaking cost line's figures.
+    pub fn transcribe_charges(&self) -> Vec<i64> {
+        self.with(|conn| {
+            let mut stmt =
+                conn.prepare("SELECT charge_micros FROM transcribe_charges ORDER BY id")?;
+            let rows = stmt.query_map([], |row| row.get::<_, i64>(0))?;
+            rows.collect::<rusqlite::Result<Vec<i64>>>()
+        })
+        .unwrap_or_default()
+    }
 }
 
 /// Writes `value` canonically into `out`.
@@ -346,7 +371,8 @@ pub fn cache_key_json(
     }))
 }
 
-fn sha256_hex(bytes: &[u8]) -> String {
+/// SHA-256 of `bytes`, 64 lowercase hex.
+pub(crate) fn sha256_hex(bytes: &[u8]) -> String {
     Sha256::digest(bytes)
         .iter()
         .map(|b| format!("{b:02x}"))
@@ -507,6 +533,20 @@ mod tests {
             "charges outlive the rows"
         );
         assert_eq!(again.len(), 0, "the answer cache is untouched");
+    }
+
+    #[test]
+    fn take_charges_are_amounts_in_order() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("cache").join("ai.sqlite3");
+        let cache = Cache::open(&path, Box::new(Fixed)).unwrap();
+        assert!(cache.transcribe_charges().is_empty());
+        for micros in [538, 500, 538] {
+            cache.add_transcribe_charge(micros).unwrap();
+        }
+        let again = Cache::open_existing(&path, Box::new(Fixed)).unwrap();
+        assert_eq!(again.transcribe_charges(), vec![538, 500, 538]);
+        assert!(again.speech_charges().is_empty());
     }
 
     #[test]

@@ -72,6 +72,16 @@ rodio = { version = "0.23", default-features = false, features = ["playback", "m
 # OS voices on Windows (WinRT), macOS and Android; one maintainer, so ADR-0014 names the exit. Not
 # built on Linux, which speaks through Speech Dispatcher's spd-say command instead.
 tts = { version = "0.26", default-features = false }
+# The microphone (module 10): the default input device, the same version rodio plays through.
+cpal = { version = "0.18", default-features = false }
+# A take resampled to 16 kHz with a band-limited resampler; one maintainer, so ADR-0015 names the
+# exit (a windowed-sinc resampler of our own).
+rubato = "5.1"
+# 16-bit PCM WAV writing; one maintainer, so ADR-0015 names the exit (the 44-byte header by hand).
+hound = "3.5"
+# Local transcription through whisper.cpp, only with the local-whisper feature (it needs cmake and
+# libclang); one maintainer, so ADR-0015 names the exit.
+whisper-rs = "0.16"
 unicode-normalization = "0.1"
 unicode-segmentation = "1"
 # test-only

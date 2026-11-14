@@ -468,6 +468,7 @@ fn transcribe_request() -> TranscribeRequest {
         mime: "audio/wav".into(),
         language: "es".into(),
         response_format: "json".into(),
+        temperature: 0.0,
         timeout_s: 5,
         idempotency_key: Some(AUDIO_KEY.into()),
     }

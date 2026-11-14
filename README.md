@@ -13,7 +13,8 @@ see it, a free translation the offline grader cannot match is checked by an AI j
 remembered, so the same answer is accepted offline next time), and **Explain** says why an answer
 was almost right or wrong. Every sentence in the course language can be heard, at normal speed or
 slowly, through your computer's own voice or, if you choose, a natural voice; lessons include
-listen-and-type exercises. Speaking checks come next. The course covers A1 and A2 in
+listen-and-type exercises, and say-this exercises that check, word by word, a sentence you say
+into the microphone, through your AI provider or a local Whisper model. The course covers A1 and A2 in
 Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
@@ -70,6 +71,14 @@ cargo run -p parley-app
 ```
 
 Or, as one command that builds an optimised app: `npm --prefix app run desktop`.
+
+Local speaking checks (local Whisper through whisper.cpp) are an optional feature, off by default,
+because building whisper.cpp also needs cmake and libclang (on Debian and Ubuntu `sudo apt-get
+install cmake libclang-dev`):
+
+```sh
+cargo run -p parley-app --features local-whisper
+```
 
 It opens on "Welcome to Parley" and walks you through choosing a language, the course pack, a
 daily goal and the placement test; `docs/HANDBOOK.md` describes every screen. Your progress lives
@@ -268,6 +277,47 @@ the charges your own sentences have had. When a natural voice cannot be used, th
 reads the sentence instead ("Natural voice unavailable, using the system voice."); at $0.00 the
 system voice is used without asking again.
 
+## Speaking
+
+A lesson includes up to two **Say this** exercises while speaking is possible: a microphone,
+**Speaking exercises** on (Settings > Speaking), and a way to check them: your AI provider (publik
+API, or your own key with a transcription model) or a downloaded local model. Hold **Hold to talk**
+(or Space) and say the sentence; the level meter shows the microphone hears you, and a take stops
+by itself at 15 seconds. **Replay my take** plays it back. **Check** sends that one take (16 kHz
+mono WAV with the silence trimmed, and never the expected sentence) to be transcribed, and scores
+it on your computer: "Parley heard: …", each word right, missed or heard as another (each with a
+colour, an icon and a text label), the extra words, and "Score 80% (pass mark 80%)". Digits count
+as the numbers they are (`3` is `tres`), and accents, hyphens and case are forgiven. The first
+checked take of an exercise rates its card; **Try again** is practice. **Play the voice** plays the
+sentence, and **Can't speak now** skips speaking exercises for an hour, with no grade.
+
+Takes stay on your computer, in `cache/recordings/`, and are removed when the lesson ends, when
+Parley quits and at the next launch, unless **Keep my recordings** is on. Settings > Speaking holds
+**Speaking exercises**, **Check my speaking with** (**AI provider** or **Local model**), the local
+models (tiny 77.7 MB, base 148.0 MB, small 487.6 MB) with **Download** and **Use**, the **Pass
+mark** (50% to 100%, 80% by default), **Keep my recordings**, and what a check costs ("Speaking
+checks cost about $0.00054 a take (measured)."). A local model is downloaded only when you ask,
+and kept only once its size and SHA-256 match `models/registry.toml`; offline, with your provider
+chosen, a downloaded model checks the take instead ("You're offline, so the local model checked
+this."). A build without local Whisper says "Local speech checks are not available in this build."
+and never sends a take to a provider you did not choose.
+
+`parley speak score input.json` scores a transcript against a sentence the same way, offline. With
+`{"lang": "es", "expected": "Tengo tres gatos y un perro.", "heard": "pues tengo 3 gatos y perro"}`:
+
+```sh
+cargo run -q -p parley-cli -- speak score input.json
+```
+
+prints the word missed, the extra word, and a pass at the 0.8 pass mark:
+
+```json
+{"words":[{"expected":"Tengo","heard":"tengo","status":"ok"},{"expected":"tres","heard":"tres","status":"ok"},{"expected":"gatos","heard":"gatos","status":"ok"},{"expected":"y","heard":"y","status":"ok"},{"expected":"un","heard":null,"status":"missed"},{"expected":"perro","heard":"perro","status":"ok"}],"extra":["pues"],"score":0.8333333333333334,"pass":true,"rating":3}
+```
+
+`parley whisper download base` downloads one local model into `models/whisper/` (or `--dir`) and
+checks it; it reaches the network (148 MB for `base`).
+
 ## AI providers
 
 Parley works without AI, and never asks about it at launch or during onboarding. When you choose
@@ -319,6 +369,7 @@ opening a window.
 | `crates/parley-cli` | The `parley` command-line tool and the `parley-fixtures` generator |
 | `app/` | The React and TypeScript interface; `app/src-tauri/` is the Tauri shell |
 | `content/` | The course: one folder per language with the syllabus, id lock, forms table, number words and exclude list; the pack lock file; `voices.toml`, the natural voice of each language; licence and attribution |
+| `models/registry.toml` | The local Whisper models: URL, size and SHA-256 of each; the files themselves are downloaded on request into the app data folder and never committed |
 | `schemas/` | JSON Schemas for the content formats, lessons, settings and backups; `schemas/ai/` one per AI answer |
 | `prompts/` | The AI prompts, one file per feature and version (`ping.v1.md` the connection check, `lesson.v1.md` fresh lessons, `story.v1.md` graded stories, `judge.v1.md` answer checks, `explain.v1.md` explanations), compiled into the app |
 | `scripts/` | `verify`, the licence gates, the release-notes check, `publik-proof` (the maintainer's one real publik API call); `gates/` holds the quality gates (`scripts/gates/run`) and their thresholds |

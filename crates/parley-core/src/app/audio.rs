@@ -167,7 +167,7 @@ fn too_long() -> AppError {
     )
 }
 
-fn cannot_play() -> AppError {
+pub(super) fn cannot_play() -> AppError {
     AppError::new(
         ErrorCode::NoVoice,
         "Parley could not play the sound. Check that a speaker or headphones are connected.",

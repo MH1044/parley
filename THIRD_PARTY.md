@@ -17,6 +17,10 @@ get a row here when a module adds them.
 | keyring, with its platform stores (keyring-core, windows-native-keyring-store, apple-native-keyring-store, zbus-secret-service-keyring-store) | MIT OR Apache-2.0 | The learner's own key in the operating system's keychain; on Linux the Secret Service is reached over zbus (MIT), so no system D-Bus library is needed (ADR-0013) |
 | uuid, with v4 | Apache-2.0 OR MIT | The random install id of the publik API reference module |
 | rodio 0.23, with the playback, MP3 and WAV features only | MIT OR Apache-2.0 | Playing sentences through the default output device, and decoding a natural-voice clip to measure it and to stretch it for slow mode; it brings cpal (Apache-2.0; ALSA on Linux) and Symphonia's MP3, WAV and PCM parts (MPL-2.0) |
+| cpal 0.18, default features off (a direct dependency from module 10) | Apache-2.0 | Recording a take from the default input device (WASAPI, CoreAudio, ALSA, AAudio); already in the tree under rodio for playback |
+| rubato 5.1 | MIT OR Apache-2.0 | Resampling a take to 16 kHz with its FFT resampler; one maintainer, so ADR-0015 names the exit (a windowed-sinc resampler of our own). It brings audioadapter and audioadapter-buffers (MIT OR Apache-2.0), realfft (MIT), rustfft (MIT OR Apache-2.0) and windowfunctions (MIT) |
+| hound 3.5 | Apache-2.0 | Writing a take as 16-bit PCM WAV, and reading one for local Whisper; one maintainer, so ADR-0015 names the exit (the 44-byte header by hand) |
+| whisper-rs 0.16, only with the feature `local-whisper` (off by default) | Unlicense | Local speaking checks through whisper.cpp; one maintainer, so ADR-0015 names the exit (whisper.cpp's C API through our own bindings, or provider transcription only). It brings whisper-rs-sys 0.15 (Unlicense), which builds the whisper.cpp sources it carries (MIT, Georgi Gerganov and contributors) with cmake and generates bindings with bindgen (BSD-3-Clause) at build time |
 | tts 0.26, default features off (Windows, macOS and Android only) | MIT | The operating system's voices: WinRT on Windows, AVFoundation on macOS, Android's TextToSpeech; one maintainer, so ADR-0014 names the exit (the platform speech APIs directly). It brings windows 0.58 (MIT OR Apache-2.0) and oxilangtag (MIT). Linux speaks through Speech Dispatcher's `spd-say` command, run as a separate program and not linked |
 | windows-sys (Windows only) | MIT OR Apache-2.0 | `AttachConsole`, so a release build started with `PUBLIK_SELF_TEST` prints its line in the console that started it |
 | chrono, with the clock feature only | MIT OR Apache-2.0 | The local UTC offset of the desktop clock, so a day of the streak is the learner's day |
@@ -66,8 +70,16 @@ get a row here when a module adds them.
 
 ## Models
 
-None yet. Local speech-recognition models arrive with module 10 and are pinned by URL and SHA-256
-in `models/registry.toml`, never committed.
+| Model | Licence | Used for |
+|---|---|---|
+| Whisper `tiny` as whisper.cpp's `ggml-tiny.bin` (77,691,713 bytes) | MIT (OpenAI's weights; the ggml conversion, MIT) | Local speaking checks, the smallest and quickest; the model the CI job `whisper` tests with |
+| Whisper `base` as `ggml-base.bin` (147,951,465 bytes) | MIT (OpenAI's weights; the ggml conversion, MIT) | Local speaking checks: the default model and gate G4's |
+| Whisper `small` as `ggml-small.bin` (487,601,967 bytes) | MIT (OpenAI's weights; the ggml conversion, MIT) | Local speaking checks, the most accurate of the three |
+
+Each is a file of the Hugging Face repository `ggerganov/whisper.cpp` at commit
+`5359861c739e955e79d9a303bcbc70fb988958b1`, pinned by URL, size and SHA-256 in
+`models/registry.toml`, downloaded only when the learner asks (Settings > Speaking, or
+`parley whisper download`), kept only once it matches, and never committed or shipped.
 
 ## Datasets
 

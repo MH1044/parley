@@ -14,6 +14,8 @@ use crate::content::{Cefr, Lang};
 use crate::env::{LocalDate, local_date_at};
 use crate::error::AppError;
 use crate::exercise::{Exercise, Origin};
+use crate::grading::Grade;
+use crate::speech::SpeakScore;
 use crate::srs::{DAY_MS, SkillState};
 
 /// Every Tauri command the core backs, in the order `app/src/api/commands.ts` lists them.
@@ -68,6 +70,14 @@ pub const COMMANDS: &[&str] = &[
     "tts_prefetch",
     "audio_status",
     "session_skip",
+    // Module 10: speaking and pronunciation.
+    "mic_start",
+    "mic_stop",
+    "recording_play",
+    "speak_check",
+    "whisper_models",
+    "whisper_download",
+    "speaking_status",
 ];
 
 /// The event every AI command that changes the status emits it on, with the [`crate::ai::AiStatus`].
@@ -75,6 +85,15 @@ pub const AI_STATUS_EVENT: &str = "ai://status";
 
 /// The event `tts_play` emits when the clip or the OS voice it started ends (module 09).
 pub const AUDIO_ENDED_EVENT: &str = "audio://ended";
+
+/// The event `mic_start` emits with the level of every 50 ms of input, a [`MicLevel`] (module 10).
+pub const MIC_LEVEL_EVENT: &str = "mic://level";
+
+/// The event `mic_start` emits once, with `{}`, when the take reaches its limit (module 10).
+pub const MIC_LIMIT_EVENT: &str = "mic://limit";
+
+/// The event `whisper_download` reports its progress on, a [`ModelProgress`] (module 10).
+pub const MODEL_PROGRESS_EVENT: &str = "model://progress";
 
 /// The version shared by every crate and the app (the workspace version in Cargo.toml).
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -431,6 +450,75 @@ pub struct AudioStatus {
     pub listen_off_until: Option<i64>,
 }
 
+/// Result of `mic_stop`: the take's id (a version-4 UUID) and its length after trimming.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Recording {
+    pub id: String,
+    pub duration_ms: u64,
+}
+
+/// Which transcriber answered a speaking check.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Transcriber {
+    Provider,
+    Local,
+}
+
+/// Result of `speak_check`: the words, extra words, score and pass of the take, what was heard,
+/// the grade the result sheet shows (the first scored take's when this one rated nothing), and
+/// how the take was checked.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SpeakResult {
+    #[serde(flatten)]
+    pub scored: SpeakScore,
+    /// The transcript as `heard_text` gives it.
+    pub heard: String,
+    pub grade: Grade,
+    /// This take reviewed the card (the first scored take of the exercise).
+    pub rated: bool,
+    pub transcriber: Transcriber,
+    /// The transcript was held from an earlier check of the same take: no request was made.
+    pub cached: bool,
+    pub notice: Option<String>,
+}
+
+/// One local Whisper model of `whisper_models`: its size (`megabytes(bytes)`), whether it is on
+/// this computer, and whether `speaking.whisper_model` names it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelInfo {
+    pub name: String,
+    pub bytes: u64,
+    pub size: String,
+    pub downloaded: bool,
+    pub chosen: bool,
+}
+
+/// The payload of the `model://progress` event.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelProgress {
+    pub name: String,
+    pub bytes_done: u64,
+    pub bytes_total: u64,
+}
+
+/// Result of `speaking_status`: the measured cost line, until when speaking exercises are off
+/// (ms since the epoch) while they are, whether local Whisper is in this build, and whether a
+/// microphone exists.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SpeakingStatus {
+    pub cost_line: String,
+    pub speak_off_until: Option<i64>,
+    pub local_available: bool,
+    pub microphone: bool,
+}
+
+/// The payload of the `mic://level` event: the level of 50 ms of input, −60 to 0 dBFS.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub struct MicLevel {
+    pub dbfs: f32,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -499,7 +587,7 @@ mod tests {
             serde_json::to_string(&status).unwrap(),
             r#"{"lang":"es","state":"not_published","version":null,"bytes":null,"size":null}"#
         );
-        assert_eq!(COMMANDS.len(), 46);
+        assert_eq!(COMMANDS.len(), 53);
         assert_eq!(COMMANDS[0], "app_start");
         assert_eq!(COMMANDS[22], "backup_import");
         assert_eq!(COMMANDS[23], "ai_status");
@@ -508,7 +596,7 @@ mod tests {
         assert_eq!(COMMANDS[37], "ai_lesson_checks");
         assert_eq!(&COMMANDS[38..40], ["exercise_check", "explain_answer"]);
         assert_eq!(
-            &COMMANDS[40..],
+            &COMMANDS[40..46],
             [
                 "voices_list",
                 "tts_play",
@@ -517,6 +605,22 @@ mod tests {
                 "audio_status",
                 "session_skip"
             ]
+        );
+        assert_eq!(
+            &COMMANDS[46..],
+            [
+                "mic_start",
+                "mic_stop",
+                "recording_play",
+                "speak_check",
+                "whisper_models",
+                "whisper_download",
+                "speaking_status"
+            ]
+        );
+        assert_eq!(
+            (MIC_LEVEL_EVENT, MIC_LIMIT_EVENT, MODEL_PROGRESS_EVENT),
+            ("mic://level", "mic://limit", "model://progress")
         );
         let played = TtsPlayed {
             source: VoiceSource::Os,

@@ -36,8 +36,12 @@ describe; the diff is read line by line.
 - Local Whisper tests: `cargo test -p parley-audio --features local-whisper` (skip with
   "Whisper model not found at models/whisper/ggml-tiny.bin; run parley whisper download tiny" when
   the model is absent).
-- Gates: `scripts/gates/run` (offline gates); `scripts/gates/run --live G1` (sets `PARLEY_LIVE=1`;
-  costs are listed per gate; only the maintainer runs live gates). PowerShell: `scripts/gates/run.ps1`.
+- Gates: `scripts/gates/run` (offline gates, the parley-audio ones included; G4 then prints its
+  skip line); `scripts/gates/run --whisper` (the same with the parley-audio gates built with
+  `--features local-whisper`, which needs cmake and libclang, and G4 run with
+  `models/whisper/ggml-base.bin`); `scripts/gates/run --live G1` (sets `PARLEY_LIVE=1`; costs are
+  listed per gate; only the maintainer runs live gates). PowerShell: `scripts/gates/run.ps1`, with the
+  same arguments.
 
 ## 3. Rules
 
@@ -90,7 +94,7 @@ Thresholds marked "first run" are set by the first run that measures them, recor
 | G1 lessons (live) | 30 lesson requests: 10 skills × es, fr, de on publik-balanced | ≥ 80% exercises valid; p95 ≤ 20 s | about $0.45 | recorded responses replayed through validators |
 | G2 judge (live) | `tests/gates/judge-set.jsonl`: 300 labelled answers, 100 per language | ≥ 90% agreement; ≤ 3% false accepts (of the answers labelled almost or wrong); p95 ≤ 4 s | about $0.05 | 10 recorded verdicts (`tests/fixtures/ai/P3/recorded/`) replayed through the validators |
 | G3 templates (offline) | 1,000 seeded template lessons over the real syllabi | 100% pass the lesson validators | none | 50 seeds |
-| G4 speaking loopback (offline, desktop) | 60 sentences per language synthesised by an OS voice, transcribed by local Whisper `base`, scored | mean score: first run | none | 5 sentences when voice and model exist, else skipped with a message |
+| G4 speaking loopback (offline, desktop) | per language, the first 60 syllabus examples (`target`, syllabus order) of 3 to 8 UAX #29 words, synthesised by an OS voice (Windows: System.Speech; Linux: `espeak-ng`; macOS: `say`), decoded, resampled to 16 kHz, trimmed, transcribed by local Whisper `base` and scored at pass mark 0.8; prints "G4 {lang}: mean {score} over {n} sentences ({model})" | mean score: first run, recorded in `[g4]` with date and version | none | the first 5 sentences when a voice and a model (`base`, else `tiny`) exist; else one line naming why it was skipped (no local Whisper in the build, no model, or no voice for a language) |
 | G5 role-play (live) | 20 turns in 2 scenarios | first delta p50 ≤ 2.5 s; ≥ 95% valid turns | about $0.10 | recorded streams |
 | G6 placement (offline) | 1,000 noisy simulated learners | ≥ 90% within ±4 skills | none | 200 runs |
 | G7 photo (live) | the maintainer's object photos in `eval-data/photos/` (git-ignored) with labels | ≥ 90% correct article and gender | about $0.20 | fixture responses |
@@ -141,7 +145,7 @@ exactly four failures; delete the file.
 |---|---|---|---|
 | verify | `windows-latest`, `ubuntu-latest` | 00 | Node LTS, Rust from `rust-toolchain.toml`; on Ubuntu `libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev libasound2-dev`; `scripts/verify` |
 | e2e | `windows-2022` (the Edge driver cannot attach to WebView2 on the windows-2025 image), `ubuntu-latest` (xvfb; WebKitWebDriver from `webkitgtk-webdriver` on Ubuntu 26.04, `webkit2gtk-driver` on earlier images) | 04 | debug build, launch smoke |
-| whisper | `ubuntu-latest` | 10 | `--features local-whisper`; ggml-tiny cached by SHA-256 from `models/registry.toml` |
+| whisper | `ubuntu-latest` | 10 | apt `build-essential cmake libclang-dev libasound2-dev espeak-ng`; Rust from `rust-toolchain.toml`; `models/whisper/ggml-tiny.bin` cached under `whisper-ggml-tiny-<sha256>` (the SHA-256 read from `models/registry.toml`), fetched on a miss with `parley whisper download tiny`; `cargo deny --all-features check licenses`; `cargo clippy -p parley-audio --features local-whisper --all-targets -- -D warnings`; `cargo test -p parley-audio --features local-whisper -- --show-output` |
 | android | `ubuntu-latest` | 13 | Android SDK and NDK; `cargo tauri android build --debug`; unit tests only |
 | macos | `macos-latest` | 14 | `scripts/verify` and a bundle build |
 | release | on a `v*` tag | 14 | refuses without `docs/releases/<version>.md`; verify, build, draft, upload, publish when green |

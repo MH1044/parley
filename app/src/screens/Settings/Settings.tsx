@@ -5,8 +5,9 @@ import AiSection from './AiSection'
 import AudioSection from './AudioSection'
 import Data from './Data'
 import Learning from './Learning'
+import SpeakingSection from './SpeakingSection'
 
-export type SettingsTab = 'learning' | 'audio' | 'ai' | 'data' | 'about'
+export type SettingsTab = 'learning' | 'audio' | 'speaking' | 'ai' | 'data' | 'about'
 
 interface Props {
   onBack: () => void
@@ -16,7 +17,7 @@ interface Props {
   initialTab?: SettingsTab
 }
 
-/** Settings in five parts: Learning, Audio, AI, Data and About. */
+/** Settings in six parts: Learning, Audio, Speaking, AI, Data and About. */
 export default function Settings({ onBack, onRestart, initialTab }: Props) {
   const [tab, setTab] = useState<SettingsTab>(initialTab ?? 'learning')
   const tabButton = (name: SettingsTab, label: string) => (
@@ -44,12 +45,14 @@ export default function Settings({ onBack, onRestart, initialTab }: Props) {
       <nav className="tabs">
         {tabButton('learning', t('settings.learning'))}
         {tabButton('audio', t('settings.audio'))}
+        {tabButton('speaking', t('speaking.tab'))}
         {tabButton('ai', t('ai.settings.tab'))}
         {tabButton('data', t('settings.data'))}
         {tabButton('about', t('settings.about'))}
       </nav>
       {tab === 'learning' && <Learning />}
       {tab === 'audio' && <AudioSection />}
+      {tab === 'speaking' && <SpeakingSection />}
       {tab === 'ai' && <AiSection />}
       {tab === 'data' && <Data onRestart={onRestart} />}
       {tab === 'about' && <About />}

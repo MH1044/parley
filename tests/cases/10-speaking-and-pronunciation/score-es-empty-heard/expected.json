@@ -1,0 +1,18 @@
+{
+  "words": [
+    {
+      "expected": "Buenos",
+      "heard": null,
+      "status": "missed"
+    },
+    {
+      "expected": "días",
+      "heard": null,
+      "status": "missed"
+    }
+  ],
+  "extra": [],
+  "score": 0.0,
+  "pass": false,
+  "rating": 1
+}

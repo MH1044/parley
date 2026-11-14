@@ -13,7 +13,9 @@ Building from source (see `README.md`) gives:
   AI set up, fresh lessons, graded stories, course packs to share lessons, AI checks of free
   translations, and explanations of answers that were almost right or wrong; and it reads every
   sentence of the course language aloud, at normal speed or slowly, through your computer's own
-  voice or a natural voice, with listen-and-type exercises in the lessons;
+  voice or a natural voice, with listen-and-type exercises in the lessons; and it checks a
+  sentence you say into the microphone, word by word, through your AI provider or a local
+  Whisper model, with say-this exercises in the lessons;
 - the `parley` command-line tool, which answers `parley --version --json` with
   `{"name":"parley","version":"0.1.0"}` and refuses an unknown argument with
   `error: unknown argument <arg>. Run parley --help.`;
@@ -218,11 +220,57 @@ voice reads every sentence, without asking publik API again, until there is a ba
 speaker or headphones connected, **Play** says "Parley could not play the sound. Check that a
 speaker or headphones are connected."
 
+**Speaking.** A lesson has up to two **Say this** exercises (short phrases of up to 8 words)
+while speaking is possible: a microphone, **Speaking exercises** on, and a way to check them, your
+AI provider (publik API, or your own key with a transcription model) or a downloaded local model.
+The exercise shows the sentence, its English, and **Play** and **Slow**. Hold **Hold to talk**
+("Hold to talk, or hold Space"), or hold Space, and say the sentence: the button reads
+**Recording…** and the microphone level shows under it; letting go stops the take, and so does
+its limit of 15 seconds. Then "Your take: 2.4 s" and **Replay my take**; holding again records a
+new take. **Check** sends the take to be transcribed (16 kHz mono, the silence around it trimmed;
+the expected sentence is never sent, so what you said is heard as you said it) and scores it on
+your computer: "Parley heard: yo es estudiante", then each word of the sentence, "yo: right" (✓),
+"soy: heard es" (≠) or "un: missed" (✗), each in its own colour, "Also heard: señor" for extra
+words, and "Score 67% (pass mark 80%)". A digit counts as its number ("tengo 3 gatos" for "tengo
+tres gatos" is right), and accents, hyphens and case are forgiven ("est ce que" for "Est-ce que").
+The result sheet shows the verdict: passed is correct, half the words or more is almost, fewer is
+wrong, and the first checked take of an exercise rates its card as a typed answer would. **Try
+again** records and checks a new take as practice; it rates nothing. **Play the voice** plays the
+sentence. **Can't speak now** skips this and every later speaking exercise of the lesson with no
+grade, and lessons have none for the next hour; a lesson opened with speaking off or without a
+microphone skips them too.
+
+When a take cannot be checked: "We didn't hear anything. Try again a little closer to the
+microphone." (silence, or no words heard); "No microphone was found. Connect one, or choose Can't
+speak now."; "Parley can't use the microphone. Open Settings > Privacy & security > Microphone and
+allow desktop apps to use it." on Windows (System Settings > Privacy & Security > Microphone on
+macOS); with no publik balance left, "Can't check speaking right now." with the balance message,
+its one link, **Use the local model** when it is downloaded, and **Can't speak now**; offline, the
+local model checks the take when it is downloaded ("You're offline, so the local model checked
+this."), and otherwise "Speaking checks need a connection or the local model.". Before AI is set up,
+**Check** opens the AI setup dialog and checks again after its **Continue**.
+
+*Settings > Speaking*: **Speaking exercises**; **Check my speaking with** **AI provider** or
+**Local model**; the local models with their sizes (tiny 77.7 MB, base 148.0 MB, small 487.6 MB),
+**Download (148.0 MB)** or "Downloaded", "Downloading base: 40%" while one downloads, and **Use
+base** to choose one (base by default); **Pass mark** (50% to 100% in steps of 5; 80% by
+default); **Keep my recordings** ("Recordings stay on this computer."); and "Speaking checks cost
+about $0.00054 a take (measured).", the average of what your takes were charged ($0.00054, the
+measured charge of one take, until your own are recorded); each take's charge is added to the
+lesson's cost. A model is downloaded only when you ask, and kept only once its size and SHA-256
+match `models/registry.toml` ("The download was damaged. Try again." otherwise). A build without
+local Whisper (the default build; see `README.md` for the `local-whisper` feature) says "Local
+speech checks are not available in this build." and offers no model list, and choosing the local
+model there is never quietly replaced by a provider that costs money.
+
 **Your data.** Everything is in the app data folder (`org.parley.app` under `AppData\Roaming` on
 Windows, under `~/.local/share` on Linux): `parley.sqlite3` (your progress), `settings.json`,
 once downloaded, `packs/`, and, once AI is used, `cache/ai.sqlite3` (AI answers, so the same
 question is never paid for twice; **Clear caches** removes it), `cache/audio/` (natural-voice
-sentences; **Clear audio cache** and **Clear caches** remove them) and `publik-status.json` (the
+sentences; **Clear audio cache** and **Clear caches** remove them), `cache/recordings/` (your
+takes, removed when the lesson ends, when Parley quits and at the next launch unless **Keep my
+recordings** is on), `models/whisper/` (the local speech models you downloaded; **Delete
+everything** removes them with the rest) and `publik-status.json` (the
 publik API balance and status, never a key). publik API's own key for this computer is in publik's
 credential file (`%LOCALAPPDATA%\publik\apps\parley.json` on Windows,
 `~/.config/publik/apps/parley.json` on Linux), and your own key in the operating system's
@@ -721,6 +769,39 @@ which covers the 9th, so the streak is 8 on the 10th. The second session of the 
 the 20 XP of the week before: a weekly record. `utc_offset_minutes` defaults to 0 and `goal_xp`
 to 20; a file that is not a days file exits 1 with what is wrong.
 
+### Scoring a spoken sentence: `parley speak score`
+
+`parley speak score <input.json>` scores a transcript against a sentence exactly as a speaking
+check does, offline and with nothing stored: both texts become words (a hyphen between letters
+splits a word, an apostrophe stays inside it, and digits from 0 to 100 are spelled with the
+course's `content/<lang>/numbers.yaml`), accents are folded, and the words are aligned. The file
+names the language, the sentence, what was heard and, optionally, the pass mark (0.8 when left
+out):
+
+```
+{"lang": "es", "expected": "Tengo tres gatos y un perro.", "heard": "pues tengo 3 gatos y perro"}
+```
+
+```
+parley speak score input.json
+{"words":[{"expected":"Tengo","heard":"tengo","status":"ok"},{"expected":"tres","heard":"tres","status":"ok"},{"expected":"gatos","heard":"gatos","status":"ok"},{"expected":"y","heard":"y","status":"ok"},{"expected":"un","heard":null,"status":"missed"},{"expected":"perro","heard":"perro","status":"ok"}],"extra":["pues"],"score":0.8333333333333334,"pass":true,"rating":3}
+```
+
+Each expected word is `ok`, `missed` (heard `null`) or `substituted` (with the word heard
+instead); `extra` holds the words said in addition, which do not lower the score; `score` is the
+share of expected words that were right, `pass` whether it reaches the pass mark, and `rating` the
+card's rating a first take would give (3 for a pass, 2 for half or more, 1 below). A file that is
+not such an input exits 1 with what is wrong.
+
+### A local speech model: `parley whisper download`
+
+`parley whisper download <tiny|base|small> [--dir <dir>]` downloads one model of
+`models/registry.toml` into `<dir>` (default `models/whisper`) as `ggml-<name>.bin.part`, checks
+its size and SHA-256, and only then names it `ggml-<name>.bin`; it prints the model's name, the
+path of the file and its size, `{"name", "path", "bytes"}`. A damaged download is
+removed and exits 1 with `error: The download was damaged. Try again.`. It reaches the network,
+so it is for you and the CI job that tests local Whisper, never for tests.
+
 ## Coming next
 
-In the order of `docs/ROADMAP.md`: speaking and pronunciation, then conversations.
+In the order of `docs/ROADMAP.md`: conversations, then photos and media.

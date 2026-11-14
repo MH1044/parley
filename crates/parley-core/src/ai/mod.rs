@@ -2,7 +2,7 @@
 //! [`AiClient`] trait every feature calls, the [`call`] pipeline, the response [`Cache`], prompt
 //! files and their schemas, and amounts in dollars; the features themselves: fresh lessons and
 //! stories (module 07), the answer judge and Explain my answer (module 08), natural voices
-//! (module 09).
+//! (module 09), speaking checks (module 10).
 //!
 //! The core makes no HTTP request of its own: the `parley-publik` crate implements [`AiClient`]
 //! for publik API, the learner's own key and a local model server, and the desktop app passes the
@@ -23,6 +23,7 @@ mod speech;
 mod story;
 #[cfg(test)]
 pub(crate) mod test_client;
+mod transcribe;
 mod validate;
 
 pub use cache::{
@@ -60,8 +61,15 @@ pub use story::{
     STORY_PROMPT_ID, Story, StoryCtx, StoryPrompt, StoryQuestion, check_story, generate_story,
     story_prompt_file, story_xp,
 };
+pub use transcribe::{
+    MEASURED_TRANSCRIBE_MICROS, OFFLINE_LOCAL_NOTICE, PUBLIK_TRANSCRIBE_MODEL, TRANSCRIBE_FEATURE,
+    TRANSCRIBE_TIMEOUT_S, heard_text, local_model_id, parse_transcript, speaking_error,
+    transcribe_cost_line, transcribe_key, transcribe_key_json, transcribe_model,
+    transcribe_request,
+};
 pub use validate::{allowed_from_list, coverage_with_stems};
 
+pub(crate) use cache::sha256_hex;
 pub(crate) use explain::explain_charged;
 pub(crate) use judge::request_judgement_charged;
 pub(crate) use lesson::request_lesson_charged;

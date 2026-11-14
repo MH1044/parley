@@ -1,0 +1,28 @@
+{
+  "words": [
+    {
+      "expected": "Die",
+      "heard": "die",
+      "status": "ok"
+    },
+    {
+      "expected": "Straße",
+      "heard": "strasse",
+      "status": "ok"
+    },
+    {
+      "expected": "ist",
+      "heard": "ist",
+      "status": "ok"
+    },
+    {
+      "expected": "lang",
+      "heard": "lang",
+      "status": "ok"
+    }
+  ],
+  "extra": [],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

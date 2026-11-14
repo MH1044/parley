@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import {
   aiOpenLink,
   aiReconnectPublik,
@@ -16,6 +16,8 @@ interface Props {
   onRetry?: () => void
   /** Reconnect succeeded: the new status. */
   onStatus?: (status: AiStatus) => void
+  /** More ways out the caller offers, inside the same alert (module 10: Use the local model). */
+  children?: ReactNode
 }
 
 /**
@@ -23,7 +25,7 @@ interface Props {
  * its message and exactly one link (the top-up link the core holds); a disconnected publik API
  * offers Reconnect; busy and unusable answers offer Try again; anything else shows its message.
  */
-export default function AiBanner({ error, claimState, onRetry, onStatus }: Props) {
+export default function AiBanner({ error, claimState, onRetry, onStatus, children }: Props) {
   const [busy, setBusy] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
 
@@ -93,6 +95,7 @@ export default function AiBanner({ error, claimState, onRetry, onStatus }: Props
   return (
     <div role="alert" className="ai-banner">
       {body}
+      {children}
       {failure && <p className="error">{failure}</p>}
     </div>
   )

@@ -3,6 +3,7 @@ import type { Exercise } from '../../api/commands'
 import ListenType from '../../components/ListenType'
 import MatchPairs from '../../components/MatchPairs'
 import PlayButton from '../../components/PlayButton'
+import SpeakExercise, { type SpeakProps } from '../../components/SpeakExercise'
 import WordBank from '../../components/WordBank'
 import { t } from '../../strings'
 import { usesWordBank, type Draft } from './draft'
@@ -23,6 +24,8 @@ interface Props {
   autoPlay?: boolean
   /** Can't listen now, on a listening exercise. */
   onCantListen?: () => void
+  /** The take, the check and its result of a speaking exercise (module 10). */
+  speak?: SpeakProps
 }
 
 interface AnswerBoxProps {
@@ -70,6 +73,7 @@ export default function ExerciseView({
   sessionId = null,
   autoPlay = false,
   onCantListen,
+  speak,
 }: Props) {
   const textBox = (answerLang: string) => (
     <AnswerBox
@@ -171,7 +175,16 @@ export default function ExerciseView({
         />
       )
     case 'speak':
-      return (
+      return speak ? (
+        <SpeakExercise
+          text={exercise.text}
+          promptEn={exercise.prompt_en}
+          lang={lang}
+          sessionId={sessionId}
+          autoPlay={autoPlay}
+          {...speak}
+        />
+      ) : (
         <div className="exercise">
           <h1>{t('exercise.speak')}</h1>
           <p className="prompt" lang={lang}>

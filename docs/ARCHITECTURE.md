@@ -23,10 +23,10 @@ Every licence is checked again at the module that adds the dependency ("verify a
 | HTTP | `reqwest` with rustls and the ring provider | MIT OR Apache-2.0; ring Apache-2.0 AND ISC (06) | One transport on desktop and Android; streaming |
 | Own-key storage | `keyring` 4 | MIT OR Apache-2.0 (06; ADR-0013) | OS keychain on desktop |
 | Hashing | `sha2` | MIT OR Apache-2.0 (01) | Cache keys, pack checksums |
-| Audio I/O | `cpal` (capture), `rodio` 0.23 (playback; MP3 and WAV through Symphonia) | Apache-2.0; MIT OR Apache-2.0 (rodio checked 09; Symphonia MPL-2.0) | Cross-platform, Android support |
-| Resampling, WAV | `rubato`, `hound` | MIT; Apache-2.0 (verify 10) | 16 kHz mono for transcription |
+| Audio I/O | `cpal` 0.18 (capture, a direct dependency from module 10), `rodio` 0.23 (playback; MP3 and WAV through Symphonia) | Apache-2.0 (checked 10); MIT OR Apache-2.0 (rodio checked 09; Symphonia MPL-2.0) | Cross-platform, Android support |
+| Resampling, WAV | `rubato` 5.1, `hound` 3.5 | MIT OR Apache-2.0; Apache-2.0 (checked 10; one maintainer each, ADR-0015) | 16 kHz mono for transcription |
 | OS voices | `tts` 0.26 on Windows, macOS and Android; Speech Dispatcher's `spd-say` command on Linux | MIT (Cargo.toml, checked 09) | WinRT (OneCore voices), AVFoundation, Android; default features off, so no Speech Dispatcher library and no Tolk backend (ADR-0014) |
-| Local transcription | `whisper-rs` over whisper.cpp, ggml Whisper models | Unlicense (moved to Codeberg); MIT; MIT (verify 10) | Offline speaking checks |
+| Local transcription | `whisper-rs` 0.16 over whisper.cpp (optional, feature `local-whisper`), ggml Whisper models | Unlicense (moved to Codeberg); MIT; MIT (checked 10; ADR-0015) | Offline speaking checks |
 | Media decoding | `symphonia` | MPL-2.0 (verify 12) | Pure Rust; MP3, AAC, FLAC, Vorbis, WAV in MP4, MKV, OGG, WAV containers |
 | Images | `image` | MIT OR Apache-2.0 (verify 12) | Resize to 1568 px; re-encoding drops all metadata |
 | Test references | `proptest`; `py-fsrs` run once with `uv` | MIT OR Apache-2.0; MIT (verify 02) | Property tests; recorded FSRS reference values |
@@ -48,12 +48,12 @@ Every licence is checked again at the module that adds the dependency ("verify a
         src/game/            xp.rs, streak.rs
         src/store/           db.rs, course.rs, dump.rs, migrations/NNNN_name.sql
         src/app/             mod.rs (the Parley service every command calls), course.rs, pack.rs,
-                             lesson.rs, placement.rs, stats.rs
+                             lesson.rs, placement.rs, stats.rs, audio.rs, speak.rs
         src/settings.rs      settings.json; src/backup.rs the backup file
         src/ai/              client.rs (AiClient trait), call.rs, cache.rs, prompts.rs, schema.rs,
                              validate.rs, langid.rs, lesson.rs, story.rs, judge.rs, explain.rs,
                              speech.rs, transcribe.rs, roleplay.rs, photo.rs, translate.rs, media.rs
-        src/speech/          align.rs, score.rs (speaking checks)
+        src/speech/          align.rs, score.rs, models.rs (speaking checks, local Whisper models)
         src/api.rs           command argument and result types, mirrored in app/src/api/commands.ts
         src/env.rs           Clock, Rng, Fs, Net traits (injected; never read directly)
         tests/               hygiene.rs, mNN_<slug>.rs per module
@@ -129,7 +129,7 @@ identifier is set at module 00, placeholder `org.parley.app`).
 | `cache/ai.sqlite3` | AI response cache | derived, safe to delete |
 | `cache/audio/<sha256>.mp3` | natural-voice audio | derived |
 | `cache/recordings/<uuid>.wav` | the learner's takes, deleted at session end unless kept | local only |
-| `models/whisper/<name>.bin` | local Whisper models | downloaded on request |
+| `models/whisper/ggml-<name>.bin` | local Whisper models (`models/registry.toml`), verified by length and SHA-256 | downloaded on request |
 | `publik-status.json` | status object, never the key | derived |
 | `logs/parley.log` | rotating log, no content | local only |
 
@@ -215,7 +215,9 @@ prompt_version INTEGER, response TEXT, charge_micros INTEGER, created_at INTEGER
 created_at INTEGER)` and `ai_attempts(key TEXT PRIMARY KEY, attempts INTEGER)` (the Try again count
 that enters the idempotency key) and `speech_charges(key TEXT PRIMARY KEY, charge_micros INTEGER
 NOT NULL, created_at INTEGER NOT NULL)` (what each natural-voice sentence was charged, for the
-measured cost line; module 09). Keys are SHA-256 hex (see `docs/PUBLIK-INTEGRATION.md` §6.1). A
+measured cost line; module 09) and `transcribe_charges(id INTEGER PRIMARY KEY, charge_micros
+INTEGER NOT NULL)` (what each speaking take was charged, an amount alone, for the speaking cost
+line; module 10). Transcripts of takes are held in memory only, never in this file. Keys are SHA-256 hex (see `docs/PUBLIK-INTEGRATION.md` §6.1). A
 cached sentence is its file, `cache/audio/<key>.mp3`: when the file reads, it plays with no request,
 even after `cache/ai.sqlite3` was removed; its `audio_cache` row is the record for clearing.
 
@@ -228,7 +230,8 @@ even after `cache/ai.sqlite3` was removed; its `audio_cache` row is the record f
   "new_items_per_lesson": 5, "lesson_length": 12,
   "audio": { "voice_source": "os", "os_voice": { "es": null, "fr": null, "de": null },
              "natural_voice": { "es": null, "fr": null, "de": null }, "slow_speed": 0.75, "autoplay": true },
-  "speaking": { "enabled": true, "transcriber": "provider", "pass_threshold": 0.8, "keep_recordings": false },
+  "speaking": { "enabled": true, "transcriber": "provider", "pass_threshold": 0.8, "keep_recordings": false,
+                "whisper_model": "base" },
   "ai": { "provider": "unset", "fresh_lessons": true, "prepare_next_lesson": true, "stories": true,
           "share_device_name": false,
           "own_key": { "base_url": null, "chat_model": null, "transcribe_model": null,
@@ -239,8 +242,9 @@ even after `cache/ai.sqlite3` was removed; its `audio_cache` row is the record f
 ```
 
 Enumerations: `accent_leniency` lenient | strict | ignore; `answer_input` typing | word_bank;
-`voice_source` os | natural; `transcriber` provider | local; `ai.provider` unset | publik | own_key |
-local. The own key itself is in the OS keychain (desktop) or app-private storage (Android).
+`voice_source` os | natural; `transcriber` provider | local; `whisper_model` tiny | base | small;
+`ai.provider` unset | publik | own_key | local. The own key itself is in the OS keychain (desktop)
+or app-private storage (Android).
 
 Content formats (`syllabus.yaml`, forms table, sentence pack, `packs.lock.toml`, scenarios) are
 specified with complete examples in `docs/modules/01-content-model-and-syllabus.md` and
@@ -297,10 +301,11 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `tts_prefetch` | `session_id, exercise_id` | `Prefetched {prefetched}` (the next exercise's sentence into the audio cache) | 09 |
 | `audio_status` | | `AudioStatus {cost_line, listen_off_until?}` | 09 |
 | `session_skip` | `kind: listen/speak` (60 minutes) | `()` | 09, 10 |
-| `mic_start` / `mic_stop` | – | `()` / `Recording {id, duration_ms}` (+ `mic://level`) | 10 |
+| `mic_start` / `mic_stop` | `max_s` (15 or 30) / – | `()` (+ `mic://level` every 50 ms, `mic://limit` once) / `Recording {id, duration_ms}` | 10 |
 | `recording_play` | `recording_id` | `()` | 10 |
-| `speak_check` | `session_id, exercise_id, recording_id` | `SpeakResult` | 10 |
-| `whisper_models` / `whisper_download` | – / `name` | `[ModelInfo]` (+ `model://progress`) | 10 |
+| `speak_check` | `session_id, exercise_id, recording_id, local` | `SpeakResult {words, extra, score, pass, heard, grade, rated, transcriber, cached, notice?}` | 10 |
+| `whisper_models` / `whisper_download` | – / `name` | `[ModelInfo {name, bytes, size, downloaded, chosen}]` (+ `model://progress`) | 10 |
+| `speaking_status` | | `SpeakingStatus {cost_line, speak_off_until?, local_available, microphone}` | 10 |
 | `scenario_list` | `lang` | `[Scenario]` | 11 |
 | `conversation_start` | `lang, scenario_id` | `ConversationState` | 11 |
 | `conversation_transcribe` | `conversation_id, recording_id` | `{text}` (editable before sending) | 11 |
@@ -385,6 +390,7 @@ with `PUBLIK_SELF_TEST` set, and then exits.
 | 0012 Module order | Accepted | offline app (04) before Publik (06) | UI last (AI features would be untestable by hand for months) |
 | 0013 Own-key keychain | Accepted | the learner's own key in the OS keychain through `keyring` (zbus on Linux), behind a small trait; the exit is the platform APIs | `keyring` 3 with the system D-Bus library; a key file in the data directory |
 | 0014 OS voices | Accepted | `tts` on Windows, macOS and Android, Speech Dispatcher's `spd-say` command on Linux, behind the `OsVoices` trait; the exit is the platform speech APIs | `tts` on Linux too (libspeechd and libclang at build time); the platform APIs now; a bundled synthesiser (GPL espeak-ng, large neural models) |
+| 0015 Speaking crates | Accepted | `cpal` capture on a thread that owns the stream, `rubato` to 16 kHz, `hound` WAV, local Whisper through `whisper-rs` behind the off-by-default feature `local-whisper`; the exits are a hand-written WAV header, our own windowed-sinc resampler, and whisper.cpp's C API through our own bindings (or provider transcription only) | provider transcription only (never offline or free); a pure Rust Whisper (larger trees, another model format); linear-interpolation resampling (aliasing); recording in the web view |
 
 ## 10. Platforms
 

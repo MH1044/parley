@@ -18,6 +18,11 @@ path = "src/lib.rs"
 name = "parley-app"
 path = "src/main.rs"
 
+[features]
+# Local speech checks through whisper.cpp (docs/modules/10-speaking-and-pronunciation.md); off by
+# default, because building whisper.cpp needs cmake and libclang.
+local-whisper = ["parley-audio/local-whisper"]
+
 [build-dependencies]
 tauri-build = { workspace = true }
 

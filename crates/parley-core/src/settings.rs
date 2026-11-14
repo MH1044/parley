@@ -83,6 +83,8 @@ pub struct SpeakingSettings {
     pub transcriber: String,
     pub pass_threshold: f64,
     pub keep_recordings: bool,
+    /// The local Whisper model a check uses: `tiny`, `base` or `small` (module 10).
+    pub whisper_model: String,
 }
 
 impl Default for SpeakingSettings {
@@ -92,6 +94,7 @@ impl Default for SpeakingSettings {
             transcriber: "provider".into(),
             pass_threshold: 0.8,
             keep_recordings: false,
+            whisper_model: crate::speech::DEFAULT_WHISPER_MODEL.into(),
         }
     }
 }
@@ -279,6 +282,7 @@ fn rule(path: &str) -> Option<Rule> {
         "speaking.enabled" | "speaking.keep_recordings" => Rule::Bool,
         "speaking.transcriber" => Rule::OneOf(&["provider", "local"]),
         "speaking.pass_threshold" => Rule::NumberIn(0.0, 1.0),
+        "speaking.whisper_model" => Rule::OneOf(&["tiny", "base", "small"]),
         "ai.provider" => Rule::OneOf(&["unset", "publik", "own_key", "local"]),
         "ai.fresh_lessons" | "ai.prepare_next_lesson" | "ai.stories" | "ai.share_device_name" => {
             Rule::Bool
@@ -432,7 +436,8 @@ mod tests {
                 "new_items_per_lesson": 5, "lesson_length": 12,
                 "audio": { "voice_source": "os", "os_voice": { "es": null, "fr": null, "de": null },
                            "natural_voice": { "es": null, "fr": null, "de": null }, "slow_speed": 0.75, "autoplay": true },
-                "speaking": { "enabled": true, "transcriber": "provider", "pass_threshold": 0.8, "keep_recordings": false },
+                "speaking": { "enabled": true, "transcriber": "provider", "pass_threshold": 0.8, "keep_recordings": false,
+                              "whisper_model": "base" },
                 "ai": { "provider": "unset", "fresh_lessons": true, "prepare_next_lesson": true, "stories": true,
                         "share_device_name": false,
                         "own_key": { "base_url": null, "chat_model": null, "transcribe_model": null,

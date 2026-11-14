@@ -32,7 +32,8 @@
         "enabled": { "type": "boolean" },
         "transcriber": { "enum": ["provider", "local"] },
         "pass_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
-        "keep_recordings": { "type": "boolean" }
+        "keep_recordings": { "type": "boolean" },
+        "whisper_model": { "enum": ["tiny", "base", "small"] }
       }
     },
     "ai": {

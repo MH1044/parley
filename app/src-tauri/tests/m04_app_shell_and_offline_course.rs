@@ -558,7 +558,7 @@ fn default_settings() -> Value {
                    "natural_voice": { "es": null, "fr": null, "de": null }, "slow_speed": 0.75,
                    "autoplay": true },
         "speaking": { "enabled": true, "transcriber": "provider", "pass_threshold": 0.8,
-                      "keep_recordings": false },
+                      "keep_recordings": false, "whisper_model": "base" },
         "ai": { "provider": "unset", "fresh_lessons": true, "prepare_next_lesson": true,
                 "stories": true, "share_device_name": false,
                 "own_key": { "base_url": null, "chat_model": null, "transcribe_model": null,
@@ -1845,7 +1845,8 @@ fn t08_refused_backups_change_nothing() {
 
     // The learner's data is untouched: an export gives the fixture back, apart from the time of
     // export and the version that wrote it. The fixture predates stories (module 07), which an
-    // export now always writes, here as an empty array.
+    // export now always writes, here as an empty array, and the local speech model setting
+    // (module 10), which a settings file without it reads as its default.
     let after = out.path().join("after.json");
     ok(app.backup_export(&after));
     assert_backup_layout(&after);
@@ -1854,6 +1855,7 @@ fn t08_refused_backups_change_nothing() {
         &["exported_at", "app_version"],
     );
     expected["stories"] = serde_json::json!([]);
+    expected["settings"]["speaking"]["whisper_model"] = serde_json::json!("base");
     assert_json_close(
         &backup_without(&after, &["exported_at", "app_version"]),
         &expected,

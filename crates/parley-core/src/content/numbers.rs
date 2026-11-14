@@ -3,7 +3,7 @@
 use serde::Deserialize;
 use unicode_segmentation::UnicodeSegmentation;
 
-use super::{ContentError, nfc_lower};
+use super::{ContentError, nfc, nfc_lower};
 
 /// The schema tag of `numbers.yaml`.
 pub const NUMBERS_SCHEMA: &str = "parley.numbers/1";
@@ -14,9 +14,25 @@ struct NumbersFile {
     words: Vec<String>,
 }
 
-/// Reads `numbers.yaml` and returns its number words: every word of every entry (`treinta y
-/// uno` gives `treinta`, `y`, `uno`), normalised, in first-seen order without repeats.
-pub fn load_numbers(text: &str) -> Result<Vec<String>, ContentError> {
+/// The words for 0 to 100 of `numbers.yaml` as written, NFC; entry n is the number n. A course
+/// without the file has none, and digits then stay as written (module 10's speaking checks).
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct Numbers {
+    pub words: Vec<String>,
+}
+
+impl Numbers {
+    /// The words of the number `n` (`70` → `soixante-dix`), when the file has an entry for it.
+    pub fn spell(&self, n: u64) -> Option<&str> {
+        usize::try_from(n)
+            .ok()
+            .and_then(|n| self.words.get(n))
+            .map(String::as_str)
+    }
+}
+
+/// Reads and checks `numbers.yaml`: its schema tag and exactly 101 entries.
+fn read_numbers_file(text: &str) -> Result<NumbersFile, ContentError> {
     let file: NumbersFile =
         serde_yaml_ng::from_str(text).map_err(|e| ContentError(format!("numbers.yaml: {e}")))?;
     if file.schema != NUMBERS_SCHEMA {
@@ -30,6 +46,21 @@ pub fn load_numbers(text: &str) -> Result<Vec<String>, ContentError> {
             file.words.len()
         )));
     }
+    Ok(file)
+}
+
+/// The same checks as [`load_numbers`] (schema, 101 entries); the entries in order, NFC.
+pub fn load_number_words(text: &str) -> Result<Numbers, ContentError> {
+    let file = read_numbers_file(text)?;
+    Ok(Numbers {
+        words: file.words.iter().map(|entry| nfc(entry.trim())).collect(),
+    })
+}
+
+/// Reads `numbers.yaml` and returns its number words: every word of every entry (`treinta y
+/// uno` gives `treinta`, `y`, `uno`), normalised, in first-seen order without repeats.
+pub fn load_numbers(text: &str) -> Result<Vec<String>, ContentError> {
+    let file = read_numbers_file(text)?;
     let mut words: Vec<String> = Vec::new();
     for entry in &file.words {
         for word in entry.unicode_words() {
@@ -96,8 +127,27 @@ mod tests {
     }
 
     #[test]
+    fn number_words_keep_each_entry_as_written() {
+        let numbers = load_number_words(&numbers_yaml(101)).unwrap();
+        assert_eq!(numbers.words.len(), 101);
+        assert_eq!(numbers.spell(0), Some("cero"));
+        assert_eq!(numbers.spell(31), Some("treinta y uno"));
+        assert_eq!(numbers.spell(100), Some("n100"));
+        assert_eq!(numbers.spell(101), None);
+        assert_eq!(Numbers::default().spell(3), None);
+        assert!(load_number_words(&numbers_yaml(100)).is_err());
+        let decomposed = numbers_yaml(101).replace("n16", "diecise\u{301}is");
+        assert_eq!(
+            load_number_words(&decomposed).unwrap().spell(16),
+            Some("diecis\u{e9}is"),
+            "entries are NFC"
+        );
+    }
+
+    #[test]
     fn a_wrong_schema_is_refused() {
         let text = numbers_yaml(101).replace("parley.numbers/1", "parley.numbers/2");
+        assert!(load_number_words(&text).is_err());
         let err = load_numbers(&text).expect_err("another schema is refused");
         assert_eq!(err.0, "numbers.yaml: schema must be parley.numbers/1");
     }

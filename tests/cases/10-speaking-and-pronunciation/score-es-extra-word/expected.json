@@ -1,0 +1,20 @@
+{
+  "words": [
+    {
+      "expected": "buenos",
+      "heard": "buenos",
+      "status": "ok"
+    },
+    {
+      "expected": "días",
+      "heard": "días",
+      "status": "ok"
+    }
+  ],
+  "extra": [
+    "señor"
+  ],
+  "score": 1.0,
+  "pass": true,
+  "rating": 3
+}

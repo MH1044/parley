@@ -3,7 +3,12 @@
 # scripts/verify. Run before a release and when changing grading, the template generator, the
 # lesson validators, placement, speaking scoring or any prompt file.
 #
-#   scripts/gates/run              every offline gate (crates/parley-core/tests/gates.rs, gate_*)
+#   scripts/gates/run              every offline gate (crates/parley-core/tests/gates.rs and
+#                                  crates/parley-audio/tests/gates.rs, gate_*); without local
+#                                  Whisper, G4 prints the line that says why it was skipped
+#   scripts/gates/run --whisper    the same, with the parley-audio gates built with
+#                                  --features local-whisper (cmake and libclang needed), so G4 runs
+#                                  with models/whisper/ggml-base.bin
 #   scripts/gates/run --live <G>   one live gate, such as G1: sets PARLEY_LIVE=1 and runs live_<g>
 #                                  (crates/parley-cli/tests/gates_live.rs). Live gates spend money
 #                                  and are the maintainer's to run.
@@ -18,13 +23,25 @@ usage() {
   exit 2
 }
 
+# Every offline gate; $1 is the parley-audio feature flags (none, or --features local-whisper).
+offline() {
+  printf '== offline gates\n'
+  cargo test --release -p parley-core --test gates -- --ignored --show-output gate_
+  printf '== speaking gates\n'
+  # shellcheck disable=SC2086 # the flags are word-split on purpose
+  cargo test --release -p parley-audio $1 --test gates -- --ignored --show-output gate_
+}
+
 case "${1:-}" in
   "")
-    printf '== offline gates\n'
-    cargo test --release -p parley-core --test gates -- --ignored --show-output gate_
+    offline ""
+    ;;
+  --whisper)
+    [ $# -eq 1 ] || usage "unknown argument $2."
+    offline "--features local-whisper"
     ;;
   --help | -h)
-    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
     ;;
   --live)
     [ $# -ge 2 ] || usage "--live needs a gate, such as G1."

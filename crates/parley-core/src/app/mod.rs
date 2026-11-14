@@ -1,7 +1,7 @@
 //! The service every Tauri command calls (docs/modules/04-app-shell-and-offline-course.md): one
 //! [`Parley`] per app, behind a mutex, holding the bundled course, the learner's store and
-//! settings, the lessons and placement tests in progress, and from module 09 the audio it plays
-//! through.
+//! settings, the lessons and placement tests in progress, from module 09 the audio it plays
+//! through, and from module 10 the microphone and the takes it records.
 //!
 //! The Tauri commands only marshal: each one calls one method here and passes its result or
 //! [`AppError`] back. Everything the service needs from the outside world arrives in [`Env`]
@@ -15,9 +15,12 @@ use std::sync::Arc;
 use serde_json::json;
 
 use crate::api::{self, AppInfo, CacheCleared, ExportSummary, ImportReport, Launch};
-use crate::audio::Audio;
+use crate::audio::{Audio, Speaking};
 use crate::backup::{Backup, BackupError, parse_backup};
-use crate::content::{Forms, Item, Lang, Syllabus, derive_items, load_numbers, parse_syllabus};
+use crate::content::{
+    Forms, Item, Lang, Numbers, Syllabus, derive_items, load_number_words, load_numbers,
+    parse_syllabus,
+};
 use crate::env::{Clock, Fs, FsError, Net, Rng};
 use crate::error::{AppError, ErrorCode};
 use crate::exercise::LessonRun;
@@ -33,6 +36,7 @@ mod judge;
 mod lesson;
 mod pack;
 mod placement;
+mod speak;
 mod stats;
 mod story;
 
@@ -40,6 +44,9 @@ pub use audio::{PrefetchBegin, SpeechJob, SpeechOutcome, SpeechWait, TtsBegin};
 pub use judge::{ExplainJob, ExplainOutcome, Explained, JudgeBegin, JudgeJob, JudgeOutcome};
 pub use lesson::{AiAccess, JobOutcome, LessonBegin, LessonJob};
 pub use pack::{InstalledPack, LockedPack, PackInstallError, PackSentence, attributions};
+pub use speak::{
+    DownloadBegin, DownloadOutcome, ModelDownload, SpeakBegin, TranscribeJob, TranscribeOutcome,
+};
 
 /// The learner's data file, under the data directory.
 pub const STORE_FILE: &str = "parley.sqlite3";
@@ -82,6 +89,9 @@ pub(crate) struct Course {
     pub syllabus: Syllabus,
     pub forms: Forms,
     pub numbers: Vec<String>,
+    /// The words for 0 to 100, entry n the number n (module 10's speaking checks spell digits
+    /// with them); empty without a numbers file, and digits then stay as written.
+    pub number_words: Numbers,
     /// Every item of the syllabus (`derive_items`), with its accepted answers.
     pub items: Vec<Item>,
 }
@@ -90,15 +100,16 @@ impl Course {
     fn load(files: &CourseFiles) -> Option<Course> {
         let syllabus = parse_syllabus("syllabus.yaml", &files.syllabus_yaml).ok()?;
         let forms = Forms::load_tsv(files.forms_tsv.as_bytes()).ok()?;
-        let numbers = match &files.numbers_yaml {
-            Some(text) => load_numbers(text).ok()?,
-            None => Vec::new(),
+        let (numbers, number_words) = match &files.numbers_yaml {
+            Some(text) => (load_numbers(text).ok()?, load_number_words(text).ok()?),
+            None => (Vec::new(), Numbers::default()),
         };
         let items = derive_items(&syllabus, &forms);
         Some(Course {
             syllabus,
             forms,
             numbers,
+            number_words,
             items,
         })
     }
@@ -147,6 +158,16 @@ pub struct Parley {
     pub(crate) skips: audio::Skips,
     /// The natural sentences being fetched, by cache key, so each is asked for once (module 09).
     pub(crate) flights: audio::Flights,
+    /// The microphone, local Whisper and model registry (module 10).
+    pub(crate) speaking: Speaking,
+    /// The takes recorded while the app runs (module 10).
+    pub(crate) takes: speak::Takes,
+    /// Valid transcripts of takes, by the key of docs/PUBLIK-INTEGRATION.md §6.1; in memory only.
+    pub(crate) transcripts: HashMap<String, String>,
+    /// Transcription replies that could not be used, by key, so a Try again is a new attempt.
+    pub(crate) failed_attempts: HashMap<String, u32>,
+    /// The local models being downloaded.
+    pub(crate) downloads: speak::Downloads,
 }
 
 // Messages (docs/modules/04-app-shell-and-offline-course.md, Interfaces).
@@ -251,6 +272,11 @@ impl Parley {
             audio: Audio::default(),
             skips: audio::Skips::new(),
             flights: audio::Flights::new(),
+            speaking: Speaking::default(),
+            takes: speak::Takes::new(),
+            transcripts: HashMap::new(),
+            failed_attempts: HashMap::new(),
+            downloads: speak::Downloads::default(),
         }
     }
 
@@ -262,9 +288,12 @@ impl Parley {
             .ok_or_else(|| unknown_value(lang, "lang"))
     }
 
-    /// The first command of a launch: brings every started course up to date with the bundled
+    /// The first command of a launch: removes the takes a previous run left behind (unless **Keep
+    /// my recordings** is on; module 10), brings every started course up to date with the bundled
     /// syllabus and says whether onboarding is done (a course is active and started).
     pub fn app_start(&mut self) -> Result<Launch, AppError> {
+        // Removing every take at launch means a crash leaves none behind.
+        self.remove_takes_unless_kept();
         let store = open_store(&mut self.store)?;
         let now = self.env.clock.now_ms();
         for row in store.courses()? {
@@ -293,9 +322,9 @@ impl Parley {
         api::app_info(&self.config.data_dir)
     }
 
-    /// Deletes the store, the settings file, the pack files and the AI caches (answers and
-    /// natural-voice audio), then opens a fresh store. `confirm_text` must be `delete` after
-    /// trimming.
+    /// Deletes the store, the settings file, the pack files, the AI caches (answers and
+    /// natural-voice audio), the takes and the local speech models, then opens a fresh store.
+    /// `confirm_text` must be `delete` after trimming.
     pub fn data_delete_all(&mut self, confirm_text: &str) -> Result<(), AppError> {
         if confirm_text.trim() != "delete" {
             return Err(AppError::new(
@@ -328,6 +357,10 @@ impl Parley {
         self.story_runs.clear();
         self.pending.clear();
         self.placements.clear();
+        self.takes.clear();
+        self.transcripts.clear();
+        self.failed_attempts.clear();
+        let model_files = self.model_files();
         let fs = &*self.env.fs;
         let mut paths: Vec<String> = [
             STORE_FILE,
@@ -343,11 +376,14 @@ impl Parley {
             paths.push(path.clone());
             paths.push(format!("{path}.part"));
         }
-        if let Ok(names) = fs.list(Path::new(audio::AUDIO_DIR)) {
-            for name in names {
-                paths.push(format!("{}/{name}", audio::AUDIO_DIR));
+        for dir in [audio::AUDIO_DIR, speak::RECORDINGS_DIR] {
+            if let Ok(names) = fs.list(Path::new(dir)) {
+                for name in names {
+                    paths.push(format!("{dir}/{name}"));
+                }
             }
         }
+        paths.extend(model_files);
         let mut first_failure: Option<AppError> = None;
         for path in &paths {
             if let Err(e) = remove_file(fs, path) {

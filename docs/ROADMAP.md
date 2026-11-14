@@ -12,7 +12,7 @@
 | 07 | lesson-generation | Fresh AI lessons and stories with validators and template fill; course pack export and import | load-bearing (what learners see) | 03, 06 | Done (2026-11-10) |
 | 08 | judging-and-explanations | AI judge for free translations, cached and learned; Explain my answer | load-bearing (grading) | 03, 06 | Done (2026-11-11) |
 | 09 | listening-and-voices | OS voices, natural voices with cache, slow mode, listen-and-type | load-bearing (audio cost) | 04, 06 | Done (2026-11-12) |
-| 10 | speaking-and-pronunciation | Microphone capture, trimming, transcription (provider or local Whisper), word scoring, speak exercise | load-bearing (audio path, privacy) | 09 | Planned |
+| 10 | speaking-and-pronunciation | Microphone capture, trimming, transcription (provider or local Whisper), word scoring, speak exercise | load-bearing (audio path, privacy) | 09 | Done (2026-11-14) |
 | 11 | conversation-roleplay | Scenarios, streamed turns, corrections, goals, turn cap, cost line, summary to reviews | load-bearing (money path) | 06, 09, 10 | Planned |
 | 12 | photo-vocabulary-and-your-media | Photo to vocabulary; media import, chunked transcription, transcript, translate, save | load-bearing (privacy, batch cost) | 06, 10 | Planned |
 | 13 | android | Tauri mobile build, reqwest transport, Android voices and microphone, word bank default | load-bearing (credential storage) | 12 | Planned |

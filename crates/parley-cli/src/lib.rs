@@ -6,7 +6,8 @@
 //! grading, lesson and streak commands of module 03 (`grade`, `lesson template`,
 //! `streak simulate`), the course commands of module 05 (`content scenarios`, `content report`,
 //! `freq check`, `pack install`), the maintainer's `publik proof` of module 06, the request
-//! renderers of modules 07 and 08 (`lesson render`, `judge render`) and, from later modules, the
+//! renderers of modules 07 and 08 (`lesson render`, `judge render`), the speaking commands of
+//! module 10 (`speak score`, `whisper download`) and, from later modules, the
 //! others (docs/ARCHITECTURE.md §2).
 //! Every command prints one JSON object on standard output, exits 0 on success, 1 on a content
 //! error and 2 on a usage error. The golden tests in `tests/cases/` run this binary.
@@ -106,6 +107,17 @@ output.
       ({\"today\":\"YYYY-MM-DD\",\"utc_offset_minutes\":n,\"goal_xp\":n,
       \"sessions\":[{\"started_at\":ms,\"xp\":n},...]}); prints the length, freezes, frozen
       days, freeze events, days and records. Exit 1 on a file that is not a days file.
+  speak score <input.json> [--json]
+      Score a speaking check offline: the sentence against what was heard, from
+      {\"lang\":...,\"expected\":...,\"heard\":...,\"pass_mark\":...} (pass_mark 0 to 1, default
+      0.8), with numbers 0 to 100 spelled from content/<lang>/numbers.yaml; prints
+      {\"words\":[...],\"extra\":[...],\"score\":...,\"pass\":...,\"rating\":1-4}. Exit 1 on a
+      file that is not such an input.
+  whisper download <tiny|base|small> [--dir <dir>]
+      Download one local Whisper model of models/registry.toml into <dir> (default
+      models/whisper) as ggml-<name>.bin, kept only when its size and SHA-256 match; prints
+      {\"name\":...,\"path\":...,\"bytes\":...}. Reaches the network. Exit 1 when it cannot
+      download, or with \"error: The download was damaged. Try again.\" on a mismatch.
   publik proof
       For the maintainer only: one real publik API connection check, which costs money. Refuses
       and sends nothing unless PUBLIK_PROOF=1 is set; then provisions this computer if it must,
@@ -130,8 +142,10 @@ pub fn run(args: &[String], out: &mut dyn Write, err: &mut dyn Write) -> u8 {
         Some("pack") => return cmd::pack::run(&args[1..], out, err),
         Some("placement") => return cmd::placement::run(&args[1..], out, err),
         Some("publik") => return cmd::publik::run(&args[1..], out, err),
+        Some("speak") => return cmd::speak::run(&args[1..], out, err),
         Some("srs") => return cmd::srs::run(&args[1..], out, err),
         Some("streak") => return cmd::streak::run(&args[1..], out, err),
+        Some("whisper") => return cmd::whisper::run(&args[1..], out, err),
         _ => {}
     }
 
@@ -233,6 +247,8 @@ mod tests {
             );
             assert!(out.contains("freq check --lang <l> --pack <file> [--content <dir>]"));
             assert!(out.contains("pack install <file> --data-dir <dir> [--lock <file>]"));
+            assert!(out.contains("speak score <input.json> [--json]"));
+            assert!(out.contains("whisper download <tiny|base|small> [--dir <dir>]"));
         }
     }
 
@@ -339,6 +355,8 @@ mod tests {
             (&["judge"][..], "judge render"),
             (&["streak"][..], "streak simulate"),
             (&["publik"][..], "publik proof"),
+            (&["speak"][..], "speak score"),
+            (&["whisper"][..], "whisper download"),
         ] {
             let (code, out, err) = run_capture(args);
             assert_eq!(code, 2, "{args:?}");
