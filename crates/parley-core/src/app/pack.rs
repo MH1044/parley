@@ -3,10 +3,12 @@
 //! and `parley pack install`, which installs a locally built pack for development
 //! (docs/modules/05-course-content-a1-a2.md).
 //!
-//! A download is checked against the SHA-256 in `content/packs.lock.toml` before anything is
-//! written; it is written as `packs/<lang>-<version>.sqlite3.part` and renamed into place, so a
-//! damaged or partial download never becomes the pack. An installed file takes the same path.
-//! The app works without a pack, with fewer example sentences.
+//! A download arrives in parts of 8 MB (`Range` requests through the injected network), with
+//! progress after each part, and is checked against the size and SHA-256 in
+//! `content/packs.lock.toml` before anything is written; it is written as
+//! `packs/<lang>-<version>.sqlite3.part` and renamed into place, so a damaged or partial download
+//! never becomes the pack. An installed file takes the same path. The app works without a pack,
+//! with fewer example sentences.
 
 use std::collections::HashSet;
 use std::fmt;
@@ -19,13 +21,17 @@ use sha2::{Digest, Sha256};
 use super::{Parley, not_started, open_store};
 use crate::api::{Attribution, PackProgress, PackState, PackStatus, language_name, megabytes};
 use crate::content::{Lang, PackEntry, Syllabus, nfc, nfc_lower, parse_packs_lock};
-use crate::env::{Fs, HttpRequest};
+use crate::env::{Fs, HttpRequest, Net};
 use crate::error::{AppError, ErrorCode};
 use crate::exercise::{Body, Lesson};
 use crate::store::Store;
 
 /// The most sentences a lesson takes from the pack for one lemma.
 const SENTENCES_PER_LEMMA: usize = 20;
+
+/// The size of each part a pack is downloaded in. Progress is reported after every part, so the
+/// bar moves every 8 MB (22 steps for a 174.7 MB pack) for one extra request per part.
+const PACK_PART_BYTES: u64 = 8_000_000;
 
 /// A sentence of an installed pack with its English translations and author.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -186,6 +192,85 @@ fn not_published(lang: Lang) -> PackStatus {
     }
 }
 
+fn damaged() -> AppError {
+    AppError::new(
+        ErrorCode::ChecksumMismatch,
+        "The download was damaged. Try again.",
+    )
+}
+
+/// Why a download in parts stopped before every byte arrived.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Interrupted {
+    /// A request got no response.
+    NoResponse,
+    /// The URL answered 404 or 410: the pack is not published.
+    NotPublished,
+    /// The URL answered another status than 200, 206, 404 or 410.
+    Refused,
+    /// A part arrived with another number of bytes than the one asked for.
+    Damaged,
+}
+
+/// Fetches the `total` bytes at `url` in parts of [`PACK_PART_BYTES`], each a GET with
+/// `Range: bytes=<first>-<last>` through the injected network, and passes the number of bytes held
+/// to `done` after each part. A 206 must carry exactly the bytes asked for, or the download is
+/// damaged (this also ends a server that answers parts with nothing). A 200 is the whole file: a
+/// server or proxy that ignores `Range` sends every byte at once, so its body replaces any parts
+/// held and ends the download. Nothing is written here; the caller checks the size and the
+/// SHA-256 of the result first.
+fn fetch_in_parts(
+    net: &dyn Net,
+    url: &str,
+    total: u64,
+    done: &mut dyn FnMut(u64),
+) -> Result<Vec<u8>, Interrupted> {
+    let mut body: Vec<u8> = Vec::new();
+    loop {
+        let first = body.len() as u64;
+        let last = first
+            .saturating_add(PACK_PART_BYTES)
+            .min(total)
+            .saturating_sub(1)
+            .max(first);
+        let response = net
+            .send(HttpRequest {
+                method: "GET".into(),
+                url: url.to_string(),
+                headers: vec![("range".into(), format!("bytes={first}-{last}"))],
+                body: Vec::new(),
+            })
+            .map_err(|_| Interrupted::NoResponse)?;
+        match response.status {
+            206 => {
+                if response.body.len() as u64 != last - first + 1 {
+                    return Err(Interrupted::Damaged);
+                }
+                if body.is_empty() {
+                    // Once the server is known to answer in parts: one buffer of the pinned size,
+                    // so a pack of several hundred megabytes is never copied while it grows. When
+                    // that much cannot be had at once, the buffer grows as the parts arrive.
+                    let _ = body.try_reserve_exact(usize::try_from(total).unwrap_or(usize::MAX));
+                }
+                body.extend_from_slice(&response.body);
+                done(body.len() as u64);
+                if body.len() as u64 >= total {
+                    return Ok(body);
+                }
+            }
+            200 => {
+                done((response.body.len() as u64).min(total));
+                return Ok(response.body);
+            }
+            // The lock names a release asset that does not exist (yet, or any more): trying
+            // again cannot help until it is published, so this is the not-published outcome,
+            // not a failure to retry.
+            404 | 410 => return Err(Interrupted::NotPublished),
+            _ => return Err(Interrupted::Refused),
+        }
+    }
+}
+
 impl Parley {
     /// Whether the language's pack is installed (the course's `pack_version` names a file that
     /// opens as a pack), available in the lock, or not published.
@@ -217,11 +302,13 @@ impl Parley {
         })
     }
 
-    /// Downloads the language's pack from the lock's URL, reporting progress before the request
-    /// and once the body has arrived; checks the SHA-256 before writing anything; writes the
-    /// `.part` file, renames it into place, removes the course's previous pack and records the
-    /// new version. A URL that answers 404 or 410 means the pack is not published yet: nothing is
-    /// written and the not-published status is returned, so the learner goes on without it.
+    /// Downloads the language's pack from the lock's URL in parts ([`fetch_in_parts`]), reporting
+    /// `{0, bytes}` before the first request and the bytes held after each part; checks the size
+    /// and SHA-256 the lock pins before writing anything; writes the `.part` file, renames it into
+    /// place, removes the course's previous pack and records the new version. A URL that answers
+    /// 404 or 410 means the pack is not published yet: nothing is written and the not-published
+    /// status is returned, so the learner goes on without it. Any failure before the checks pass
+    /// leaves nothing written and the course's previous pack, if any, in place.
     pub fn pack_download(
         &mut self,
         lang: &str,
@@ -247,40 +334,30 @@ impl Parley {
             bytes_total: entry.bytes,
         };
         progress(report(0));
-        let response = self
-            .env
-            .net
-            .send(HttpRequest {
-                method: "GET".into(),
-                url: entry.url.clone(),
-                headers: Vec::new(),
-                body: Vec::new(),
-            })
-            .map_err(|_| {
-                AppError::new(
+        let fetched = fetch_in_parts(&*self.env.net, &entry.url, entry.bytes, &mut |done| {
+            progress(report(done))
+        });
+        let body = match fetched {
+            Ok(body) => body,
+            Err(Interrupted::NotPublished) => return Ok(not_published(lang)),
+            Err(Interrupted::NoResponse) => {
+                return Err(AppError::new(
                     ErrorCode::Offline,
                     "You're offline. Parley works without the pack, with fewer example sentences.",
-                )
-            })?;
-        match response.status {
-            200 => {}
-            // The lock names a release asset that does not exist (yet, or any more): trying
-            // again cannot help until it is published, so this is the not-published outcome, not
-            // a failure to retry.
-            404 | 410 => return Ok(not_published(lang)),
-            _ => {
+                ));
+            }
+            Err(Interrupted::Refused) => {
                 return Err(AppError::new(
                     ErrorCode::PackMissing,
                     "The course pack could not be downloaded. Try again later.",
                 ));
             }
-        }
-        progress(report(entry.bytes));
-        if !sha256_hex(&response.body).eq_ignore_ascii_case(entry.sha256.trim()) {
-            return Err(AppError::new(
-                ErrorCode::ChecksumMismatch,
-                "The download was damaged. Try again.",
-            ));
+            Err(Interrupted::Damaged) => return Err(damaged()),
+        };
+        let pinned = body.len() as u64 == entry.bytes
+            && sha256_hex(&body).eq_ignore_ascii_case(entry.sha256.trim());
+        if !pinned {
+            return Err(damaged());
         }
         write_pack(
             &*self.env.fs,
@@ -288,7 +365,7 @@ impl Parley {
             lang,
             course.pack_version.as_deref(),
             &entry.version,
-            &response.body,
+            &body,
         )?;
         self.pack_status(lang.as_str())
     }
@@ -492,10 +569,14 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let scratch = tempfile::tempdir().unwrap();
         let bytes = pack_bytes(scratch.path());
+        let total = bytes.len() as u64;
         let mut app = parley_with(dir.path(), &lock(&bytes), net(200, bytes.clone()));
         let status = app.pack_status("es").unwrap();
         assert_eq!(status.state, PackState::Available);
         assert_eq!(status.size.as_deref(), Some("8.2 MB"));
+        drop(app);
+        // The lock pins the file's SHA-256 and size; `exact_lock` pins this file's own size.
+        let mut app = parley_with(dir.path(), &exact_lock(&bytes), net(200, bytes.clone()));
         assert_eq!(
             app.pack_download("es", &mut |_| {}).unwrap_err().message,
             "This course has not been started."
@@ -506,10 +587,11 @@ mod tests {
             .pack_download("es", &mut |p| seen.push((p.bytes_done, p.bytes_total)))
             .unwrap();
         assert_eq!(status.state, PackState::Installed);
-        assert_eq!(status.version.as_deref(), Some("2026-10-01"));
-        assert_eq!(seen, [(0, 8_200_000), (8_200_000, 8_200_000)]);
-        assert!(dir.path().join("packs/es-2026-10-01.sqlite3").exists());
-        assert!(!dir.path().join("packs/es-2026-10-01.sqlite3.part").exists());
+        assert_eq!(status.version.as_deref(), Some("2026-11-05"));
+        // The scripted network answers 200 with the whole file: one step from 0 to the total.
+        assert_eq!(seen, [(0, total), (total, total)]);
+        assert!(dir.path().join("packs/es-2026-11-05.sqlite3").exists());
+        assert!(!dir.path().join("packs/es-2026-11-05.sqlite3.part").exists());
         let store = app.store.as_ref().unwrap();
         let sentences = pack_sentences(
             dir.path(),
@@ -656,6 +738,380 @@ mod tests {
             sha256_hex(bytes),
             bytes.len()
         )
+    }
+
+    /// A pack of a little over two parts: the tiny pack's tables and a blob that pads the file.
+    fn large_pack_bytes(dir: &Path) -> Vec<u8> {
+        let path = dir.join("large.sqlite3");
+        std::fs::write(&path, pack_bytes(dir)).unwrap();
+        let conn = Connection::open(&path).unwrap();
+        conn.execute_batch(&format!(
+            "CREATE TABLE padding (b BLOB NOT NULL);
+             INSERT INTO padding VALUES (zeroblob({}));",
+            2 * PACK_PART_BYTES + 100_000
+        ))
+        .unwrap();
+        drop(conn);
+        let bytes = std::fs::read(&path).unwrap();
+        let total = bytes.len() as u64;
+        assert!(
+            total > 2 * PACK_PART_BYTES && total < 3 * PACK_PART_BYTES,
+            "three parts: {total}"
+        );
+        bytes
+    }
+
+    /// The `Range` header of a request, in any letter case.
+    fn range_of(req: &HttpRequest) -> Option<String> {
+        req.headers
+            .iter()
+            .find(|(name, _)| name.eq_ignore_ascii_case("range"))
+            .map(|(_, value)| value.clone())
+    }
+
+    /// What a server that honours `Range` answers for `file`: `Range: bytes=a-b` gives 206 with
+    /// bytes a to b (inclusive, cut at the end of the file) and their `Content-Range`; a request
+    /// without the header gives 200 and the whole file.
+    fn serve(file: &[u8], req: &HttpRequest) -> HttpResponse {
+        let asked = range_of(req).and_then(|range| {
+            let (a, b) = range.strip_prefix("bytes=")?.split_once('-')?;
+            Some((a.parse::<usize>().ok()?, b.parse::<usize>().ok()?))
+        });
+        match asked {
+            Some((a, b)) => {
+                let end = b.min(file.len() - 1);
+                HttpResponse {
+                    status: 206,
+                    headers: vec![(
+                        "content-range".into(),
+                        format!("bytes {a}-{end}/{}", file.len()),
+                    )],
+                    body: file[a..=end].to_vec(),
+                }
+            }
+            None => whole(file),
+        }
+    }
+
+    /// A 200 answer with every byte of `file`, as a server that ignores `Range` gives.
+    fn whole(file: &[u8]) -> HttpResponse {
+        HttpResponse {
+            status: 200,
+            headers: Vec::new(),
+            body: file.to_vec(),
+        }
+    }
+
+    type Answer = dyn Fn(usize, &HttpRequest) -> Result<HttpResponse, NetError> + Send + Sync;
+
+    /// The `Range` header of every request, in order.
+    type Ranges = Arc<Mutex<Vec<Option<String>>>>;
+
+    /// A network whose answer to the n-th request (from 0) is `answer(n, request)`; it keeps the
+    /// `Range` header of every request in order.
+    struct PartsNet {
+        answer: Box<Answer>,
+        ranges: Ranges,
+    }
+
+    impl Net for PartsNet {
+        fn send(&self, req: HttpRequest) -> Result<HttpResponse, NetError> {
+            assert_eq!(
+                (req.method.as_str(), req.url.as_str()),
+                ("GET", "https://example.com/es.sqlite3")
+            );
+            let n = {
+                let mut ranges = self.ranges.lock().unwrap();
+                ranges.push(range_of(&req));
+                ranges.len() - 1
+            };
+            (self.answer)(n, &req)
+        }
+    }
+
+    fn parts_net(
+        answer: impl Fn(usize, &HttpRequest) -> Result<HttpResponse, NetError> + Send + Sync + 'static,
+    ) -> (Box<PartsNet>, Ranges) {
+        let ranges = Arc::new(Mutex::new(Vec::new()));
+        let net = Box::new(PartsNet {
+            answer: Box::new(answer),
+            ranges: Arc::clone(&ranges),
+        });
+        (net, ranges)
+    }
+
+    /// The names of the files in the data directory's `packs/` folder.
+    fn packs_in(dir: &Path) -> Vec<String> {
+        let mut names: Vec<String> = std::fs::read_dir(dir.join("packs"))
+            .map(|entries| {
+                entries
+                    .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned())
+                    .collect()
+            })
+            .unwrap_or_default();
+        names.sort();
+        names
+    }
+
+    #[test]
+    fn a_pack_arrives_in_parts_with_progress_after_each_and_installs_once_checked() {
+        let dir = tempfile::tempdir().unwrap();
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = large_pack_bytes(scratch.path());
+        let (total, part) = (bytes.len() as u64, PACK_PART_BYTES);
+        let file = bytes.clone();
+        let (net, ranges) = parts_net(move |_, req| Ok(serve(&file, req)));
+        let mut app = parley_with(dir.path(), &exact_lock(&bytes), net);
+        app.course_start("es").unwrap();
+
+        let packs = dir.path().join("packs");
+        let mut seen = Vec::new();
+        let status = app
+            .pack_download("es", &mut |p| {
+                // Nothing is written while the parts arrive.
+                assert!(
+                    !packs.exists(),
+                    "nothing written before every byte is checked"
+                );
+                assert_eq!(p.lang, "es");
+                seen.push((p.bytes_done, p.bytes_total));
+            })
+            .unwrap();
+
+        // The size first, then the bytes held after each part, up to the total.
+        assert_eq!(
+            seen,
+            [(0, total), (part, total), (2 * part, total), (total, total)]
+        );
+        assert_eq!(
+            *ranges.lock().unwrap(),
+            [
+                Some(format!("bytes=0-{}", part - 1)),
+                Some(format!("bytes={part}-{}", 2 * part - 1)),
+                Some(format!("bytes={}-{}", 2 * part, total - 1)),
+            ]
+        );
+        assert_eq!(status.state, PackState::Installed);
+        assert_eq!(status.version.as_deref(), Some("2026-11-05"));
+        assert_eq!(status.bytes, Some(total));
+        assert_eq!(packs_in(dir.path()), ["es-2026-11-05.sqlite3"]);
+        assert_eq!(
+            std::fs::read(packs.join("es-2026-11-05.sqlite3")).unwrap(),
+            bytes
+        );
+        // The parts make the whole pack: its sentences are there.
+        let store = app.store.as_ref().unwrap();
+        let sentences = pack_sentences(dir.path(), store, Lang::Es, &["noche".into()]);
+        assert_eq!(sentences.len(), 1);
+        assert_eq!(sentences[0].author, "fixture_a");
+    }
+
+    #[test]
+    fn a_download_that_fails_halfway_installs_nothing_and_leaves_no_part_file() {
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = large_pack_bytes(scratch.path());
+        let other_scratch = tempfile::tempdir().unwrap();
+        let old = pack_bytes(other_scratch.path());
+        let (total, part) = (bytes.len() as u64, PACK_PART_BYTES);
+        let offline =
+            "You're offline. Parley works without the pack, with fewer example sentences.";
+        let unavailable = "The course pack could not be downloaded. Try again later.";
+        let damaged = "The download was damaged. Try again.";
+        let half_part = HttpResponse {
+            status: 206,
+            headers: Vec::new(),
+            body: bytes[part as usize..(part + part / 2) as usize].to_vec(),
+        };
+        let empty_part = HttpResponse {
+            status: 206,
+            headers: Vec::new(),
+            body: Vec::new(),
+        };
+        let server_error = HttpResponse {
+            status: 500,
+            headers: Vec::new(),
+            body: b"oops".to_vec(),
+        };
+        let cases: Vec<(&str, Result<HttpResponse, NetError>, ErrorCode, &str)> = vec![
+            (
+                "no connection",
+                Err(NetError::Offline),
+                ErrorCode::Offline,
+                offline,
+            ),
+            (
+                "timed out",
+                Err(NetError::Timeout),
+                ErrorCode::Offline,
+                offline,
+            ),
+            (
+                "a 500",
+                Ok(server_error),
+                ErrorCode::PackMissing,
+                unavailable,
+            ),
+            (
+                "half a part",
+                Ok(half_part),
+                ErrorCode::ChecksumMismatch,
+                damaged,
+            ),
+            (
+                "an empty part",
+                Ok(empty_part),
+                ErrorCode::ChecksumMismatch,
+                damaged,
+            ),
+        ];
+        for (case, second, code, message) in cases {
+            let dir = tempfile::tempdir().unwrap();
+            let file = bytes.clone();
+            let (net, ranges) = parts_net(move |n, req| match n {
+                0 => Ok(serve(&file, req)),
+                _ => second.clone(),
+            });
+            let mut app = parley_with(dir.path(), &exact_lock(&bytes), net);
+            app.course_start("es").unwrap();
+            // The course already has an older pack, which a failed download leaves in place.
+            std::fs::create_dir_all(dir.path().join("packs")).unwrap();
+            std::fs::write(dir.path().join("packs/es-2026-10-01.sqlite3"), &old).unwrap();
+            app.store
+                .as_mut()
+                .unwrap()
+                .set_pack_version(Lang::Es, Some("2026-10-01"))
+                .unwrap();
+
+            let mut seen = Vec::new();
+            let err = app
+                .pack_download("es", &mut |p| seen.push((p.bytes_done, p.bytes_total)))
+                .unwrap_err();
+            assert_eq!((err.code, err.message.as_str()), (code, message), "{case}");
+            assert_eq!(
+                ranges.lock().unwrap().len(),
+                2,
+                "{case}: stops at the failed part"
+            );
+            assert_eq!(seen, [(0, total), (part, total)], "{case}");
+            assert_eq!(
+                packs_in(dir.path()),
+                ["es-2026-10-01.sqlite3"],
+                "{case}: no new pack and no part file"
+            );
+            let status = app.pack_status("es").unwrap();
+            assert_eq!(
+                (status.state, status.version.as_deref()),
+                (PackState::Installed, Some("2026-10-01")),
+                "{case}: the previous pack stays installed"
+            );
+        }
+
+        // A pack URL that answers 404 partway: the pack is not published, and nothing is written.
+        let dir = tempfile::tempdir().unwrap();
+        let file = bytes.clone();
+        let (net, _) = parts_net(move |n, req| match n {
+            0 => Ok(serve(&file, req)),
+            _ => Ok(HttpResponse {
+                status: 404,
+                headers: Vec::new(),
+                body: b"Not Found".to_vec(),
+            }),
+        });
+        let mut app = parley_with(dir.path(), &exact_lock(&bytes), net);
+        app.course_start("es").unwrap();
+        let outcome = app.pack_download("es", &mut |_| {}).unwrap();
+        assert_eq!(outcome.state, PackState::NotPublished);
+        assert!(packs_in(dir.path()).is_empty(), "nothing written");
+        let store = app.store.as_ref().unwrap();
+        assert_eq!(store.course(Lang::Es).unwrap().unwrap().pack_version, None);
+    }
+
+    #[test]
+    fn a_server_that_ignores_range_sends_the_whole_pack_in_one_answer() {
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = large_pack_bytes(scratch.path());
+        let (total, part) = (bytes.len() as u64, PACK_PART_BYTES);
+
+        // Every answer is 200 with the whole file: the first one is the whole download.
+        let dir = tempfile::tempdir().unwrap();
+        let file = bytes.clone();
+        let (net, ranges) = parts_net(move |_, _| Ok(whole(&file)));
+        let mut app = parley_with(dir.path(), &exact_lock(&bytes), net);
+        app.course_start("es").unwrap();
+        let mut seen = Vec::new();
+        let status = app
+            .pack_download("es", &mut |p| seen.push((p.bytes_done, p.bytes_total)))
+            .unwrap();
+        assert_eq!(status.state, PackState::Installed);
+        assert_eq!(seen, [(0, total), (total, total)]);
+        assert_eq!(
+            *ranges.lock().unwrap(),
+            [Some(format!("bytes=0-{}", part - 1))],
+            "one request"
+        );
+        assert_eq!(
+            std::fs::read(dir.path().join("packs/es-2026-11-05.sqlite3")).unwrap(),
+            bytes
+        );
+
+        // A server that stops honouring `Range` partway: its whole file replaces the parts held.
+        let dir = tempfile::tempdir().unwrap();
+        let file = bytes.clone();
+        let (net, ranges) = parts_net(move |n, req| match n {
+            0 => Ok(serve(&file, req)),
+            _ => Ok(whole(&file)),
+        });
+        let mut app = parley_with(dir.path(), &exact_lock(&bytes), net);
+        app.course_start("es").unwrap();
+        let mut seen = Vec::new();
+        let status = app
+            .pack_download("es", &mut |p| seen.push((p.bytes_done, p.bytes_total)))
+            .unwrap();
+        assert_eq!(status.state, PackState::Installed);
+        assert_eq!(seen, [(0, total), (part, total), (total, total)]);
+        assert_eq!(ranges.lock().unwrap().len(), 2);
+        assert_eq!(packs_in(dir.path()), ["es-2026-11-05.sqlite3"]);
+        assert_eq!(
+            std::fs::read(dir.path().join("packs/es-2026-11-05.sqlite3")).unwrap(),
+            bytes
+        );
+    }
+
+    #[test]
+    fn a_download_must_have_the_pinned_size_as_well_as_the_checksum() {
+        let scratch = tempfile::tempdir().unwrap();
+        let bytes = pack_bytes(scratch.path());
+        // The lock has the file's own SHA-256 but a size one byte larger.
+        let lock = exact_lock(&bytes).replace(
+            &format!("bytes = {}", bytes.len()),
+            &format!("bytes = {}", bytes.len() + 1),
+        );
+        // A server that ignores `Range`, and one that honours it.
+        let file = bytes.clone();
+        let ignoring = parts_net(move |_, _| Ok(whole(&file))).0;
+        let file = bytes.clone();
+        let honouring = parts_net(move |_, req| Ok(serve(&file, req))).0;
+        for (case, net) in [("ignoring", ignoring), ("honouring", honouring)] {
+            let dir = tempfile::tempdir().unwrap();
+            let mut app = parley_with(dir.path(), &lock, net);
+            app.course_start("es").unwrap();
+            let err = app.pack_download("es", &mut |_| {}).unwrap_err();
+            assert_eq!(
+                (err.code, err.message.as_str()),
+                (
+                    ErrorCode::ChecksumMismatch,
+                    "The download was damaged. Try again."
+                ),
+                "{case}"
+            );
+            assert!(packs_in(dir.path()).is_empty(), "{case}: nothing written");
+            let store = app.store.as_ref().unwrap();
+            assert_eq!(
+                store.course(Lang::Es).unwrap().unwrap().pack_version,
+                None,
+                "{case}"
+            );
+        }
     }
 
     #[test]

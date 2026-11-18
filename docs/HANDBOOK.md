@@ -43,9 +43,11 @@ opening a second one.
 **First launch.** One step at a time: *Welcome to Parley* ("Learn by speaking. No hearts, no ads,
 nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
 English); *Course pack*, which offers the language's sentence pack with its size first
-("Download the Spanish course pack (246.8 MB)?"; for a language with no pack in
-`content/packs.lock.toml`, or after **Download** when the pack's address answers that there is no
-such file, it says "No course pack is published for Spanish yet. Parley works without it, with
+("Download the Spanish course pack (246.8 MB)?"; **Download** shows a bar that fills as the pack
+arrives, with how far it is under it, such as "42% · 103.7 of 246.8 MB", and the pack is installed
+only once all of it has arrived and matches its pinned size and checksum, so a download that stops
+partway installs nothing; for a language with no pack in `content/packs.lock.toml`, or after
+**Download** when the pack's address answers that there is no such file, it says "No course pack is published for Spanish yet. Parley works without it, with
 fewer example sentences." instead, and **Continue** goes on without it); *Daily goal* (10, 20, 30 or
 50 XP a day, 20 by default); and *Where to start*: **Take the placement test (about 5 minutes)**
 or **Start from the beginning**. The placement test asks you to translate a word of one skill

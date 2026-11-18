@@ -19,7 +19,8 @@ Spanish, French and German
 (16 units and about 64 skills, 540 words and 520 example sentences per language, most of them real
 Tatoeba sentences), a labelled beta until native speakers have reviewed it. The sentence packs are
 published as release assets and pinned by checksum, and the app downloads the chosen language's
-pack in onboarding; `parley pack install` installs a locally built one for development.
+pack in onboarding, with a bar that shows how far it is; `parley pack install` installs a locally
+built one for development.
 Underneath: the
 course as validated open data (a syllabus format with a validator, word-form tables, sentence
 packs built from Tatoeba), the learner model (FSRS cards, an append-only review log, skill

@@ -21,6 +21,20 @@ type Step = 'welcome' | 'language' | 'pack' | 'goal' | 'start' | 'placement'
 const GOALS = [10, 20, 30, 50]
 const DEFAULT_GOAL = 20
 
+/**
+ * Bytes as decimal megabytes to one decimal place, without the unit, rounded as the core's
+ * `megabytes` rounds ((bytes + 50,000) / 100,000 tenths), so the total matches the size offered.
+ */
+function tenthsOfMegabytes(bytes: number): string {
+  const tenths = Math.floor((bytes + 50_000) / 100_000)
+  return `${Math.floor(tenths / 10)}.${tenths % 10}`
+}
+
+/** How far a download is: the whole percent done (never above 100). */
+function percentDone(done: number, total: number): number {
+  return total > 0 ? Math.min(100, Math.floor((done * 100) / total)) : 0
+}
+
 interface Props {
   /** Onboarding is done: open the path of this course. */
   onDone: (lang: string) => void
@@ -154,14 +168,20 @@ export default function Onboarding({ onDone }: Props) {
       )
       let body
       if (downloading) {
+        // The size is known from the pack's status before the first progress event arrives.
+        const total = progress?.bytes_total || pack?.bytes || 0
+        const done = Math.min(progress?.bytes_done ?? 0, total)
         body = (
           <>
             <p>{t('onboarding.pack.downloading', { language })}</p>
-            <progress
-              aria-label={t('onboarding.pack.progress')}
-              max={progress?.bytes_total || 1}
-              value={progress?.bytes_done ?? 0}
-            />
+            <progress aria-label={t('onboarding.pack.progress')} max={total || 1} value={done} />
+            <p>
+              {t('onboarding.pack.amount', {
+                percent: percentDone(done, total),
+                done: tenthsOfMegabytes(done),
+                total: tenthsOfMegabytes(total),
+              })}
+            </p>
           </>
         )
       } else if (packError) {

@@ -2,16 +2,19 @@
 // rendered whole, the Tauri bridge is faked with the spec's result shapes, and every element is
 // found by the visible text and roles of the spec's UI contract.
 
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 // The stylesheet as text (vite.config.ts lets this one import through as text).
 import STYLESHEET from '../../index.css?raw'
 
 type Args = Record<string, unknown>
 
+type TauriEvent = { event: string; id: number; payload: unknown }
+
 const fake = vi.hoisted(() => ({
   answers: new Map<string, (args: Record<string, unknown>) => unknown>(),
   calls: [] as { command: string; args: Record<string, unknown> }[],
+  listeners: new Map<string, ((event: { event: string; id: number; payload: unknown }) => void)[]>(),
 }))
 
 // Every command answers from `fake.answers`; arguments are recorded as the web view sends them.
@@ -27,8 +30,17 @@ vi.mock('@tauri-apps/api/core', () => ({
   }),
 }))
 
+// `listen` keeps each handler until its unlisten function runs, so a test can deliver events.
 vi.mock('@tauri-apps/api/event', () => ({
-  listen: vi.fn(async () => () => {}),
+  listen: vi.fn(async (event: string, handler: (event: { event: string; id: number; payload: unknown }) => void) => {
+    fake.listeners.set(event, [...(fake.listeners.get(event) ?? []), handler])
+    return () => {
+      fake.listeners.set(
+        event,
+        (fake.listeners.get(event) ?? []).filter((kept) => kept !== handler),
+      )
+    }
+  }),
   once: vi.fn(async () => () => {}),
   emit: vi.fn(async () => {}),
 }))
@@ -328,9 +340,20 @@ function failWith(error: ReturnType<typeof appError>) {
   return () => Promise.reject(error)
 }
 
+/** Delivers `payload` on `event` to every handler listening for it. */
+function emitEvent(event: string, payload: unknown) {
+  const delivered: TauriEvent = { event, id: 1, payload }
+  act(() => {
+    for (const handler of fake.listeners.get(event) ?? []) {
+      handler(delivered)
+    }
+  })
+}
+
 function answerDefaults() {
   fake.answers.clear()
   fake.calls.length = 0
+  fake.listeners.clear()
   let settings: Record<string, unknown> = { ...SETTINGS }
   let placementAnswers = 0
   reply('app_start', () => ({ onboarded: false, active_course: null, notice: null }))
@@ -533,6 +556,47 @@ describe('Onboarding (acceptance test 1, invariant I12)', () => {
     expectNoDialog()
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     await heading('Daily goal', 1)
+  })
+
+  it('the bar fills as the pack arrives and says how far it is', async () => {
+    const total = 174_747_648
+    const progressAt = (done: number) => ({ lang: 'es', bytes_done: done, bytes_total: total })
+    reply('pack_status', () => ({ lang: 'es', state: 'available', version: '2026-11-05', bytes: total, size: '174.7 MB' }))
+    let finish: (status: unknown) => void = () => {}
+    reply('pack_download', () => new Promise((resolve) => (finish = resolve)))
+    await walkTo('Course pack')
+    await expectText('Download the Spanish course pack (174.7 MB)?')
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }))
+    await waitFor(() => expect(callsOf('pack_download')).toEqual([{ lang: 'es' }]))
+    expect(fake.listeners.get('pack://progress')).toHaveLength(1)
+    const bar = () => screen.getByRole('progressbar', { name: 'Download progress' })
+
+    // Before the first event the pack's size is already known.
+    await expectText('Downloading the Spanish course pack…')
+    await expectText('0% · 0.0 of 174.7 MB')
+
+    emitEvent('pack://progress', progressAt(0))
+    await expectText('0% · 0.0 of 174.7 MB')
+    expect(bar()).toHaveAttribute('max', String(total))
+    expect(bar()).toHaveAttribute('value', '0')
+
+    emitEvent('pack://progress', progressAt(8_000_000))
+    await expectText('4% · 8.0 of 174.7 MB')
+    expect(bar()).toHaveAttribute('value', '8000000')
+
+    emitEvent('pack://progress', progressAt(73_400_000))
+    await expectText('42% · 73.4 of 174.7 MB')
+    expect(bar()).toHaveAttribute('value', '73400000')
+    expect(screen.queryByText(textOf('4% · 8.0 of 174.7 MB'))).toBeNull()
+
+    emitEvent('pack://progress', progressAt(total))
+    await expectText('100% · 174.7 of 174.7 MB')
+    expect(bar()).toHaveAttribute('value', String(total))
+
+    act(() => finish({ lang: 'es', state: 'installed', version: '2026-11-05', bytes: total, size: '174.7 MB' }))
+    await expectText('The Spanish course pack is installed.')
+    expect(screen.queryByRole('progressbar')).toBeNull()
+    expect(fake.listeners.get('pack://progress')).toEqual([])
   })
 
   it('the placement test asks, accepts I don\'t know, and says where the learner starts', async () => {

@@ -34,7 +34,8 @@ fn connect_timeout(timeout: Duration) -> Duration {
     (timeout * 3 / 4).clamp(Duration::from_millis(1), CONNECT_TIMEOUT)
 }
 
-/// How long a pack download may take in all.
+/// How long one download request may take (a course pack is fetched in parts, each a request of
+/// its own).
 pub const DOWNLOAD_TIMEOUT: Duration = Duration::from_secs(30 * 60);
 
 /// The `User-Agent` of every request.

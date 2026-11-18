@@ -26,6 +26,7 @@
   "onboarding.pack.installed": "The {language} course pack is installed.",
   "onboarding.pack.downloading": "Downloading the {language} course pack…",
   "onboarding.pack.progress": "Download progress",
+  "onboarding.pack.amount": "{percent}% · {done} of {total} MB",
   "onboarding.continue": "Continue",
   "onboarding.goal.title": "Daily goal",
   "onboarding.goal.text": "How much XP a day do you want to earn?",

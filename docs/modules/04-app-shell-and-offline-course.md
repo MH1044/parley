@@ -21,8 +21,9 @@ module adds a screen to.
    with typing or word bank, fill the gap, match pairs), Result sheet, Lesson summary, Reviews,
    Stats, Settings (Learning, Data, About), and the data-file error screen. No AI entry point is
    shown yet.
-4. Course pack download from `content/packs.lock.toml`, with the size shown first, progress events,
-   SHA-256 verification and a working app without it; lessons use an installed pack's sentences.
+4. Course pack download from `content/packs.lock.toml`, with the size shown first, progress events
+   as the pack arrives, size and SHA-256 verification and a working app without it; lessons use an
+   installed pack's sentences.
 5. Backup export and import (`parley.backup/1`), and "Delete everything".
 6. Attribution: "Sentence by {author} on Tatoeba" under pack sentences; the About page credits
    Tatoeba (CC BY 2.0 FR) and Wiktionary (CC BY-SA 4.0).
@@ -220,9 +221,9 @@ Messages (code, then text):
 | an unknown session or exercise | `not_found` | "This exercise is no longer available." |
 | the run's other refusals | `invalid_input` | "Type an answer first." / "This exercise was already checked." |
 | no pack in the lock for the language | `pack_missing` | "No course pack is published for {Language} yet." |
-| the download got no response | `offline` | "You're offline. Parley works without the pack, with fewer example sentences." |
-| the download answered other than 200, 404 or 410 (a 404 or 410 is not an error: see Design notes) | `pack_missing` | "The course pack could not be downloaded. Try again later." |
-| the bytes do not match the lock's SHA-256 | `checksum_mismatch` | "The download was damaged. Try again." |
+| a request of the download got no response | `offline` | "You're offline. Parley works without the pack, with fewer example sentences." |
+| a request of the download answered other than 200, 206, 404 or 410 (a 404 or 410 is not an error: see Design notes) | `pack_missing` | "The course pack could not be downloaded. Try again later." |
+| the bytes do not match the lock's size or SHA-256, or a part arrived with another length than the one asked for | `checksum_mismatch` | "The download was damaged. Try again." |
 | a backup that is not JSON, has another `schema`, or fails its JSON Schema | `invalid_input` | "This is not a Parley backup." |
 | `parley.backup/N` with N > 1 | `invalid_input` | "This backup was made by a newer Parley. Update Parley to import it." |
 | a backup file that cannot be read | `not_found` | "Parley could not read that file." |
@@ -248,8 +249,11 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   `course_start`); **Course pack** (`pack_status`: available → "Download the Spanish course pack
   (8.2 MB)?" with **Download** and **Skip for now**; not published → "No course pack is published
   for Spanish yet. Parley works without it, with fewer example sentences." with **Continue**;
-  installed → "The Spanish course pack is installed." with **Continue**; a download error shows
-  its message and **Continue**); **Daily goal** (radio buttons **10 XP**, **20 XP** (checked),
+  installed → "The Spanish course pack is installed." with **Continue**; while the download runs,
+  "Downloading the Spanish course pack…", a progress bar **Download progress** that fills as the
+  pack arrives, and under it "{percent}% · {done} of {total} MB", such as "42% · 73.4 of 174.7
+  MB", from the start, with the total from `pack_status` until the first `pack://progress` event;
+  a download error shows its message and **Continue**); **Daily goal** (radio buttons **10 XP**, **20 XP** (checked),
   **30 XP**, **50 XP** and **Continue**, which calls `settings_set` with
   `{"daily_goal_xp": n}`); **Where to start** (**Take the placement test (about 5 minutes)** and
   **Start from the beginning**). Placement: heading **Placement test**, "Question {n}", the
@@ -332,21 +336,45 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   answers "Unknown value {v} for {key}."; any other bad value "Invalid value for {key}."
 - Pack: the lock's entry for the language; `size` is `megabytes(bytes)`, decimal megabytes to one
   decimal place, `(bytes + 50,000) / 100,000` tenths in integer arithmetic (8,200,000 bytes → "8.2
-  MB"). `pack_download` reports `{bytes_done: 0, bytes_total: bytes}` before the request and
-  `{bytes_total, bytes_total}` after the body arrives, checks the SHA-256 before writing anything,
-  then writes `packs/<lang>-<version>.sqlite3.part`, renames it to `packs/<lang>-<version>.sqlite3`,
-  removes the course's previous pack file and records `courses.pack_version`. `installed` when
-  `courses.pack_version` names a file that opens read-only as a pack. Lessons take up to 20
-  sentences per lemma of the plan's items from an installed pack (`sentence_lemmas`, by `max_rank`
-  then id) as extra `fill_gap` candidates. `attributions` names the author of every `fill_gap` whose
-  `full_sentence` is a pack sentence's text and no syllabus example's.
+  MB"). `pack_download` reports `{bytes_done: 0, bytes_total: bytes}` before the first request,
+  fetches the pack in parts (below) and reports the bytes it holds after each part, the last
+  report being `{bytes_total, bytes_total}`; it checks the size and SHA-256 the lock pins before
+  writing anything, then writes `packs/<lang>-<version>.sqlite3.part`, renames it to
+  `packs/<lang>-<version>.sqlite3`, removes the course's previous pack file and records
+  `courses.pack_version`. `installed` when `courses.pack_version` names a file that opens
+  read-only as a pack. Lessons take up to 20 sentences per lemma of the plan's items from an
+  installed pack (`sentence_lemmas`, by `max_rank` then id) as extra `fill_gap` candidates.
+  `attributions` names the author of every `fill_gap` whose `full_sentence` is a pack sentence's
+  text and no syllabus example's.
 - A 404 or 410 from a pack URL means the pack is not published yet: the lock names a release
   asset that does not exist, and trying again cannot help until it does. `pack_download` then
   writes nothing, records no version and returns the `not_published` status (no version, bytes
   or size), so onboarding shows "No course pack is published for {Language} yet. Parley works
   without it, with fewer example sentences." with **Continue** instead of an error. Every other
-  status but 200 stays `pack_missing`, "The course pack could not be downloaded. Try again later.",
-  since a server error may pass.
+  status but 200 (and 206 for a part, below) stays `pack_missing`, "The course pack could not be
+  downloaded. Try again later.", since a server error may pass.
+- The pack download shows real progress. In testing, "Download the French course pack (174.7
+  MB)?" led to an empty bar with no percentage and no size until the whole pack had arrived: the
+  core reported progress only before the request and after the whole body, because `Net::send`
+  returns a body whole. Decision: the pack is fetched in parts of 8,000,000 bytes, each a GET with
+  `Range: bytes=<first>-<last>` through the injected `Net::send`, and progress is reported after
+  each part (22 steps for a 174.7 MB pack); the Course pack step shows the percentage and the
+  megabytes done under the bar. Ranged requests were chosen over a streaming method with a
+  progress callback on the injected network because they keep the `Net` trait and the transport
+  as they are, keep the whole download in the core (which still has no HTTP code of its own) where
+  fake networks test it, and work with any transport; the cost is one more request per part (on a
+  release asset, each with its redirect) and a bar that moves every 8 MB rather than continuously.
+  Rules: a 206 must carry exactly the bytes asked for, else `checksum_mismatch` (so a server that
+  answers parts with nothing cannot keep the download going); a 200 is the whole file, which a
+  server or proxy that ignores `Range` sends, so its body replaces any parts held and ends the
+  download (one step from 0 to the total, as before); a 404 or 410 on any part is the not-published
+  outcome, any other status `pack_missing`, no response `offline`. The parts are held in memory,
+  in one buffer reserved at the pinned size when the first part arrives (so the pack is never
+  copied while it grows), and nothing is written until the whole has the size and SHA-256 the lock
+  pins, so a download that fails or stops partway installs nothing, leaves no `.part` file and
+  keeps the course's previous pack. There is no automatic retry and no resume: a new download
+  starts from the first byte. Settings has no pack download, so onboarding is the one place this
+  progress shows.
 - Lessons: `lesson_start` composes (module 03) with `lesson_length` and `new_items_per_lesson` from
   the settings (mode `review`: 0 new items) and no capabilities, then `template_lesson` with seq
   `Store::next_lesson_seq`, `Allowed::for_skill` and the pack sentences, then `LessonRun::start_lesson`.
@@ -578,8 +606,9 @@ come from this spec, the fixtures and modules 02 and 03.
    available and skill 2 locked; `next_skill_id` is skill 1. `course_start("it")` → "Unknown value
    it for lang."; `path_get("fr")` before `course_start("fr")` → "This course has not been
    started."; `skill_get` of an unknown id → "This skill is not in the course."
-3. `pack_download` with a fake network serving bytes whose SHA-256 is in the given lock → installed
-   and `pack://progress` reported 0 then the total; one changed byte → `checksum_mismatch`, "The
+3. `pack_download` with a fake network serving bytes whose SHA-256 and size are in the given lock
+   (answering 200 with the whole file, as a server that ignores `Range` does) → installed and
+   `pack://progress` reported 0 then the total; one changed byte → `checksum_mismatch`, "The
    download was damaged. Try again.", nothing left in `packs/`; with `FailingNet` → `offline` and
    the offline message; a 404 or 410 → the `not_published` status and nothing in `packs/`; a 500
    → `pack_missing` and its message; a language missing from the lock → `not_published` and "No
@@ -643,6 +672,21 @@ come from this spec, the fixtures and modules 02 and 03.
     before the course packs, and stays on the Data screen.
 18. Placement: after **I don't know**, after **Next** and after Enter in **Your answer**, the next
     question's **Your answer** box has the focus and is empty.
+19. Pack download in parts (unit tests in `crates/parley-core/src/app/pack.rs`, with a pack of a
+    little over two parts and a fake network that answers `Range` with 206 and those bytes): the
+    requests ask for `bytes=0-7999999`, `bytes=8000000-15999999` and `bytes=16000000-<last>`,
+    `pack://progress` reports 0, 8,000,000, 16,000,000 and the total, nothing is in `packs/` until
+    the last part has arrived, and the pack is then installed whole. The second part failing (no
+    connection, timed out, a 500, half a part, an empty part) → `offline`, `pack_missing` or
+    `checksum_mismatch` with its message, progress stopped after the first part, no new pack and
+    no `.part` file, and the course's previous pack still installed; a 404 partway → the
+    `not_published` status and nothing written. A server that answers 200 with the whole file, at
+    the first request or after a part → installed, with the whole file in place of the parts. A
+    lock with the file's SHA-256 but a size one byte larger → `checksum_mismatch`, whether the
+    server honours `Range` or not. UI: while the download runs, the bar and "0% · 0.0 of 174.7 MB"
+    show at once for a 174,747,648-byte pack, and progress events at 8,000,000, 73,400,000 and
+    174,747,648 bytes show "4% · 8.0 of 174.7 MB", "42% · 73.4 of 174.7 MB" and "100% · 174.7 of
+    174.7 MB" with the bar's value at those bytes.
 
 ## Status
 
