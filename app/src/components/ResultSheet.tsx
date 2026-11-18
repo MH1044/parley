@@ -33,7 +33,6 @@ interface Props {
   /** What Explain shows, once asked for. */
   explain?: ExplainView | null
   onIWasRight: () => void
-  onContinue: () => void
   /** Check with AI on an unchecked answer, and Try again after the judge's call failed. */
   onCheckWithAi?: () => void
   /** Explain, after an answer that was almost right or wrong. */
@@ -46,9 +45,11 @@ interface Props {
 
 /**
  * The verdict of a checked answer, read out as it appears: the verdict line, the reason, the
- * correct answer, and the ways on. An unchecked answer offers Check with AI (or, when the AI judge's
- * call failed, says why, as the AI banner does) and I was right; an answer that was almost right or
- * wrong offers Explain. While the AI judge decides, the same sheet says "Checking…" with no buttons.
+ * correct answer, and the sheet's own buttons. An unchecked answer offers Check with AI (or, when
+ * the AI judge's call failed, says why, as the AI banner does) and I was right; an answer that was
+ * almost right or wrong offers Explain. While the AI judge decides, the same sheet says "Checking…"
+ * with no buttons. Continue is not the sheet's: it is the lesson's, in the action bar under the
+ * sheet, where Check was, so it is in the same place however many lines the sheet has.
  */
 export default function ResultSheet({
   grade,
@@ -59,7 +60,6 @@ export default function ResultSheet({
   claimState,
   explain,
   onIWasRight,
-  onContinue,
   onCheckWithAi,
   onExplain,
   onStatus,
@@ -80,6 +80,8 @@ export default function ResultSheet({
     (grade.verdict === 'almost' || grade.verdict === 'wrong') &&
     exerciseType !== 'match_pairs' &&
     onExplain !== undefined
+  const offerCheckWithAi = unchecked && !judgeError && onCheckWithAi !== undefined
+  const offerExplain = explainable && !explain
 
   return (
     <section
@@ -127,26 +129,25 @@ export default function ResultSheet({
           onStatus={onStatus}
         />
       )}
-      <div className="actions">
-        {unchecked && !judgeError && onCheckWithAi && (
-          <button type="button" onClick={onCheckWithAi} disabled={busy}>
-            {t('result.check_with_ai')}
-          </button>
-        )}
-        {unchecked && (
-          <button type="button" onClick={onIWasRight} disabled={busy}>
-            {t('result.i_was_right')}
-          </button>
-        )}
-        {explainable && !explain && (
-          <button type="button" onClick={onExplain} disabled={busy}>
-            {t('result.explain')}
-          </button>
-        )}
-        <button type="button" className="primary" onClick={onContinue} disabled={busy}>
-          {t('result.continue')}
-        </button>
-      </div>
+      {(offerCheckWithAi || unchecked || offerExplain) && (
+        <div className="actions">
+          {offerCheckWithAi && (
+            <button type="button" onClick={onCheckWithAi} disabled={busy}>
+              {t('result.check_with_ai')}
+            </button>
+          )}
+          {unchecked && (
+            <button type="button" onClick={onIWasRight} disabled={busy}>
+              {t('result.i_was_right')}
+            </button>
+          )}
+          {offerExplain && (
+            <button type="button" onClick={onExplain} disabled={busy}>
+              {t('result.explain')}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   )
 }

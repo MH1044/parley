@@ -73,15 +73,17 @@ settings say so), *Fill the gap* with an English hint, and *Match the pairs*: th
 from 1 on the left, their meanings lettered from A on the right in a shuffled order that never
 lines up with the words; choose a word and a meaning, either way round, to make a pair. Both
 halves of a pair then show the word's number in the pair's own colour, and nothing on the screen
-moves; **Start over**, under the columns, undoes every pair. **Check** shows the result: Correct,
-Almost, Typo, Wrong or Not checked, the reason, the correct answer and, for a sentence from the
-course pack, its Tatoeba author ("Sentence by … on Tatoeba"). Not checked means a free
-translation Parley cannot decide offline: **I was right** accepts it from then on, and **Check
-with AI** asks the AI judge (see *Answer checks* below). The keyboard does it all: Enter checks
-and continues, 1 to 4 choose an option, a number and a letter (3 then A, or A then 3) make a
-pair, Backspace or Esc lets go of a half-made pair, and Esc asks "Quit this lesson?". The line at
-the foot of the lesson names the keys of the exercise shown. The summary shows the XP earned, how
-many answers were correct and the streak. There is no limit on lessons.
+moves; **Start over**, under the columns, undoes every pair. **Check**, in the bar at the foot of
+the window, shows the result above it: Correct, Almost, Typo, Wrong or Not checked, the reason,
+the correct answer and, for a sentence from the course pack, its Tatoeba author ("Sentence by …
+on Tatoeba"). **Continue** then takes the place of **Check** in that bar, so with the mouse the
+button to press is in the same place on every exercise, however long the result. Not checked
+means a free translation Parley cannot decide offline: **I was right** accepts it from then on,
+and **Check with AI** asks the AI judge (see *Answer checks* below). The keyboard does it all:
+Enter checks and continues, 1 to 4 choose an option, a number and a letter (3 then A, or A then
+3) make a pair, Backspace or Esc lets go of a half-made pair, and Esc asks "Quit this lesson?".
+The line in the bar, beside the button, names the keys of the exercise shown. The summary shows
+the XP earned, how many answers were correct and the streak. There is no limit on lessons.
 
 **Reviews.** **Review** takes up to 20 due cards. With nothing due it says when the next review
 is ("Nothing to review. Next review: tomorrow at 09:00."), or, before your first lesson, "Nothing
@@ -177,9 +179,9 @@ seconds: then Correct, Almost or Wrong with a short reason, "Correct answer: …
 corrected, and after Wrong "Also correct: …" with the course's own answer. A correct answer is
 remembered: the same answer to the same sentence is accepted offline from then on, whichever
 provider judged it. Without a provider the sheet says "Not checked" with **Check with AI** (the AI
-setup dialog opens first when AI is not set up yet; **Not now** leaves the answer as it is), **I
-was right** and **Continue**. When the check cannot be made, "Not checked" says why, as the AI
-banner does: offline, "You're offline, so Parley can't check free answers."; with no publik balance
+setup dialog opens first when AI is not set up yet; **Not now** leaves the answer as it is) and **I
+was right**, with **Continue** in the bar below. When the check cannot be made, "Not checked" says
+why, as the AI banner does: offline, "You're offline, so Parley can't check free answers."; with no publik balance
 left, the message, its one link and "or use your own key or a local model in Settings", and no
 more answers are sent to the judge by themselves in that lesson (**Check with AI** still asks once);
 a disconnected publik API, **Reconnect**; a slow

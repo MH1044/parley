@@ -275,13 +275,20 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   `word_bank` and the exercise has tiles; `match_pairs` two columns of buttons, a group **Words**
   numbered 1 to n and a group **Meanings** lettered A on in the exercise's `english_order`, a word
   and a meaning chosen either way round make a pair, "{text}, pair {n}" names each half of a made
-  pair, and **Start over** sits under the columns, disabled until there is a pair; button
-  **Check**. Esc opens a dialog "Quit this lesson?" with **Quit** and **Keep going**.
+  pair, and **Start over** sits under the columns, disabled until there is a pair. Last comes the
+  action bar (`.action-bar`), one element for the whole lesson, after the exercise and its result
+  sheet and before any dialog: the line naming the keys, then the answer's one main button,
+  **Check** until the answer is graded (disabled while it is checked, "Checking…" included) and
+  **Continue** after (disabled while a command runs), always its last element. A lesson with no
+  exercise shows **Continue** there, which finishes it. Esc opens a dialog "Quit this lesson?"
+  with **Quit** and **Keep going**.
 - Result sheet: a region named **Result** with the verdict **Correct**, **Almost**, **Typo**,
   **Wrong** or **Not checked**, the grade's message, "Correct answer: {corrected}" when there is
   one, the attribution line when the exercise has one ("Sentence by {author} on Tatoeba", or
-  "Sentence from Tatoeba" for an empty author), **I was right** for `unchecked` only, and
-  **Continue**.
+  "Sentence from Tatoeba" for an empty author), and **I was right** for `unchecked` only. Its
+  **Continue** is not in the region but in the action bar under it, where **Check** was; the
+  sheet's other buttons (**I was right**, and from later modules **Check with AI**, **Explain**
+  and **Play**) stay in the sheet.
 - Lesson summary: heading **Lesson complete**, "+{xp} XP", "{correct} of {total} correct", "{n} day
   streak", the summary's message when there is one, **Continue**.
 - Reviews: `review_start` with `limit` 20; no exercises → the notice and **Back to my path**.
@@ -302,10 +309,10 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   1 to 4 check the matching option of `pick_meaning`; in `match_pairs` a number (1 to n) chooses a
   word and a letter (A on, either case) the meaning on that row, a number and a letter in either
   order make a pair, and Backspace or Esc lets go of a half-made pair; Esc asks to quit (with a
-  half-made pair, the first Esc only lets go of it). The footer names the keys: "Enter checks and
-  continues. Keys 1 to 4 choose an option. Esc quits.", and for `match_pairs` "Enter checks and
-  continues. Press a number (1 to {n}) and a letter (A to {last}) to make a pair. Backspace or Esc
-  clears a half-made pair; otherwise Esc quits.".
+  half-made pair, the first Esc only lets go of it). The line in the action bar names the keys:
+  "Enter checks and continues. Keys 1 to 4 choose an option. Esc quits.", and for `match_pairs`
+  "Enter checks and continues. Press a number (1 to {n}) and a letter (A to {last}) to make a
+  pair. Backspace or Esc clears a half-made pair; otherwise Esc quits.".
 - Leaving a screen: every screen the path opens (Reviews with nothing due, Stats, Settings) has
   **Back to my path** at the top, straight after its heading, and at the foot; Esc on it returns
   to the path. The app keeps a history of the screens visited, in order: the path and the screens
@@ -426,6 +433,31 @@ UI contract (visible text in `en.json`; tests find elements by these names):
     run, after the session id; a usable order is kept. Should the interface ever get none, it shows
     each meaning one row up from its word (the first at the foot), so the columns still never
     line up.
+- **Check** and **Continue** stay in one place. In testing, playing with the mouse, **Continue**
+  sat at four different heights depending on how many lines the result sheet had (it was the
+  sheet's last element, after the verdict, the message, the correct answer, the attribution and
+  any explanation), so the learner had to look for it after every answer. Decision:
+  - The lesson player has an action bar fixed at the foot of the lesson area, within the lesson's
+    44rem column. The answer's main button, **Check** and then, after grading, **Continue**, sits
+    at the same place in it on every exercise: the bar's end, at its foot, one width for both
+    (`min-width: 9rem`). The line naming the keys sits in the bar before it. The result sheet's
+    other buttons (**I was right**, **Check with AI**, **Explain**, **Play**) stay in the sheet
+    above; its row of buttons is left out when it would be empty.
+  - The bar is one element for the whole lesson, the last before any dialog. **Check** and
+    **Continue** are separate elements in it, so a **Check** pressed with the mouse never leaves
+    **Continue** focused, and the keyboard is unchanged: Enter checks and continues from anywhere.
+    While "Checking…" shows the bar keeps **Check**, disabled; during **Check with AI**, **I was
+    right** or the lesson's finish, **Continue** stays, disabled.
+  - Layout: the lesson (`main.lesson`) is at least as tall as the window (`min-height: 100vh`,
+    border-box) with no padding below the bar, and the bar is pushed to its foot (`margin-top:
+    auto`) and held there with `position: sticky; bottom: 0`, so its foot is the window's whether
+    the exercise is short or the page scrolls. Sticky rather than fixed, the bar keeps its own room
+    in the page: scrolled to its foot, nothing is ever covered by it. It is drawn on the page's
+    background with a line above it, so content scrolling under it does not show through; it
+    needs no z-index, coming after all the lesson's content and before its dialogs. During a
+    lesson the page keeps the scrollbar's room (`html:has(main.lesson)` sets `scrollbar-gutter:
+    stable`), so a long exercise that brings the scrollbar in does not move the centred column,
+    and the button with it, sideways.
 - Next review notice: the earliest `due` after now of a card of the course's items not retired, at
   the clock's UTC offset: "today at HH:MM" on today's local date, "tomorrow at HH:MM" on the next,
   otherwise "on {day} {Month}" (day without a leading zero, English month name).
@@ -746,6 +778,19 @@ come from this spec, the fixtures and modules 02 and 03.
     footer names the match-the-pairs keys, and the `pick_meaning` keys on a `pick_meaning`. A stored
     lesson whose `match_pairs` has no order or the pairs' own order starts with a usable one, a
     usable order is kept, and the answer by pair index is graded `correct`.
+21. Check and Continue stay in one place (UI tests in `app/src/test/m04/screens.test.tsx`; jsdom
+    has no layout, so the element and its place in the page are asserted): **Check** is the last
+    element of an element with the class `action-bar`, itself the last element of the lesson, with
+    the line naming the keys in it. After a one-line result (a correct `pick_meaning`: the sheet
+    holds its verdict only) and after a many-line one (a wrong `fill_gap` with a message, the
+    correct answer, the attribution and **Explain**), **Continue** is the last element of that same
+    bar, after the region **Result** and not in it, and the only **Continue** on screen; the next
+    exercise's **Check** is in the same bar again, and Enter still continues. While "Checking…"
+    shows, the sheet has no button and the bar's **Check** is disabled; a `Not checked` sheet keeps
+    **I was right** and **Check with AI**, and **Continue** is the bar's. The stylesheet makes
+    `.action-bar` `position: sticky`, `bottom: 0`, `margin-top: auto` on `var(--background)`, and
+    `main.lesson` `min-height: 100vh`, border-box, with no bottom padding, and
+    `html:has(main.lesson)` keeps `scrollbar-gutter: stable`.
 
 ## Status
 

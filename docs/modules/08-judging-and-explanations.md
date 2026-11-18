@@ -294,7 +294,8 @@ pub judge_error: Option<AppError>, // why an unchecked answer has no verdict (a 
 
 Strings in `app/src/strings/en.json`. The lesson screen shows the result sheet as "Checking…" (no
 buttons) while `exercise_submit` of a `translate_to_target` or `translate_to_en` answer, or
-`exercise_check`, is in flight. Then:
+`exercise_check`, is in flight. Then (**Continue** below is the lesson's, in its action bar under
+the sheet where **Check** was, module 04; every other button is the sheet's):
 
 - A judged verdict: the verdict line of module 04 (Correct, Almost, Wrong), the grade's
   `explanation`, "Correct answer: {corrected}" when `corrected` is set, "Also correct: {expected}"

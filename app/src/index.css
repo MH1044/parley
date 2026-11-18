@@ -213,6 +213,51 @@ select {
   font-size: 0.85rem;
 }
 
+/* The lesson player's action bar: the line naming the keys, then the answer's main button, Check
+   and then Continue, in the same place on every exercise however long the exercise and its result
+   sheet are. The lesson is at least as tall as the window and the bar comes last: on a short
+   exercise it is pushed to the window's foot, and on a long one it is held there (sticky) while
+   the page scrolls. Being sticky, not fixed, it keeps its own room in the page, so scrolled to its
+   foot nothing is hidden under it; it is drawn on the page's background so nothing shows through
+   it. The lesson has no padding of its own below the bar, so the bar's foot is the window's
+   whether the page scrolls or not. */
+main.lesson {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-bottom: 0;
+}
+
+/* The scrollbar's room is kept during a lesson, so a long exercise that brings the scrollbar in
+   does not move the centred column, and the bar's button with it, sideways. */
+html:has(main.lesson) {
+  scrollbar-gutter: stable;
+}
+
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--background);
+}
+
+.action-bar .keys {
+  flex: 1 1 auto;
+}
+
+/* Check and Continue are one size at the bar's end and foot, so the learner's target never moves
+   when the line of keys wraps. */
+.action-bar button.primary {
+  flex: none;
+  align-self: flex-end;
+  min-width: 9rem;
+  margin-left: auto;
+}
+
 .result-sheet {
   display: flex;
   flex-direction: column;

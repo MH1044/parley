@@ -62,8 +62,10 @@ function answerInTarget(exercise: Exercise): string | null {
 
 /**
  * The lesson player, for lessons and reviews: one exercise at a time, its result sheet, then the
- * summary. Keyboard: Enter checks an answer and continues from the result sheet, keys 1 to 4
- * choose an option of a pick-the-meaning exercise, Esc asks to quit.
+ * summary. The answer's main button, Check and then Continue, sits in an action bar at the foot of
+ * the lesson, in the same place on every exercise; the result sheet above it holds the verdict and
+ * its other buttons. Keyboard: Enter checks an answer and continues from the result sheet, keys 1
+ * to 4 choose an option of a pick-the-meaning exercise, Esc asks to quit.
  *
  * A free translation the offline grader cannot decide goes to the AI judge when a provider is set
  * up: the sheet says "Checking…" meanwhile. An unchecked answer offers Check with AI, an answer
@@ -549,7 +551,6 @@ export default function Lesson({ started, lang, onExit }: Props) {
           claimState={claimState}
           explain={explain}
           onIWasRight={() => void iWasRight()}
-          onContinue={next}
           onCheckWithAi={() => void checkWithAi()}
           onExplain={exercise?.type === 'speak' ? undefined : () => void explainThis()}
           onStatus={(status) => setClaimState(status.claim_state)}
@@ -565,27 +566,42 @@ export default function Lesson({ started, lang, onExit }: Props) {
             ) : undefined
           }
         />
-      ) : exercise ? (
-        <div className="actions">
-          <button type="button" className="primary" onClick={() => void check()} disabled={busy}>
+      ) : null}
+      {/* The action bar, one element for the whole lesson and the last before any dialog: the
+          line naming the keys, then the answer's main button, Check until the answer is graded
+          and Continue after, always in the same place. The two are separate elements (keyed), so
+          a Check pressed with the mouse never leaves Continue focused. */}
+      <div className="action-bar">
+        <p className="keys">
+          {exercise?.type === 'match_pairs'
+            ? t('exercise.keys_match', {
+                n: exercise.pairs.length,
+                last: rowLetter(exercise.pairs.length - 1),
+              })
+            : t('exercise.keys')}
+        </p>
+        {exercise && !grade ? (
+          <button
+            key="check"
+            type="button"
+            className="primary"
+            onClick={() => void check()}
+            disabled={busy}
+          >
             {t('exercise.check')}
           </button>
-        </div>
-      ) : (
-        <div className="actions">
-          <button type="button" className="primary" onClick={() => void finish()} disabled={busy}>
+        ) : (
+          <button
+            key="continue"
+            type="button"
+            className="primary"
+            onClick={exercise ? next : () => void finish()}
+            disabled={busy}
+          >
             {t('result.continue')}
           </button>
-        </div>
-      )}
-      <p className="keys">
-        {exercise?.type === 'match_pairs'
-          ? t('exercise.keys_match', {
-              n: exercise.pairs.length,
-              last: rowLetter(exercise.pairs.length - 1),
-            })
-          : t('exercise.keys')}
-      </p>
+        )}
+      </div>
       {setup && (
         <AiSetupDialog
           onStatus={(status) => setClaimState(status.claim_state)}

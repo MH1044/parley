@@ -369,7 +369,7 @@ describe('Judged verdicts (acceptance test 6)', () => {
     await expectText(ALMOST_WHY, result)
     await expectText(`Correct answer: ${CORRECTED}`, result)
     expect(within(result).getByRole('button', { name: EXPLAIN })).toBeInTheDocument()
-    expect(within(result).getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     expect(within(result).queryByRole('button', { name: CHECK_WITH_AI })).toBeNull()
     expect(hasText(NOT_CHECKED, result)).toBe(false)
   })
@@ -391,7 +391,7 @@ describe('Judged verdicts (acceptance test 6)', () => {
     await expectText('Correct', result)
     await expectText(reason, result)
     expect(within(result).queryByRole('button', { name: EXPLAIN })).toBeNull()
-    expect(within(result).getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
   it('a typo offers no Explain', async () => {
@@ -446,7 +446,7 @@ describe('Explain (acceptance test 12)', () => {
     await expectText(`Tip: ${EXPLAINED.tip}`)
     expect(hasText(EXPLAINING)).toBe(false)
     expect(screen.queryByRole('button', { name: EXPLAIN }), 'Explain is hidden once asked for').toBeNull()
-    expect(within(result).getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
   it('shows no tip line when there is no tip', async () => {
@@ -498,9 +498,11 @@ describe('Not checked (acceptance tests 8 to 11)', () => {
   it('without a reason offers Check with AI, I was right and Continue', async () => {
     const result = await answerCoffee()
     await expectText(NOT_CHECKED, result)
-    for (const name of [CHECK_WITH_AI, I_WAS_RIGHT, 'Continue']) {
+    for (const name of [CHECK_WITH_AI, I_WAS_RIGHT]) {
       expect(within(result).getByRole('button', { name })).toBeInTheDocument()
     }
+    // Continue is the lesson's action bar's (module 04), under the sheet.
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     expect(within(result).queryByRole('button', { name: EXPLAIN })).toBeNull()
   })
 
@@ -585,7 +587,7 @@ describe('Not checked (acceptance tests 8 to 11)', () => {
     expect(result.querySelectorAll('a[href]'), 'the web view opens no URL of its own').toHaveLength(0)
     expect(screen.queryByRole('button', { name: CHECK_WITH_AI })).toBeNull()
     expect(within(result).getByRole('button', { name: I_WAS_RIGHT })).toBeInTheDocument()
-    expect(within(result).getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     fireEvent.click(links[0])
     await waitFor(() => expect(callsOf('ai_open_link')).toEqual([{ kind: 'top_up' }]))
   })

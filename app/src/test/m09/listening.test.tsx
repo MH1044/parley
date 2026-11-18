@@ -454,8 +454,8 @@ describe('Prefetch (UI)', () => {
 
     fireEvent.click(await screen.findByRole('radio', { name: 'coffee' }))
     fireEvent.click(screen.getByRole('button', { name: 'Check' }))
-    const result = await screen.findByRole('region', { name: 'Result' })
-    fireEvent.click(within(result).getByRole('button', { name: 'Continue' }))
+    await screen.findByRole('region', { name: 'Result' })
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     await expectText('el té')
     await waitFor(() =>
       expect(callsOf('tts_prefetch')).toContainEqual({ session_id: SESSION, exercise_id: 'e2' }),

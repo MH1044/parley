@@ -1092,7 +1092,8 @@ describe('Result sheet (acceptance test 13)', () => {
     await expectText('Correct', result)
     await expectText('Sentence by fixture_a on Tatoeba', result)
     expect(within(result).queryByRole('button', { name: 'I was right' })).toBeNull()
-    expect(within(result).getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+    // Continue is the lesson's action bar's (acceptance test 21), under the sheet.
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
   it('says Sentence from Tatoeba when the sentence has no author', async () => {
@@ -1172,8 +1173,8 @@ describe('Result sheet (acceptance test 13)', () => {
     await startLesson()
     fireEvent.click(await screen.findByRole('radio', { name: 'hello' }))
     fireEvent.click(screen.getByRole('button', { name: 'Check' }))
-    const result = await screen.findByRole('region', { name: 'Result' })
-    fireEvent.click(within(result).getByRole('button', { name: 'Continue' }))
+    await screen.findByRole('region', { name: 'Result' })
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
     await waitFor(() => expect(callsOf('lesson_finish')).toEqual([{ session_id: SESSION }]))
     await heading('Lesson complete')
     await expectText('+17 XP')
@@ -1181,6 +1182,135 @@ describe('Result sheet (acceptance test 13)', () => {
     await expectText('5 day streak')
     await expectText('New weekly record!')
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+  })
+})
+
+// ---- acceptance test 21: Check and Continue stay in one place -----------------------------------
+
+describe('Check and Continue stay in one place (acceptance test 21)', () => {
+  beforeEach(() => {
+    onboarded()
+  })
+
+  const FILL_2 = { ...FILL, id: 'e2' }
+  const PICK_3 = { ...PICK_2, id: 'e3' }
+
+  /** The element that holds the answer's main button, Check or Continue. */
+  function barOf(name: 'Check' | 'Continue'): HTMLElement {
+    return screen.getByRole('button', { name }).parentElement as HTMLElement
+  }
+
+  it('Check, then Continue, are the last of the same action bar after a one-line and a many-line result; Enter still continues', async () => {
+    reply('lesson_start', () =>
+      lesson([PICK_1, FILL_2, PICK_3], [{ exercise_id: 'e2', author: 'fixture_a' }]),
+    )
+    reply('exercise_submit', (args) =>
+      args.exercise_id === 'e2'
+        ? grade('wrong', { message: 'Hola starts with an H.', corrected: 'Hola', rating: 1 })
+        : grade('correct'),
+    )
+    await startLesson()
+    await expectText('Exercise 1 of 3')
+    const main = screen.getByRole('main')
+    const bar = barOf('Check')
+    expect(bar).toHaveClass('action-bar')
+    expect(bar.lastElementChild, 'Check is the last of the bar').toBe(
+      screen.getByRole('button', { name: 'Check' }),
+    )
+    expect(main.lastElementChild, 'the bar is the last of the lesson').toBe(bar)
+    // The line naming the keys sits in the bar, before its button.
+    expect(within(bar).queryAllByText(textOf('Enter checks and continues.'))).toHaveLength(1)
+
+    // A one-line result: the verdict and nothing else.
+    fireEvent.click(screen.getByRole('radio', { name: 'hello' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    const short = await screen.findByRole('region', { name: 'Result' })
+    await expectText('Correct', short)
+    expect(short.children, 'the sheet holds its verdict only').toHaveLength(1)
+    const first = within(bar).getByRole('button', { name: 'Continue' })
+    expect(bar.lastElementChild, 'Continue takes the place of Check').toBe(first)
+    expect(within(bar).queryByRole('button', { name: 'Check' })).toBeNull()
+    expect(short).not.toContainElement(first)
+    expect(
+      short.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING,
+      'the bar comes after the sheet',
+    ).toBeTruthy()
+    expect(main.lastElementChild).toBe(bar)
+
+    fireEvent.click(first)
+    await expectText('Exercise 2 of 3')
+    expect(barOf('Check'), 'the next exercise keeps the same bar').toBe(bar)
+
+    // A many-line result: the verdict, the message, the correct answer, the attribution, Explain.
+    fireEvent.change(screen.getByRole('textbox', { name: 'Your answer' }), { target: { value: 'Ola' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    const long = await screen.findByRole('region', { name: 'Result' })
+    await expectText('Hola starts with an H.', long)
+    await expectText('Correct answer: Hola', long)
+    await expectText('Sentence by fixture_a on Tatoeba', long)
+    expect(long.children.length, 'the sheet runs to several lines').toBeGreaterThanOrEqual(5)
+    expect(within(long).getByRole('button', { name: 'Explain' })).toBeInTheDocument()
+    expect(within(long).queryByRole('button', { name: 'Continue' })).toBeNull()
+    const second = within(bar).getByRole('button', { name: 'Continue' })
+    expect(barOf('Continue')).toBe(bar)
+    expect(bar.lastElementChild).toBe(second)
+    expect(screen.getAllByRole('button', { name: 'Continue' })).toEqual([second])
+    expect(main.lastElementChild).toBe(bar)
+
+    press('Enter')
+    await expectText('Exercise 3 of 3')
+    expect(barOf('Check')).toBe(bar)
+    expect(callsOf('exercise_submit')).toHaveLength(2)
+  })
+
+  it('the sheet keeps its own buttons; while Checking… shows, the bar keeps Check, disabled', async () => {
+    reply('lesson_start', () => lesson([TRANSLATE_EN]))
+    let release: (value: unknown) => void = () => {}
+    reply(
+      'exercise_submit',
+      () =>
+        new Promise((resolve) => {
+          release = resolve
+        }),
+    )
+    await startLesson()
+    await expectText('Translate into English')
+    const bar = barOf('Check')
+    fireEvent.change(screen.getByRole('textbox', { name: 'Your answer' }), { target: { value: 'Morning, everyone.' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    const checking = await screen.findByRole('region', { name: 'Result' })
+    await expectText('Checking…', checking)
+    expect(within(checking).queryAllByRole('button')).toHaveLength(0)
+    expect(within(bar).getByRole('button', { name: 'Check' })).toBeDisabled()
+    expect(bar.lastElementChild).toBe(within(bar).getByRole('button', { name: 'Check' }))
+
+    await act(async () => {
+      release(grade('unchecked', { rating: null }))
+    })
+    const result = await screen.findByRole('region', { name: 'Result' })
+    await expectText('Not checked', result)
+    expect(within(result).getByRole('button', { name: 'I was right' })).toBeInTheDocument()
+    expect(within(result).getByRole('button', { name: 'Check with AI' })).toBeInTheDocument()
+    expect(within(result).queryByRole('button', { name: 'Continue' })).toBeNull()
+    expect(bar.lastElementChild).toBe(within(bar).getByRole('button', { name: 'Continue' }))
+    expect(within(bar).getByRole('button', { name: 'Continue' })).toBeEnabled()
+  })
+
+  it('the stylesheet keeps the bar at the foot of a lesson at least as tall as the window', () => {
+    const css = STYLESHEET.replace(/\/\*[\s\S]*?\*\//g, '')
+    const bar = rule(css, '.action-bar')
+    expect(bar.get('position'), 'sticky: held at the foot, and the page leaves room for it').toBe('sticky')
+    expect(bar.get('bottom')).toBe('0')
+    expect(bar.get('margin-top'), 'pushed to the foot of a short lesson').toBe('auto')
+    expect(bar.get('background'), 'nothing shows through it').toBe('var(--background)')
+    const lesson = rule(css, 'main.lesson')
+    expect(lesson.get('min-height')).toBe('100vh')
+    expect(lesson.get('box-sizing')).toBe('border-box')
+    expect(lesson.get('padding-bottom'), "the bar's foot is the lesson's").toBe('0')
+    expect(
+      rule(css, 'html:has(main.lesson)').get('scrollbar-gutter'),
+      'a scrollbar coming in does not move the column sideways',
+    ).toBe('stable')
   })
 })
 
