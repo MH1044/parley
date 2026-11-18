@@ -87,6 +87,9 @@ impl Parley {
   pub fn backup_export(&mut self, dest_path: &Path) -> Result<ExportSummary, AppError>;
   pub fn backup_import(&mut self, src_path: &Path) -> Result<ImportReport, AppError>;
 }
+// A data_delete_all error after which every file is as it was (`invalid_input`, `busy`); any
+// other error came after the progress was deleted.
+pub fn nothing_was_deleted(error: &AppError) -> bool;
 pub struct PackSentence { pub id: i64, pub text: String, pub en: Vec<String>, pub author: String }
 pub fn attributions(lesson: &Lesson, pack: &[PackSentence], syllabus: &Syllabus) -> Vec<Attribution>;
 
@@ -224,6 +227,9 @@ Messages (code, then text):
 | `parley.backup/N` with N > 1 | `invalid_input` | "This backup was made by a newer Parley. Update Parley to import it." |
 | a backup file that cannot be read | `not_found` | "Parley could not read that file." |
 | a backup or settings file that cannot be written | `storage` | "Parley could not write that file." |
+| `data_delete_all` when `parley.sqlite3` cannot be moved aside (another program has it open); nothing is deleted | `busy` | "Parley could not delete your progress because another program is using it. Close it and try again." |
+| `backup_import` when `parley.sqlite3` cannot be replaced (another program has it open); nothing is replaced | `busy` | "Parley could not replace your progress because another program is using it. Close it and try again." |
+| `data_delete_all` when a file cannot be removed after `parley.sqlite3` was moved aside (the progress is deleted) | `storage` | "Parley could not write that file." |
 | the data file cannot be opened or used | `storage` | "Parley could not open its data file." with action `{"details": "<the store's message>"}` |
 | `data_delete_all` without `delete` | `invalid_input` | "Type delete to confirm." |
 
@@ -277,7 +283,11 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   backup**, **Restore a backup** (then a dialog with "Importing replaces all your progress on this
   computer. Export a backup first if you want to keep it.", **Replace my data** and **Cancel**), a
   text box named "Type delete to confirm." and **Delete everything**; a success of
-  `data_delete_all` calls `app_start` again. About: the version and data directory from
+  `data_delete_all` calls `app_start` again. A message (a result or an error) shows as a status
+  under the buttons whose action it answers: under **Export a backup**, **Restore a backup** and
+  **Clear caches** for those three and **Replace my data**, under the course pack buttons for
+  theirs, and under **Delete everything** for it; a failed restore or delete keeps the Data
+  screen. About: the version and data directory from
   `app_info`, "Example sentences come from Tatoeba (tatoeba.org) under CC BY 2.0 FR." and "Word
   forms come from Wiktionary (wiktionary.org) under CC BY-SA 4.0."
 - Keyboard: Enter checks when an answer is given and continues when the result sheet shows; keys
@@ -378,10 +388,14 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   answers, cards, log, sessions, lessons, judgements, daily, freeze events), closes the current
   store and renames the new file over `parley.sqlite3` only after it is complete; settings are
   then replaced. Cards whose item does not exist after the rebuild are skipped and counted in
-  `skipped_cards`. Import works when the current data file cannot be opened.
-- Delete everything: `confirm_text` must equal `delete` after trimming; then the store, the
-  settings file, pack files and `cache/ai.sqlite3` are removed and a fresh store opened.
-  `cache_clear` removes `cache/ai.sqlite3` for `ai` and `all` (module 09 adds audio).
+  `skipped_cards`. Import works when the current data file cannot be opened. When the rename
+  fails, the old store is opened again, the new file is removed and the answer is `busy` (see
+  "One copy at a time" below).
+- Delete everything: `confirm_text` must equal `delete` after trimming; then the store is moved
+  aside, the settings file, pack files and `cache/ai.sqlite3` are removed, then the moved store,
+  and a fresh store is opened; a store that cannot be moved aside means nothing is removed (see
+  "One copy at a time" below). `cache_clear` removes `cache/ai.sqlite3` for `ai` and `all`
+  (module 09 adds audio).
 - Dialogs sit above everything: `.dialog-backdrop` in `app/src/index.css` has `z-index:
   var(--layer-dialog)`, one value (1000) defined once on `:root`, and nothing else in the
   stylesheet may use a z-index that high. An element with an opacity below 1, such as a disabled
@@ -424,7 +438,57 @@ UI contract (visible text in `en.json`; tests find elements by these names):
 - Desktop: the Tauri crate is a library with `run()`; `AppState` holds `Mutex<Parley>`;
   `SystemClock` takes the local UTC offset from `chrono` (clock feature only);
   `time_seeded_rng` seeds `SplitMix64` from the system time; the file picker is
-  `tauri-plugin-dialog` called from Rust only, so the capability stays `core:default`.
+  `tauri-plugin-dialog` called from Rust only, so the capability stays `core:default`;
+  `tauri-plugin-single-instance`, registered first, keeps one copy running (below).
+- One copy at a time, and never half a delete. In testing, Settings > Data > **Delete
+  everything** answered "Parley could not write that file." and the old progress stayed;
+  **Replace my data** answered the same; a fresh first run later started with "1 day streak" and
+  the XP of the day before; and one launch from a desktop shortcut opened two Parley windows,
+  one blank. Nothing stopped a second copy, so two processes shared the data folder and
+  `parley.sqlite3`. SQLite on Windows opens its file without sharing delete access, so while one
+  copy has the store open the other can neither rename nor remove it. Delete everything removed
+  file by file and carried on after a failure: the store stayed, `settings.json` went, and the
+  next launch, finding no settings, ran onboarding over the old store. Nothing in onboarding or
+  placement writes activity (`daily` is written only when a session finishes), so the streak and
+  XP were the old progress. Restore's rename over the held store failed the same way and left
+  `parley.sqlite3.import` behind. Decisions:
+  - Only one copy runs. `run()` registers `tauri-plugin-single-instance` (Tauri's own plugin,
+    Apache-2.0 OR MIT) before any other plugin, on desktop builds only (it has nothing for
+    Android or iOS). A second launch hands over to the copy already running, whose `main` window
+    is unminimised, shown and focused, and exits before the rest of its start-up runs, so it
+    never opens the store. The plugin finds the first copy through a named mutex and a hidden
+    window on Windows, a D-Bus session name on Linux (through zbus, already used for the
+    keychain) and a socket on macOS; without a D-Bus session bus it launches normally. Both
+    builds use the identifier `org.parley.app`, so a debug build started while another copy runs
+    only brings that copy forward. A lock file in the data folder would stop a second copy with
+    no dependency, but could not bring the first copy's window to the front, so the plugin was
+    chosen.
+  - Delete everything is all or nothing. After the word is checked, the store is closed and
+    `parley.sqlite3` is renamed to `parley.sqlite3.deleting` in the same folder before anything
+    else is touched. When that rename fails (a missing file is not a failure), nothing at all is
+    removed, the store is opened again as it was, lessons and placement tests in progress stay,
+    and the answer is `busy`, "Parley could not delete your progress because another program is
+    using it. Close it and try again." `busy` because the file is in use and the same action can
+    succeed once that program lets go. Once the store is aside the progress is gone: the
+    sessions in memory are dropped, every other file is removed (the journal, an import leftover,
+    `settings.json`, the AI cache, pack files and their `.part` files, `cache/audio/`, the takes,
+    the local speech models), then the moved store; a fresh store is opened, and the first
+    failure is reported as "Parley could not write that file.". Such a failure still leaves no
+    store with the old progress where Parley opens one, so the next launch starts afresh at the
+    welcome screen; a moved store that could not be removed is never opened again and the next
+    Delete everything removes it.
+  - Restore gives the same kind of message when the store cannot be replaced: `busy`, "Parley
+    could not replace your progress because another program is using it. Close it and try
+    again.", with the old store opened again, the settings and the sessions in memory unchanged,
+    and the new `parley.sqlite3.import` removed. The two messages name what did not happen.
+  - The AI status. The desktop command forgets the AI status (`publik-status.json` and what the
+    AI service holds in memory) after a successful delete and after a failure that came once
+    the store was moved aside, since the progress is gone either way. A refusal ("Type delete to
+    confirm.") or `busy` removed nothing, so it forgets nothing either.
+    `parley_core::app::nothing_was_deleted` tells the two apart.
+  - Settings > Data shows each message under the buttons whose action it answers, so the
+    `busy` messages show under **Delete everything** and under **Restore a backup**, not at the
+    foot of the screen; a failed delete or restore keeps the Data screen.
 - Launch smoke: `npm --prefix app run e2e` runs `app/e2e/launch.spec.ts` with Vitest; it starts
   `tauri-driver`, opens a W3C WebDriver session on `target/debug/parley-app` (or
   `PARLEY_E2E_APP`), waits up to 20 s for "Learn by speaking", and closes. It speaks the WebDriver
@@ -467,11 +531,11 @@ UI contract (visible text in `en.json`; tests find elements by these names):
     `ImportReport.items` counts the items written. A leftover `parley.sqlite3.import` is removed
     first.
   - Delete everything removes the pack files the store and the lock name (the `Fs` trait has no
-    directory listing), the store's journal and any import leftover. It attempts every removal,
-    always opens a store again (fresh, or the old file when it could not be removed) and reloads
-    the settings, then reports the first failure as "Parley could not write that file.". An
-    import whose settings cannot be saved keeps the restored store open and the backup's settings
-    in use, and reports the same message.
+    directory listing), the store's journal and any import leftover. Once the store is moved
+    aside it attempts every other removal, always opens a fresh store and reloads the settings,
+    then reports the first failure as "Parley could not write that file.". An import whose
+    settings cannot be saved keeps the restored store open and the backup's settings in use, and
+    reports the same message.
   - Desktop: `pack_download` and `file_pick` are async commands, so the download and the blocking
     native dialog stay off the main thread; the dialog filters JSON files and proposes
     `parley-backup.json`. The app data directory is created at start; when it cannot be, the
@@ -549,6 +613,24 @@ come from this spec, the fixtures and modules 02 and 03.
     file." with details, and the UI shows that screen with **Restore a backup** and **Show
     details**; `backup_import` still works and the next `app_start` succeeds.
 16. Launch smoke: the debug build starts and shows the Welcome text within 20 s on Windows and Linux.
+17. One copy at a time, and never half a delete. `app/src-tauri/src/lib.rs` registers
+    `tauri_plugin_single_instance` before any other plugin, its callback unminimises, shows and
+    focuses the `main` window, and it is a dependency of the desktop builds only (read from the
+    source: the plugin cannot run without opening a window, and a second app in the test process
+    would be the copy it ends). With a filesystem that refuses to rename or remove
+    `parley.sqlite3` (the unit tests in `crates/parley-core/src/app/mod.rs`): Delete everything →
+    `busy`, "Parley could not delete your progress because another program is using it. Close it
+    and try again.", every other file (settings, AI cache, audio, a take, a pack, a model) byte
+    for byte as it was and the progress unchanged, and once the file is free the same delete
+    leaves only a fresh `parley.sqlite3`; Restore → `busy`, "Parley could not replace your
+    progress because another program is using it. Close it and try again.", no
+    `parley.sqlite3.import` left and the progress unchanged. A removal that fails after the store
+    is moved aside → "Parley could not write that file.", and the next launch is a first run with
+    no streak and no XP; a moved store that cannot be removed is never opened again and the next
+    Delete everything removes it. On Windows, with a second `Parley` open on the same folder,
+    Delete everything and Restore both answer `busy` and change nothing. The UI shows the delete
+    message under **Delete everything** and the restore message under **Restore a backup**,
+    before the course packs, and stays on the Data screen.
 
 ## Status
 

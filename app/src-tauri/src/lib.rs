@@ -17,10 +17,20 @@ use tauri::{Emitter, Manager, RunEvent};
 
 /// Opens the window: the app state over the app data directory with the computer's speakers and
 /// voices (whose end of a clip or utterance is the `audio://ended` event) and its microphone, the
-/// dialog plugin for `file_pick`, and every command of `parley_core::api::COMMANDS`. Quitting
-/// stops a take in progress and removes the takes unless the learner keeps them.
+/// dialog plugin for `file_pick`, and every command of `parley_core::api::COMMANDS`. Only one copy
+/// runs: a second launch brings this window to the front and exits. Quitting stops a take in
+/// progress and removes the takes unless the learner keeps them.
 pub fn run() {
-    let app = tauri::Builder::default()
+    let builder = tauri::Builder::default();
+    // One copy at a time. Two copies would share the data folder and `parley.sqlite3`, and on
+    // Windows a file one copy has open cannot be renamed or removed by the other, so Delete
+    // everything and Restore could not do their work. The plugin comes first, so a second copy is
+    // found and ended before anything else of it starts (its store is never opened).
+    #[cfg(desktop)]
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+        show_main_window(app);
+    }));
+    let app = builder
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
@@ -103,4 +113,16 @@ pub fn run() {
             state.with(|p| p.on_exit());
         }
     });
+}
+
+/// What a second launch does in the copy already running: its window comes to the front,
+/// restored if it was minimised and shown if it was hidden. Each step is best effort; a window
+/// that cannot be raised is still open.
+#[cfg(desktop)]
+fn show_main_window(app: &tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.unminimize();
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
 }

@@ -36,6 +36,10 @@ cargo run -p parley-app
 Everything below works with no network and no AI. Parley asks about AI only when you choose
 **Set up AI** (see *AI* below), never at launch or during onboarding.
 
+Only one copy of Parley runs at a time: starting it again, from a shortcut or another
+`cargo run`, brings the open window to the front (restored if it was minimised) instead of
+opening a second one.
+
 **First launch.** One step at a time: *Welcome to Parley* ("Learn by speaking. No hearts, no ads,
 nothing to buy.", **Start**); *Choose a language* (Spanish, French or German, taught from
 English); *Course pack*, which offers the language's sentence pack with its size first
@@ -87,7 +91,11 @@ in `docs/modules/04-app-shell-and-offline-course.md`) with your settings and pro
 key, a cache or a pack; **Restore a backup** replaces all your progress on this computer with a
 backup's, after a warning; **Clear caches**; and **Delete everything**, once you type `delete`,
 which starts Parley afresh: your progress, settings, packs, AI answers and the publik API status
-are deleted. Two things stay, because they are not in the data folder: publik API's credential for
+are deleted. Delete everything and Restore are all or nothing: if another program has your
+progress file open, nothing is deleted or replaced, and Parley says so under the button you
+pressed: "Parley could not delete your progress because another program is using it. Close it and
+try again." (or "Parley could not replace your progress …" for a restore). Two things stay,
+because they are not in the data folder: publik API's credential for
 this computer (it holds this computer's publik balance; **Disconnect** in Settings > AI forgets its
 key) and your own key in the operating system's keychain (**Remove my key** deletes it). *About*: the version, the folder your data is in, and the credits:
 example sentences from Tatoeba (CC BY 2.0 FR), word forms from Wiktionary (CC BY-SA 4.0).

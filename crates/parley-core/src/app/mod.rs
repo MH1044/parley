@@ -52,6 +52,8 @@ pub use speak::{
 pub const STORE_FILE: &str = "parley.sqlite3";
 /// The file an import writes before it replaces the data file.
 pub const IMPORT_FILE: &str = "parley.sqlite3.import";
+/// Where Delete everything moves the data file before it removes anything else.
+pub const DELETING_FILE: &str = "parley.sqlite3.deleting";
 /// The AI response cache (module 06 onwards).
 pub const AI_CACHE_FILE: &str = "cache/ai.sqlite3";
 
@@ -200,6 +202,32 @@ pub(crate) fn cannot_write() -> AppError {
     AppError::new(ErrorCode::Storage, "Parley could not write that file.")
 }
 
+/// Delete everything could not move the data file aside, so it removed nothing.
+fn delete_in_use() -> AppError {
+    AppError::new(
+        ErrorCode::Busy,
+        "Parley could not delete your progress because another program is using it. Close it \
+         and try again.",
+    )
+}
+
+/// Restore could not put the new data file in place of the old, so nothing changed.
+fn restore_in_use() -> AppError {
+    AppError::new(
+        ErrorCode::Busy,
+        "Parley could not replace your progress because another program is using it. Close it \
+         and try again.",
+    )
+}
+
+/// Whether a Delete everything that answered `error` left every file as it was: the word was not
+/// typed (`invalid_input`), or another program has the data file open (`busy`). Any other
+/// failure came after the data file was moved aside, so the progress is gone and whatever else
+/// the delete clears (the AI status, in the desktop app) goes with it.
+pub fn nothing_was_deleted(error: &AppError) -> bool {
+    matches!(error.code, ErrorCode::InvalidInput | ErrorCode::Busy)
+}
+
 /// The data file cannot be opened or used; the details are the store's message.
 pub(crate) fn data_file_error(details: &str) -> AppError {
     AppError::new(ErrorCode::Storage, "Parley could not open its data file.")
@@ -324,7 +352,9 @@ impl Parley {
 
     /// Deletes the store, the settings file, the pack files, the AI caches (answers and
     /// natural-voice audio), the takes and the local speech models, then opens a fresh store.
-    /// `confirm_text` must be `delete` after trimming.
+    /// `confirm_text` must be `delete` after trimming. All or nothing: when the store cannot be
+    /// moved aside first (another program has it open), nothing is removed and the answer is
+    /// `busy`; see [`nothing_was_deleted`].
     pub fn data_delete_all(&mut self, confirm_text: &str) -> Result<(), AppError> {
         if confirm_text.trim() != "delete" {
             return Err(AppError::new(
@@ -349,10 +379,28 @@ impl Parley {
                 }
             }
         }
-        // The store is closed before its file is removed. Every removal is attempted even when
-        // one fails, and a store is always opened again afterwards (a fresh one, or the old file
-        // when it could not be removed), so the app keeps working; the first failure is reported.
+        let model_files = self.model_files();
+        // All or nothing. The store is closed, then its file is moved aside before anything else
+        // is touched. On Windows a file another program has open (a second copy of Parley, a
+        // backup or sync tool) can be neither renamed nor removed: removing file by file used to
+        // take the settings and caches and leave the progress, so the next launch ran onboarding
+        // over the old streak and XP. Now a store that cannot be moved aside means nothing at all
+        // is removed, and the store is opened again as it was.
         self.store = Err("The data file is being replaced.".to_string());
+        let fs = &*self.env.fs;
+        match fs.rename(Path::new(STORE_FILE), Path::new(DELETING_FILE)) {
+            Ok(()) | Err(FsError::NotFound(_)) => {}
+            Err(FsError::Io(_)) => {
+                self.store =
+                    Store::open(&self.config.data_dir.join(STORE_FILE)).map_err(|e| e.to_string());
+                return Err(delete_in_use());
+            }
+        }
+        // From here the progress is gone. Every other removal is attempted even when one fails,
+        // the moved store goes last, and a fresh store is always opened afterwards, so the app
+        // keeps working and the next launch starts afresh; the first failure is reported. A moved
+        // store that could not be removed is never opened again, and the next Delete everything
+        // removes it.
         self.runs.clear();
         self.story_runs.clear();
         self.pending.clear();
@@ -360,10 +408,7 @@ impl Parley {
         self.takes.clear();
         self.transcripts.clear();
         self.failed_attempts.clear();
-        let model_files = self.model_files();
-        let fs = &*self.env.fs;
         let mut paths: Vec<String> = [
-            STORE_FILE,
             "parley.sqlite3-journal",
             IMPORT_FILE,
             SETTINGS_FILE,
@@ -384,6 +429,7 @@ impl Parley {
             }
         }
         paths.extend(model_files);
+        paths.push(DELETING_FILE.to_string());
         let mut first_failure: Option<AppError> = None;
         for path in &paths {
             if let Err(e) = remove_file(fs, path) {
@@ -470,7 +516,8 @@ impl Parley {
     /// Replaces the learner's data with a backup. The file is checked first; then a new store is
     /// written beside the data file (courses, each rebuilt from the bundled syllabus, then the
     /// other tables) and renamed over it only once complete, so a failure leaves the data as it
-    /// was. Works when the current data file cannot be opened.
+    /// was. Works when the current data file cannot be opened. A data file that cannot be
+    /// replaced (another program has it open) answers `busy` and leaves no new file behind.
     pub fn backup_import(&mut self, src_path: &Path) -> Result<ImportReport, AppError> {
         let bytes = self.env.fs.read(src_path).map_err(|_| cannot_read())?;
         let backup = parse_backup(&bytes).map_err(|e| {
@@ -515,15 +562,20 @@ impl Parley {
         };
         // The current store is closed before the new file takes its place.
         self.store = Err("The data file is being replaced.".to_string());
-        self.runs.clear();
-        self.story_runs.clear();
-        self.pending.clear();
-        self.placements.clear();
         let renamed = fs.rename(Path::new(IMPORT_FILE), Path::new(STORE_FILE));
         // The store is open again whatever happens next: the new file, or the old one when the
         // rename failed.
         self.store = Store::open(&self.config.data_dir.join(STORE_FILE)).map_err(|e| e.to_string());
-        renamed.map_err(|_| cannot_write())?;
+        if renamed.is_err() {
+            // On Windows a data file another program has open cannot be replaced. The progress
+            // stays as it was, lessons in progress included, and the new file goes.
+            let _ = remove_file(fs, IMPORT_FILE);
+            return Err(restore_in_use());
+        }
+        self.runs.clear();
+        self.story_runs.clear();
+        self.pending.clear();
+        self.placements.clear();
         open_store(&mut self.store)?;
         // The backup's settings apply now; a settings file that cannot be written is reported,
         // with the progress already restored.
@@ -698,6 +750,8 @@ pub(crate) mod test_support {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::atomic::{AtomicBool, AtomicI64, Ordering};
+
     use super::test_support::*;
     use super::*;
     use serde_json::json;
@@ -887,5 +941,284 @@ mod tests {
             (err.code, err.message.as_str()),
             (ErrorCode::Storage, "Parley could not write that file.")
         );
+    }
+
+    // One copy at a time, and never half a delete (the spec's Design notes and Messages).
+
+    const DELETE_IN_USE: &str = "Parley could not delete your progress because another program \
+                                 is using it. Close it and try again.";
+    const RESTORE_IN_USE: &str = "Parley could not replace your progress because another program \
+                                  is using it. Close it and try again.";
+    const LEFTOVER: &str = "parley.sqlite3.deleting";
+
+    /// The real files under a folder, except that, while `holding` is set, a path in `no_rename`
+    /// cannot be renamed (as the source or the target) and a path in `no_remove` cannot be
+    /// removed: what Windows answers while another program has the file open.
+    struct HeldFs {
+        files: TestFs,
+        no_rename: Vec<&'static str>,
+        no_remove: Vec<&'static str>,
+        holding: Arc<AtomicBool>,
+    }
+
+    impl HeldFs {
+        fn held(&self, list: &[&str], path: &Path) -> bool {
+            self.holding.load(Ordering::SeqCst) && list.iter().any(|held| Path::new(held) == path)
+        }
+    }
+
+    fn in_use() -> FsError {
+        FsError::Io("the file is being used by another process".to_string())
+    }
+
+    impl Fs for HeldFs {
+        fn read(&self, path: &Path) -> Result<Vec<u8>, FsError> {
+            self.files.read(path)
+        }
+        fn write(&self, path: &Path, bytes: &[u8]) -> Result<(), FsError> {
+            self.files.write(path, bytes)
+        }
+        fn rename(&self, from: &Path, to: &Path) -> Result<(), FsError> {
+            if self.held(&self.no_rename, from) || self.held(&self.no_rename, to) {
+                return Err(in_use());
+            }
+            self.files.rename(from, to)
+        }
+        fn remove(&self, path: &Path) -> Result<(), FsError> {
+            if self.held(&self.no_remove, path) {
+                return Err(in_use());
+            }
+            self.files.remove(path)
+        }
+        fn list(&self, dir: &Path) -> Result<Vec<String>, FsError> {
+            self.files.list(dir)
+        }
+    }
+
+    /// The pack the lock below names for Spanish.
+    const PACK: &str = "packs/es-2026-11-05.sqlite3";
+    const ONE_PACK: &str = "schema = \"parley.packs/1\"\n[es]\nversion = \"2026-11-05\"\n\
+        url = \"https://example.com/es.sqlite3\"\n\
+        sha256 = \"0000000000000000000000000000000000000000000000000000000000000000\"\n\
+        bytes = 1\ncontent_sha256 = \"x\"\n";
+
+    fn held_parley(
+        dir: &Path,
+        no_rename: &[&'static str],
+        no_remove: &[&'static str],
+        holding: &Arc<AtomicBool>,
+    ) -> Parley {
+        Parley::new(
+            config(dir, ONE_PACK),
+            Env {
+                clock: Box::new(TestClock(Arc::new(AtomicI64::new(MONDAY_NOON)), 0)),
+                rng: Box::new(crate::env::SplitMix64::new(7)),
+                fs: Box::new(HeldFs {
+                    files: TestFs(dir.to_path_buf()),
+                    no_rename: no_rename.to_vec(),
+                    no_remove: no_remove.to_vec(),
+                    holding: holding.clone(),
+                }),
+                net: Box::new(crate::env::FailingNet),
+            },
+        )
+    }
+
+    /// Progress worth keeping: Spanish started, a goal of 50 XP and one lesson finished today.
+    fn make_progress(app: &mut Parley) -> u32 {
+        app.course_start("es").unwrap();
+        app.settings_set(&json!({"daily_goal_xp": 50})).unwrap();
+        let started = app.lesson_start("es.a1.u01.s01", "learn").unwrap();
+        let first = &started.exercises[0];
+        app.exercise_submit(
+            &started.session_id,
+            &first.id,
+            &crate::grading::Answer::Choice(0),
+            Some(3_000),
+            false,
+        )
+        .unwrap();
+        app.lesson_finish(&started.session_id).unwrap();
+        let path = app.path_get("es").unwrap();
+        assert!(path.today_xp > 0 && path.streak > 0, "{path:?}");
+        path.today_xp
+    }
+
+    /// The caches, the pack, a take and a model a learner may have beside the progress.
+    const OTHER_FILES: [&str; 5] = [
+        AI_CACHE_FILE,
+        "cache/audio/0f3a.mp3",
+        "cache/recordings/take-1.wav",
+        PACK,
+        "models/whisper/ggml-tiny.bin",
+    ];
+
+    fn write_other_files(dir: &Path) {
+        for path in OTHER_FILES {
+            let full = dir.join(path);
+            std::fs::create_dir_all(full.parent().unwrap()).unwrap();
+            std::fs::write(full, path.as_bytes()).unwrap();
+        }
+    }
+
+    /// Every file under `dir`, relative and with `/`, with its bytes.
+    fn files_under(dir: &Path) -> BTreeMap<String, Vec<u8>> {
+        fn walk(root: &Path, dir: &Path, out: &mut BTreeMap<String, Vec<u8>>) {
+            for entry in std::fs::read_dir(dir).unwrap() {
+                let path = entry.unwrap().path();
+                if path.is_dir() {
+                    walk(root, &path, out);
+                } else {
+                    let name = path.strip_prefix(root).unwrap().to_string_lossy();
+                    out.insert(name.replace('\\', "/"), std::fs::read(&path).unwrap());
+                }
+            }
+        }
+        let mut out = BTreeMap::new();
+        walk(dir, dir, &mut out);
+        out
+    }
+
+    #[test]
+    fn delete_everything_with_the_data_file_in_use_removes_nothing_at_all() {
+        let dir = tempfile::tempdir().unwrap();
+        let holding = Arc::new(AtomicBool::new(true));
+        let mut app = held_parley(dir.path(), &[STORE_FILE], &[STORE_FILE], &holding);
+        let xp = make_progress(&mut app);
+        write_other_files(dir.path());
+        let mut before = files_under(dir.path());
+        before.remove(STORE_FILE);
+
+        let err = app.data_delete_all("delete").unwrap_err();
+        assert_eq!(
+            (err.code, err.message.as_str()),
+            (ErrorCode::Busy, DELETE_IN_USE)
+        );
+        assert!(nothing_was_deleted(&err));
+        let mut after = files_under(dir.path());
+        assert!(
+            after.remove(STORE_FILE).is_some(),
+            "the data file is still there"
+        );
+        assert_eq!(
+            after, before,
+            "settings, caches, pack, take and model untouched"
+        );
+        assert!(app.app_start().unwrap().onboarded);
+        let path = app.path_get("es").unwrap();
+        assert_eq!(path.today_xp, xp, "the progress is the same");
+        assert_eq!(app.settings_get().daily_goal_xp, 50);
+
+        // Once the other program lets go, the same delete goes through.
+        holding.store(false, Ordering::SeqCst);
+        app.data_delete_all("delete").unwrap();
+        assert!(!app.app_start().unwrap().onboarded);
+        let left: Vec<String> = files_under(dir.path()).into_keys().collect();
+        assert_eq!(
+            left,
+            vec![STORE_FILE.to_string()],
+            "only the fresh data file"
+        );
+    }
+
+    #[test]
+    fn a_failure_after_the_data_file_is_moved_aside_still_starts_afresh() {
+        let dir = tempfile::tempdir().unwrap();
+        let holding = Arc::new(AtomicBool::new(true));
+        let mut app = held_parley(dir.path(), &[], &[AI_CACHE_FILE], &holding);
+        make_progress(&mut app);
+        write_other_files(dir.path());
+
+        let err = app.data_delete_all("delete").unwrap_err();
+        assert_eq!(
+            (err.code, err.message.as_str()),
+            (ErrorCode::Storage, "Parley could not write that file.")
+        );
+        assert!(!nothing_was_deleted(&err), "the progress went");
+        let left: Vec<String> = files_under(dir.path()).into_keys().collect();
+        assert_eq!(
+            left,
+            vec![AI_CACHE_FILE.to_string(), STORE_FILE.to_string()],
+            "the rest went, the moved data file with it"
+        );
+        assert!(!app.app_start().unwrap().onboarded);
+        assert!(app.course_list().unwrap().iter().all(|c| !c.started));
+
+        // The next launch is a first run with nothing carried over: no streak, no XP.
+        drop(app);
+        let mut next = held_parley(dir.path(), &[], &[AI_CACHE_FILE], &holding);
+        let launch = next.app_start().unwrap();
+        assert!(!launch.onboarded);
+        assert_eq!(launch.active_course, None);
+        next.course_start("es").unwrap();
+        let path = next.path_get("es").unwrap();
+        assert_eq!((path.streak, path.today_xp), (0, 0));
+    }
+
+    #[test]
+    fn a_moved_aside_data_file_that_cannot_be_removed_is_never_opened_again() {
+        let dir = tempfile::tempdir().unwrap();
+        let holding = Arc::new(AtomicBool::new(true));
+        let mut app = held_parley(dir.path(), &[], &[LEFTOVER], &holding);
+        make_progress(&mut app);
+
+        let err = app.data_delete_all("delete").unwrap_err();
+        assert_eq!(
+            (err.code, err.message.as_str()),
+            (ErrorCode::Storage, "Parley could not write that file.")
+        );
+        assert!(dir.path().join(LEFTOVER).exists());
+        assert!(!dir.path().join(SETTINGS_FILE).exists());
+        drop(app);
+        let mut next = held_parley(dir.path(), &[], &[LEFTOVER], &holding);
+        assert!(!next.app_start().unwrap().onboarded);
+        next.course_start("es").unwrap();
+        let path = next.path_get("es").unwrap();
+        assert_eq!((path.streak, path.today_xp), (0, 0));
+
+        // The next Delete everything removes what the last one left.
+        holding.store(false, Ordering::SeqCst);
+        next.data_delete_all("delete").unwrap();
+        assert!(!dir.path().join(LEFTOVER).exists());
+    }
+
+    #[test]
+    fn restore_with_the_data_file_in_use_replaces_nothing_and_leaves_no_import_file() {
+        let dir = tempfile::tempdir().unwrap();
+        let holding = Arc::new(AtomicBool::new(false));
+        let mut app = held_parley(dir.path(), &[STORE_FILE], &[STORE_FILE], &holding);
+        app.course_start("es").unwrap();
+        app.settings_set(&json!({"daily_goal_xp": 30})).unwrap();
+        let backup = dir.path().join("saved").join("backup.json");
+        app.backup_export(&backup).unwrap();
+        let xp = make_progress(&mut app);
+
+        holding.store(true, Ordering::SeqCst);
+        let err = app.backup_import(&backup).unwrap_err();
+        assert_eq!(
+            (err.code, err.message.as_str()),
+            (ErrorCode::Busy, RESTORE_IN_USE)
+        );
+        assert!(
+            !dir.path().join(IMPORT_FILE).exists(),
+            "no import file left"
+        );
+        assert_eq!(app.settings_get().daily_goal_xp, 50);
+        assert!(app.app_start().unwrap().onboarded);
+        assert_eq!(app.path_get("es").unwrap().today_xp, xp);
+
+        holding.store(false, Ordering::SeqCst);
+        app.backup_import(&backup).unwrap();
+        assert_eq!(app.settings_get().daily_goal_xp, 30);
+        assert_eq!(app.path_get("es").unwrap().today_xp, 0);
+    }
+
+    #[test]
+    fn a_refused_delete_removes_nothing_either() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut app = parley(dir.path());
+        let err = app.data_delete_all("yes").unwrap_err();
+        assert!(nothing_was_deleted(&err));
+        assert!(!nothing_was_deleted(&cannot_write()));
     }
 }

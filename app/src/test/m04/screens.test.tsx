@@ -896,6 +896,55 @@ describe('Settings (acceptance tests 10 and 13)', () => {
     expect(callsOf('file_pick')).toContainEqual({ kind: 'backup_import' })
   })
 
+  // Acceptance test 17: never half a delete. With the data file in use, nothing changes and the
+  // message shows under the button that was pressed.
+  const DELETE_IN_USE =
+    'Parley could not delete your progress because another program is using it. Close it and try again.'
+  const RESTORE_IN_USE =
+    'Parley could not replace your progress because another program is using it. Close it and try again.'
+
+  const follows = (first: Node, second: Node) =>
+    (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+
+  it('Delete everything with the data file in use shows why under the button and stays on Data', async () => {
+    reply('data_delete_all', failWith(appError('busy', DELETE_IN_USE)))
+    await openSettings('Data')
+    fireEvent.change(screen.getByRole('textbox', { name: 'Type delete to confirm.' }), {
+      target: { value: 'delete' },
+    })
+    const launches = callsOf('app_start').length
+    const button = screen.getByRole('button', { name: 'Delete everything' })
+    fireEvent.click(button)
+    const message = await screen.findByText(DELETE_IN_USE)
+    expect(message).toHaveAttribute('role', 'status')
+    expect(follows(button, message)).toBe(true)
+    expect(button.parentElement).toContainElement(message)
+    expect(callsOf('data_delete_all')).toEqual([{ confirm_text: 'delete' }])
+    expect(callsOf('app_start')).toHaveLength(launches)
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Welcome to Parley' })).toBeNull()
+  })
+
+  it('Replace my data with the data file in use shows why under Restore a backup', async () => {
+    reply('file_pick', () => 'backups/parley-backup.json')
+    reply('backup_import', failWith(appError('busy', RESTORE_IN_USE)))
+    await openSettings('Data')
+    const launches = callsOf('app_start').length
+    const restore = screen.getByRole('button', { name: 'Restore a backup' })
+    fireEvent.click(restore)
+    const dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Replace my data' }))
+    const message = await screen.findByText(RESTORE_IN_USE)
+    expect(message).toHaveAttribute('role', 'status')
+    expect(follows(restore, message)).toBe(true)
+    // Straight under the Data buttons, before the course packs and Delete everything.
+    expect(follows(message, screen.getByRole('heading', { name: 'Course packs' }))).toBe(true)
+    expect(follows(message, screen.getByRole('button', { name: 'Delete everything' }))).toBe(true)
+    expect(callsOf('backup_import')).toEqual([{ src_path: 'backups/parley-backup.json' }])
+    expect(callsOf('app_start')).toHaveLength(launches)
+    expectNoDialog()
+  })
+
   it('Export a backup writes to the chosen file, and nothing when the picker is cancelled', async () => {
     await openSettings('Data')
     fireEvent.click(screen.getByRole('button', { name: 'Export a backup' }))

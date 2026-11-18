@@ -49,6 +49,9 @@ tauri-plugin-dialog = "2"
 # Opens the claim, top-up and add-credit links in the browser, called from Rust only, so the web view
 # needs no opener permission.
 tauri-plugin-opener = "2"
+# One copy of the app at a time: a second launch brings the open window to the front and exits, so
+# two copies never share the data folder. Desktop only (it has nothing for Android or iOS).
+tauri-plugin-single-instance = "2"
 # The HTTP transport of every AI call and pack download: blocking calls on a plain thread, rustls
 # for TLS with the operating system's certificate store, no crypto provider of its own (ring is
 # chosen below).

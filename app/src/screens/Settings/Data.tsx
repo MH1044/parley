@@ -18,9 +18,12 @@ interface Props {
   onRestart: () => void
 }
 
+/** Where a message shows: under the buttons whose action it answers. */
+type Place = 'data' | 'packs' | 'delete'
+
 /** Backup export and restore, course packs, clearing caches, and deleting everything. */
 export default function Data({ onRestart }: Props) {
-  const [status, setStatus] = useState<string | null>(null)
+  const [status, setStatus] = useState<{ text: string; at: Place } | null>(null)
   const [confirming, setConfirming] = useState(false)
   const [confirmText, setConfirmText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -28,31 +31,38 @@ export default function Data({ onRestart }: Props) {
   const dialogTitle = useId()
   const packsTitle = useId()
 
-  async function run(action: () => Promise<void>) {
+  /** Runs an action; its message (what it returns, or the error's) shows at `at`. */
+  async function run(at: Place, action: () => Promise<string | null | undefined | void>) {
     setBusy(true)
     setStatus(null)
     try {
-      await action()
+      const text = await action()
+      if (text) setStatus({ text, at })
     } catch (reason) {
-      setStatus(errorMessage(reason))
+      setStatus({ text: errorMessage(reason), at })
     } finally {
       setBusy(false)
     }
   }
 
+  const statusAt = (at: Place) =>
+    status?.at === at && (
+      <p role="status" className="status">
+        {status.text}
+      </p>
+    )
+
   const exportBackup = () =>
-    run(async () => {
+    run('data', async () => {
       const path = await filePick('backup_export')
       if (!path) return
       const summary = await backupExport(path)
-      if (summary) {
-        setStatus(t('settings.exported', { cards: summary.cards, reviews: summary.reviews }))
-      }
+      if (summary) return t('settings.exported', { cards: summary.cards, reviews: summary.reviews })
     })
 
   const restoreBackup = () => {
     setConfirming(false)
-    return run(async () => {
+    return run('data', async () => {
       const path = await filePick('backup_import')
       if (!path) return
       await backupImport(path)
@@ -61,34 +71,34 @@ export default function Data({ onRestart }: Props) {
   }
 
   const exportCoursePack = () =>
-    run(async () => {
+    run('packs', async () => {
       const path = await filePick('course_pack_export')
       if (!path) return
       const settings = await settingsGet()
       const lang = settings?.active_course
       if (!lang) return
       const summary = await coursePackExport(lang, path)
-      if (summary) {
-        setStatus(t('settings.course_pack_exported', { n: summary.lessons, m: summary.stories }))
-      }
+      if (summary) return t('settings.course_pack_exported', { n: summary.lessons, m: summary.stories })
     })
 
   const importCoursePack = () =>
-    run(async () => {
+    run('packs', async () => {
       const path = await filePick('course_pack_import')
       if (!path) return
       const report = await coursePackImport(path)
-      if (report) setStatus(report.message)
+      return report?.message
     })
 
   const clearCaches = () =>
-    run(async () => {
+    run('data', async () => {
       await cacheClear('all')
-      setStatus(t('settings.caches_cleared'))
+      return t('settings.caches_cleared')
     })
 
+  // A failure shows under the button and the screen stays; when the data file is in use, nothing
+  // was deleted.
   const deleteEverything = () =>
-    run(async () => {
+    run('delete', async () => {
       await dataDeleteAll(confirmText)
       onRestart()
     })
@@ -109,6 +119,7 @@ export default function Data({ onRestart }: Props) {
           {t('settings.clear_caches')}
         </button>
       </div>
+      {statusAt('data')}
       <section className="course-packs" aria-labelledby={packsTitle}>
         <h2 id={packsTitle}>{t('settings.course_packs')}</h2>
         <div className="actions">
@@ -119,6 +130,7 @@ export default function Data({ onRestart }: Props) {
             {t('settings.course_pack_import')}
           </button>
         </div>
+        {statusAt('packs')}
       </section>
       <div className="danger-zone">
         <label htmlFor={deleteId}>{t('settings.delete_label')}</label>
@@ -137,12 +149,8 @@ export default function Data({ onRestart }: Props) {
         >
           {t('settings.delete')}
         </button>
+        {statusAt('delete')}
       </div>
-      {status && (
-        <p role="status" className="status">
-          {status}
-        </p>
-      )}
       {confirming && (
         <div className="dialog-backdrop">
           <div role="dialog" aria-modal="true" aria-labelledby={dialogTitle} className="dialog">

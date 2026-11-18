@@ -81,13 +81,15 @@ cargo run -p parley-app --features local-whisper
 ```
 
 It opens on "Welcome to Parley" and walks you through choosing a language, the course pack, a
-daily goal and the placement test; `docs/HANDBOOK.md` describes every screen. Your progress lives
+daily goal and the placement test; `docs/HANDBOOK.md` describes every screen. Only one copy runs
+at a time: starting Parley while it is open, a debug or an optimised build alike, brings the open
+window to the front instead. Your progress lives
 in the app data folder (`parley.sqlite3` and `settings.json`), and Settings > Data exports it as
 one JSON backup that restores on any computer.
 
 The launch smoke test starts the debug build through `tauri-driver` and waits for the welcome
-screen. It needs `tauri-driver` and the platform's WebDriver on the `PATH` (continuous
-integration installs both):
+screen, so close Parley first. It needs `tauri-driver` and the platform's WebDriver on the `PATH`
+(continuous integration installs both):
 
 ```sh
 npm --prefix app run build

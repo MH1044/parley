@@ -2154,6 +2154,122 @@ fn t10_delete_everything_that_cannot_remove_a_file_reports_it_and_leaves_a_usabl
     );
 }
 
+// ---------------------------------------------------------------------------------------------
+// Acceptance test 17: one copy at a time, and never half a delete.
+// ---------------------------------------------------------------------------------------------
+
+const DELETE_IN_USE: &str = "Parley could not delete your progress because another program is \
+                             using it. Close it and try again.";
+const RESTORE_IN_USE: &str = "Parley could not replace your progress because another program is \
+                              using it. Close it and try again.";
+
+/// The text from `at` up to the matching closing parenthesis of the call that opens there.
+fn call_at(text: &str, at: usize) -> &str {
+    let mut depth = 0;
+    for (offset, c) in text[at..].char_indices() {
+        match c {
+            '(' => depth += 1,
+            ')' if depth == 1 => return &text[at..=at + offset],
+            ')' => depth -= 1,
+            _ => {}
+        }
+    }
+    panic!("the call at {at} closes");
+}
+
+/// The single-instance plugin cannot be exercised without opening a window, and a second app in
+/// the test process would be the second copy it ends; so the test reads how the app is built.
+#[test]
+fn t17_one_copy_of_parley_runs_at_a_time() {
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let lib = fs::read_to_string(manifest_dir.join("src/lib.rs")).expect("src/lib.rs");
+    let first = lib
+        .find(".plugin(")
+        .expect("lib.rs registers its plugins with .plugin(");
+    assert!(
+        lib[first..].starts_with(".plugin(tauri_plugin_single_instance::init("),
+        "the single-instance plugin is registered before any other, so a second copy stops \
+         before anything else starts: {}",
+        call_at(&lib, first)
+    );
+    // What the callback does in the first copy: the main window comes to the front, restored if
+    // it was minimised.
+    for step in [
+        "get_webview_window(\"main\")",
+        ".unminimize()",
+        ".show()",
+        ".set_focus()",
+    ] {
+        assert!(
+            lib.contains(step),
+            "a second launch brings the open window to the front ({step})"
+        );
+    }
+
+    // A dependency of the desktop builds only: the plugin has nothing for Android or iOS.
+    let manifest = fs::read_to_string(manifest_dir.join("Cargo.toml")).expect("Cargo.toml");
+    let header =
+        "[target.'cfg(not(any(target_os = \"android\", target_os = \"ios\")))'.dependencies]";
+    let section = manifest
+        .split_once(header)
+        .map(|(_, rest)| rest.split("\n[").next().unwrap_or(rest))
+        .expect("Cargo.toml has a section of desktop-only dependencies");
+    assert!(
+        section.lines().any(|line| line
+            .trim_start()
+            .starts_with("tauri-plugin-single-instance")),
+        "the plugin is a dependency of the desktop builds: {section}"
+    );
+}
+
+/// Two copies on one data folder, as a second launch made them before the single-instance
+/// plugin: on Windows a file another process has open cannot be renamed or removed, so Delete
+/// everything and Restore must change nothing at all and say why. (Elsewhere the rename
+/// succeeds whatever is open, and the core's tests cover the refusal with a filesystem that
+/// refuses.)
+#[cfg(windows)]
+#[test]
+fn t17_delete_everything_and_restore_while_another_copy_has_the_data_file_change_nothing() {
+    let dir = tempdir();
+    let clock = TestClock::at("2026-10-12T09:00:00Z", 0);
+    let mut app = open_offline(dir.path(), &clock);
+    ok(app.app_start());
+    ok(app.course_start("es"));
+    let backup = dir.path().join("saved").join("parley-backup.json");
+    ok(app.backup_export(&backup));
+    ok(app.settings_set(&json!({"daily_goal_xp": 50})));
+    let run = ok(app.lesson_start("es.a1.u01.s01", "learn"));
+    answer_all(&mut app, &run, false);
+    ok(app.lesson_finish(&run.session_id));
+    let xp = ok(app.path_get("es")).today_xp;
+    assert!(xp > 0);
+    fs::create_dir_all(dir.path().join("cache")).expect("the cache folder");
+    fs::write(dir.path().join("cache/ai.sqlite3"), b"cached answers").expect("a cache file");
+    let settings = fs::read(dir.path().join("settings.json")).expect("settings.json");
+
+    let other = open_offline(dir.path(), &clock);
+    refused(app.data_delete_all("delete"), "busy", DELETE_IN_USE);
+    refused(app.backup_import(&backup), "busy", RESTORE_IN_USE);
+    assert_eq!(
+        fs::read(dir.path().join("settings.json")).expect("settings.json is still there"),
+        settings
+    );
+    assert!(dir.path().join("cache/ai.sqlite3").exists());
+    assert!(dir.path().join("parley.sqlite3").exists());
+    assert_eq!(
+        files_in(dir.path()),
+        ["cache", "parley.sqlite3", "saved", "settings.json"],
+        "no moved-aside or import file is left"
+    );
+    assert!(ok(app.app_start()).onboarded);
+    assert_eq!(ok(app.path_get("es")).today_xp, xp);
+
+    drop(other);
+    ok(app.data_delete_all("delete"));
+    assert!(!ok(app.app_start()).onboarded);
+    assert_eq!(files_in(dir.path()), ["cache", "parley.sqlite3", "saved"]);
+}
+
 #[test]
 fn t10_cache_clear_counts_the_files_it_removes() {
     let dir = tempdir();
