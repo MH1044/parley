@@ -31,6 +31,7 @@ translation); §6.11 to §6.13, §7 and the batch rule of §8 in `docs/PUBLIK-IN
 - `media_translate` (P11, `prompts/translate.v1.md`, cached) and **Translate all** with the batch
   confirmation above 10 calls; **Play from here** from the original file; `media_save_sentence`
   into `<lang>.personal.media`.
+- The Photo and Your media tabs, while AI is not set up, open module 16's short AI panel first.
 - Migration `0005_media.sql` (`media` with the local-only `path`, `media_sentences`); the backup
   (module 04) gains optional `media` and `media_sentences` arrays, and `path` is never in a backup.
 

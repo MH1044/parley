@@ -104,6 +104,7 @@ Contract tests 1 to 18 keep passing; this module adds tests 30, 31 and 34 of
     stays resumable; after a success needs-credit clears.
 15. With `FailingNet` and no local provider, the Conversation tab shows "Conversations need a
     connection or a local model." and `conversation_start` is not offered.
+    With AI not set up, the tab opens module 16's short AI panel first, before the consent dialog.
 16. Spoken turn: `conversation_transcribe` makes one P6 request and returns the text; `conversation_turn`
     with `spoken: true` stores `input_mode = spoken`.
 17. 5 learner turns and 3 goals done → 25 XP; the local date becomes active for the streak.
