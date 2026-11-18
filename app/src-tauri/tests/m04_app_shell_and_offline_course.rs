@@ -2158,8 +2158,12 @@ fn t10_delete_everything_that_cannot_remove_a_file_reports_it_and_leaves_a_usabl
 // Acceptance test 17: one copy at a time, and never half a delete.
 // ---------------------------------------------------------------------------------------------
 
+// Only the Windows test below meets these: elsewhere a file another process has open can still be
+// renamed.
+#[cfg(windows)]
 const DELETE_IN_USE: &str = "Parley could not delete your progress because another program is \
                              using it. Close it and try again.";
+#[cfg(windows)]
 const RESTORE_IN_USE: &str = "Parley could not replace your progress because another program is \
                               using it. Close it and try again.";
 
