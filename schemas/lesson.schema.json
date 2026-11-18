@@ -149,6 +149,14 @@
                 "maxItems": 2,
                 "items": { "type": "string" }
               }
+            },
+            "english_order": {
+              "description": "The order the English sides are shown in, as pair indexes; never the pairs' own order.",
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 5,
+              "uniqueItems": true,
+              "items": { "type": "integer", "minimum": 0, "maximum": 4 }
             }
           }
         }

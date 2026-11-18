@@ -409,7 +409,7 @@ pub fn grade(ctx: &GradeCtx, ex: &Exercise, answer: &Answer) -> Grade {
                 wrong(kind, right.cloned())
             };
         }
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             let matched = match answer {
                 Answer::Pairs(given) => {
                     let given: BTreeSet<[u32; 2]> = given.iter().copied().collect();
@@ -992,6 +992,7 @@ mod tests {
         );
         let pairs = exercise(Body::MatchPairs {
             pairs: (0..4).map(|i| [format!("t{i}"), format!("e{i}")]).collect(),
+            english_order: None,
         });
         let right = Answer::Pairs(vec![[2, 2], [0, 0], [3, 3], [1, 1]]);
         assert_eq!(grade(&c, &pairs, &right).verdict, Verdict::Correct);

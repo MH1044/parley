@@ -151,7 +151,14 @@ pub enum Body {
         hint_en: String,
     },
     /// Match each target-language text with its English meaning: `[target, English]`, 4 or 5.
-    MatchPairs { pairs: Vec<[String; 2]> },
+    /// `english_order` is the order the English sides are shown in, as pair indexes: drawn for
+    /// the lesson and never the pairs' own order, so the two columns never line up (none on an
+    /// exercise that has not been given one yet: see `template::give_english_order`).
+    MatchPairs {
+        pairs: Vec<[String; 2]>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        english_order: Option<Vec<u32>>,
+    },
 }
 
 impl Body {
@@ -190,7 +197,7 @@ impl Exercise {
             Body::TranslateToTarget { target, .. } => vec![target.as_str()],
             Body::ListenType { text, .. } | Body::Speak { text, .. } => vec![text.as_str()],
             Body::FillGap { full_sentence, .. } => vec![full_sentence.as_str()],
-            Body::MatchPairs { pairs } => pairs.iter().map(|pair| pair[0].as_str()).collect(),
+            Body::MatchPairs { pairs, .. } => pairs.iter().map(|pair| pair[0].as_str()).collect(),
         }
     }
 
@@ -274,11 +281,24 @@ mod tests {
         assert_eq!(back, ex);
         let pairs = exercise(Body::MatchPairs {
             pairs: vec![["el agua".into(), "water".into()]],
+            english_order: None,
         });
         let value = serde_json::to_value(&pairs).unwrap();
         assert_eq!(value["type"], "match_pairs");
         assert_eq!(value["pairs"], serde_json::json!([["el agua", "water"]]));
         assert_eq!(value["facet"], "receptive");
+        assert!(value.get("english_order").is_none(), "no order, no field");
+        let ordered = exercise(Body::MatchPairs {
+            pairs: vec![
+                ["el agua".into(), "water".into()],
+                ["el té".into(), "tea".into()],
+            ],
+            english_order: Some(vec![1, 0]),
+        });
+        let value = serde_json::to_value(&ordered).unwrap();
+        assert_eq!(value["english_order"], serde_json::json!([1, 0]));
+        let back: Exercise = serde_json::from_value(value).unwrap();
+        assert_eq!(back, ordered);
     }
 
     #[test]
@@ -331,6 +351,7 @@ mod tests {
         assert_eq!(gap.own_answers(), ["leche"]);
         let pairs = exercise(Body::MatchPairs {
             pairs: vec![["a".into(), "x".into()], ["b".into(), "y".into()]],
+            english_order: None,
         });
         assert_eq!(pairs.targets(), ["a", "b"]);
         assert_eq!(pairs.prompt(), None);

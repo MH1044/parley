@@ -266,6 +266,8 @@ const MATCH = {
     ['gracias', 'thank you'],
     ['noche', 'night'],
   ],
+  // The meanings are shown as A thank you, B hello, C night, D goodbye.
+  english_order: [2, 0, 3, 1],
 }
 
 function lesson(exercises: object[], attributions: { exercise_id: string; author: string }[] = []) {
@@ -842,6 +844,222 @@ describe('Keyboard in the lesson player (acceptance test 12)', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Keep going' }))
     await waitFor(() => expectNoDialog())
     await expectText('Exercise 2 of 2')
+  })
+})
+
+// ---- acceptance test 20: match the pairs ----------------------------------------------------------
+
+/** The two columns of a match_pairs exercise. */
+function matchColumns() {
+  return {
+    words: screen.getByRole('group', { name: 'Words' }),
+    meanings: screen.getByRole('group', { name: 'Meanings' }),
+  }
+}
+
+/** A button's accessible name: its label, or its text without the key shown before it. */
+function nameOf(button: HTMLElement): string {
+  return button.getAttribute('aria-label') ?? squash(button.textContent).slice(1)
+}
+
+/** The names of the buttons of `group` chosen and waiting for their other half. */
+function pressedIn(group: HTMLElement): string[] {
+  return within(group)
+    .getAllByRole('button')
+    .filter((button) => button.getAttribute('aria-pressed') === 'true')
+    .map(nameOf)
+}
+
+describe('Match the pairs (acceptance test 20)', () => {
+  beforeEach(() => {
+    onboarded()
+    reply('lesson_start', () => lesson([MATCH]))
+  })
+
+  it('numbers the words 1 to 4 and letters the meanings A to D, in the order the lesson gives', async () => {
+    await startLesson()
+    await expectText('Match the pairs')
+    const { words, meanings } = matchColumns()
+    const keysOf = (group: HTMLElement) =>
+      within(group)
+        .getAllByRole('button')
+        .map((button) => button.getAttribute('aria-keyshortcuts'))
+    expect(within(words).getAllByRole('button').map((button) => button.textContent)).toEqual([
+      '1hola',
+      '2adiós',
+      '3gracias',
+      '4noche',
+    ])
+    expect(within(meanings).getAllByRole('button').map((button) => button.textContent)).toEqual([
+      'Athank you',
+      'Bhello',
+      'Cnight',
+      'Dgoodbye',
+    ])
+    expect(keysOf(words)).toEqual(['1', '2', '3', '4'])
+    expect(keysOf(meanings)).toEqual(['A', 'B', 'C', 'D'])
+    // The accessible names stay the words themselves.
+    expect(within(words).getByRole('button', { name: 'hola' })).toBeInTheDocument()
+    expect(within(meanings).getByRole('button', { name: 'thank you' })).toBeInTheDocument()
+  })
+
+  it('never shows the meanings in the order of the words, even when the lesson gives no order', async () => {
+    const unordered: Record<string, unknown> = { ...MATCH }
+    delete unordered.english_order
+    reply('lesson_start', () => lesson([unordered]))
+    await startLesson()
+    await expectText('Match the pairs')
+    const { meanings } = matchColumns()
+    const shown = within(meanings).getAllByRole('button').map(nameOf)
+    expect([...shown].sort()).toEqual(['goodbye', 'hello', 'night', 'thank you'])
+    expect(shown).not.toEqual(MATCH.pairs.map(([, english]) => english))
+  })
+
+  it('a number then a letter, or a letter then a number, makes a pair; Enter sends them', async () => {
+    await startLesson()
+    await expectText('Match the pairs')
+    const { words, meanings } = matchColumns()
+
+    press('1')
+    await waitFor(() => expect(pressedIn(words)).toEqual(['hola']))
+    press('5')
+    expect(pressedIn(words), 'there is no word 5').toEqual(['hola'])
+    press('b')
+    await waitFor(() => expect(screen.getByRole('button', { name: 'hola, pair 1' })).toBeDisabled())
+    expect(screen.getByRole('button', { name: 'hello, pair 1' })).toBeDisabled()
+    expect(pressedIn(words)).toEqual([])
+
+    press('C')
+    await waitFor(() => expect(pressedIn(meanings)).toEqual(['night']))
+    press('4')
+    await waitFor(() => expect(screen.getByRole('button', { name: 'night, pair 4' })).toBeDisabled())
+    expect(screen.getByRole('button', { name: 'noche, pair 4' })).toBeDisabled()
+
+    press('2')
+    press('d')
+    press('a')
+    press('3')
+    await waitFor(() => expect(screen.getByRole('button', { name: 'thank you, pair 3' })).toBeDisabled())
+    expect(screen.getByRole('button', { name: 'goodbye, pair 2' })).toBeDisabled()
+    expect(callsOf('exercise_submit')).toHaveLength(0)
+
+    press('Enter')
+    await waitFor(() => expect(callsOf('exercise_submit')).toHaveLength(1))
+    const sent = callsOf('exercise_submit')[0].answer as { pairs: number[][] }
+    expect([...sent.pairs].map((pair) => pair.join(',')).sort()).toEqual(['0,0', '1,1', '2,2', '3,3'])
+  })
+
+  it('with the mouse, a meaning then a word makes a pair too', async () => {
+    await startLesson()
+    fireEvent.click(await screen.findByRole('button', { name: 'night' }))
+    fireEvent.click(screen.getByRole('button', { name: 'noche' }))
+    expect(await screen.findByRole('button', { name: 'noche, pair 4' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'night, pair 4' })).toBeDisabled()
+  })
+
+  it('Esc or Backspace clears a half-made pair; Esc with none asks to quit', async () => {
+    await startLesson()
+    await expectText('Match the pairs')
+    const { words, meanings } = matchColumns()
+
+    press('2')
+    await waitFor(() => expect(pressedIn(words)).toEqual(['adiós']))
+    press('Escape')
+    await waitFor(() => expect(pressedIn(words)).toEqual([]))
+    expectNoDialog()
+
+    press('a')
+    await waitFor(() => expect(pressedIn(meanings)).toEqual(['thank you']))
+    press('Backspace')
+    await waitFor(() => expect(pressedIn(meanings)).toEqual([]))
+    expectNoDialog()
+
+    // Only the half-made pair is let go: a made pair stays.
+    press('1')
+    press('b')
+    await screen.findByRole('button', { name: 'hola, pair 1' })
+    press('Backspace')
+    expect(screen.getByRole('button', { name: 'hola, pair 1' })).toBeInTheDocument()
+
+    press('Escape')
+    const dialog = await screen.findByRole('dialog')
+    await expectText('Quit this lesson?', dialog)
+  })
+
+  it('nothing moves when a pair is made: Start over is there from the start, under the columns', async () => {
+    await startLesson()
+    await expectText('Match the pairs')
+    const { words, meanings } = matchColumns()
+    const startOver = screen.getByRole('button', { name: 'Start over' })
+    expect(startOver).toBeDisabled()
+    const row = words.parentElement as HTMLElement
+    expect(startOver.parentElement, 'Start over is not in the row of the columns').not.toBe(row)
+    const columns = [...row.children]
+    expect(columns).toHaveLength(2)
+    expect(columns[0]).toBe(words)
+    expect(columns[1]).toBe(meanings)
+    const wordButtons = within(words).getAllByRole('button')
+    const meaningButtons = within(meanings).getAllByRole('button')
+
+    fireEvent.click(screen.getByRole('button', { name: 'gracias' }))
+    fireEvent.click(screen.getByRole('button', { name: 'thank you' }))
+    await screen.findByRole('button', { name: 'gracias, pair 3' })
+
+    expect(screen.getByRole('button', { name: 'Start over' })).toBe(startOver)
+    expect(startOver).toBeEnabled()
+    expect(screen.getByRole('group', { name: 'Words' })).toBe(words)
+    expect(screen.getByRole('group', { name: 'Meanings' })).toBe(meanings)
+    expect(row.children).toHaveLength(2)
+    expect(row.children[0]).toBe(words)
+    expect(row.children[1]).toBe(meanings)
+    within(words)
+      .getAllByRole('button')
+      .forEach((button, index) => expect(button).toBe(wordButtons[index]))
+    within(meanings)
+      .getAllByRole('button')
+      .forEach((button, index) => expect(button).toBe(meaningButtons[index]))
+
+    fireEvent.click(startOver)
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Start over' })).toBeDisabled())
+    expect(screen.getByRole('button', { name: 'Start over' })).toBe(startOver)
+    expect(screen.getByRole('button', { name: 'gracias' })).toBeEnabled()
+  })
+
+  it('a made pair shows its number and colour on both halves and stays readable', async () => {
+    await startLesson()
+    fireEvent.click(await screen.findByRole('button', { name: 'gracias' }))
+    fireEvent.click(screen.getByRole('button', { name: 'thank you' }))
+    const word = await screen.findByRole('button', { name: 'gracias, pair 3' })
+    const meaning = screen.getByRole('button', { name: 'thank you, pair 3' })
+    for (const half of [word, meaning]) {
+      expect(within(half).getByText('3')).toBeInTheDocument()
+      expect(half).toHaveClass('matched', 'pair-3')
+    }
+    // The meaning's letter gives way to its word's number; the others keep theirs.
+    expect(within(meaning).queryByText('A')).toBeNull()
+    expect(within(screen.getByRole('button', { name: 'hello' })).getByText('B')).toBeInTheDocument()
+    const css = STYLESHEET.replace(/\/\*[\s\S]*?\*\//g, '')
+    expect(rule(css, 'button.matched:disabled').get('opacity'), 'a made pair is not faded').toBe('1')
+    for (const n of [1, 2, 3, 4, 5]) {
+      expect(rule(css, `.pair-${n}`).get('--pair'), `pair ${n} has its colour`).toBe(`var(--pair-${n})`)
+    }
+  })
+
+  it('the footer names the keys of the exercise shown', async () => {
+    reply('lesson_start', () => lesson([MATCH, PICK_1]))
+    await startLesson()
+    await expectText('Press a number (1 to 4) and a letter (A to D) to make a pair.')
+    await expectText('Backspace or Esc clears a half-made pair; otherwise Esc quits.')
+    expect(screen.queryByText(textOf('Keys 1 to 4 choose an option.'))).toBeNull()
+    for (const [target, english] of MATCH.pairs) {
+      fireEvent.click(screen.getByRole('button', { name: target }))
+      fireEvent.click(screen.getByRole('button', { name: english }))
+    }
+    press('Enter')
+    await screen.findByRole('region', { name: 'Result' })
+    press('Enter')
+    await expectText('What does hola mean?')
+    await expectText('Keys 1 to 4 choose an option.')
   })
 })
 

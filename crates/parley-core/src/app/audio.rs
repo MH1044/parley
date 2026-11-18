@@ -1365,7 +1365,7 @@ mod tests {
         for ex in &started.exercises {
             let answer = match &ex.body {
                 Body::PickMeaning { answer_index, .. } => Answer::Choice(*answer_index),
-                Body::MatchPairs { pairs } => {
+                Body::MatchPairs { pairs, .. } => {
                     Answer::Pairs((0..pairs.len() as u32).map(|i| [i, i]).collect())
                 }
                 Body::FillGap { answer, .. } => Answer::Text(answer.clone()),

@@ -15,6 +15,8 @@ pub mod wordbank;
 pub use check::{Allowed, CheckCtx, CheckFailure, check_exercise, coverage, max_words};
 pub use compose::{Capabilities, ComposeRequest, Plan, PlanEntry, compose};
 pub use run::{LessonRun, LessonSummary, RunError, RunSettings, Submission};
-pub use template::{TemplateCtx, template, template_lesson};
+pub use template::{
+    TemplateCtx, english_order, give_english_order, is_english_order, template, template_lesson,
+};
 pub use types::{Body, Exercise, ExerciseType, Lesson, Origin};
 pub use wordbank::word_bank;

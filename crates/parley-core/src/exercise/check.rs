@@ -278,7 +278,7 @@ fn check_answers(ex: &Exercise, lang: Lang) -> Result<(), CheckFailure> {
             }
             Ok(())
         }
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             if !(4..=5).contains(&pairs.len()) {
                 return Err(answers("match_pairs needs 4 or 5 pairs"));
             }
@@ -565,6 +565,7 @@ mod tests {
                     .zip(["hello", "goodbye", "good", "such", "thanks", "night"])
                     .map(|(t, e)| [t.to_string(), e.to_string()])
                     .collect(),
+                english_order: None,
             })
         };
         assert_eq!(check(&pairs(4), &[], &[]), Ok(()));

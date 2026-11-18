@@ -221,8 +221,8 @@ No AI setup appears in onboarding.
 | AI setup dialog | data-path sentence, DISCLOSURE, three buttons, Not now; then the first-run card | n/a | "Setting up…" | contract messages | "publik API is unreachable right now. Use your own key for now." |
 
 Keyboard: Enter checks and continues (and starts the next lesson from a lesson end), 1 to 4 pick
-options, 1 to 9 add tiles and Backspace removes one, Space holds to talk, Esc quits a lesson after
-confirmation. Every control has an accessible name; colour never carries meaning alone.
+options, a number and a letter make a pair in Match the pairs, 1 to 9 add tiles and Backspace
+removes one, Space holds to talk, Esc quits a lesson after confirmation. Every control has an accessible name; colour never carries meaning alone.
 
 ## 6. Non-goals
 

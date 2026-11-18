@@ -616,6 +616,7 @@ mod tests {
                     "l:hola",
                     Body::MatchPairs {
                         pairs: (0..4).map(|i| [format!("t{i}"), format!("e{i}")]).collect(),
+                        english_order: None,
                     },
                 ),
             ],

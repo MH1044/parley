@@ -399,7 +399,7 @@ fn right_answer(ex: &Exercise) -> Answer {
         }
         Body::Speak { text, .. } => Answer::Text(text.clone()),
         Body::FillGap { answer, .. } => Answer::Text(answer.clone()),
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             Answer::Pairs((0..pairs.len() as u32).map(|i| [i, i]).collect())
         }
     }
@@ -414,7 +414,7 @@ fn wrong_answer(ex: &Exercise) -> Option<Answer> {
             ..
         } => Some(Answer::Choice((answer_index + 1) % options.len() as u32)),
         Body::FillGap { .. } => Some(Answer::Text("xqxqxq".to_string())),
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             let mut matched: Vec<[u32; 2]> = (0..pairs.len() as u32).map(|i| [i, i]).collect();
             matched[0] = [0, 1];
             matched[1] = [1, 0];

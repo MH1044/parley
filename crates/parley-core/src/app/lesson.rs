@@ -30,7 +30,8 @@ use crate::error::{AppError, ErrorCode};
 use crate::exercise::compose::kind_for;
 use crate::exercise::{
     Allowed, Capabilities, ComposeRequest, Lesson, LessonRun, LessonSummary, Origin, Plan,
-    PlanEntry, RunError, RunSettings, Submission, TemplateCtx, compose, template_lesson,
+    PlanEntry, RunError, RunSettings, Submission, TemplateCtx, compose, give_english_order,
+    template_lesson,
 };
 use crate::grading::{Answer, Grade};
 use crate::settings::Settings;
@@ -227,17 +228,23 @@ struct Shown {
 }
 
 impl Parley {
-    /// Stores `lesson`, starts its run and says what to show.
+    /// Stores `lesson`, starts its run and says what to show. Every `match_pairs` without a usable
+    /// English order (an AI or course-pack exercise, or a lesson stored before exercises carried
+    /// one) is given one first, so the meanings never show in the order of their words.
     fn start_lesson_run(
         &mut self,
         lang: Lang,
-        lesson: Lesson,
+        mut lesson: Lesson,
         learn: bool,
         shown: Shown,
     ) -> Result<LessonStarted, AppError> {
         let store = open_store(&mut self.store)?;
         let clock = &*self.env.clock;
-        let id = session_id("s", &mut *self.env.rng);
+        let rng = &mut *self.env.rng;
+        let id = session_id("s", rng);
+        for ex in &mut lesson.exercises {
+            give_english_order(ex, rng);
+        }
         let run = LessonRun::start_lesson(store, &lesson, &id, clock)?;
         if let Some(micros) = shown.cost_micros {
             store.add_session_cost(&id, micros)?;
@@ -759,13 +766,15 @@ mod tests {
     use std::sync::Arc;
     use std::sync::atomic::{AtomicI64, Ordering};
 
+    use super::super::open_store;
     use super::super::test_support::{MONDAY_NOON, NO_PACKS, parley, parley_at};
     use crate::api::NOTHING_TO_REVIEW_YET;
+    use crate::content::Lang;
     use crate::env::FailingNet;
     use crate::error::ErrorCode;
-    use crate::exercise::{Body, ExerciseType};
+    use crate::exercise::{Body, Exercise, ExerciseType, Lesson, Origin, is_english_order};
     use crate::grading::{Answer, Verdict};
-    use crate::srs::DAY_MS;
+    use crate::srs::{DAY_MS, Facet};
 
     #[test]
     fn a_lesson_runs_offline_and_refuses_with_the_run_messages() {
@@ -856,6 +865,73 @@ mod tests {
     }
 
     #[test]
+    fn a_stored_lesson_gets_an_english_order_when_it_starts() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut app = parley(dir.path());
+        app.course_start("es").unwrap();
+        let pairs: Vec<[String; 2]> = [
+            ("hola", "hello"),
+            ("adiós", "goodbye"),
+            ("bueno", "good"),
+            ("el día", "day"),
+        ]
+        .iter()
+        .map(|(target, english)| [target.to_string(), english.to_string()])
+        .collect();
+        let exercise = |id: &str, english_order: Option<Vec<u32>>| Exercise {
+            id: id.into(),
+            item_id: "es.a1.u01.s01#l:hola".into(),
+            facet: Facet::Receptive,
+            origin: Origin::CoursePack,
+            body: Body::MatchPairs {
+                pairs: pairs.clone(),
+                english_order,
+            },
+        };
+        // As a course pack or an earlier version stored them: no order, the pairs' own order, an
+        // order that is fine.
+        let stored = Lesson {
+            schema: Lesson::SCHEMA.into(),
+            lang: Lang::Es,
+            skill_id: "es.a1.u01.s01".into(),
+            seq: 0,
+            origin: Origin::CoursePack,
+            exercises: vec![
+                exercise("x1", None),
+                exercise("x2", Some(vec![0, 1, 2, 3])),
+                exercise("x3", Some(vec![2, 0, 3, 1])),
+            ],
+            ai: None,
+        };
+        open_store(&mut app.store)
+            .unwrap()
+            .import_pack_rows(Lang::Es, &[(stored, None)], &[], 0)
+            .unwrap();
+        let started = app.lesson_start("es.a1.u01.s01", "learn").unwrap();
+        assert_eq!(started.origin, Origin::CoursePack);
+        let orders: Vec<Vec<u32>> = started
+            .exercises
+            .iter()
+            .map(|ex| match &ex.body {
+                Body::MatchPairs { english_order, .. } => english_order
+                    .clone()
+                    .expect("every match_pairs has an order"),
+                _ => panic!("the stored lesson plays as stored"),
+            })
+            .collect();
+        for order in &orders[..2] {
+            assert!(is_english_order(order, 4), "{order:?}");
+        }
+        assert_eq!(orders[2], [2, 0, 3, 1], "a usable order is kept");
+        // The answer names pairs by index, whatever order the English sides are shown in.
+        let pairs_answer = Answer::Pairs((0..4).map(|i| [i, i]).collect());
+        let grade = app
+            .exercise_submit(&started.session_id, "x1", &pairs_answer, None, false)
+            .unwrap();
+        assert_eq!(grade.verdict, Verdict::Correct);
+    }
+
+    #[test]
     fn a_review_says_when_the_next_one_is() {
         let dir = tempfile::tempdir().unwrap();
         let now = Arc::new(AtomicI64::new(MONDAY_NOON));
@@ -870,7 +946,7 @@ mod tests {
         for ex in &started.exercises {
             let answer = match &ex.body {
                 Body::PickMeaning { answer_index, .. } => Answer::Choice(*answer_index),
-                Body::MatchPairs { pairs } => {
+                Body::MatchPairs { pairs, .. } => {
                     Answer::Pairs((0..pairs.len() as u32).map(|i| [i, i]).collect())
                 }
                 Body::FillGap { answer, .. } => Answer::Text(answer.clone()),

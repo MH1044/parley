@@ -6,7 +6,7 @@ import PlayButton from '../../components/PlayButton'
 import SpeakExercise, { type SpeakProps } from '../../components/SpeakExercise'
 import WordBank from '../../components/WordBank'
 import { t } from '../../strings'
-import { usesWordBank, type Draft } from './draft'
+import { choosePair, meaningOrder, usesWordBank, type Draft } from './draft'
 
 interface Props {
   exercise: Exercise
@@ -199,9 +199,12 @@ export default function ExerciseView({
           <h1>{t('exercise.match_pairs')}</h1>
           <MatchPairs
             pairs={exercise.pairs}
+            rows={meaningOrder(exercise.pairs.length, exercise.english_order)}
             matched={draft.pairs}
+            half={draft.half}
             disabled={checked}
-            onChange={(pairs) => onDraft({ ...draft, pairs })}
+            onChoose={(choice) => onDraft(choosePair(draft, choice))}
+            onStartOver={() => onDraft({ ...draft, pairs: [], half: null })}
           />
         </div>
       )

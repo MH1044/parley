@@ -289,7 +289,12 @@ export type Exercise = ExerciseBase &
     | { type: 'listen_type'; text: string; accepted: string[] }
     | { type: 'speak'; text: string; prompt_en: string }
     | { type: 'fill_gap'; sentence: string; answer: string; full_sentence: string; hint_en: string }
-    | { type: 'match_pairs'; pairs: [string, string][] }
+    | {
+        type: 'match_pairs'
+        pairs: [string, string][]
+        /** The order the English sides are shown in: pair indexes, never 0, 1, 2, … */
+        english_order?: number[]
+      }
   )
 
 /** A learner's answer: typed text, the index of a chosen option, or matched pair indexes. */

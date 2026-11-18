@@ -217,9 +217,10 @@ and dropped at the first failure:
   `accepted` are removed (first kept) before the checks, not failed.
 
 A kept exercise becomes an `Exercise` with id `e{n}`, the entry's facet, `origin: "ai"`, and for
-`translate_to_target` the word-bank `tiles` a template exercise would get. An entry without a kept
-exercise (dropped or missing) gets the exercise `template_lesson` would give it (its type, then the
-fallbacks, checked against the exercises before it). When `2 × (entries without a kept exercise) >
+`translate_to_target` the word-bank `tiles` a template exercise would get (a `match_pairs` gets
+its `english_order` when the lesson starts, module 04). An entry without a kept exercise (dropped
+or missing) gets the exercise `template_lesson` would give it (its type, then the fallbacks,
+checked against the exercises before it). When `2 × (entries without a kept exercise) >
 entries`, the whole lesson is `template_lesson`'s, with the notice. `Lesson::ai` is
 `{provider, valid: kept exercises, planned: plan entries}` whenever a response was received (L1
 failure included, `valid` 0); the lesson's `prompt_id` column is `lesson.v1` then.
@@ -371,16 +372,16 @@ Import (untrusted input): over 5,000,000 bytes → `TooLarge` before parsing; no
 other than `parley.coursepack/1`, or an envelope the schema refuses → `NotACoursePack`; `lang` not
 the active course → `WrongLanguage`. Then each exercise on its own: it must be one of the five P1
 exercise shapes plus `id`, `item_id`, `facet`, `origin` (the shape of `schemas/ai/lesson.v1` with
-those fields; `tiles` allowed), its `id` not repeated in its lesson, its `item_id` an item of the
-local syllabus, and pass L4 to L9 with `Allowed::for_skill(lesson skill)` and the stem fallback,
-`max_words` of the skill's level and the item's lemmas as focus; a failing exercise is dropped and
-counted. A lesson whose skill is not in the syllabus has all its exercises dropped and counted. A
-lesson with exercises left is stored at the skill's next seq (`Store::next_lesson_seq`), origin
-`course_pack`, every exercise's origin `course_pack`, `prompt_id` the pack's `prompt`. A story is
-checked against the P2 schema and S2 to S4 and S6 for its skill (the last skill of a unit, else
-dropped); a failing story is not imported and not counted. Stored stories get the skill's next
-story seq, origin `course_pack`. Nothing is stored unless the whole import succeeds (one
-transaction).
+those fields; `tiles` and `english_order` allowed), its `id` not repeated in its lesson, its
+`item_id` an item of the local syllabus, and pass L4 to L9 with `Allowed::for_skill(lesson skill)`
+and the stem fallback, `max_words` of the skill's level and the item's lemmas as focus; a failing
+exercise is dropped and counted. A lesson whose skill is not in the syllabus has all its exercises
+dropped and counted. A lesson with exercises left is stored at the skill's next seq
+(`Store::next_lesson_seq`), origin `course_pack`, every exercise's origin `course_pack`, `prompt_id`
+the pack's `prompt`. A story is checked against the P2 schema and S2 to S4 and S6 for its skill (the
+last skill of a unit, else dropped); a failing story is not imported and not counted. Stored stories
+get the skill's next story seq, origin `course_pack`. Nothing is stored unless the whole import
+succeeds (one transaction).
 
 `ImportReport` message: "Imported {n} lessons and {m} stories; {k} exercises were dropped because
 they did not pass Parley's checks."
@@ -511,7 +512,8 @@ lessons)."; "Practise the last skill of this unit first."
 - Course pack import: an exercise must have the shape of a P1 exercise plus `id`, `item_id`,
   `facet` and `origin`, its `facet` must be its type's, and its `id` unique in its lesson. Its
   word-bank `tiles`, which no check looks at, are never kept: they are rebuilt from the exercise's
-  target as a template exercise's are. A pack
+  target as a template exercise's are. Nor is the `english_order` of a `match_pairs` (module 03):
+  the lesson draws its own when it starts (module 04). A pack
   over 5 MB is `file_too_large`; a file that is not a pack and a pack for another language are
   `invalid_input`. An imported story is checked with no focus words (S5 passes) against every lemma
   up to its skill.

@@ -107,7 +107,8 @@ pub enum Body {                                     // #[serde(tag = "type", ren
   ListenType { text: String, accepted: Vec<String> },
   Speak { text: String, prompt_en: String },
   FillGap { sentence: String, answer: String, full_sentence: String, hint_en: String },
-  MatchPairs { pairs: Vec<[String; 2]> },          // [target, English]; 4 or 5
+  MatchPairs { pairs: Vec<[String; 2]>,            // [target, English]; 4 or 5
+    #[serde(default, skip_serializing_if = "Option::is_none")] english_order: Option<Vec<u32>> },
 }
 impl Exercise { pub fn kind(&self) -> ExerciseType; pub fn direction(&self) -> Option<Direction>;
   pub fn targets(&self) -> Vec<&str>; }             // main target-language texts (below)
@@ -131,6 +132,9 @@ pub struct TemplateCtx<'a> { pub syllabus: &'a Syllabus, pub forms: &'a Forms, p
   pub allowed: &'a Allowed, pub sentences: &'a [Example], pub skill_id: &'a str, pub plan_items: &'a [String] }
 pub fn template(item: &Item, kind: ExerciseType, ctx: &TemplateCtx, rng: &mut dyn Rng) -> Option<Exercise>;
 pub fn template_lesson(plan: &Plan, ctx: &TemplateCtx, seq: u32, rng: &mut dyn Rng) -> Lesson;
+pub fn english_order(n: usize, rng: &mut dyn Rng) -> Vec<u32>;   // never 0, 1, … (n ≥ 2)
+pub fn is_english_order(order: &[u32], n: usize) -> bool;
+pub fn give_english_order(ex: &mut Exercise, rng: &mut dyn Rng); // when it has no usable one
 pub fn word_bank(target: &str, lang: Lang, allowed: &Allowed, forms: &Forms, rng: &mut dyn Rng) -> Vec<String>;
 pub struct Capabilities { pub audio_out: bool, pub mic: bool }
 pub struct ComposeRequest { pub lang: Lang, pub skill_id: String, pub lesson_length: usize,
@@ -355,7 +359,9 @@ one line on stderr and nothing on stdout, in module 01's wording):
   the lemma, whose tokens are all allowed and with at most `max_words` words; the first such token
   is replaced by `___`; `answer` is that token as written, `hint_en` the item's first gloss.
   `match_pairs`: the item and the next vocabulary items of `plan_items`, 4 pairs with distinct
-  targets and glosses, in random order; fewer than 4 → none.
+  targets and glosses, in random order, and `english_order`, the order their English sides are
+  shown in (`english_order(4, rng)`, drawn after the pairs are shuffled; never the pairs' own
+  order); fewer than 4 → none.
 - Template lesson: one exercise per plan entry, id `e{n}`; the entry's kind is tried first, then
   its fallbacks (`match_pairs` → `pick_meaning` → `translate_to_en`; `pick_meaning` →
   `translate_to_en`; `fill_gap` → `translate_to_target`; `listen_type` → `translate_to_en`;
@@ -413,6 +419,22 @@ one line on stderr and nothing on stdout, in module 01's wording):
 - Migration `0002_sessions.sql` is ARCHITECTURE §4's DDL for `sessions` to `freeze_events` and
   `sessions_date`, verbatim. A new file now opens at `user_version` 2, so module 02's checks of a
   new file (seven tables, version 1) now expect version 2 and the seven tables among twelve.
+- Match the pairs never shows the meanings in the order of the words. In testing, the meanings
+  of one exercise came in the same order as its words: the template shuffled whole pairs and the
+  interface then sorted the meanings alphabetically, so the two columns lined up whenever the
+  words happened to be in alphabetical order. Decision: a `match_pairs` exercise carries
+  `english_order`, the order its English sides are shown in, as pair indexes. `english_order(n,
+  rng)` shuffles the indexes with the lesson's randomness and, when the shuffle leaves them in the
+  pairs' own order, turns them by 1 to n − 1 places (drawn), so a seed always gives the same order
+  and no order is the pairs' own. The template draws it right after shuffling the pairs, which
+  moves the draws of the exercises after it: a seed's lesson from the `match_pairs` on differs
+  from before. An exercise without a usable order (`is_english_order`: every pair index once and
+  not the pairs' own order), such as an AI or course-pack exercise or one stored before exercises
+  carried the order, gets one from `give_english_order` when its lesson starts (module 04); an
+  order in a course pack is never kept (module 07). The order is only how the exercise is shown:
+  answers still name pairs by index, and grading, the checks L5 to L9 and the AI answer schema do
+  not look at it; `schemas/lesson.schema.json` allows it on `match_pairs` (4 or 5 distinct
+  indexes from 0 to 4).
 - Decisions made during implementation:
   - `grade_ctx` is written `grade_ctx<'a>(store: &Store, forms: &'a Forms, ...) ->
     Result<GradeCtx<'a>, StoreError>`: with two borrowed inputs Rust cannot elide `GradeCtx<'_>`,
@@ -543,6 +565,15 @@ café con leche.`, and whose forms table has `pero`, `día`, `quiero`; and the c
     `freeze_events` with the columns of ARCHITECTURE §4 and sets `user_version` 2.
 22. `LocalDate`: 2026-01-01 is ISO week 2026-W01; 2027-01-01 is 2026-W53; 2024-12-30 is
     2025-W01; `parse` refuses `2026-02-30`; `from_days(days(d)) == d`.
+23. Match the pairs: `english_order(n, SplitMix64(seed))` for n from 2 to 5 and seeds 0 to 299 is
+    every pair index once, never the pairs' own order, and the same for the same seed; over seeds
+    0 to 1,999 all 23 other orders of four pairs turn up; a source whose shuffle keeps the pairs'
+    order still gives another. For every skill of the seed content and seeds 1 to 40, every
+    template `match_pairs` has an `english_order` that shows its English sides in another order
+    than its words'. `give_english_order` gives an exercise with no order, the pairs' own order or
+    an order that is not every pair once a usable one, and keeps a usable order and every other
+    type as they are. The template lesson's `match_pairs` validates against the lesson schema with
+    its order, and a repeated index does not.
 
 ## Status
 

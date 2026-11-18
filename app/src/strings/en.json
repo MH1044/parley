@@ -88,6 +88,7 @@
   "exercise.quit": "Quit",
   "exercise.keep_going": "Keep going",
   "exercise.keys": "Enter checks and continues. Keys 1 to 4 choose an option. Esc quits.",
+  "exercise.keys_match": "Enter checks and continues. Press a number (1 to {n}) and a letter (A to {last}) to make a pair. Backspace or Esc clears a half-made pair; otherwise Esc quits.",
 
   "word_bank.label": "Word bank",
   "word_bank.chosen": "Chosen words",
@@ -97,6 +98,7 @@
   "match.targets": "Words",
   "match.meanings": "Meanings",
   "match.start_over": "Start over",
+  "match.paired": "{text}, pair {n}",
 
   "result.region": "Result",
   "result.correct": "Correct",

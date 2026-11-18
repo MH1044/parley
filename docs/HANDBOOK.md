@@ -69,14 +69,19 @@ be able to do, its words, and **Start lesson**; a locked skill says which skill 
 
 **Lessons.** "Exercise 3 of 12" at the top, then one of: *What does el día mean?* (four choices),
 *Translate into Spanish* or *Translate into English* (typed, or built from a word bank when the
-settings say so), *Fill the gap* with an English hint, and *Match the pairs* (a word, then its
-meaning). **Check** shows the result: Correct, Almost, Typo, Wrong or Not checked, the reason,
-the correct answer and, for a sentence from the course pack, its Tatoeba author ("Sentence by
-… on Tatoeba"). Not checked means a free translation Parley cannot decide offline: **I was
-right** accepts it from then on, and **Check with AI** asks the AI judge (see *Answer checks*
-below). The keyboard does it all: Enter checks and continues, 1 to 4
-choose an option, Esc asks "Quit this lesson?". The summary shows the XP earned, how many answers
-were correct and the streak. There is no limit on lessons.
+settings say so), *Fill the gap* with an English hint, and *Match the pairs*: the words numbered
+from 1 on the left, their meanings lettered from A on the right in a shuffled order that never
+lines up with the words; choose a word and a meaning, either way round, to make a pair. Both
+halves of a pair then show the word's number in the pair's own colour, and nothing on the screen
+moves; **Start over**, under the columns, undoes every pair. **Check** shows the result: Correct,
+Almost, Typo, Wrong or Not checked, the reason, the correct answer and, for a sentence from the
+course pack, its Tatoeba author ("Sentence by … on Tatoeba"). Not checked means a free
+translation Parley cannot decide offline: **I was right** accepts it from then on, and **Check
+with AI** asks the AI judge (see *Answer checks* below). The keyboard does it all: Enter checks
+and continues, 1 to 4 choose an option, a number and a letter (3 then A, or A then 3) make a
+pair, Backspace or Esc lets go of a half-made pair, and Esc asks "Quit this lesson?". The line at
+the foot of the lesson names the keys of the exercise shown. The summary shows the XP earned, how
+many answers were correct and the streak. There is no limit on lessons.
 
 **Reviews.** **Review** takes up to 20 due cards. With nothing due it says when the next review
 is ("Nothing to review. Next review: tomorrow at 09:00."), or, before your first lesson, "Nothing
@@ -694,8 +699,11 @@ generator (default 0), so a seed always gives the same lesson:
 
 ```
 parley lesson template --lang es --skill es.a1.u01.s01 --seed 1
-{"schema":"parley.lesson/1","lang":"es","skill_id":"es.a1.u01.s01","seq":1,"origin":"template","exercises":[{"id":"e1","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"hola","options":["afternoon","night","day","hello"],"answer_index":3},{"id":"e2","item_id":"es.a1.u01.s01#l:adiós","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"adiós","options":["very","day","good","goodbye"],"answer_index":3},{"id":"e3","item_id":"es.a1.u01.s01#l:bueno","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"bueno","options":["very","day","such","good"],"answer_index":3},{"id":"e4","item_id":"es.a1.u01.s01#l:día","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"el día","options":["afternoon","day","good","thank you"],"answer_index":1},{"id":"e5","item_id":"es.a1.u01.s01#l:tarde","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"la tarde","options":["goodbye","day","very","afternoon"],"answer_index":3},{"id":"e6","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"match_pairs","pairs":[["adiós","goodbye"],["bueno","good"],["hola","hello"],["el día","day"]]},{"id":"e7","item_id":"es.a1.u01.s01#l:hola","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, ¿qué tal?","answer":"Hola","full_sentence":"Hola, ¿qué tal?","hint_en":"hello"},{"id":"e8","item_id":"es.a1.u01.s01#l:adiós","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, gracias.","answer":"Adiós","full_sentence":"Adiós, gracias.","hint_en":"goodbye"},{"id":"e9","item_id":"es.a1.u01.s01#l:bueno","facet":"productive","origin":"template","type":"fill_gap","sentence":"___ días.","answer":"Buenos","full_sentence":"Buenos días.","hint_en":"good"},{"id":"e10","item_id":"es.a1.u01.s01#l:día","facet":"productive","origin":"template","type":"fill_gap","sentence":"Hola, buenos ___.","answer":"días","full_sentence":"Hola, buenos días.","hint_en":"day"},{"id":"e11","item_id":"es.a1.u01.s01#l:tarde","facet":"productive","origin":"template","type":"fill_gap","sentence":"Buenas ___, Luis.","answer":"tardes","full_sentence":"Buenas tardes, Luis.","hint_en":"afternoon"}]}
+{"schema":"parley.lesson/1","lang":"es","skill_id":"es.a1.u01.s01","seq":1,"origin":"template","exercises":[{"id":"e1","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"hola","options":["afternoon","night","day","hello"],"answer_index":3},{"id":"e2","item_id":"es.a1.u01.s01#l:adiós","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"adiós","options":["very","day","good","goodbye"],"answer_index":3},{"id":"e3","item_id":"es.a1.u01.s01#l:bueno","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"bueno","options":["very","day","such","good"],"answer_index":3},{"id":"e4","item_id":"es.a1.u01.s01#l:día","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"el día","options":["afternoon","day","good","thank you"],"answer_index":1},{"id":"e5","item_id":"es.a1.u01.s01#l:tarde","facet":"receptive","origin":"template","type":"pick_meaning","prompt_target":"la tarde","options":["goodbye","day","very","afternoon"],"answer_index":3},{"id":"e6","item_id":"es.a1.u01.s01#l:hola","facet":"receptive","origin":"template","type":"match_pairs","pairs":[["adiós","goodbye"],["bueno","good"],["hola","hello"],["el día","day"]],"english_order":[1,0,3,2]},{"id":"e7","item_id":"es.a1.u01.s01#l:hola","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, buenos días.","answer":"Hola","full_sentence":"Hola, buenos días.","hint_en":"hello"},{"id":"e8","item_id":"es.a1.u01.s01#l:adiós","facet":"productive","origin":"template","type":"fill_gap","sentence":"___, gracias.","answer":"Adiós","full_sentence":"Adiós, gracias.","hint_en":"goodbye"},{"id":"e9","item_id":"es.a1.u01.s01#l:bueno","facet":"productive","origin":"template","type":"translate_to_target","prompt_en":"good","target":"bueno","accepted":["bueno"],"tiles":["bueno","mu","ti","noches"]},{"id":"e10","item_id":"es.a1.u01.s01#l:día","facet":"productive","origin":"template","type":"translate_to_target","prompt_en":"day","target":"el día","accepted":["el día"],"tiles":["día","el","unos","pero","sin"]},{"id":"e11","item_id":"es.a1.u01.s01#l:tarde","facet":"productive","origin":"template","type":"fill_gap","sentence":"Buenas ___, Luis.","answer":"tardes","full_sentence":"Buenas tardes, Luis.","hint_en":"afternoon"}]}
 ```
+
+A match-the-pairs exercise's `english_order` is the order its meanings are shown in, by pair: in
+`e6` above, `[1,0,3,2]` shows good, goodbye, day, hello beside adiós, bueno, hola, el día.
 
 `--content <dir>` reads another course folder (default `content`). A skill the syllabus does not
 have exits 1 (`error: unknown skill es.a1.u99.s01`); `--seq` must be a whole number from 1.

@@ -425,7 +425,7 @@ fn answer_all(app: &mut Parley, session: &str, exercises: &[Exercise]) {
     for ex in exercises {
         let answer = match &ex.body {
             Body::PickMeaning { answer_index, .. } => Answer::Choice(*answer_index),
-            Body::MatchPairs { pairs } => {
+            Body::MatchPairs { pairs, .. } => {
                 Answer::Pairs((0..pairs.len() as u32).map(|i| [i, i]).collect())
             }
             Body::FillGap { answer, .. } => Answer::Text(answer.clone()),
@@ -448,7 +448,9 @@ fn bodies(exercises: &[Exercise]) -> Vec<Value> {
             let object = value.as_object_mut().unwrap();
             object.remove("id");
             object.remove("origin");
+            // Drawn for the lesson, not part of what the exercise asks.
             object.remove("tiles");
+            object.remove("english_order");
             value
         })
         .collect()
@@ -1635,6 +1637,46 @@ fn imported_tiles_are_rebuilt_not_kept() {
             "{word} is a tile: {tiles:?}"
         );
     }
+}
+
+/// Acceptance test 18 (untrusted input): the order a pack gives the English sides of a
+/// match_pairs is never kept and does not cost the exercise its place; the lesson draws its own
+/// when it starts, never the order of the words.
+#[test]
+fn an_imported_english_order_is_not_kept() {
+    let mut pack = json_file(VALID_PACK);
+    pack["lessons"][0]["exercises"][4]["english_order"] = json!([0, 1, 2, 3]);
+    let dir = tempdir();
+    let path = dir.path().join("order.json");
+    fs::write(&path, pack.to_string()).unwrap();
+    let mut app = course_app(dir.path());
+    let report = app.course_pack_import(&path).unwrap();
+    assert_eq!((report.lessons, report.dropped), (1, 0));
+    let exported = dir.path().join("exported.json");
+    app.course_pack_export("es", &exported).unwrap();
+    let written: Value = serde_json::from_str(&fs::read_to_string(&exported).unwrap()).unwrap();
+    assert_eq!(written["lessons"][0]["exercises"][4]["type"], "match_pairs");
+    assert!(
+        written["lessons"][0]["exercises"][4]
+            .get("english_order")
+            .is_none(),
+        "the imported order was kept: {}",
+        written["lessons"][0]["exercises"][4]
+    );
+    let played = app.lesson_start(SKILL, "learn").unwrap();
+    let Body::MatchPairs {
+        pairs,
+        english_order,
+    } = &played.exercises[4].body
+    else {
+        panic!("exercise 5 is match_pairs")
+    };
+    let order = english_order.as_ref().expect("the lesson draws an order");
+    let shown: Vec<&str> = order
+        .iter()
+        .map(|&i| pairs[i as usize][1].as_str())
+        .collect();
+    assert_ne!(shown, ["tea", "coffee", "water", "bread"]);
 }
 
 // ---------------------------------------------------------------------------------------------

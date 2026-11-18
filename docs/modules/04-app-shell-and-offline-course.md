@@ -27,7 +27,8 @@ module adds a screen to.
 5. Backup export and import (`parley.backup/1`), and "Delete everything".
 6. Attribution: "Sentence by {author} on Tatoeba" under pack sentences; the About page credits
    Tatoeba (CC BY 2.0 FR) and Wiktionary (CC BY-SA 4.0).
-7. Keyboard: Enter checks and continues, 1 to 4 pick options, Esc asks to quit.
+7. Keyboard: Enter checks and continues, 1 to 4 pick options, a number and a letter make a pair,
+   Esc asks to quit.
 8. `app/src/strings/en.json` for every UI string; `app/src/api/commands.ts` typed wrappers.
 9. The launch smoke test and the CI `e2e` job.
 
@@ -271,9 +272,11 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   options as radio buttons in a radio group; `translate_to_target` "Translate into {Language}";
   `translate_to_en` "Translate into English"; `fill_gap` "Fill the gap" and the hint; text answers
   in a text box **Your answer**, or the word bank (tile buttons) when `answer_input` is
-  `word_bank` and the exercise has tiles; `match_pairs` two columns of buttons, a target then an
-  English side make a pair; button **Check**. Esc opens a dialog "Quit this lesson?" with **Quit**
-  and **Keep going**.
+  `word_bank` and the exercise has tiles; `match_pairs` two columns of buttons, a group **Words**
+  numbered 1 to n and a group **Meanings** lettered A on in the exercise's `english_order`, a word
+  and a meaning chosen either way round make a pair, "{text}, pair {n}" names each half of a made
+  pair, and **Start over** sits under the columns, disabled until there is a pair; button
+  **Check**. Esc opens a dialog "Quit this lesson?" with **Quit** and **Keep going**.
 - Result sheet: a region named **Result** with the verdict **Correct**, **Almost**, **Typo**,
   **Wrong** or **Not checked**, the grade's message, "Correct answer: {corrected}" when there is
   one, the attribution line when the exercise has one ("Sentence by {author} on Tatoeba", or
@@ -296,7 +299,13 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   `app_info`, "Example sentences come from Tatoeba (tatoeba.org) under CC BY 2.0 FR." and "Word
   forms come from Wiktionary (wiktionary.org) under CC BY-SA 4.0."
 - Keyboard: Enter checks when an answer is given and continues when the result sheet shows; keys
-  1 to 4 check the matching option of `pick_meaning`; Esc asks to quit.
+  1 to 4 check the matching option of `pick_meaning`; in `match_pairs` a number (1 to n) chooses a
+  word and a letter (A on, either case) the meaning on that row, a number and a letter in either
+  order make a pair, and Backspace or Esc lets go of a half-made pair; Esc asks to quit (with a
+  half-made pair, the first Esc only lets go of it). The footer names the keys: "Enter checks and
+  continues. Keys 1 to 4 choose an option. Esc quits.", and for `match_pairs` "Enter checks and
+  continues. Press a number (1 to {n}) and a letter (A to {last}) to make a pair. Backspace or Esc
+  clears a half-made pair; otherwise Esc quits.".
 - Leaving a screen: every screen the path opens (Reviews with nothing due, Stats, Settings) has
   **Back to my path** at the top, straight after its heading, and at the foot; Esc on it returns
   to the path. The app keeps a history of the screens visited, in order: the path and the screens
@@ -383,6 +392,40 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   order) among the cards; nothing is stored but the session. With nothing due it starts no session
   and returns `session_id` "", no exercises and the notice. Session ids are `s-` and 16 lower-case
   hex digits from the injected `Rng` (`p-` for placement). Runs stay in memory until finished.
+- Match the pairs works with the keyboard, keeps still and shows each pair. In testing, the
+  number keys did nothing though the footer said they choose an option; after the first pair both
+  columns moved left as **Start over** appeared beside them in the same wrapping row; matched
+  items turned grey with nothing showing which went with which; and once the meanings came in the
+  same order as the words (the template shuffled whole pairs and the meanings were then sorted
+  alphabetically, so the columns lined up whenever the words happened to be in alphabetical
+  order). Decision:
+  - Keyboard: the words are numbered 1 to n and the meanings lettered A to the nth letter, the key
+    shown on each button (`aria-keyshortcuts` names it, and the button's accessible name stays its
+    text). A number chooses a word and a letter (either case) the meaning on that row; a number
+    then a letter, or a letter then a number, makes a pair. The mouse works the same way round:
+    a word then a meaning or a meaning then a word. Choosing the chosen half again lets go of it,
+    another of the same column takes its place, and a side already in a pair cannot be chosen.
+    Backspace or Esc lets go of a half-made pair; Esc with none asks to quit as before. The footer
+    names these keys for `match_pairs`; `pick_meaning` and the other types keep "Keys 1 to 4
+    choose an option.".
+  - Layout: nothing moves when a pair is made. The columns sit side by side in a two-column grid
+    of equal widths, and **Start over** is always under them, disabled until a pair exists; no
+    element is added or removed as pairs are made, and a made pair changes colours and the key
+    shown, never a size (the pair's border is drawn as a border colour plus an inset shadow, not a
+    wider border).
+  - Each made pair shows which went with which: a pair takes its word's number, so both halves
+    show that number in a filled badge of the pair's colour (the meaning's letter gives way to
+    it) and the accessible name "{text}, pair {n}". Colour is never the only cue. The five pair
+    colours (`--pair-1` to `--pair-5`, by the word's number) have their own light and dark values,
+    each at least 5.5:1 against the badge's text and the page in both themes. A made pair is
+    disabled but not faded (`button.matched:disabled` keeps opacity 1).
+  - Order: the meanings are shown in the exercise's `english_order` (module 03), drawn with the
+    injected randomness and never the words' order, replacing the alphabetical sort. A lesson that
+    arrives without a usable order (an AI or course-pack exercise, or a lesson stored before
+    exercises carried one) gets one drawn with the injected `Rng` when `lesson_start` starts its
+    run, after the session id; a usable order is kept. Should the interface ever get none, it shows
+    each meaning one row up from its word (the first at the foot), so the columns still never
+    line up.
 - Next review notice: the earliest `due` after now of a card of the course's items not retired, at
   the clock's UTC offset: "today at HH:MM" on today's local date, "tomorrow at HH:MM" on the next,
   otherwise "on {day} {Month}" (day without a leading zero, English month name).
@@ -582,12 +625,12 @@ UI contract (visible text in `en.json`; tests find elements by these names):
     replace dialog (nothing there can be lost); in Settings the dialog comes first, then the
     picker. **Check** with no answer shows "Type an answer first." (or "Choose an answer first.",
     "Match every pair first.") without calling the command. Enter is handled from any focused
-    element with its default prevented, so a focused button is never pressed twice. English
-    meanings of `match_pairs` are listed alphabetically; a word-bank answer is the chosen tiles
-    joined by spaces. The skill detail is a view of the Path screen; the Path's level-1 heading
-    is the course's language. Data also offers **Clear caches** (`cache_clear("all")`). An
-    `app_start` failure other than `storage` shows "Something went wrong: {message}" with **Try
-    again**, which calls `app_start` again.
+    element with its default prevented, so a focused button is never pressed twice. The English
+    meanings of `match_pairs` are listed in the exercise's `english_order` (see Match the pairs
+    above); a word-bank answer is the chosen tiles joined by spaces. The skill detail is a view of
+    the Path screen; the Path's level-1 heading is the course's language. Data also offers **Clear
+    caches** (`cache_clear("all")`). An `app_start` failure other than `storage` shows "Something
+    went wrong: {message}" with **Try again**, which calls `app_start` again.
   - Launch smoke in CI: on Windows the runner's Edge WebDriver is used when its major version
     matches the installed WebView2 runtime, else the matching driver is downloaded; its folder is
     put on the `PATH` for tauri-driver.
@@ -687,6 +730,22 @@ come from this spec, the fixtures and modules 02 and 03.
     show at once for a 174,747,648-byte pack, and progress events at 8,000,000, 73,400,000 and
     174,747,648 bytes show "4% · 8.0 of 174.7 MB", "42% · 73.4 of 174.7 MB" and "100% · 174.7 of
     174.7 MB" with the bar's value at those bytes.
+20. Match the pairs (UI tests in `app/src/test/m04/screens.test.tsx` and
+    `app/src/screens/Lesson/draft.unit.test.ts`; the lesson start in
+    `crates/parley-core/src/app/lesson.rs`): the words show 1 to 4 and the meanings A to D in the
+    exercise's `english_order`, with `aria-keyshortcuts` and the words as accessible names; with no
+    order given, the meanings are still not in the words' order. Keys 1 then B, C then 4, 2 then D
+    and A then 3 make the four pairs (key 5 does nothing) and Enter sends `[0,0]`, `[3,3]`, `[1,1]`
+    and `[2,2]`; a meaning clicked before its word makes a pair. Esc and Backspace each let go of a
+    half-made pair with no dialog and leave made pairs; Esc with none opens the quit dialog. **Start
+    over** is present and disabled from the start, outside the row of the columns; after a pair the
+    groups, their buttons and **Start over** are the same elements in the same places, and **Start
+    over** is enabled until it is used. Both halves of a made pair show its word's number, have the
+    class `matched pair-3` and are named "gracias, pair 3" and "thank you, pair 3"; the stylesheet
+    keeps `button.matched:disabled` at opacity 1 and gives `.pair-1` to `.pair-5` their colours. The
+    footer names the match-the-pairs keys, and the `pick_meaning` keys on a `pick_meaning`. A stored
+    lesson whose `match_pairs` has no order or the pairs' own order starts with a usable one, a
+    usable order is kept, and the answer by pair index is graded `correct`.
 
 ## Status
 

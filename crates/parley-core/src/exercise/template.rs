@@ -193,7 +193,8 @@ fn fill_gap(item: &Item, ctx: &TemplateCtx, rng: &mut dyn Rng) -> Option<Body> {
 }
 
 /// Four pairs: the item and the next vocabulary items of the plan, with distinct targets and
-/// glosses, in random order. Fewer than 4: none.
+/// glosses, in random order, and the order their English sides are shown in (`english_order`).
+/// Fewer than 4: none.
 fn match_pairs(item: &Item, ctx: &TemplateCtx, rng: &mut dyn Rng) -> Option<Body> {
     const PAIRS: usize = 4;
     if item.kind != ItemKind::Vocab {
@@ -239,7 +240,56 @@ fn match_pairs(item: &Item, ctx: &TemplateCtx, rng: &mut dyn Rng) -> Option<Body
         return None;
     }
     shuffle(&mut pairs, rng);
-    Some(Body::MatchPairs { pairs })
+    let english_order = Some(english_order(pairs.len(), rng));
+    Some(Body::MatchPairs {
+        pairs,
+        english_order,
+    })
+}
+
+/// The order a `match_pairs` exercise shows the English sides of its `n` pairs in, as pair
+/// indexes: the indexes shuffled with `rng`, and, when the shuffle leaves them in the pairs' own
+/// order, turned by 1 to n − 1 places (drawn), so the meanings never line up with their words.
+/// Fewer than 2 pairs have only the one order.
+pub fn english_order(n: usize, rng: &mut dyn Rng) -> Vec<u32> {
+    let mut order: Vec<u32> = (0..n as u32).collect();
+    if n < 2 {
+        return order;
+    }
+    shuffle(&mut order, rng);
+    if !is_english_order(&order, n) {
+        order.rotate_left(1 + below(rng, n - 1));
+    }
+    order
+}
+
+/// Whether `order` can show the English sides of `n` pairs: every pair index once, and not the
+/// pairs' own order (with fewer than 2 pairs, the one order there is).
+pub fn is_english_order(order: &[u32], n: usize) -> bool {
+    let in_place = |list: &[u32]| {
+        list.iter()
+            .enumerate()
+            .all(|(at, &index)| index as usize == at)
+    };
+    let mut sorted = order.to_vec();
+    sorted.sort_unstable();
+    sorted.len() == n && in_place(&sorted) && (n < 2 || !in_place(order))
+}
+
+/// Gives a `match_pairs` exercise without a usable `english_order` one drawn with `rng`: an AI
+/// exercise, an imported one, or one stored before exercises carried the order. A usable order and
+/// every other type are left as they are.
+pub fn give_english_order(ex: &mut Exercise, rng: &mut dyn Rng) {
+    if let Body::MatchPairs {
+        pairs,
+        english_order: order,
+    } = &mut ex.body
+        && !order
+            .as_deref()
+            .is_some_and(|given| is_english_order(given, pairs.len()))
+    {
+        *order = Some(english_order(pairs.len(), rng));
+    }
 }
 
 /// One template exercise of `kind` for `item`, or none when the item cannot give one (no
@@ -568,13 +618,21 @@ mod tests {
             &mut SplitMix64::new(1),
         )
         .unwrap();
-        let Body::MatchPairs { pairs } = &ex.body else {
+        let Body::MatchPairs {
+            pairs,
+            english_order,
+        } = &ex.body
+        else {
             panic!()
         };
         let mut targets: Vec<&str> = pairs.iter().map(|p| p[0].as_str()).collect();
         targets.sort();
         assert_eq!(targets, ["adiós", "bueno", "el día", "hola"]);
         assert!(pairs.contains(&["el día".to_string(), "day".to_string()]));
+        let order = english_order
+            .as_deref()
+            .expect("the English sides have an order");
+        assert!(is_english_order(order, pairs.len()), "{order:?}");
         let short: Vec<String> = ids[..3].to_vec();
         let none = template(
             f.item("l:hola"),
@@ -583,6 +641,97 @@ mod tests {
             &mut SplitMix64::new(1),
         );
         assert!(none.is_none(), "fewer than 4 words");
+    }
+
+    /// A source whose every draw makes `shuffle` keep five items or fewer in their order.
+    struct Unshuffled;
+
+    impl Rng for Unshuffled {
+        fn next_u64(&mut self) -> u64 {
+            // 59 leaves 4 over 5, 3 over 4, 2 over 3 and 1 over 2: each item swaps with itself.
+            59
+        }
+    }
+
+    #[test]
+    fn the_english_order_is_never_the_pairs_order() {
+        for n in 2..=5usize {
+            let own: Vec<u32> = (0..n as u32).collect();
+            for seed in 0..300u64 {
+                let order = english_order(n, &mut SplitMix64::new(seed));
+                let mut sorted = order.clone();
+                sorted.sort_unstable();
+                assert_eq!(sorted, own, "n {n} seed {seed}: every pair once");
+                assert_ne!(order, own, "n {n} seed {seed}: not the pairs' order");
+                assert!(is_english_order(&order, n));
+                assert_eq!(
+                    order,
+                    english_order(n, &mut SplitMix64::new(seed)),
+                    "n {n} seed {seed}: the same seed gives the same order"
+                );
+            }
+            let order = english_order(n, &mut Unshuffled);
+            assert!(
+                is_english_order(&order, n),
+                "n {n}: a shuffle that keeps the pairs' order is turned: {order:?}"
+            );
+        }
+        // Drawn, not fixed: every one of the 23 other orders of four pairs turns up.
+        let seen: std::collections::BTreeSet<Vec<u32>> = (0..2_000u64)
+            .map(|seed| english_order(4, &mut SplitMix64::new(seed)))
+            .collect();
+        assert_eq!(seen.len(), 23);
+        assert!(!is_english_order(&[0, 1, 2, 3], 4), "the pairs' own order");
+        assert!(!is_english_order(&[1, 0, 2], 4), "a pair missing");
+        assert!(!is_english_order(&[1, 1, 2, 3], 4), "a pair twice");
+        assert!(!is_english_order(&[4, 0, 1, 2], 4), "no pair 4");
+        assert!(is_english_order(&[1, 0, 2, 3], 4));
+    }
+
+    #[test]
+    fn an_exercise_without_a_usable_english_order_gets_one() {
+        let pairs: Vec<[String; 2]> = (0..4).map(|i| [format!("t{i}"), format!("e{i}")]).collect();
+        let exercise = |english_order: Option<Vec<u32>>| Exercise {
+            id: "e1".into(),
+            item_id: format!("{SKILL}#l:hola"),
+            facet: Facet::Receptive,
+            origin: Origin::CoursePack,
+            body: Body::MatchPairs {
+                pairs: pairs.clone(),
+                english_order,
+            },
+        };
+        for given in [
+            None,
+            Some(vec![0, 1, 2, 3]),
+            Some(vec![1, 2]),
+            Some(vec![7, 0, 1, 2]),
+        ] {
+            let mut ex = exercise(given.clone());
+            give_english_order(&mut ex, &mut SplitMix64::new(5));
+            let Body::MatchPairs { english_order, .. } = &ex.body else {
+                panic!()
+            };
+            let order = english_order.as_deref().expect("an order is given");
+            assert!(is_english_order(order, 4), "{given:?} became {order:?}");
+        }
+        let mut kept = exercise(Some(vec![3, 2, 1, 0]));
+        give_english_order(&mut kept, &mut SplitMix64::new(5));
+        assert_eq!(
+            kept,
+            exercise(Some(vec![3, 2, 1, 0])),
+            "a usable order stays"
+        );
+        let mut other = Exercise {
+            body: Body::Speak {
+                text: "hola".into(),
+                prompt_en: "hello".into(),
+            },
+            ..exercise(None)
+        };
+        let before = other.clone();
+        give_english_order(&mut other, &mut SplitMix64::new(5));
+        assert_eq!(other, before, "other types are left as they are");
     }
 
     #[test]
@@ -616,6 +765,10 @@ mod tests {
         let validator = jsonschema::validator_for(&schema).unwrap();
         let value = serde_json::to_value(&lesson).unwrap();
         assert_eq!(schema_errors(&validator, &value), Vec::<String>::new());
+        assert!(value["exercises"][5]["english_order"].is_array());
+        let mut broken = value.clone();
+        broken["exercises"][5]["english_order"] = serde_json::json!([0, 0, 1, 2]);
+        assert!(!schema_errors(&validator, &broken).is_empty());
         let mut broken = value.clone();
         broken["exercises"][0]["options"] = serde_json::json!(["a", "b"]);
         assert!(!schema_errors(&validator, &broken).is_empty());

@@ -275,6 +275,7 @@ fn pairs(id: &str, item_id: &str, pairs: &[(&str, &str)]) -> Exercise {
                 .iter()
                 .map(|(target, en)| [target.to_string(), en.to_string()])
                 .collect(),
+            english_order: None,
         },
     )
 }
@@ -2555,7 +2556,7 @@ fn templates_build_each_type_from_the_item() {
     ];
     let planned = cafe_ctx(&syllabus, &forms, &items, &allowed, &[], &plan_items);
     let ex = templ(cafe_item, ExerciseType::MatchPairs, &planned, 4).expect("match_pairs");
-    let Body::MatchPairs { pairs } = &ex.body else {
+    let Body::MatchPairs { pairs, .. } = &ex.body else {
         panic!("a match_pairs body");
     };
     let got: BTreeSet<(String, String)> = pairs
@@ -3144,6 +3145,71 @@ fn t10_template_lessons_over_the_seed_content() {
         }
     }
     assert!(lessons >= 1_000, "{lessons} lessons built");
+    let shown: Vec<&String> = problems.iter().take(30).collect();
+    assert!(
+        problems.is_empty(),
+        "{} problem(s), the first: {shown:#?}",
+        problems.len()
+    );
+}
+
+// Design notes (match the pairs): the English sides of every template `match_pairs` are shown in
+// an order drawn with the lesson's seed, never the order of their words, so the two columns never
+// line up. Every skill of the seed content (es, fr, de), seeds 1 to 40.
+#[test]
+fn match_pairs_never_shows_the_english_in_the_order_of_the_words() {
+    let mut problems = Vec::new();
+    let mut seen = 0;
+    let mut orders: BTreeSet<Vec<u32>> = BTreeSet::new();
+    for lang in Lang::ALL {
+        let course = seed_course(lang);
+        let skills: Vec<String> = course
+            .syllabus
+            .skills()
+            .map(|(_, skill)| skill.id.clone())
+            .collect();
+        for skill in &skills {
+            let plan = template_plan(&course, skill, 1);
+            for seed in 1..=40u64 {
+                let lesson = seed_lesson(&course, skill, &plan, 1, seed);
+                for ex in &lesson.exercises {
+                    let Body::MatchPairs {
+                        pairs,
+                        english_order,
+                    } = &ex.body
+                    else {
+                        continue;
+                    };
+                    seen += 1;
+                    let Some(order) = english_order else {
+                        problems.push(format!("{skill} seed {seed} {}: no order", ex.id));
+                        continue;
+                    };
+                    let words_order: Vec<&str> = pairs.iter().map(|p| p[1].as_str()).collect();
+                    let shown: Vec<&str> = order
+                        .iter()
+                        .filter_map(|&i| pairs.get(i as usize).map(|p| p[1].as_str()))
+                        .collect();
+                    let mut sorted = order.clone();
+                    sorted.sort_unstable();
+                    if sorted != (0..pairs.len() as u32).collect::<Vec<_>>() {
+                        problems.push(format!(
+                            "{skill} seed {seed} {}: {order:?} is not every pair once",
+                            ex.id
+                        ));
+                    } else if shown == words_order {
+                        problems.push(format!(
+                            "{skill} seed {seed} {}: shown in the words' order {shown:?}",
+                            ex.id
+                        ));
+                    }
+                    orders.insert(order.clone());
+                }
+            }
+        }
+    }
+    assert!(seen >= 100, "{seen} match_pairs exercises built");
+    assert!(orders.len() > 10, "the order is drawn: {orders:?}");
     let shown: Vec<&String> = problems.iter().take(30).collect();
     assert!(
         problems.is_empty(),

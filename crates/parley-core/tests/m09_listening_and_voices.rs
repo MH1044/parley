@@ -658,7 +658,7 @@ fn session_cost(tables: &Value, session: &str) -> i64 {
 fn answer_of(ex: &Exercise) -> Answer {
     match &ex.body {
         Body::PickMeaning { answer_index, .. } => Answer::Choice(*answer_index),
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             Answer::Pairs((0..pairs.len() as u32).map(|i| [i, i]).collect())
         }
         Body::TranslateToTarget { target, .. } => Answer::Text(target.clone()),

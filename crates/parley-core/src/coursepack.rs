@@ -200,20 +200,23 @@ pub struct PackCheck<'a> {
 }
 
 /// An exercise of a pack as an `Exercise`, when it has the shape of a P1 exercise plus `id`,
-/// `item_id`, `facet` and `origin` (and optional `tiles`).
+/// `item_id`, `facet` and `origin` (and optional `tiles` and `english_order`).
 fn pack_exercise(value: &Value) -> Option<Exercise> {
     let object = value.as_object()?;
     let mut answer: Map<String, Value> = object.clone();
-    for field in ["id", "facet", "origin", "tiles"] {
+    for field in ["id", "facet", "origin", "tiles", "english_order"] {
         answer.remove(field);
     }
     if !lesson_prompt_file().schema_valid(&json!({ "exercises": [Value::Object(answer)] })) {
         return None;
     }
     let mut ex: Exercise = serde_json::from_value(value.clone()).ok()?;
-    // Imported tiles are never kept: no check looks at them, so they are rebuilt from the target.
-    if let Body::TranslateToTarget { tiles, .. } = &mut ex.body {
-        *tiles = None;
+    // Imported tiles and English orders are never kept: no check looks at them, so the tiles are
+    // rebuilt from the target, and the lesson draws its own order when it starts.
+    match &mut ex.body {
+        Body::TranslateToTarget { tiles, .. } => *tiles = None,
+        Body::MatchPairs { english_order, .. } => *english_order = None,
+        _ => {}
     }
     (!ex.id.is_empty() && ex.kind().facet() == ex.facet).then_some(ex)
 }

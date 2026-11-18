@@ -28,7 +28,15 @@ import ResultSheet, { type ExplainView } from '../../components/ResultSheet'
 import { languageName, t } from '../../strings'
 import ExerciseView from './ExerciseView'
 import Summary from './Summary'
-import { EMPTY_DRAFT, answerOf, type Draft } from './draft'
+import {
+  EMPTY_DRAFT,
+  answerOf,
+  choosePair,
+  meaningOrder,
+  pairKey,
+  rowLetter,
+  type Draft,
+} from './draft'
 
 interface Props {
   started: LessonStarted
@@ -416,7 +424,12 @@ export default function Lesson({ started, lang, onExit }: Props) {
       }
       if (event.key === 'Escape') {
         event.preventDefault()
-        setQuitting(true)
+        // A half-made pair is let go first; Esc with none asks to quit.
+        if (!grade && draft.half) {
+          setDraft({ ...draft, half: null })
+        } else {
+          setQuitting(true)
+        }
         return
       }
       if (busy || !exercise) return
@@ -424,6 +437,23 @@ export default function Lesson({ started, lang, onExit }: Props) {
       const typing =
         target instanceof HTMLTextAreaElement ||
         (target instanceof HTMLInputElement && target.type === 'text')
+      const plain = !event.ctrlKey && !event.metaKey && !event.altKey
+      if (!grade && !typing && plain && exercise.type === 'match_pairs') {
+        if (event.key === 'Backspace') {
+          if (draft.half) {
+            event.preventDefault()
+            setDraft({ ...draft, half: null })
+          }
+          return
+        }
+        const count = exercise.pairs.length
+        const choice = pairKey(event.key, count, meaningOrder(count, exercise.english_order))
+        if (choice) {
+          event.preventDefault()
+          setDraft(choosePair(draft, choice))
+          return
+        }
+      }
       if (event.key === 'Enter') {
         if (grade) {
           event.preventDefault()
@@ -442,11 +472,9 @@ export default function Lesson({ started, lang, onExit }: Props) {
       if (
         !grade &&
         !typing &&
+        plain &&
         exercise.type === 'pick_meaning' &&
-        /^[1-4]$/.test(event.key) &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
+        /^[1-4]$/.test(event.key)
       ) {
         const choice = Number(event.key) - 1
         if (choice < exercise.options.length) {
@@ -550,7 +578,14 @@ export default function Lesson({ started, lang, onExit }: Props) {
           </button>
         </div>
       )}
-      <p className="keys">{t('exercise.keys')}</p>
+      <p className="keys">
+        {exercise?.type === 'match_pairs'
+          ? t('exercise.keys_match', {
+              n: exercise.pairs.length,
+              last: rowLetter(exercise.pairs.length - 1),
+            })
+          : t('exercise.keys')}
+      </p>
       {setup && (
         <AiSetupDialog
           onStatus={(status) => setClaimState(status.claim_state)}

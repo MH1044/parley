@@ -137,7 +137,7 @@ fn texts_by_language(ex: &Exercise) -> (Vec<&str>, Vec<&str>) {
             target.push(full_sentence);
             english.push(hint_en);
         }
-        Body::MatchPairs { pairs } => {
+        Body::MatchPairs { pairs, .. } => {
             for [left, right] in pairs {
                 target.push(left);
                 english.push(right);
