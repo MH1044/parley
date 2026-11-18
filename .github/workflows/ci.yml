@@ -174,6 +174,11 @@ jobs:
   whisper:
     name: whisper (ubuntu-latest)
     runs-on: ubuntu-latest
+    # whisper.cpp is built for any x86-64 processor, not tuned to the one that built it: the build
+    # is cached and restored on other runners, and a build tuned to one processor stops with an
+    # illegal instruction on another. Release builds do the same (module 14).
+    env:
+      GGML_NATIVE: "OFF"
     steps:
       - uses: actions/checkout@v5
 
@@ -191,7 +196,8 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          key: whisper
+          # A new key, so no build tuned to an earlier runner's processor is restored.
+          key: whisper-portable
 
       - name: cargo-deny
         uses: taiki-e/install-action@v2
