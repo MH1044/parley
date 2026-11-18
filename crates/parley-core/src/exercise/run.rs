@@ -81,12 +81,18 @@ impl From<StoreError> for RunError {
     }
 }
 
-/// What finishing a lesson or review shows.
+/// What finishing a lesson or review shows: "{correct} of {checked} correct", and "{unchecked}
+/// not checked" when an answer was left unchecked, which is never counted as wrong.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct LessonSummary {
     pub xp: u32,
     /// Answers graded correct.
     pub correct: u32,
+    /// Answers with a verdict: correct, typo, almost or wrong. An unchecked answer and an
+    /// exercise never answered (one skipped) are not among them.
+    pub checked: u32,
+    /// Answers left unchecked: neither "I was right" nor the AI judge decided them.
+    pub unchecked: u32,
     /// Exercises in the run.
     pub total: u32,
     pub streak: u32,
@@ -467,7 +473,9 @@ impl LessonRun {
     /// Finishes the run: XP from `xp_for` over the final verdicts; the session row completed; the
     /// session's day credited with the XP, one more session and the daily goal; the weekly
     /// record decided before the credit; the streak recomputed with its frozen days and new
-    /// freeze events written.
+    /// freeze events written. The summary counts an answer still unchecked apart from the
+    /// checked ones, so it is never shown as wrong; the session row's `correct` and `exercises`
+    /// keep counting the correct answers and every answer submitted.
     pub fn finish(
         self,
         store: &mut Store,
@@ -481,6 +489,10 @@ impl LessonRun {
             .map(|answered| answered.grade.verdict)
             .collect();
         let correct = verdicts.iter().filter(|v| **v == Verdict::Correct).count() as u32;
+        let unchecked = verdicts
+            .iter()
+            .filter(|v| **v == Verdict::Unchecked)
+            .count() as u32;
         let exercises = verdicts.len() as u32;
         let xp = xp_for(&SessionResult {
             kind: self.kind,
@@ -500,6 +512,8 @@ impl LessonRun {
         Ok(LessonSummary {
             xp,
             correct,
+            checked: exercises - unchecked,
+            unchecked,
             total: self.exercises.len() as u32,
             streak: done.streak.length,
             freezes: done.streak.freezes,
@@ -877,6 +891,8 @@ mod tests {
             LessonSummary {
                 xp: 2 + 10 + 5,
                 correct: 1,
+                checked: 2,
+                unchecked: 0,
                 total: 3,
                 streak: 1,
                 freezes: 0,

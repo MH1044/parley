@@ -41,12 +41,15 @@ interface Props {
   onStatus?: (status: AiStatus) => void
   /** Play and Slow for the correct answer, when it is in the course language (module 09). */
   answerPlay?: ReactNode
+  /** The exercise's first accepted answer, shown under a Not checked verdict. */
+  modelAnswer?: string | null
 }
 
 /**
  * The verdict of a checked answer, read out as it appears: the verdict line, the reason, the
- * correct answer, and the sheet's own buttons. An unchecked answer offers Check with AI (or, when
- * the AI judge's call failed, says why, as the AI banner does) and I was right; an answer that was
+ * correct answer, and the sheet's own buttons. An unchecked answer shows a correct answer, the
+ * exercise's first accepted one, under the learner's own, and offers Check with AI (or, when the
+ * AI judge's call failed, says why, as the AI banner does) and I was right; an answer that was
  * almost right or wrong offers Explain. While the AI judge decides, the same sheet says "Checking…"
  * with no buttons. Continue is not the sheet's: it is the lesson's, in the action bar under the
  * sheet, where Check was, so it is in the same place however many lines the sheet has.
@@ -64,6 +67,7 @@ export default function ResultSheet({
   onExplain,
   onStatus,
   answerPlay,
+  modelAnswer,
 }: Props) {
   if (checking || !grade) {
     return (
@@ -105,6 +109,9 @@ export default function ResultSheet({
       )}
       {grade.expected && (
         <p className="also-correct">{t('result.also_correct', { expected: grade.expected })}</p>
+      )}
+      {unchecked && modelAnswer && (
+        <p className="model-answer">{t('result.model_answer', { answer: modelAnswer })}</p>
       )}
       {answerPlay}
       {author !== undefined && (

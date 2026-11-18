@@ -269,6 +269,9 @@ impl Parley {
         Ok(LessonSummary {
             xp,
             correct,
+            // A question's answer is always right or wrong: none is left unchecked.
+            checked: answered,
+            unchecked: 0,
             total: run.questions.len() as u32,
             streak: done.streak.length,
             freezes: done.streak.freezes,

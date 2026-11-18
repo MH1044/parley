@@ -61,6 +61,21 @@ function answerInTarget(exercise: Exercise): string | null {
 }
 
 /**
+ * The first accepted answer of a free translation, which a Not checked sheet shows so the learner
+ * can compare it with their own; the same answer the AI judge names under a wrong verdict.
+ */
+function firstAccepted(exercise: Exercise): string | null {
+  switch (exercise.type) {
+    case 'translate_to_target':
+      return exercise.accepted[0] ?? exercise.target
+    case 'translate_to_en':
+      return exercise.accepted[0] ?? null
+    default:
+      return null
+  }
+}
+
+/**
  * The lesson player, for lessons and reviews: one exercise at a time, its result sheet, then the
  * summary. The answer's main button, Check and then Continue, sits in an action bar at the foot of
  * the lesson, in the same place on every exercise; the result sheet above it holds the verdict and
@@ -68,9 +83,11 @@ function answerInTarget(exercise: Exercise): string | null {
  * to 4 choose an option of a pick-the-meaning exercise, Esc asks to quit.
  *
  * A free translation the offline grader cannot decide goes to the AI judge when a provider is set
- * up: the sheet says "Checking…" meanwhile. An unchecked answer offers Check with AI, an answer
- * that was almost right or wrong offers Explain; either opens the AI setup dialog when AI is not
- * set up yet, and runs again after its Continue.
+ * up: the sheet says "Checking…" meanwhile. An unchecked answer shows the exercise's first
+ * accepted answer and offers Check with AI; Enter still continues from it, and the summary counts
+ * it as not checked, never as wrong. An answer that was almost right or wrong offers Explain;
+ * Check with AI and Explain open the AI setup dialog when AI is not set up yet, and run again
+ * after its Continue.
  *
  * Listening (module 09): every exercise shown asks for the next one's sentence to be prefetched;
  * with Play prompts aloud on, a prompt in the course language plays once when shown, and the
@@ -554,6 +571,7 @@ export default function Lesson({ started, lang, onExit }: Props) {
           onCheckWithAi={() => void checkWithAi()}
           onExplain={exercise?.type === 'speak' ? undefined : () => void explainThis()}
           onStatus={(status) => setClaimState(status.claim_state)}
+          modelAnswer={exercise ? firstAccepted(exercise) : null}
           answerPlay={
             exercise && grade && answerInTarget(exercise) ? (
               <PlayButton

@@ -281,6 +281,8 @@ function answerDefaults() {
   reply('lesson_finish', () => ({
     xp: 1,
     correct: 1,
+    checked: 1,
+    unchecked: 0,
     total: 1,
     streak: 5,
     freezes: 1,
@@ -504,6 +506,24 @@ describe('Not checked (acceptance tests 8 to 11)', () => {
     // Continue is the lesson's action bar's (module 04), under the sheet.
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
     expect(within(result).queryByRole('button', { name: EXPLAIN })).toBeNull()
+  })
+
+  it('shows the first accepted answer with or without a reason, and not once the judge decides', async () => {
+    reply('exercise_check', () => ALMOST)
+    const result = await answerCoffee()
+    await expectText(NOT_CHECKED, result)
+    await expectText(`A correct answer: ${FIRST}`, result)
+    fireEvent.click(within(result).getByRole('button', { name: CHECK_WITH_AI }))
+    await expectText(`Correct answer: ${CORRECTED}`)
+    expect(hasText('A correct answer:'), 'a verdict shows its own corrected answer').toBe(false)
+  })
+
+  it('a Not checked sheet with a reason still shows the first accepted answer', async () => {
+    reply('exercise_submit', () => notChecked('offline', JUDGE_OFFLINE))
+    const result = await answerCoffee()
+    await expectText(NOT_CHECKED, result)
+    await expectText(JUDGE_OFFLINE, result)
+    await expectText(`A correct answer: ${FIRST}`, result)
   })
 
   it('Check with AI calls exercise_check and shows the verdict', async () => {

@@ -371,6 +371,8 @@ describe('Stories (acceptance tests 22 and 23)', () => {
     reply('lesson_finish', () => ({
       xp: 14,
       correct: 2,
+      checked: 3,
+      unchecked: 0,
       total: 3,
       streak: 5,
       freezes: 1,

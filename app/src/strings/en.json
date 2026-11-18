@@ -107,6 +107,7 @@
   "result.wrong": "Wrong",
   "result.unchecked": "Not checked",
   "result.corrected": "Correct answer: {corrected}",
+  "result.model_answer": "A correct answer: {answer}",
   "result.attribution": "Sentence by {author} on Tatoeba",
   "result.attribution_anonymous": "Sentence from Tatoeba",
   "result.i_was_right": "I was right",
@@ -123,7 +124,8 @@
 
   "summary.title": "Lesson complete",
   "summary.xp": "+{xp} XP",
-  "summary.correct": "{correct} of {total} correct",
+  "summary.correct": "{correct} of {checked} correct",
+  "summary.unchecked": "{unchecked} not checked",
   "summary.continue": "Continue",
 
   "review.title": "Reviews",

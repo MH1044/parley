@@ -1343,6 +1343,8 @@ fn a_story_session_earns_xp_and_never_touches_cards() {
     );
     let summary = app.lesson_finish(session).unwrap();
     assert_eq!((summary.xp, summary.correct, summary.total), (16, 3, 3));
+    // Every answer to a story's question is checked (module 04's lesson summary).
+    assert_eq!((summary.checked, summary.unchecked), (3, 0));
 
     let after = backup(&mut app, dir.path(), "after.json");
     assert_eq!(after["cards"], before["cards"]);

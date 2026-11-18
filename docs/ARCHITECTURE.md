@@ -283,7 +283,7 @@ Every command returns `Result<T, AppError>`; `AppError` serialises as
 | `exercise_i_was_right` | `session_id, exercise_id` | `Grade` | 04 |
 | `exercise_check` | `session_id, exercise_id` | `Grade` (**Check with AI** and **Try again** on an unchecked answer) | 08 |
 | `explain_answer` | `session_id, exercise_id` | `{text, tip?, cached}` | 08 |
-| `lesson_finish` | `session_id` | `LessonSummary {xp, correct, total, streak, record_week}` | 04 |
+| `lesson_finish` | `session_id` | `LessonSummary {xp, correct, checked, unchecked, total, streak, record_week}` | 04 |
 | `stats_get` | `lang` | `Stats` | 04 |
 | `backup_export` / `backup_import` | `dest_path` / `src_path` | `ExportSummary` / `ImportReport` | 04 |
 | `course_pack_export` / `course_pack_import` | `lang, dest_path` / `src_path` | `CoursePackSummary` / `CoursePackReport` | 07 |

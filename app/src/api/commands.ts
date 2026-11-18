@@ -401,7 +401,13 @@ export interface LessonChecks {
 
 export interface LessonSummary {
   xp: number
+  /** Answers graded correct. */
   correct: number
+  /** Answers with a verdict (correct, typo, almost or wrong): "{correct} of {checked} correct". */
+  checked: number
+  /** Answers left Not checked, counted apart and never as wrong: "{unchecked} not checked". */
+  unchecked: number
+  /** Exercises in the run. */
   total: number
   streak: number
   freezes: number

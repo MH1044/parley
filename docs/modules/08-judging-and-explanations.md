@@ -301,14 +301,15 @@ the sheet where **Check** was, module 04; every other button is the sheet's):
   `explanation`, "Correct answer: {corrected}" when `corrected` is set, "Also correct: {expected}"
   when `expected` is set, **Explain** after `almost` or `wrong` (not after `typo`, and never on a
   `match_pairs` answer), **Continue**.
-- `unchecked` without `judge_error`: "Not checked" (module 04), **Check with AI**, **I was right**,
+- `unchecked` without `judge_error`: "Not checked" (module 04), "A correct answer: {answer}" with
+  the exercise's first accepted answer (module 04), **Check with AI**, **I was right**,
   **Continue**. **Check with AI** calls `exercise_check`; a `needs_consent` error opens the AI setup
   dialog, whose Continue calls `exercise_check` again and whose **Not now** leaves the answer
   unchecked with no call (I12).
 - `unchecked` with `judge_error`: "Not checked", then the error as `AiBanner` shows it (402: the
   message, exactly one link and "or use your own key or a local model in Settings"; disconnected:
   **Reconnect**; `busy` and `ai_invalid`: **Try again**, which calls `exercise_check`; anything else
-  its message), **I was right**, **Continue**.
+  its message), "A correct answer: {answer}", **I was right**, **Continue**.
 - **Explain** shows "Explaining…", then the text and "Tip: {tip}" when there is a tip, or the error
   as `AiBanner` shows it (with **Try again** for `busy` and `ai_invalid`); a `needs_consent` error
   opens the AI setup dialog.
@@ -316,7 +317,8 @@ the sheet where **Check** was, module 04; every other button is the sheet's):
 Messages: "Checking…"; "Not checked" followed by the reason line of PUBLIK-INTEGRATION §9 for 402,
 disconnected, 429, 503 and offline ("You're offline, so Parley can't check free answers.");
 "publik API did not answer in time." with **Try again**; "The AI answer could not be used." with
-**Try again** and **I was right**; **Check with AI**; "Also correct: {expected}"; **Explain**;
+**Try again** and **I was right**; **Check with AI**; "A correct answer: {answer}" under "Not
+checked" (module 04); "Also correct: {expected}"; **Explain**;
 "Explaining…"; "Tip: {tip}"; "Explanations need a connection or a local model." (offline);
 "Explanations are available after an answer that was almost right or wrong."
 
@@ -400,7 +402,9 @@ one `judgements` row. Until the first live run, the folder holds ten hand-writte
 - The stored-judgement grade (module 03 step 5) carries the stored explanation when there is one,
   and no `expected`.
 - "Checking…" is a state of the result sheet itself, which turns into the verdict in place. The
-  judge's error shows right under "Not checked". Explain is hidden once asked for; its error offers
+  judge's error shows right under "Not checked", and the exercise's first accepted answer ("A
+  correct answer: {answer}", module 04) under it, with or without an error; a verdict the judge
+  then gives replaces both with its own lines. Explain is hidden once asked for; its error offers
   Try again where the error allows. In a lesson, **Use my own key** or **Use a local model** in the
   setup dialog closes it and leaves the answer unchecked, so the lesson is not lost; the provider is
   chosen in Settings > AI afterwards. The 402 link's label follows the claim state of the
@@ -433,8 +437,9 @@ Invariants: I2 (test 7, 12), I4 (test 11), I5 (tests 4 and 12), I12 (test 10).
    unmatched answer in the same lesson makes no request (count stays 1); the next lesson judges again
    only after needs-credit clears.
 9. With a client that is offline (`AiError::Offline`, what the publik client gives over
-   `FailingNet`), the sheet shows "You're offline, so Parley can't check free answers." and
-   **I was right**; nothing is stored.
+   `FailingNet`), the sheet shows "You're offline, so Parley can't check free answers.", "A
+   correct answer: {answer}" with the first accepted answer (module 04's test 22) and **I was
+   right**; nothing is stored.
 10. With `ai.provider = unset`, **Check with AI** opens the AI setup dialog; **Not now** leaves the
     answer unchecked (invariant I12); no automatic judge call is made without a provider or consent.
 11. A judge call that takes more than 10 s (`timeout_s` 10 in the request; the client gives

@@ -234,6 +234,8 @@ Messages (code, then text):
 | `data_delete_all` when a file cannot be removed after `parley.sqlite3` was moved aside (the progress is deleted) | `storage` | "Parley could not write that file." |
 | the data file cannot be opened or used | `storage` | "Parley could not open its data file." with action `{"details": "<the store's message>"}` |
 | `data_delete_all` without `delete` | `invalid_input` | "Type delete to confirm." |
+| a free translation left **Not checked**, on the result sheet (not an error) | – | "A correct answer: {answer}", with the exercise's first accepted answer |
+| the lesson summary (not an error) | – | "{correct} of {checked} correct"; with answers left **Not checked**, also "{unchecked} not checked" (such as "10 of 10 correct" and "2 not checked") |
 
 Notices (not errors): `SETTINGS_NOTICE` in `Launch.notice`; `review_start` with nothing due:
 "Nothing to review. Next review: {today at 09:00 | tomorrow at 09:00 | on 14 October}." or, with no
@@ -284,13 +286,15 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   with **Quit** and **Keep going**.
 - Result sheet: a region named **Result** with the verdict **Correct**, **Almost**, **Typo**,
   **Wrong** or **Not checked**, the grade's message, "Correct answer: {corrected}" when there is
-  one, the attribution line when the exercise has one ("Sentence by {author} on Tatoeba", or
-  "Sentence from Tatoeba" for an empty author), and **I was right** for `unchecked` only. Its
-  **Continue** is not in the region but in the action bar under it, where **Check** was; the
-  sheet's other buttons (**I was right**, and from later modules **Check with AI**, **Explain**
-  and **Play**) stay in the sheet.
-- Lesson summary: heading **Lesson complete**, "+{xp} XP", "{correct} of {total} correct", "{n} day
-  streak", the summary's message when there is one, **Continue**.
+  one, "A correct answer: {answer}" under **Not checked** (the exercise's first accepted answer;
+  the learner's own answer stays in the answer box above the sheet), the attribution line when the
+  exercise has one ("Sentence by {author} on Tatoeba", or "Sentence from Tatoeba" for an empty
+  author), and **I was right** for `unchecked` only. Its **Continue** is not in the region but in
+  the action bar under it, where **Check** was; the sheet's other buttons (**I was right**, and
+  from later modules **Check with AI**, **Explain** and **Play**) stay in the sheet.
+- Lesson summary: heading **Lesson complete**, "+{xp} XP", "{correct} of {checked} correct" (the
+  correct answers over the checked ones), "{unchecked} not checked" when an answer was left **Not
+  checked**, "{n} day streak", the summary's message when there is one, **Continue**.
 - Reviews: `review_start` with `limit` 20; no exercises → the notice and **Back to my path**.
 - Stats: heading **Stats**; `empty` → "Finish a lesson to see your stats."; **Back to my path**
   under the heading, before the calendar and the skills, and again at the foot.
@@ -305,11 +309,12 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   screen. About: the version and data directory from
   `app_info`, "Example sentences come from Tatoeba (tatoeba.org) under CC BY 2.0 FR." and "Word
   forms come from Wiktionary (wiktionary.org) under CC BY-SA 4.0."
-- Keyboard: Enter checks when an answer is given and continues when the result sheet shows; keys
-  1 to 4 check the matching option of `pick_meaning`; in `match_pairs` a number (1 to n) chooses a
-  word and a letter (A on, either case) the meaning on that row, a number and a letter in either
-  order make a pair, and Backspace or Esc lets go of a half-made pair; Esc asks to quit (with a
-  half-made pair, the first Esc only lets go of it). The line in the action bar names the keys:
+- Keyboard: Enter checks when an answer is given and continues when the result sheet shows (a
+  **Not checked** one included); keys 1 to 4 check the matching option of `pick_meaning`; in
+  `match_pairs` a number (1 to n) chooses a word and a letter (A on, either case) the meaning on
+  that row, a number and a letter in either order make a pair, and Backspace or Esc lets go of a
+  half-made pair; Esc asks to quit (with a half-made pair, the first Esc only lets go of it). The
+  line in the action bar names the keys:
   "Enter checks and continues. Keys 1 to 4 choose an option. Esc quits.", and for `match_pairs`
   "Enter checks and continues. Press a number (1 to {n}) and a letter (A to {last}) to make a
   pair. Backspace or Esc clears a half-made pair; otherwise Esc quits.".
@@ -458,6 +463,36 @@ UI contract (visible text in `en.json`; tests find elements by these names):
     lesson the page keeps the scrollbar's room (`html:has(main.lesson)` sets `scrollbar-gutter:
     stable`), so a long exercise that brings the scrollbar in does not move the centred column,
     and the button with it, sideways.
+- A free translation that is not checked shows a correct answer and is not counted as wrong. In
+  testing, without AI, a right translation that was not among the stored answers ("We don't have
+  sugar") showed **Not checked** with **Check with AI**, **I was right** and **Continue** but never
+  the expected answer, so the learner could not compare; Enter continued, and the summary then
+  counted the answer as not correct ("10 of 12 correct" for a lesson answered right). Decision:
+  - A **Not checked** sheet always shows "A correct answer: {answer}", the exercise's first
+    accepted answer (`accepted[0]` of `translate_to_target` and `translate_to_en`, the answer the
+    AI judge names under a wrong verdict in module 08), under the learner's own answer, which
+    stays in the answer box above the sheet, whether or not the AI judge's error shows. The
+    interface takes it from the exercise it already holds: the grade stays as module 03 gives it
+    (`unchecked`, no `corrected`, no `expected`), so grading and its golden cases do not change.
+    Once **I was right** or the AI judge decides, the sheet shows that verdict instead and the line
+    goes.
+  - Enter on a **Not checked** sheet still means **Continue**, as on any sheet. The answer stays
+    unchecked: it earns no XP and reviews no card, as before (modules 03 and 08).
+  - The lesson summary counts the correct answers over the checked ones, "{correct} of {checked}
+    correct", and adds "{unchecked} not checked" when an answer was left unchecked, so an
+    unchecked answer is never counted as wrong. `LessonSummary` gains `checked` (answers with a
+    verdict: correct, typo, almost or wrong) and `unchecked` (answers still unchecked when the
+    lesson finishes), computed by the runner (module 03); `total` still counts the run's
+    exercises. An exercise skipped with **Can't listen now** or **Can't speak now** was never
+    answered, so it is in neither count and no longer lowers the score either. A story's answers
+    are always checked (`checked` is the questions answered, `unchecked` 0).
+  - Nothing else changes. XP keeps its rules (an unchecked answer earns nothing and is not
+    a wrong answer for the 5-point bonus). `sessions.correct` and `sessions.exercises` still count
+    the correct answers and every answer submitted; only the backup reads them. The review log
+    and the cards are untouched (an unchecked answer reviews nothing), so mastery and the stats,
+    which are worked out from them, do not change, and the weekly record and the streak come from
+    XP and the days. Reviews use the same lesson player, sheet and summary, so they behave the
+    same way.
 - Next review notice: the earliest `due` after now of a card of the course's items not retired, at
   the clock's UTC offset: "today at HH:MM" on today's local date, "tomorrow at HH:MM" on the next,
   otherwise "on {day} {Month}" (day without a leading zero, English month name).
@@ -791,6 +826,17 @@ come from this spec, the fixtures and modules 02 and 03.
     `.action-bar` `position: sticky`, `bottom: 0`, `margin-top: auto` on `var(--background)`, and
     `main.lesson` `min-height: 100vh`, border-box, with no bottom padding, and
     `html:has(main.lesson)` keeps `scrollbar-gutter: stable`.
+22. A free translation not checked (UI tests in `app/src/test/m04/screens.test.tsx` and
+    `app/src/test/m08/judging.test.tsx`; the counts in module 03's test 24): a **Not checked**
+    sheet of a `translate_to_en` shows "A correct answer: Good morning." and of a
+    `translate_to_target` "A correct answer: Quiero una cerveza." (its first accepted answer, not
+    the second), after the answer box that still holds the learner's answer, with **I was right**
+    and **Check with AI**; with the AI judge's offline reason it still shows the first accepted
+    answer, and once **Check with AI** gives a verdict the line is gone. Enter on the **Not
+    checked** sheet shows the next exercise without calling `exercise_i_was_right`; a summary with
+    `correct` 1, `checked` 1 and `unchecked` 1 shows "1 of 1 correct" and "1 not checked", never
+    "1 of 2 correct", and a summary with `unchecked` 0 shows no "not checked" line. A review
+    session shows the same sheet and summary.
 
 ## Status
 

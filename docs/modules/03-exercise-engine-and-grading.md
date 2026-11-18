@@ -146,8 +146,9 @@ pub fn compose(req: &ComposeRequest, store: &Store, now_ms: i64) -> Result<Plan,
 pub struct RunSettings { pub accent: AccentLeniency, pub daily_goal_xp: u32, pub srs: SrsParams }  // Default: lenient, 20, 0.90
 pub struct Submission { pub exercise_id: String, pub answer: Answer, pub response_ms: Option<i64>, pub used_hint: bool }
 pub enum RunError { EmptyAnswer, AlreadyChecked, NotAvailable, Store(StoreError) }
-pub struct LessonSummary { pub xp: u32, pub correct: u32, pub total: u32, pub streak: u32,
-  pub freezes: u32, pub record_week: bool, pub message: Option<String>, pub daily_xp: u32, pub goal_xp: u32 }
+pub struct LessonSummary { pub xp: u32, pub correct: u32, pub checked: u32, pub unchecked: u32,
+  pub total: u32, pub streak: u32, pub freezes: u32, pub record_week: bool, pub message: Option<String>,
+  pub daily_xp: u32, pub goal_xp: u32 }
 pub struct LessonRun { .. }
 impl LessonRun {
   pub fn start_lesson(store: &mut Store, lesson: &Lesson, session_id: &str, clock: &dyn Clock)
@@ -481,8 +482,14 @@ one line on stderr and nothing on stdout, in module 01's wording):
     streak is computed for the local date at `finish`. `finish` always counts the session as
     finished for `xp_for`. `LessonSummary.correct` and `sessions.correct` count `correct`
     verdicts, `sessions.exercises` the answers submitted, `LessonSummary.total` the exercises of
-    the run. `start_session` and `finish_session` each run in one transaction, and a freeze event
-    already stored for its date and kind is not written again.
+    the run. `LessonSummary.checked` counts the answers with a verdict other than `unchecked`
+    (correct, typo, almost or wrong) and `LessonSummary.unchecked` the answers still `unchecked` at
+    the finish, so the summary shows "{correct} of {checked} correct" and "{unchecked} not
+    checked" and never counts an unchecked answer as wrong (module 04, Design notes); an answer
+    accepted with "I was right" or decided by the AI judge counts with its verdict, and an exercise
+    never answered (skipped) is in neither. A story's summary has `checked` the questions answered
+    and `unchecked` 0. `start_session` and `finish_session` each run in one transaction, and a
+    freeze event already stored for its date and kind is not written again.
   - Streak: a `used` event's `streak_len` is the length the freeze kept; a frozen day stays in
     `frozen` after a later reset.
   - `LocalDate` also reads itself from `YYYY-MM-DD` text (serde), which `streak simulate` uses.
@@ -574,6 +581,12 @@ café con leche.`, and whose forms table has `pero`, `día`, `quiero`; and the c
     an order that is not every pair once a usable one, and keeps a usable order and every other
     type as they are. The template lesson's `match_pairs` validates against the lesson schema with
     its order, and a repeated index does not.
+24. Summary counts: a lesson of 6 exercises answered with 1 right `pick_meaning`, 3 unmatched free
+    translations (one then accepted with "I was right") and 1 wrong `fill_gap`, the sixth never
+    answered → `correct` 2, `checked` 3, `unchecked` 2, `total` 6, 12 XP, and the session row
+    `exercises` 5 and `correct` 2; a review of an unmatched `translate_to_en` and a right
+    `pick_meaning` → 1, 1, 1, 2 and 6 XP. A story's summary has `checked` 3 and `unchecked` 0 for
+    its 3 questions (module 07's story test).
 
 ## Status
 

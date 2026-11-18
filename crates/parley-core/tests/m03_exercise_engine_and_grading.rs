@@ -3639,6 +3639,135 @@ fn runner_writes_sessions_lessons_and_daily_rows() {
     );
 }
 
+// Bullet 24 and Design notes (runner): the summary counts an answer left unchecked apart, never
+// as wrong: `correct` the correct answers, `checked` the answers with a verdict (correct, typo,
+// almost or wrong), `unchecked` the answers still unchecked; "I was right" makes an answer
+// correct, and an exercise never answered (one skipped) is in neither count. XP, `total` and the
+// session row keep their rules. A review session counts the same way.
+#[test]
+fn summary_counts_unchecked_answers_apart_from_the_checked_ones() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("parley.sqlite3");
+    let mut store = ok(Store::open(&path));
+    ok(store.start_course(&course(), &course_forms(), 0));
+    let forms = course_forms();
+    let settings = RunSettings::default();
+    let at = clock(jan_at(5, 9));
+    let with_milk = id(CAFE, "e:2");
+    let coffee = id(CAFE, "e:3");
+    let lesson = lesson_of(vec![
+        agua_pick("e1"),
+        to_target("e2", &coffee, "I want a coffee.", &["Quiero un café."]),
+        to_en(
+            "e3",
+            &with_milk,
+            "Quiero un café con leche.",
+            &["I want a coffee with milk."],
+        ),
+        to_en("e4", &coffee, "Quiero un café.", &["I want a coffee."]),
+        fill_gap(
+            "e5",
+            &id(CAFE, "l:leche"),
+            "Quiero un café con ___.",
+            "leche",
+            "Quiero un café con leche.",
+        ),
+        agua_pick("e6"),
+    ]);
+    let mut run = ok(LessonRun::start_lesson(
+        &mut store, &lesson, "lesson-u", &at,
+    ));
+    for (exercise, answer, verdict) in [
+        ("e1", Answer::Choice(0), Verdict::Correct),
+        ("e2", text("Yo quiero beber un café"), Verdict::Unchecked),
+        ("e3", text("I'd like a white coffee"), Verdict::Unchecked),
+        ("e4", text("A coffee for me"), Verdict::Unchecked),
+        ("e5", text("agua"), Verdict::Wrong),
+    ] {
+        let g = run_ok(run.submit(
+            &mut store,
+            &forms,
+            &settings,
+            &submission(exercise, answer),
+            &at,
+        ));
+        assert_eq!(g.verdict, verdict, "{exercise}");
+    }
+    let right = run_ok(run.i_was_right(&mut store, &settings, "e3", &at));
+    assert_eq!(
+        right.verdict,
+        Verdict::Correct,
+        "I was right makes e3 correct"
+    );
+    // e6 is never answered, as an exercise skipped with Can't listen now is not.
+    let summary = run_ok(run.finish(&mut store, &settings, &at));
+    assert_eq!(
+        (
+            summary.correct,
+            summary.checked,
+            summary.unchecked,
+            summary.total
+        ),
+        (2, 3, 2, 6),
+        "2 of 3 correct, 2 not checked; the run had 6 exercises"
+    );
+    assert_eq!(
+        summary.xp, 12,
+        "2 right answers and 10 for finishing; unchecked answers earn nothing; a wrong one, no bonus"
+    );
+    {
+        let conn = Connection::open(&path).unwrap();
+        assert_eq!(
+            row_values(
+                &conn,
+                "SELECT xp, exercises, correct FROM sessions WHERE id = 'lesson-u'",
+                3
+            ),
+            json!([12, 5, 2]),
+            "the session row counts the answers submitted and the correct ones, as before"
+        );
+    }
+
+    let mut review = ok(LessonRun::start_review(
+        &mut store,
+        Lang::Es,
+        vec![
+            to_en("r1", &coffee, "Quiero un café.", &["I want a coffee."]),
+            agua_pick("r2"),
+        ],
+        "review-u",
+        &at,
+    ));
+    for (exercise, answer, verdict) in [
+        ("r1", text("Coffee for me now"), Verdict::Unchecked),
+        ("r2", Answer::Choice(0), Verdict::Correct),
+    ] {
+        let g = run_ok(review.submit(
+            &mut store,
+            &forms,
+            &settings,
+            &submission(exercise, answer),
+            &at,
+        ));
+        assert_eq!(g.verdict, verdict, "{exercise}");
+    }
+    let summary = run_ok(review.finish(&mut store, &settings, &at));
+    assert_eq!(
+        (
+            summary.correct,
+            summary.checked,
+            summary.unchecked,
+            summary.total
+        ),
+        (1, 1, 1, 2),
+        "a review counts the same way"
+    );
+    assert_eq!(
+        summary.xp, 6,
+        "1 for the right answer and 5 for a review session"
+    );
+}
+
 // Design notes (runner): each graded answer introduces the item and reviews (item, facet) with
 // rating_for over the verdict's srs value, the response time and the hint; an unchecked answer
 // reviews nothing.

@@ -352,10 +352,12 @@ A free translation the offline grader cannot match ("Checking…" for a few seco
 correct, almost or wrong, with the corrected answer and a short reason; a correct answer is
 remembered, so the same answer is accepted offline from then on, whichever provider judged it.
 Without a provider, or when the check could not be made, the answer shows "Not checked" with the
-reason, **Check with AI** (which opens the AI setup dialog when AI is not set up yet) and **I was
-right**; at $0.00 the judge stops for the rest of the lesson. After an answer that was almost right
-or wrong, **Explain** gives up to 80 words of plain English about the mistake and, often, a tip; an
-explanation is never paid for twice.
+reason, one correct answer from the course to compare with ("A correct answer: …"), **Check with
+AI** (which opens the AI setup dialog when AI is not set up yet) and **I was right**; at $0.00 the
+judge stops for the rest of the lesson. The lesson summary counts the right answers over the
+checked ones ("10 of 10 correct") and an answer left unchecked apart ("2 not checked"), never as
+wrong. After an answer that was almost right or wrong, **Explain** gives up to 80 words of plain
+English about the mistake and, often, a tip; an explanation is never paid for twice.
 
 For the maintainer only, `scripts/publik-proof` makes one real publik API call and prints the
 reply, the charge and the `x-publik-*` headers; without `PUBLIK_PROOF=1` it sends nothing. A

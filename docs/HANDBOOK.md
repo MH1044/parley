@@ -78,12 +78,18 @@ the window, shows the result above it: Correct, Almost, Typo, Wrong or Not check
 the correct answer and, for a sentence from the course pack, its Tatoeba author ("Sentence by …
 on Tatoeba"). **Continue** then takes the place of **Check** in that bar, so with the mouse the
 button to press is in the same place on every exercise, however long the result. Not checked
-means a free translation Parley cannot decide offline: **I was right** accepts it from then on,
-and **Check with AI** asks the AI judge (see *Answer checks* below). The keyboard does it all:
-Enter checks and continues, 1 to 4 choose an option, a number and a letter (3 then A, or A then
-3) make a pair, Backspace or Esc lets go of a half-made pair, and Esc asks "Quit this lesson?".
+means a free translation Parley cannot decide offline: the sheet shows one correct answer from the
+course under yours, so you can compare (for *Nous n'avons pas de sucre.*, "A correct answer: We
+have no sugar."); **I was right** accepts yours from then on, **Check with AI** asks the AI judge
+(see *Answer checks* below), and **Continue** (or Enter) leaves it unchecked. The keyboard does it
+all: Enter checks and continues, 1 to 4 choose an option, a number and a letter (3 then A, or A
+then 3) make a pair, Backspace or Esc lets go of a half-made pair, and Esc asks "Quit this
+lesson?".
 The line in the bar, beside the button, names the keys of the exercise shown. The summary shows
-the XP earned, how many answers were correct and the streak. There is no limit on lessons.
+the XP earned, how many of the checked answers were correct ("10 of 10 correct"), how many were
+left unchecked ("2 not checked"; an unchecked answer is never counted as wrong, and a skipped
+listening or speaking exercise counts in neither) and the streak. Reviews end the same way. There
+is no limit on lessons.
 
 **Reviews.** **Review** takes up to 20 due cards. With nothing due it says when the next review
 is ("Nothing to review. Next review: tomorrow at 09:00."), or, before your first lesson, "Nothing
@@ -178,7 +184,8 @@ accent slip or typo is sent to the AI judge, and the result sheet says "Checking
 seconds: then Correct, Almost or Wrong with a short reason, "Correct answer: …" with your answer
 corrected, and after Wrong "Also correct: …" with the course's own answer. A correct answer is
 remembered: the same answer to the same sentence is accepted offline from then on, whichever
-provider judged it. Without a provider the sheet says "Not checked" with **Check with AI** (the AI
+provider judged it. Without a provider the sheet says "Not checked", shows the course's first
+accepted answer ("A correct answer: …") whatever the reason, and offers **Check with AI** (the AI
 setup dialog opens first when AI is not set up yet; **Not now** leaves the answer as it is) and **I
 was right**, with **Continue** in the bar below. When the check cannot be made, "Not checked" says
 why, as the AI banner does: offline, "You're offline, so Parley can't check free answers."; with no publik balance

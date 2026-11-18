@@ -342,6 +342,8 @@ function answerDefaults() {
   reply('lesson_finish', () => ({
     xp: 1,
     correct: 1,
+    checked: 1,
+    unchecked: 0,
     total: 1,
     streak: 5,
     freezes: 1,

@@ -32,7 +32,7 @@ answer is not counted as wrong and that the lesson's main button sits in a fixed
    exercise's skill.
 3. **The lesson header.** The skill's name and a progress bar: "Some and any · 4 of 12"; "Review ·
    4 of 20" in a review session; "Practice · 2 of 4" in a practice session.
-4. **The lesson end.** A large "+{xp} XP"; "{correct} of {total} correct" (with module 04's
+4. **The lesson end.** A large "+{xp} XP"; "{correct} of {checked} correct" (and "{unchecked} not checked" when any) (with module 04's
    not-checked count); **Words you learned** (the items this lesson introduced); **Words to watch**
    (the items answered wrong) with **Practise these now (about {m} min)**; "1 more lesson to master
    {skill}." when the next lesson is predicted to master the skill (Design notes); the moments
@@ -118,7 +118,7 @@ Visible text in `app/src/strings/en.json`; tests find elements by these names.
 - **Lesson header**: "{skill} · {i} of {n}" (review: "Review · {i} of {n}"; practice: "Practice ·
   {i} of {n}") and a `progressbar` whose accessible name stays "Exercise {i} of {n}"; **Notes**.
 - **Lesson end** (heading **Lesson complete**; **Review complete** and **Practice complete** for the
-  other kinds): "+{xp} XP" as the largest text; "{correct} of {total} correct"; the streak line;
+  other kinds): "+{xp} XP" as the largest text; "{correct} of {checked} correct" (and "{unchecked} not checked" when any); the streak line;
   the moments of Scope 5; **Words you learned** as a list (none: the section is left out);
   **Words to watch** as a list with **Practise these now (about {m} min)** (none: left out);
   "1 more lesson to master {skill}." when it applies; **Next lesson** (focused; Enter) and **Back to
@@ -139,7 +139,7 @@ Visible text in `app/src/strings/en.json`; tests find elements by these names.
 | Path | "Unit {n}: {title} · {cefr}"; "You are here"; "Mastered" (badge) |
 | Skill page | **Start lesson (about {m} min)**; "Notes"; **Close** |
 | Lesson header | "{skill} · {i} of {n}"; "Review · {i} of {n}"; "Practice · {i} of {n}"; **Notes** |
-| Lesson end | **Lesson complete**, **Review complete**, **Practice complete**; "+{xp} XP"; "{correct} of {total} correct"; **Words you learned**; **Words to watch**; **Practise these now (about {m} min)**; "1 more lesson to master {skill}."; "Skill mastered: {skill}"; "Goal reached: {goal} of {goal} XP."; "{n} days in a row."; "You earned a streak freeze."; **Next lesson**; **Back to my path** |
+| Lesson end | **Lesson complete**, **Review complete**, **Practice complete**; "+{xp} XP"; "{correct} of {checked} correct" (and "{unchecked} not checked" when any); **Words you learned**; **Words to watch**; **Practise these now (about {m} min)**; "1 more lesson to master {skill}."; "Skill mastered: {skill}"; "Goal reached: {goal} of {goal} XP."; "{n} days in a row."; "You earned a streak freeze."; **Next lesson**; **Back to my path** |
 | Onboarding | the XP line (below) |
 | `practice_start` errors | `invalid_input` "There is nothing to practise." (an empty list); `not_found` "This word is not in the course." (an id that is not an item of the active course) |
 

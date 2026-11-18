@@ -289,6 +289,8 @@ function grade(verdict: string, extra: Partial<{ message: string | null; correct
 const SUMMARY = {
   xp: 17,
   correct: 2,
+  checked: 2,
+  unchecked: 0,
   total: 2,
   streak: 5,
   freezes: 1,
@@ -1179,9 +1181,137 @@ describe('Result sheet (acceptance test 13)', () => {
     await heading('Lesson complete')
     await expectText('+17 XP')
     await expectText('2 of 2 correct')
+    // No answer was left Not checked, so the summary has no line for them.
+    expect(screen.queryAllByText(textOf('not checked'))).toHaveLength(0)
     await expectText('5 day streak')
     await expectText('New weekly record!')
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
+  })
+})
+
+// ---- acceptance test 22: a free translation not checked ---------------------------------------
+
+describe('A free translation not checked (acceptance test 22)', () => {
+  beforeEach(() => {
+    onboarded()
+  })
+
+  const TRANSLATE_TARGET = {
+    id: 'e1',
+    item_id: 'es.a1.u02.s02#e:2',
+    facet: 'productive',
+    origin: 'template',
+    type: 'translate_to_target',
+    prompt_en: 'I want a beer.',
+    target: 'Quiero una cerveza.',
+    accepted: ['Quiero una cerveza.', 'Quiero una cerveza, por favor.'],
+  }
+
+  /** The summary of a run of two: one right answer and one left Not checked. */
+  const ONE_NOT_CHECKED = {
+    ...SUMMARY,
+    xp: 11,
+    correct: 1,
+    checked: 1,
+    unchecked: 1,
+    total: 2,
+    record_week: false,
+    message: null,
+  }
+
+  /** Types `answer` in the answer box and checks it; the result sheet. */
+  async function checkTyped(answer: string) {
+    fireEvent.change(await screen.findByRole('textbox', { name: 'Your answer' }), {
+      target: { value: answer },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    return screen.findByRole('region', { name: 'Result' })
+  }
+
+  /**
+   * Enter on the result sheet, once the graded answer has settled: Continue is enabled and the
+   * lesson's keyboard handler has caught up with the grade (its effect runs after the render).
+   */
+  async function enterOnTheSheet() {
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled())
+    await act(async () => {})
+    press('Enter')
+  }
+
+  const SHEETS = [
+    ['translate_to_en', TRANSLATE_EN, 'Morning, everyone.', 'Good morning.'],
+    ['translate_to_target', TRANSLATE_TARGET, 'Yo quiero una cerveza.', 'Quiero una cerveza.'],
+  ] as const
+
+  for (const [type, exercise, answer, first] of SHEETS) {
+    it(`a Not checked ${type} sheet shows the first accepted answer under the learner's own`, async () => {
+      reply('lesson_start', () => lesson([exercise]))
+      reply('exercise_submit', () => grade('unchecked', { rating: null }))
+      await startLesson()
+      const result = await checkTyped(answer)
+      await expectText('Not checked', result)
+      await expectText(`A correct answer: ${first}`, result)
+      // Only the first accepted answer is shown, and not as the corrected answer of a verdict.
+      expect(within(result).queryAllByText(textOf('por favor'))).toHaveLength(0)
+      expect(within(result).queryAllByText(textOf('Correct answer:'))).toHaveLength(0)
+      // The learner's own answer stays in the answer box above the sheet.
+      const box = screen.getByRole('textbox', { name: 'Your answer' })
+      expect(box).toHaveValue(answer)
+      const line = within(result).getAllByText(textOf(`A correct answer: ${first}`))[0]
+      expect(
+        box.compareDocumentPosition(line) & Node.DOCUMENT_POSITION_FOLLOWING,
+        "the correct answer comes after the learner's answer",
+      ).toBeTruthy()
+      // The sheet still offers I was right and Check with AI.
+      expect(within(result).getByRole('button', { name: 'I was right' })).toBeInTheDocument()
+      expect(within(result).getByRole('button', { name: 'Check with AI' })).toBeInTheDocument()
+    })
+  }
+
+  it('Enter on a Not checked sheet continues, and the summary counts the answer as not checked, not wrong', async () => {
+    reply('lesson_start', () => lesson([TRANSLATE_EN, PICK_2]))
+    reply('exercise_submit', (args) =>
+      args.exercise_id === 'e1' ? grade('unchecked', { rating: null }) : grade('correct'),
+    )
+    reply('lesson_finish', () => ONE_NOT_CHECKED)
+    await startLesson()
+    const result = await checkTyped('Morning, everyone.')
+    await expectText('A correct answer: Good morning.', result)
+    await enterOnTheSheet()
+    await expectText('Exercise 2 of 2')
+    expect(callsOf('exercise_i_was_right'), 'Enter is Continue, not I was right').toHaveLength(0)
+    fireEvent.click(await screen.findByRole('radio', { name: 'goodbye' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    await screen.findByRole('region', { name: 'Result' })
+    await enterOnTheSheet()
+    await waitFor(() => expect(callsOf('lesson_finish')).toEqual([{ session_id: SESSION }]))
+    await heading('Lesson complete')
+    await expectText('1 of 1 correct')
+    await expectText('1 not checked')
+    expect(screen.queryAllByText(textOf('1 of 2 correct'))).toHaveLength(0)
+  })
+
+  it('a review shows the same sheet and the same summary', async () => {
+    reply('review_start', () => ({ ...lesson([TRANSLATE_EN, PICK_2]), kind: 'review', skill_id: null }))
+    reply('exercise_submit', (args) =>
+      args.exercise_id === 'e1' ? grade('unchecked', { rating: null }) : grade('correct'),
+    )
+    reply('lesson_finish', () => ({ ...ONE_NOT_CHECKED, xp: 6 }))
+    render(<App />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Review (3)' }))
+    await expectText('Translate into English')
+    const result = await checkTyped('Morning, everyone.')
+    await expectText('Not checked', result)
+    await expectText('A correct answer: Good morning.', result)
+    await enterOnTheSheet()
+    await expectText('Exercise 2 of 2')
+    fireEvent.click(await screen.findByRole('radio', { name: 'goodbye' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Check' }))
+    await screen.findByRole('region', { name: 'Result' })
+    await enterOnTheSheet()
+    await waitFor(() => expect(callsOf('lesson_finish')).toEqual([{ session_id: SESSION }]))
+    await expectText('1 of 1 correct')
+    await expectText('1 not checked')
   })
 })
 
