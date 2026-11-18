@@ -85,7 +85,11 @@ export default function Placement({ first, lang, language, onDone }: Props) {
       </p>
       <div className="answer">
         <label htmlFor={answerId}>{t('exercise.answer')}</label>
+        {/* A new box for every question, so `autoFocus` puts the cursor in it however the last
+            one was answered: a click on Next or I don't know moves the focus to that button,
+            which is disabled while the answer is sent, and nothing else would bring it back. */}
         <input
+          key={question.n}
           id={answerId}
           type="text"
           lang={intoTarget ? lang : 'en'}

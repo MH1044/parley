@@ -254,9 +254,10 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   `{"daily_goal_xp": n}`); **Where to start** (**Take the placement test (about 5 minutes)** and
   **Start from the beginning**). Placement: heading **Placement test**, "Question {n}", the
   exercise, a text box **Your answer**, buttons **Next** and **I don't know** (sends
-  `{"text": ""}`); the result "You're {label}. You'll start at Unit {n}: {title}." ("You'll start
-  at Unit {n}: {title}." when the label is "Pre-A1") and **Go to my path**. No dialog appears in
-  onboarding.
+  `{"text": ""}`); every new question puts the cursor in **Your answer**, however the previous one
+  was answered (Enter in the box, **Next** or **I don't know**); the result "You're {label}.
+  You'll start at Unit {n}: {title}." ("You'll start at Unit {n}: {title}." when the label is
+  "Pre-A1") and **Go to my path**. No dialog appears in onboarding.
 - Path: "{n} day streak", "{x} of {goal} XP today", buttons **Continue** (`lesson_start` of
   `next_skill_id`, mode `learn`), **Review ({due})**, **Stats**, **Settings**; a level-2 heading
   "Unit {n}: {title}" per unit and one button per skill named by its title; a skill opens its
@@ -375,6 +376,15 @@ UI contract (visible text in `en.json`; tests find elements by these names):
   the same seed asks the same questions. Asking the first vocabulary item on every visit repeated
   the same word up to three times in one test; this rule changes the questions every placement
   test asks, but not the staircase, how it estimates, or how a finished test is recorded.
+- The cursor stays in the placement test's answer box. In testing, after **I don't know** the box
+  was no longer active and the learner had to click it before typing the next answer: the click
+  had focused the button, which is disabled while the answer is sent, so the focus fell to the
+  page, and the box, one element for the whole test, took the focus (`autoFocus`) for the first
+  question only. **Next** did the same; Enter in the box never moved the focus. Decision: every
+  new placement question puts the cursor in **Your answer**, however the previous one was
+  answered (Enter, **Next** or **I don't know**). The box is a new element for each question
+  (keyed by its number), as the lesson player's is for each exercise, so its `autoFocus` applies
+  to every question.
 - Stats: `streak`, `freezes`, `days` (the 30 local dates ending today, oldest first, from `daily`),
   `week_xp` (this ISO week) and `record_week_xp` (the best earlier ISO week, 0 without one) cover
   all courses; the rest is the language's. "Words known": vocabulary items not retired whose
@@ -631,6 +641,8 @@ come from this spec, the fixtures and modules 02 and 03.
     Delete everything and Restore both answer `busy` and change nothing. The UI shows the delete
     message under **Delete everything** and the restore message under **Restore a backup**,
     before the course packs, and stays on the Data screen.
+18. Placement: after **I don't know**, after **Next** and after Enter in **Your answer**, the next
+    question's **Your answer** box has the focus and is empty.
 
 ## Status
 

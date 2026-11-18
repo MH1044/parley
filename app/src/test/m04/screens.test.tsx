@@ -617,6 +617,56 @@ describe('Onboarding (acceptance test 1, invariant I12)', () => {
   })
 })
 
+// ---- acceptance test 18: the placement test's answer box -----------------------------------------
+
+describe('Every new placement question puts the cursor in the answer box (acceptance test 18)', () => {
+  const answerBox = () => screen.getByRole('textbox', { name: 'Your answer' })
+
+  /** A mouse click: the web view focuses the button it clicks, which `fireEvent.click` alone does not. */
+  function click(name: string) {
+    const button = screen.getByRole('button', { name })
+    button.focus()
+    fireEvent.click(button)
+  }
+
+  async function firstQuestion() {
+    await walkTo('Where to start')
+    fireEvent.click(screen.getByRole('button', { name: 'Take the placement test (about 5 minutes)' }))
+    await heading('Placement test')
+    await expectText('Question 1')
+    expect(answerBox()).toHaveFocus()
+  }
+
+  async function expectCursorInNextAnswerBox(sent: string) {
+    await waitFor(() =>
+      expect(callsOf('placement_answer')).toEqual([{ session_id: PLACEMENT, answer: { text: sent } }]),
+    )
+    await expectText('Question 2')
+    await waitFor(() => expect(answerBox()).toHaveFocus())
+    expect(answerBox()).toHaveValue('')
+  }
+
+  it("after I don't know, the next question's answer box has the cursor", async () => {
+    await firstQuestion()
+    click("I don't know")
+    await expectCursorInNextAnswerBox('')
+  })
+
+  it("after Next, the next question's answer box has the cursor", async () => {
+    await firstQuestion()
+    fireEvent.change(answerBox(), { target: { value: 'to be' } })
+    click('Next')
+    await expectCursorInNextAnswerBox('to be')
+  })
+
+  it("after Enter in the answer box, the next question's answer box has the cursor", async () => {
+    await firstQuestion()
+    fireEvent.change(answerBox(), { target: { value: 'to be' } })
+    press('Enter')
+    await expectCursorInNextAnswerBox('to be')
+  })
+})
+
 // ---- the path, reviews and stats (UI contract) -------------------------------------------------
 
 describe('Path, reviews and stats', () => {
